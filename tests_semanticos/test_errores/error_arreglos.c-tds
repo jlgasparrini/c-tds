@@ -1,0 +1,28 @@
+class test_arreglos{
+
+int A[5] ;
+float B [56];
+boolean C[10];
+
+int pruArrreglos(int b, int c ){
+	
+        int res[8];
+        int i;   
+
+	if(b > c){
+		C[0] = 1 - c; //Error C es de tipo bool
+        }
+
+	return res[18]; //Error acceso fuera de rango, C tiene 10 lugares.
+		
+	}
+
+int main(){
+
+    externinvk("printf", int ,"%d resultado : ", pruArreglos(4,8 ));
+    
+    return 1;
+    
+}
+
+}

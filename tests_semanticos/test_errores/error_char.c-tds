@@ -1,0 +1,24 @@
+class test_char{
+
+int A[5] ;
+float B [56];
+boolean C[10];
+
+int pruChar(int b, int c ){
+        int i;
+        A[0] = 'a'; 
+        
+        if ('a' < 'b'){
+              return A[1];
+        } 
+}
+
+int main(){
+
+    externinvk("printf", int ,"%d resultado : ", pruArreglos(4,8 )); //ERROR no declarado
+    
+    return 1;
+    
+}
+
+}
