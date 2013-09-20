@@ -8,6 +8,7 @@
 #  include  "../SymbolsTable/Utils.h"
 
 extern FILE *yyin;
+extern yylineno;
 SymbolsTable symbolTable;   /* <----Definicion de la tabla de simbolos----- */
 Attribute *auxAtr;          /* Atributo auxiliar usado para la creacion de nuevos atributos */           
 unsigned char cantParams = 0;  /* Cantidad de parametros que tendra un metodo */
@@ -16,9 +17,12 @@ ReturnType mType;     /* Return type of the method */
 
 int yydebug = 1;
 
-int yyerror (const char *str)
+void yyerror (char *str)
 {
-        fprintf(stderr,"Error gramatico en la linea:   %s\n", str); /* tratar de usar yylineno */
+        if strcmp(str, "syntax error")
+            printf(stderr,"Error gramatico en la linea: %d   ERROR SINTACTICO\n", yylineno);
+        else
+            printf("ERROR DESCONOCIDO  %s\n", str);
         return 0;
 }
  
