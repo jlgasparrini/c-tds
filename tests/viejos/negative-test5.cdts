@@ -1,0 +1,14 @@
+test8 Program { 
+    //Error: class (esta bien que no compile)
+
+    int inc(int x){
+    }
+
+    void main() {
+        int y;
+            externinvk ("printf", void, "y==1\n");
+        else {
+            externinvk("printf", void, "y==1\n");
+        }
+    }
+}

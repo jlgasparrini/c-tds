@@ -1,0 +1,29 @@
+class probando_externinvk{
+
+int factorial(int n){
+
+        
+	int i;         
+        int total;
+
+        total = 1;
+        i = 4;
+	while(i > 0){
+
+		total += total * i;  
+		i = i - 1;
+
+	}
+	return total;
+
+} 
+
+void  main (){
+  externinvk("printf", void );
+  externinvk("printf", void, "---------------------------" );
+  externinvk("printf", void , "resultado = %d", factorial(5.0) ); //Error factorial toma un int
+  return factorial(2);
+
+}
+
+} // end class pp

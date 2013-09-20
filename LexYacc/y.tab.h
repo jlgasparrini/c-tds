@@ -1,0 +1,122 @@
+/* A Bison parser, made by GNU Bison 2.5.  */
+
+/* Bison interface for Yacc-like parsers in C
+   
+      Copyright (C) 1984, 1989-1990, 2000-2011 Free Software Foundation, Inc.
+   
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+   
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+   
+   You should have received a copy of the GNU General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+
+/* As a special exception, you may create a larger work that contains
+   part or all of the Bison parser skeleton and distribute that work
+   under terms of your choice, so long as that work isn't itself a
+   parser generator using the skeleton or a modified version thereof
+   as a parser skeleton.  Alternatively, if you modify or redistribute
+   the parser skeleton itself, you may (at your option) remove this
+   special exception, which will cause the skeleton and the resulting
+   Bison output files to be licensed under the GNU General Public
+   License without this special exception.
+   
+   This special exception was added by the Free Software Foundation in
+   version 2.2 of Bison.  */
+
+
+/* Tokens.  */
+#ifndef YYTOKENTYPE
+# define YYTOKENTYPE
+   /* Put the tokens into the symbol table, so that GDB and other debuggers
+      know about them.  */
+   enum yytokentype {
+     FLOAT = 258,
+     INTEGER = 259,
+     BOOLEAN = 260,
+     INTW = 261,
+     FLOATW = 262,
+     BOOLEANW = 263,
+     ID = 264,
+     PLUSEQUAL = 265,
+     MINUSEQUAL = 266,
+     EQUAL = 267,
+     DISTINCT = 268,
+     GEQUAL = 269,
+     LEQUAL = 270,
+     OR = 271,
+     AND = 272,
+     BREAK = 273,
+     IF = 274,
+     CONTINUE = 275,
+     ELSE = 276,
+     RETURN = 277,
+     WHILE = 278,
+     CLASS = 279,
+     FOR = 280,
+     VOID = 281,
+     EXTERNINVK = 282,
+     STRING = 283
+   };
+#endif
+/* Tokens.  */
+#define FLOAT 258
+#define INTEGER 259
+#define BOOLEAN 260
+#define INTW 261
+#define FLOATW 262
+#define BOOLEANW 263
+#define ID 264
+#define PLUSEQUAL 265
+#define MINUSEQUAL 266
+#define EQUAL 267
+#define DISTINCT 268
+#define GEQUAL 269
+#define LEQUAL 270
+#define OR 271
+#define AND 272
+#define BREAK 273
+#define IF 274
+#define CONTINUE 275
+#define ELSE 276
+#define RETURN 277
+#define WHILE 278
+#define CLASS 279
+#define FOR 280
+#define VOID 281
+#define EXTERNINVK 282
+#define STRING 283
+
+
+
+
+#if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
+typedef union YYSTYPE
+{
+
+/* Line 2068 of yacc.c  */
+#line 54 "yaccC-TDS.y"
+
+	/* ver si se puede hacer solamente asi, y sino agregar un atributo de tipo int y otro de tipo float ------------------ */
+	char *stringValue;
+	Attribute *at;
+
+
+
+/* Line 2068 of yacc.c  */
+#line 114 "y.tab.h"
+} YYSTYPE;
+# define YYSTYPE_IS_TRIVIAL 1
+# define yystype YYSTYPE /* obsolescent; will be withdrawn */
+# define YYSTYPE_IS_DECLARED 1
+#endif
+
+extern YYSTYPE yylval;
+
+

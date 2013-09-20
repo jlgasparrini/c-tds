@@ -1,0 +1,4 @@
+class negative-test2{ //Error en la declaracion de la clase, no se permite -
+          {
+        int x;
+}

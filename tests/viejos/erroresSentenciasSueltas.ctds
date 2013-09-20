@@ -1,0 +1,13 @@
+class prueba3{
+   int x;
+   void x(int x) {
+       return;
+   }
+   int z() {
+      int q;
+      q+=2;
+      return q;
+   }
+   x(1);
+   z();
+} 

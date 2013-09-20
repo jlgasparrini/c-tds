@@ -1,0 +1,20 @@
+class test_arreglos{
+
+int A[5] ;
+float B [56];
+boolean C[10];
+
+int pruArrreglos(int b, int c ){
+        A[0] = true; // Error A es de tipo int
+	return A[5]; //Error acceso fuera de rango, A tiene 5 lugares, indexados del 0 al 4.
+}
+
+int main(){
+
+    externinvk("printf", int ,"%d resultado : ", pruArreglos(4,8 ));
+    
+    return 1;
+    
+}
+
+}

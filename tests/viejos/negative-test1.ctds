@@ -1,0 +1,9 @@
+class negative-test1{ 
+    // NO DEBERIA COMPILAR.
+    //Falta ";" al final de la siguiente linea
+    int entero
+
+    int inc ( ) {
+       return x + 1;
+    }
+}

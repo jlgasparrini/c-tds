@@ -1,0 +1,11 @@
+// holaaaa
+class test9 { 
+
+	int valor ;
+	
+	float metodo() {
+		float value;
+		return cuack;
+	}
+
+}

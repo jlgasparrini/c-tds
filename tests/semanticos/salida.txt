@@ -1,0 +1,270 @@
+*********************************************************************************** 
+**                                                                               ** 
+**                            Corriendo casos de prueba . . .                    ** 
+**                                                                               ** 
+**                                                                               ** 
+*********************************************************************************** 
+     
+     
+///////////////////////// TESTS CORRECTOS ////////////////////////////////////////
+---------------- Test tests_semanticos/test_correctos/test_arreglos.c-tds ... -------------------
+Invalid symbol. ERROR in line: 26	" 
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_correctos/test_break.c-tds ... -------------------
+Invalid symbol. ERROR in line: 25	" 
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_correctos/test_float02.c-tds ... -------------------
+El metodo "sumatoria" no esta definido.
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_correctos/test_float03.c-tds ... -------------------
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_correctos/test_float04.c-tds ... -------------------
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_correctos/test_for01.c-tds ... -------------------
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_correctos/test_for02.c-tds ... -------------------
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_correctos/test_for03.c-tds ... -------------------
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_correctos/test_for04.c-tds ... -------------------
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_correctos/test_for05.c-tds ... -------------------
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_correctos/test_logicos.c-tds ... -------------------
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_correctos/test_metodo03.c-tds ... -------------------
+El metodo "inc" no esta definido.
+El metodo "resto" no esta definido.
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_correctos/test_metodos01.c-tds ... -------------------
+El metodo "alo" no esta definido.
+El metodo "alo2" no esta definido.
+El metodo "alo2" no esta definido.
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_correctos/test_metodos02.c-tds ... -------------------
+El metodo "alo" no esta definido.
+El metodo "alo2" no esta definido.
+El metodo "alo" no esta definido.
+---------------------------------------------------
+  
+  
+///////////////////////// TESTS CON FALLAS ////////////////////////////////////////
+---------------- Test tests_semanticos/test_errores/error_2classb.c-tds ... -------------------
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_errores/error_2class.c-tds ... -------------------
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_errores/error_arreglos02.c-tds ... -------------------
+Invalid symbol. ERROR in line: 14	" 
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_errores/error_arreglos03.c-tds ... -------------------
+El identificador "c" no es un arreglo.
+El identificador "C" no es una variable.
+Invalid symbol. ERROR in line: 22	" 
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_errores/error_arreglos04.c-tds ... -------------------
+Invalid symbol. ERROR in line: 19	" 
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_errores/error_arreglos05.c-tds ... -------------------
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_errores/error_arreglos.c-tds ... -------------------
+Invalid symbol. ERROR in line: 22	" 
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_errores/error_char.c-tds ... -------------------
+Invalid symbol. ERROR in line: 9	' 
+Invalid symbol. ERROR in line: 9	' 
+La variable "a" no se encuentra definida.
+Invalid symbol. ERROR in line: 11	' 
+Invalid symbol. ERROR in line: 11	' 
+La variable "a" no se encuentra definida.
+Invalid symbol. ERROR in line: 11	' 
+Invalid symbol. ERROR in line: 11	' 
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_errores/errores.c-tds ... -------------------
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_errores/error_externinvk02.c-tds ... -------------------
+Invalid symbol. ERROR in line: 24	" 
+La variable "resultado" no se encuentra definida.
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_errores/error_externinvk.c-tds ... -------------------
+Invalid symbol. ERROR in line: 24	" 
+La variable "resultado" no se encuentra definida.
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_errores/error_float01.c-tds ... -------------------
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_errores/error_float02.c-tds ... -------------------
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_errores/error_float03.c-tds ... -------------------
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_errores/error_float04.c-tds ... -------------------
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_errores/error_for01.c-tds ... -------------------
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_errores/error_for02.c-tds ... -------------------
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_errores/error_for03.c-tds ... -------------------
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_errores/error_for04.c-tds ... -------------------
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_errores/error_for05.c-tds ... -------------------
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_errores/error_if01.c-tds ... -------------------
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_errores/error_if02.c-tds ... -------------------
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_errores/error_test_break.c-tds ... -------------------
+Invalid symbol. ERROR in line: 29	" 
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_errores/error_test_logicos02.c-tds ... -------------------
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_errores/error_test_logicos.c-tds ... -------------------
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_errores/error_test_main01.c-tds ... -------------------
+El metodo "alo" no esta definido.
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_errores/error_test_main02.c-tds ... -------------------
+El metodo "alo" no esta definido.
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_errores/error_test_metodos01.c-tds ... -------------------
+El metodo "alo" no esta definido.
+El metodo "alo" no esta definido.
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_errores/error_test_metodos02.c-tds ... -------------------
+El metodo "alo" no esta definido.
+El metodo "alo2" no esta definido.
+El metodo "alo2" no esta definido.
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_errores/error_test_metodos03.c-tds ... -------------------
+El metodo "alo" no esta definido.
+El metodo "alo2" no esta definido.
+El metodo "alo2" no esta definido.
+El metodo "alo" no esta definido.
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_errores/error_test_metodos04.c-tds ... -------------------
+El metodo "alo3" no esta definido.
+El metodo "alo2" no esta definido.
+El metodo "alo" no esta definido.
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_errores/error_test_metodos05.c-tds ... -------------------
+El metodo "alo3" no esta definido.
+El metodo "alo2" no esta definido.
+El metodo "alo" no esta definido.
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_errores/error_test_metodos06.c-tds ... -------------------
+El metodo "alo" no esta definido.
+El metodo "alo2" no esta definido.
+El metodo "alo" no esta definido.
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_errores/error_test_metodos07.c-tds ... -------------------
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_errores/error_test_multiplesMain.c-tds ... -------------------
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_errores/error_vbles01.c-tds ... -------------------
+"x", el 1° parametro ya se encuentra utilizado. Elija otro.
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_errores/error_vbles02.c-tds ... -------------------
+Invalid symbol. ERROR in line: 6	_ 
+---------------------------------------------------
+  
+  
+---------------- Test tests_semanticos/test_errores/error_vbles03.c-tds ... -------------------
+---------------------------------------------------
+  
+  

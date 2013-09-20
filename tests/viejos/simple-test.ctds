@@ -1,0 +1,8 @@
+class simple {
+    int i;
+    float j;
+    //boolean flag;
+    //boolean valor(){
+        //return i + 1;
+    //}
+}
