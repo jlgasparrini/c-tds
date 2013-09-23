@@ -68,10 +68,10 @@ void printErrors(ErrorsQueue *q)
     printf("Errores al compilar:\n\n");
     while (i < (*q).size)
     {
-        printf("%s %s  in line %d", (*(*aux).error).id,(*(*aux).error).message,(*(*aux).error).line);
+        printf("%s %s  in line %d.%d.\n\n", (*(*aux).error).id, (*(*aux).error).message, (*(*aux).error).line, (*(*aux).error).column);
         if ((*(*aux).error).column != 0)
             printf(", %d", (*(*aux).error).column);
-        printf(".\n\n");
+        printf("");
         i++;
     }
 }
