@@ -1,5 +1,7 @@
-
-
+#include "ErrorsQueue.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 /*
  * An errors queue implementation.
  */
@@ -27,11 +29,11 @@ void insert(ErrorsQueue *q, char *id, char *message, int line, int column)
         (*error).column = column;
         (*newNode).error = error;
         (*newNode).next = NULL;
-        (*l).firstIN.next = newNode;
-        (*l).firstIN = newNode;
-        if ((*l).size == 0)
-            (*l).lastIN = newNode;
-        (*l).size++;
+        (*(*q).firstIN).next = newNode;
+        (*q).firstIN = newNode;
+        if ((*q).size == 0)
+            (*q).lastIN = newNode;
+        (*q).size++;
     }
     else 
     {
@@ -41,19 +43,19 @@ void insert(ErrorsQueue *q, char *id, char *message, int line, int column)
 
 
 /* Delete all the elements of the queue. */
-void deleteAllErrors(LinkedList *l)
+void deleteAllErrors(ErrorsQueue *q)
 {
     Node *aux;
     int i = 0;
-    while (i < (*l).size)
+    while (i < (*q).size)
     {
-        aux = (*l).first; 
-        (*l).firstIN = (*aux).next;
+        aux = (*q).firstIN; 
+        (*q).firstIN = (*aux).next;
         free(aux);
         i++;
     }
-    (*l).firstIN = NULL;
-    (*l).size = 0;
+    (*q).firstIN = NULL;
+    (*q).size = 0;
 }
 
 
@@ -61,12 +63,15 @@ void deleteAllErrors(LinkedList *l)
 /* Print in display the elements of the queue. */
 void printErrors(ErrorsQueue *q)
 {
-    Node *aux = (*l).first; 
+    Node *aux = (*q).firstIN; 
     int i = 0;
     printf("Errores al compilar:\n\n");
-    while (i < (*l).size)
+    while (i < (*q).size)
     {
-        printf(" \n");
+        printf("%s %s  in line %d", (*(*aux).error).id,(*(*aux).error).message,(*(*aux).error).line);
+        if ((*(*aux).error).column != 0)
+            printf(", %d", (*(*aux).error).column);
+        printf(".\n\n");
         i++;
     }
 }
