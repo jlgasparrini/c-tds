@@ -37,7 +37,7 @@ void insert(ErrorsQueue *q, char *id, char *message, int line, int column)
     }
     else 
     {
-        printf("ErrorsQueue.c: insert ERROR: Can't reserve space in memory.");
+        printf("ErrorsQueue.c: insert ERROR: No se puede reservar espacio en memoria.");
     }
 }
 
@@ -68,7 +68,7 @@ void printErrors(ErrorsQueue *q)
     printf("Errores al compilar:\n\n");
     while (i < (*q).size)
     {
-        printf("%s %s  in line %d.%d.\n\n", (*(*aux).error).id, (*(*aux).error).message, (*(*aux).error).line, (*(*aux).error).column);
+        printf("El identificador %s %s  en linea %d.%d.\n\n", (*(*aux).error).id, (*(*aux).error).message, (*(*aux).error).line, (*(*aux).error).column);
         if ((*(*aux).error).column != 0)
             printf(", %d", (*(*aux).error).column);
         printf("");
