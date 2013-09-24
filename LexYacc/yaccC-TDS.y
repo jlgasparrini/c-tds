@@ -8,21 +8,23 @@
 #  include  "../SymbolsTable/Utils.h"
 
 extern FILE *yyin;
-extern yylineno;
+extern lineNumb;
+extern columnNumb;
 SymbolsTable symbolTable;   /* <----Definicion de la tabla de simbolos----- */
 Attribute *auxAtr;          /* Atributo auxiliar usado para la creacion de nuevos atributos */           
 unsigned char cantParams = 0;  /* Cantidad de parametros que tendra un metodo */
 PrimitiveType vaType; /* Type of the variable or array */
 ReturnType mType;     /* Return type of the method */
+char* lastCalledMethod;
 
 int yydebug = 1;
 
-void yyerror (char *str)
+int yyerror (char *str)
 {
-        if strcmp(str, "syntax error")
-            printf(stderr,"Error gramatico en la linea: %d   ERROR SINTACTICO\n", yylineno);
+        if (strcmp(str, "syntax error") == 0)
+            fprintf(stderr,"Error gramatico en la linea: %d.%d\n", lineNumb, columnNumb);
         else
-            printf("ERROR DESCONOCIDO  %s\n", str);
+            printf("ERROR DESCONOCIDO:%s\n", str);
         return 0;
 }
  
@@ -187,55 +189,40 @@ location      :    ID {$$ = getVariableAttribute(&symbolTable, $1);}
               |    ID '[' term ']' {$$ = getArrayAttribute(&symbolTable, $1, (*$3).decl.variable.value.intVal);}
               ;
 
-method_call   :	   ID '(' ')'   { auxAtr = searchIdInSymbolsTable(&symbolTable, $1);
-                                    if(auxAtr == NULL) 
-                                        printf("El metodo \"%s\" no esta definido.\n", $1);
-                                    else
-                                    {
-                                        if((*auxAtr).type != Method)
-	                                        printf("El identificador \"%s\" no es un metodo.\n", $1);
-                                        else
-                                        { 
-                                            if ((*auxAtr).decl.method.paramSize > 0)
-												if ((*auxAtr).decl.method.paramSize == 1)
-													printf("El metodo \"%s\" no contiene su parametro correspondiente.\n", $1);
-												else
-													printf("El metodo \"%s\" no contiene sus %d parametros correspondientes.\n", $1, (*auxAtr).decl.method.paramSize);
-                                        }
-                                    }
-                                }
-              |    ID '('{cantParams=0;} expression_aux ')' { auxAtr = searchIdInSymbolsTable(&symbolTable, $1);
-                                                if(auxAtr == NULL) 
-                                                    printf("El metodo \"%s\" no esta definido.\n", $1);
-                                                else
-                                                {
-                                                    if((*auxAtr).type != Method)
-                                                    printf("El identificador \"%s\" no es un metodo.\n", $1);
-                                                    else
-                                                    { 
-                                                        if ((*auxAtr).decl.method.paramSize != cantParams)
-                                                           printf("El metodo \"%s\" no tiene la misma cantidad de parametros.\n", $1);
-                                                    //bjdsabdjsadas
-                                                    }
-                                                }
-                                            }   
-              |    EXTERNINVK '(' STRING ',' typevoid ')'  {Attribute *at; $$ = at;}
+method_call   :	   ID '(' ')'   {$$ = getMethodAttribute(&symbolTable, $1, 0);}
+              |    ID '('{cantParams=0; lastCalledMethod=$1;} expression_aux ')' {ReturnType rt = methodReturnType(&symbolTable, lastCalledMethod);
+								if (rt == RetVoid) /* ESTE METHOD_CALL PUEDE SER LLAMADO FUERA DE UNA EXPRESION, POR LO QUE NO TENDRIA QUE OBLIGAR
+													A QUE RETORNE ALGO DE TIPO PRIMITIVO. HAY QUE CORREGIR ESTO-------------------------------*/ 
+									printf("El metodo \"%s\" retorna tipo void, no puede ser usado en una expresion.\n", lastCalledMethod);
+								else
+								{
+									/* ESTA BIEN ESTO? createVariable toma algo de tipo PrimitiveType pero se la pasa rt que es de ReturnType */
+									Attribute *aux=createVariable("",rt); setVariableValue(aux,rt,$1); /*habria que ver como setear el
+									valor que retorna la llamada del metodo (que cada metodo tenga un VarValue donde almacenar el resultado)*/
+									$$ = aux;
+								}
+								}
+			  
+              |    EXTERNINVK '(' STRING ',' typevoid ')'  {if (mType != RetVoid) 
+															{	Attribute *aux=createVariable("",mType); }
+														}
               |    EXTERNINVK '(' STRING ',' typevoid ',' externinvk_arg ')'   {Attribute *at; $$ = at;}
               ;
 
-expression_aux:    expression {cantParams++;}                       
-			  |    expression_aux ',' {cantParams++;} expression    
+expression_aux:    expression {cantParams++; correctParamBC(&symbolTable,$1,lastCalledMethod,cantParams);}
+			  |    expression {cantParams++; correctParamIC(&symbolTable,$1,lastCalledMethod,cantParams);} ',' expression_aux 
+
 			  ;
               
 typevoid      :    type                            
-              |    VOID                           
+              |    VOID {mType = RetVoid;} 
               ;
 
 externinvk_arg:    arg                           
               |    externinvk_arg ',' arg       
               ;
-												/*-------------PREGUNTAR------------------*/
-arg           :    expression                  /* VER QUE SE PUEDE HACER CON EXPRESSION EN ESTE CASO!! ---------------------------------------*/
+												
+arg           :    expression                  
               |    STRING                     
               ;
               

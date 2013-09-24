@@ -72,7 +72,7 @@ void setVariableValue(Attribute *attr, PrimitiveType type, char *value)
 	{
 		if (strcmp(value, "false") == 0)
 			(*attr).decl.variable.value.boolVal = False;
-		else
+		if (strcmp(value, "true") == 0)
 			(*attr).decl.variable.value.boolVal = True;
 	}
 }

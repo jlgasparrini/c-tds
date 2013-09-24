@@ -5,7 +5,6 @@
 
 unsigned int lineNumb = 1;
 unsigned int columnNumb = 1;
-/* Asi estaba anteriormenete ascii:        ascii		[-!-+/-:<-~] */
 %}
 %x comment
 
@@ -56,7 +55,7 @@ dotcomma    ";"
 string      "\""{ascii}*"\"" 
 expVal      [Ee][+-]{int}
 externinvk  "externinvk"
-ascii		[-!-:<-~]	
+ascii		[-!-:<-~ ]	
 obracket	"["
 cbracket	"]"
 
