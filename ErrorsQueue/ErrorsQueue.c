@@ -16,7 +16,7 @@ ErrorsQueue* initializeQueue()
     return aux;
 }
 
-/* Insert an element in the queue "q". */
+/* Insert an element in the end of the queue "q". */
 void insert(ErrorsQueue *q, char *id, char *message, int line, int column)
 {
     Node *newNode;
@@ -29,10 +29,17 @@ void insert(ErrorsQueue *q, char *id, char *message, int line, int column)
         (*error).column = column;
         (*newNode).error = error;
         (*newNode).next = NULL;
-        (*(*q).firstIN).next = newNode;
-        (*q).firstIN = newNode;
-        if ((*q).size == 0)
+		
+		if ((*q).size == 0)
+		{
+            (*q).firstIN = newNode;
             (*q).lastIN = newNode;
+		} 
+		else
+		{
+			(*(*q).lastIN).next = newNode;
+	        (*q).lastIN = newNode;
+		}
         (*q).size++;
     }
     else 
@@ -40,7 +47,6 @@ void insert(ErrorsQueue *q, char *id, char *message, int line, int column)
         printf("ErrorsQueue.c: insert ERROR: No se puede reservar espacio en memoria.");
     }
 }
-
 
 /* Delete all the elements of the queue. */
 void deleteAllErrors(ErrorsQueue *q)
@@ -57,8 +63,6 @@ void deleteAllErrors(ErrorsQueue *q)
     (*q).firstIN = NULL;
     (*q).size = 0;
 }
-
-
 
 /* Print in display the elements of the queue. */
 void printErrors(ErrorsQueue *q)

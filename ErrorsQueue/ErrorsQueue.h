@@ -14,7 +14,6 @@ typedef struct
     int column;
 } Error;
 
-
 /* Node of the queue. */
 typedef struct N 
 {
@@ -38,7 +37,7 @@ typedef struct
 /* Returns an initialized queue. */ 
 ErrorsQueue* initializeQueue();
 
-/* Insert an element in the queue "q". */
+/* Insert an element in the end of the queue "q". */
 void insert(ErrorsQueue *q, char *id, char *message, int line, int column);
  
 /* Delete all the elements of the list. */
