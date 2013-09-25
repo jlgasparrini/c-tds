@@ -5,7 +5,10 @@
 /*
  * An errors queue implementation.
  */
- 
+
+extern lineNumb;
+extern columnNumb;
+
 /* Returns an initialized queue. */ 
 ErrorsQueue* initializeQueue()
 {
@@ -16,31 +19,58 @@ ErrorsQueue* initializeQueue()
     return aux;
 }
 
-/* Insert an element in the end of the queue "q". */
-void insert(ErrorsQueue *q, char *id, char *message, int line, int column)
+/* Returns the amount of digits that has an int value */
+unsigned int digitAmount(int value)
 {
-    Node *newNode;
-    Error *error;
-    if ((newNode = (Node*) malloc(sizeof(Node))) &&  (error = (Error*) malloc(sizeof(Error))))
+	int count = 0;
+    while (value > 0)
     {
-        (*error).id = strdup(id);
-        (*error).message = strdup(message);
-        (*error).line = line;
-        (*error).column = column;
-        (*newNode).error = error;
-        (*newNode).next = NULL;
+	    value = value/10;
+        count++;
+    }
+    return count;
+}
+
+/* Returns the string formed by putting together all the parameters */
+char* toString(char *init, char *id, char *message)
+{																						   /* +      1     + */
+	char* msg = (char*) malloc ((strlen(init)+strlen(id)+strlen(message)+strlen(" Error en linea: ")+digitAmount(lineNumb)+strlen(".")+digitAmount(columnNumb))*sizeof(char));
+	strcat(msg,init);  
+	strcat(msg,id); 
+	strcat(msg,message);
+	strcat(msg," Error en linea: ");
+	char *numero = (char*) malloc (digitAmount(lineNumb)*sizeof(char));
+	sprintf(numero, "%d", lineNumb);
+	strcat(msg,numero);
+//	free(numero);
+	strcat(msg,".");
+	numero = (char*) malloc (digitAmount(columnNumb)*sizeof(char));
+	sprintf(numero, "%d", columnNumb);
+	strcat(msg,numero);
+//	free(numero);
+	return msg;
+}
+
+/* Insert an element in the end of the queue "q". */
+void insertError(ErrorsQueue *eq, char* message)
+{
+    ErrorNode *newErrorNode;
+    if (newErrorNode = (ErrorNode*) malloc(sizeof(ErrorNode)))
+    {
+        (*newErrorNode).error = message;
+        (*newErrorNode).next = NULL;
 		
-		if ((*q).size == 0)
+		if ((*eq).size == 0)
 		{
-            (*q).firstIN = newNode;
-            (*q).lastIN = newNode;
+            (*eq).firstIN = newErrorNode;
+            (*eq).lastIN = newErrorNode;
 		} 
 		else
 		{
-			(*(*q).lastIN).next = newNode;
-	        (*q).lastIN = newNode;
+			(*(*eq).lastIN).next = newErrorNode;
+	        (*eq).lastIN = newErrorNode;
 		}
-        (*q).size++;
+        (*eq).size++;
     }
     else 
     {
@@ -49,33 +79,37 @@ void insert(ErrorsQueue *q, char *id, char *message, int line, int column)
 }
 
 /* Delete all the elements of the queue. */
-void deleteAllErrors(ErrorsQueue *q)
+void deleteAllErrors(ErrorsQueue *eq)
 {
-    Node *aux;
+    ErrorNode *aux;
     int i = 0;
-    while (i < (*q).size)
+    while (i < (*eq).size)
     {
-        aux = (*q).firstIN; 
-        (*q).firstIN = (*aux).next;
+        aux = (*eq).firstIN; 
+        (*eq).firstIN = (*aux).next;
         free(aux);
         i++;
     }
-    (*q).firstIN = NULL;
-    (*q).size = 0;
+    (*eq).firstIN = NULL;
+    (*eq).lastIN = NULL;
+    (*eq).size = 0;
 }
 
 /* Print in display the elements of the queue. */
-void printErrors(ErrorsQueue *q)
+void printErrorList(ErrorsQueue *eq)
 {
-    Node *aux = (*q).firstIN; 
-    int i = 0;
-    printf("Errores al compilar:\n\n");
-    while (i < (*q).size)
-    {
-        printf("El identificador %s %s  en linea %d.%d.\n\n", (*(*aux).error).id, (*(*aux).error).message, (*(*aux).error).line, (*(*aux).error).column);
-        if ((*(*aux).error).column != 0)
-            printf(", %d", (*(*aux).error).column);
-        printf("");
-        i++;
-    }
+	if ((*eq).size == 0)
+		printf("Sin errores semanticos al compilar.\n");
+	else
+	{
+		ErrorNode *aux = (*eq).firstIN; 
+   	 	int i = 0;
+   	 	printf("Errores semanticos al compilar:\n\n");
+   	 	while (i < (*eq).size)
+   	 	{
+   	 	    printf("%s\n", (*aux).error);
+   	 		aux = (*aux).next;
+   	 	    i++;
+   	 	}
+	}
 }

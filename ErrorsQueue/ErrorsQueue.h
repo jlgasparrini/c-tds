@@ -6,29 +6,21 @@
 #ifndef ErrorsQueue_H
 #define ErrorsQueue_H
 
-typedef struct
-{
-    char *id;
-    char *message;
-    int line;
-    int column;
-} Error;
-
 /* Node of the queue. */
-typedef struct N 
+typedef struct E 
 {
-    Error *error;
+    char *error;
     /* Pointer of the next node. */
-    struct N *next;
-} Node;
+    struct E *next;
+} ErrorNode;
  
 /* Define type ErrorsQueue. */
 typedef struct
 {
     /* Pointer to first nodes of my queue. */
-    Node *firstIN;
+    ErrorNode *firstIN;
     /* Pointer to last nodes of my queue. */
-    Node *lastIN;
+    ErrorNode *lastIN;
 
     /* Size of the queue. */
     int size;
@@ -37,13 +29,19 @@ typedef struct
 /* Returns an initialized queue. */ 
 ErrorsQueue* initializeQueue();
 
+/* Returns the amount of digits that has an int value */
+unsigned int digitAmount(int value);
+
+/* Returns the string formed by putting together all the parameters */
+char* toString(char *init, char *id, char *message);
+
 /* Insert an element in the end of the queue "q". */
-void insert(ErrorsQueue *q, char *id, char *message, int line, int column);
+void insertError(ErrorsQueue *eq, char *message);
  
-/* Delete all the elements of the list. */
-void deleteAll(ErrorsQueue *q);
+/* Delete all the elements of the queue. */
+void deleteAllErrors(ErrorsQueue *eq);
 
 /* Print in display the elements of the list. */
-void print_list(ErrorsQueue *q);
+void printErrorList(ErrorsQueue *eq);
 
 #endif

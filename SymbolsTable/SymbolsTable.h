@@ -8,6 +8,7 @@
 #define SymbolsTable_H
 
 #include "LinkedList.h"
+#include "../ErrorsQueue/ErrorsQueue.h"
  
 typedef struct SNode  
 {
@@ -30,7 +31,7 @@ typedef struct
 void initializeSymbolsTable(SymbolsTable *aSymbolsTable);
 
 /* Insert a element in the current level of the SymbolsTable. */
-void pushElement(SymbolsTable *aSymbolsTable, Attribute *at);
+void pushElement(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attribute *at);
 
 /* Insert a new level in the SymbolsTable. */
 void pushLevel(SymbolsTable *aSymbolsTable);

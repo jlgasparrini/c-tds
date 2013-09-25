@@ -1,71 +1,94 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "Attribute.h"
 #include "SymbolsTable.h"
 #include "Utils.h"
+#include "../ErrorsQueue/ErrorsQueue.h"
 
 /* Returns an attribute of ID "id" and Variable structure. Otherwise returns NULL */
-Attribute* getVariableAttribute(SymbolsTable *aSymbolsTable, char* id)
+Attribute* getVariableAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id)
 {
 	Attribute *attr = searchIdInSymbolsTable(aSymbolsTable, id);
 	if(attr == NULL) 
-        printf("El identificador \"%s\" no esta definido.\n", id);
+		insertError(eq, toString("El identificador \"", id, "\" no esta definido."));
     else
 		if((*attr).type != Variable)
 		{
-		     printf("El identificador \"%s\" no es una variable.\n", id);
-			 return NULL;
+			insertError(eq, toString("El identificador \"", id, "\" no corresponde a una variable."));
+			return NULL;
 		}
 	return attr;
 }
 
 /* Returns an attribute in the position "pos" of the ID "id" and Array structure. Otherwise returns NULL */
-Attribute* getArrayAttribute(SymbolsTable *aSymbolsTable, char* id, int pos)
+Attribute* getArrayAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id, int pos)
 {
 	Attribute *attr = searchIdInSymbolsTable(aSymbolsTable, id);
 	if(attr == NULL) 
-        printf("El identificador \"%s\" no esta definido.\n", id);
+		insertError(eq, toString("El identificador \"", id, "\" no esta definido."));
     else
 		if((*attr).type != Array)
 		{
-			printf("El identificador \"%s\" no es un arreglo.\n", id);
+			insertError(eq, toString("El identificador \"", id, "\" no corresponde a un arreglo."));
 			return NULL;
 		}
 	return attr; /* ACA DEBERIA RETORNARSE LA VARIABLE QUE SE ENCUENTRA EN EL ARREGLO EN LA POSICION "pos"-------------------------------------- */
 }
 
 /* verificar si este metodo no tendria que retornar el valor de retorno del metodo!! ---------------------------------------------------------*/
-Attribute* getMethodAttribute(SymbolsTable *aSymbolsTable, char* id, unsigned char paramSize)
+Attribute* getMethodAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id, unsigned char paramSize)
 { 
 	Attribute *attr = searchIdInSymbolsTable(aSymbolsTable, id);
     if(attr == NULL) 
-        printf("El metodo \"%s\" no esta definido.\n", id);
+		insertError(eq,toString("El identificador \"", id, "\" no esta definido."));
     else
     {
         if((*attr).type != Method)
-	        printf("El identificador \"%s\" no es un metodo.\n", id);
+			insertError(eq,toString("El identificador \"", id,"\" no corresponde a un metodo."));
         else
         { 
             if ((*attr).decl.method.paramSize != paramSize) /* if the method doesn't have the same amount of parameters */
 		 		if ((*attr).decl.method.paramSize == 0)
-		 			printf("La llamada al metodo \"%s\" no debe contener parametros.\n", id);
+					insertError(eq, toString("La llamada al metodo \"", id, "\" no debe contener parametros."));
 		 		else
-		 			printf("La llamada al metodo \"%s\" no contiene sus %d parametros correspondientes.\n", id, (*attr).decl.method.paramSize);
+				{
+					char* number = (char*) malloc (digitAmount(paramSize)*sizeof(char));
+					sprintf(number,"%d",paramSize);
+					char* msg = (char*) malloc ((strlen("\" no contiene sus ")+strlen(number)+strlen(" parametros correspondientes."))*sizeof(char));
+					strcat(msg, "\" no contiene sus ");
+					strcat(msg, number);
+					strcat(msg, " parametros correspondientes.");
+					insertError(eq, toString("La llamada al metodo \"", id, msg));
+			//		free(number);
+				//	free(msg);
+				}
         }
     }
 }
 
 /* creates an attribute and assign it as a parameter of "method" containing the information included.
 	Returns a pointer to the attribute if the parameter was created successful. Returns NULL otherwise. */
-Attribute* arrangeParameter(SymbolsTable *aSymbolsTable, unsigned char paramSize, char* id, PrimitiveType type)  
+Attribute* arrangeParameter(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, unsigned char paramSize, char* id, PrimitiveType type)  
 {
 	Attribute *aux = lastDefinedMethod(aSymbolsTable);
 	if (searchIdInLevel(aSymbolsTable, id))
 	{	
 		aux = createParameter(aux, paramSize, id, type);
-		pushElement(aSymbolsTable, aux);
+		pushElement(eq, aSymbolsTable, aux);
 		return aux;
 	}
-	printf("Error en el metodo \"%s\". El nombre del %d° parametro \"%s\", ya se encuentra utilizado..\n", (*aux).decl.method.id, paramSize, id);  
+	char* number = (char*) malloc (digitAmount(paramSize)*sizeof(char));
+	sprintf(number,"%d",paramSize);
+	char* msg = (char*) malloc ((strlen(". El identificador del ")+strlen(number)+strlen("° parametro \"")+strlen(id)+strlen("\", ya se encuentra utilizado."))*sizeof(char));
+	strcat(msg,"\". El identificador del ");
+	strcat(msg, number);
+	strcat(msg,"° parametro \"");
+	strcat(msg, id);
+	strcat(msg,"\" ya se encuentra utilizado.");
+	insertError(eq,toString("Error en el metodo \"", (*aux).decl.method.id, msg));  
+//	free(number);
+//	free(msg);
 	return NULL;
 }
 
@@ -79,14 +102,14 @@ unsigned char correctParameterType(StVariable *var, Attribute *attr, unsigned ch
 }
 
 /* Returns the ReturnType of the method with id "id" */
-ReturnType methodReturnType(SymbolsTable *aSymbolsTable, char* id)
+ReturnType methodReturnType(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id)
 {
 	Attribute *attr = searchIdInSymbolsTable(aSymbolsTable, id);
 	if(attr == NULL) 
-        printf("El metodo \"%s\" no esta definido.\n", id);
+		insertError(eq, toString("El identificador \"", id, "\" no esta definido."));
     else
         if((*attr).type != Method)
-	        printf("El identificador \"%s\" no es un metodo.\n", id);
+			insertError(eq, toString("El identificador \"", id, "\" no corresponde a un metodo."));
 		else
 			return (*attr).decl.method.type;
 }
@@ -106,44 +129,70 @@ char* getType(PrimitiveType type)
 /* Returns 0 if the type parameter in "paramSize" position of the method's parameters is equal to the type of "var" 
    and the amount of params are equal.
 	Returns 1 otherwise */
-unsigned char correctParamBC(SymbolsTable *aSymbolsTable, Attribute *attr, char* lastCalledMethod, unsigned char paramSize)
+unsigned char correctParamBC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attribute *attr, char* lastCalledMethod, unsigned char paramSize)
 {
 	Attribute *aux = searchIdInSymbolsTable(aSymbolsTable, lastCalledMethod);
 	if(aux == NULL) 
-        printf("El metodo \"%s\" no esta definido.\n", lastCalledMethod);
+		insertError(eq, toString("El identificador \"", lastCalledMethod, "\" no esta definido."));
     else
         if((*aux).type != Method)
-	        printf("El identificador \"%s\" no es un metodo.\n", lastCalledMethod);
+			insertError(eq, toString("El identificador \"", lastCalledMethod, "\" no corresponde a un metodo."));
 		else
 			if (paramSize == (*aux).decl.method.paramSize) 
+			{
 				if (correctParameterType(&(*attr).decl.variable, aux, paramSize) == 0) 
 					return 0;
 				else
-					printf("El %d° parametro no es del tipo \"%s\".\n", paramSize, getType((*aux).decl.method.parameters[paramSize].type));
+				{
+					char* number = (char*) malloc (digitAmount(paramSize)*sizeof(char));
+					sprintf(number,"%d",paramSize);
+					char* f = (char*) malloc ((strlen("\". El ")+strlen(number)+strlen("° parametro no es del tipo \"")+strlen(getType((*aux).decl.method.parameters[paramSize].type)+strlen("\".")))*sizeof(char));
+					strcat(f,"\". El ");
+					strcat(f, number);
+					strcat(f,"° parametro no es del tipo \"");
+					strcat(f, getType((*aux).decl.method.parameters[paramSize].type));
+					strcat(f, "\".");
+					insertError(eq,toString("Error en llamada al metodo \"", lastCalledMethod, f));  
+				//	free(number);
+				//	free(f);
+				}
+			}
 			else
-				printf("El metodo \"%s\" no tiene la misma cantidad de parametros que en su declaracion.\n", lastCalledMethod);
+				insertError(eq,toString("Error en llamada al metodo \"", lastCalledMethod, "\". No se tiene la misma cantidad de parametros que en su declaracion."));  
 	return 1;
 }
 
 /* Returns 0 if the type parameter in "paramSize" position of the method's parameters is equal to the type of "var" 
    and paramSize <= than the amount of parameters of the method.
 	Returns 1 otherwise */
-unsigned char correctParamIC(SymbolsTable *aSymbolsTable, Attribute *attr, char* lastCalledMethod, unsigned char paramSize)
+unsigned char correctParamIC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attribute *attr, char* lastCalledMethod, unsigned char paramSize)
 {
 	Attribute *aux = searchIdInSymbolsTable(aSymbolsTable, lastCalledMethod);
 	if(aux == NULL) 
-        printf("El metodo \"%s\" no esta definido.\n", lastCalledMethod);
+		insertError(eq, toString("El identificador \"", lastCalledMethod, "\" no esta definido."));
     else
         if((*aux).type != Method)
-	        printf("El identificador \"%s\" no es un metodo.\n", lastCalledMethod);
+			insertError(eq, toString("El identificador \"", lastCalledMethod, "\" no corresponde a un metodo."));
 		else
 			if (paramSize == (*aux).decl.method.paramSize) 
 				if (correctParameterType(&(*attr).decl.variable, aux, paramSize) == 0) 
 					return 0;
 				else
-					printf("El %d° parametro no es del tipo \"%s\".\n", paramSize, getType((*aux).decl.method.parameters[paramSize].type));
+				{
+					char* number = (char*) malloc (digitAmount(paramSize)*sizeof(char));
+					sprintf(number,"%d",paramSize);
+					char* f = (char*) malloc ((strlen("\". El ")+strlen(number)+strlen("° parametro no es del tipo \"")+strlen(getType((*aux).decl.method.parameters[paramSize].type)+strlen("\".")))*sizeof(char));
+					strcat(f,"\". El ");
+					strcat(f, number);
+					strcat(f,"° parametro no es del tipo \"");
+					strcat(f, getType((*aux).decl.method.parameters[paramSize].type));
+					strcat(f, "\".");
+					insertError(eq,toString("Error en llamada al metodo \"", lastCalledMethod, f));  
+				//	free(number);
+				//	free(f);
+				}
 			else
-				printf("El metodo \"%s\" tiene mayor cantidad de parametros que en su declaracion.\n", lastCalledMethod);
+				insertError(eq,toString("Error en llamada al metodo \"", lastCalledMethod, "\". Se tiene mayor cantidad de parametros que en su declaracion."));  
 	return 1;
 }
 

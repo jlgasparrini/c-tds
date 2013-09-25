@@ -6,10 +6,12 @@
 #  include  "../SymbolsTable/Attribute.h"
 #  include  "../SymbolsTable/SymbolsTable.h"
 #  include  "../SymbolsTable/Utils.h"
+#  include  "../ErrorsQueue/ErrorsQueue.h"
 
 extern FILE *yyin;
 extern lineNumb;
 extern columnNumb;
+ErrorsQueue *errorQ;
 SymbolsTable symbolTable;   /* <----Definicion de la tabla de simbolos----- */
 Attribute *auxAtr;          /* Atributo auxiliar usado para la creacion de nuevos atributos */           
 unsigned char cantParams = 0;  /* Cantidad de parametros que tendra un metodo */
@@ -21,6 +23,7 @@ int yydebug = 1;
 
 int yyerror (char *str)
 {
+		printErrorList(errorQ);
         if (strcmp(str, "syntax error") == 0)
             fprintf(stderr,"Error gramatico en la linea: %d.%d\n", lineNumb, columnNumb);
         else
@@ -30,7 +33,7 @@ int yyerror (char *str)
  
 int yywrap()
 {
-        return 1;
+	return 1;
 } 
   
 main( argc, argv )
@@ -46,7 +49,8 @@ main( argc, argv )
     }
 
 finalizar() {
-        printf("se parseo correctamente\n");
+		printErrorList(errorQ);
+        printf("------Se termino de parsear.----------\n");
 }
 
 out(char *msg) {
@@ -67,8 +71,8 @@ out(char *msg) {
 %start program
 
 /* %token<stringValue> es solo para tokens..*/
-%token<stringValue> FLOAT INTEGER BOOLEAN INTW FLOATW BOOLEANW ID
-%token PLUSEQUAL MINUSEQUAL EQUAL DISTINCT GEQUAL LEQUAL OR AND 
+%token<stringValue> FLOAT INTEGER BOOLEAN INTW FLOATW BOOLEANW ID PLUSEQUAL MINUSEQUAL
+%token EQUAL DISTINCT GEQUAL LEQUAL OR AND 
 %token BREAK IF CONTINUE ELSE RETURN WHILE CLASS FOR VOID EXTERNINVK STRING 
 %nonassoc '<' '>' EQUAL DISTINCT GEQUAL LEQUAL
 %left '+' '-'
@@ -84,8 +88,8 @@ out(char *msg) {
 
 /* ------------------- PROGRAM -------------------- */
 
-program       :    CLASS ID '{' '}' 
-              |    CLASS ID '{' {initializeSymbolsTable(&symbolTable); pushLevel(&symbolTable);} body {popLevel(&symbolTable);} '}' 
+program       :    CLASS ID '{' '}' {finalizar();} 
+              |    CLASS ID '{' {initializeSymbolsTable(&symbolTable); pushLevel(&symbolTable); errorQ=initializeQueue();} body {popLevel(&symbolTable); finalizar();} '}' 
               ;
 
 body          :    fields_decls method_decl
@@ -101,8 +105,8 @@ fields        :    field
 			  |    fields ',' field 	    
 			  ;
 										/*aca hay que crear el atributo nuevo*/
-field         :    ID					{pushElement(&symbolTable, createVariable($1, vaType));}
-              |    ID '[' INTEGER ']'	{pushElement(&symbolTable, createArray($1, vaType, atoi($3)));}
+field         :    ID					{pushElement(errorQ, &symbolTable, createVariable($1, vaType));}
+              |    ID '[' INTEGER ']'	{pushElement(errorQ, &symbolTable, createArray($1, vaType, atoi($3)));}
               ;
 
 type          :		INTW		{vaType = Int; mType = RetInt;} 
@@ -110,14 +114,14 @@ type          :		INTW		{vaType = Int; mType = RetInt;}
               |		BOOLEANW	{vaType = Bool; mType = RetVoid;}
               ;
 
-method_decl   :     type ID {if (searchIdInSymbolsTable(&symbolTable, $2) == NULL) {Attribute *aux = createMethod($2, mType, 0); pushElement(&symbolTable, aux); pushLevel(&symbolTable);}
-							else printf("El identificador \"%s\" ya se encuentra definido.\n", $2);} param block {popLevel(&symbolTable);}
-              |		method_decl type ID {if (searchIdInSymbolsTable(&symbolTable, $3) == NULL) {Attribute *aux = createMethod($3, mType, 0); pushElement(&symbolTable, aux); pushLevel(&symbolTable);}
-							else printf("El identificador \"%s\" ya se encuentra definido.\n", $3);} param block {popLevel(&symbolTable);}
-              |     VOID ID {if (searchIdInSymbolsTable(&symbolTable, $2) == NULL) {Attribute *aux = createMethod($2, RetVoid, 0); pushElement(&symbolTable, aux); pushLevel(&symbolTable);}
-							else printf("El identificador \"%s\" ya se encuentra definido.\n", $2);} param block {popLevel(&symbolTable);}
-              |	    method_decl VOID ID {if (searchIdInSymbolsTable(&symbolTable, $3) == NULL) {Attribute *aux = createMethod($3, RetVoid, 0); pushElement(&symbolTable, aux); pushLevel(&symbolTable);}
-							else printf("El identificador \"%s\" ya se encuentra definido.\n", $3);} param block {popLevel(&symbolTable);}
+method_decl   :     type ID {if (searchIdInSymbolsTable(&symbolTable, $2) == NULL) {Attribute *aux = createMethod($2, mType, 0); pushElement(errorQ, &symbolTable, aux); pushLevel(&symbolTable);}
+							else insertError(errorQ, toString("El identificador \"", $2,"\" ya se encuentra definido."));} param block {popLevel(&symbolTable);}
+              |		method_decl type ID {if (searchIdInSymbolsTable(&symbolTable, $3) == NULL) {Attribute *aux = createMethod($3, mType, 0); pushElement(errorQ, &symbolTable, aux); pushLevel(&symbolTable);}
+							else insertError(errorQ, toString("El identificador \"",$3,"\" ya se encuentra definido."));} param block {popLevel(&symbolTable);}
+              |     VOID ID {if (searchIdInSymbolsTable(&symbolTable, $2) == NULL) {Attribute *aux = createMethod($2, RetVoid, 0); pushElement(errorQ, &symbolTable, aux); pushLevel(&symbolTable);}
+							else insertError(errorQ, toString("El identificador \"", $2,"\" ya se encuentra definido."));} param block {popLevel(&symbolTable);}
+              |	    method_decl VOID ID {if (searchIdInSymbolsTable(&symbolTable, $3) == NULL) {Attribute *aux = createMethod($3, RetVoid, 0); pushElement(errorQ, &symbolTable, aux); pushLevel(&symbolTable);}
+							else insertError(errorQ, toString("El identificador \"",$3,"\" ya se encuentra definido."));} param block {popLevel(&symbolTable);}
               ;
 
 param		  :    '(' ')' {cantParams = 0;}
@@ -125,9 +129,9 @@ param		  :    '(' ')' {cantParams = 0;}
 			  ;
               
 parameters    :		type ID {Attribute *aux = createParameter(lastDefinedMethod(&symbolTable),cantParams,$2,vaType);
-								if (aux != NULL) {pushElement(&symbolTable,aux); cantParams++;}}
+								if (aux != NULL) {pushElement(errorQ, &symbolTable,aux); cantParams++;}}
 			  |		type ID ',' {Attribute *aux = createParameter(lastDefinedMethod(&symbolTable),cantParams,$2,vaType);
-								if (aux != NULL) {pushElement(&symbolTable,aux); cantParams++;}} parameters 
+								if (aux != NULL) {pushElement(errorQ, &symbolTable,aux); cantParams++;}} parameters 
 			  ;
 
 block         :    '{' '}'
@@ -177,31 +181,32 @@ conditional   :    IF '(' expression ')' block ELSE block
 			  |    IF '(' expression ')' block
 			  ;
 
-iteration     :    WHILE expression block
-              |    FOR ID '=' expression ',' expression block                  
+iteration     :    WHILE expression {} block
+              |    FOR ID '=' expression ',' expression {} block                
               ;                                                               
 
 /* -------------------- END OF CONDITIONALS AND CICLES ------------------------------- */
 
 /* -------------------- EXPRESSIONS ------------------------------- */
 
-location      :    ID {$$ = getVariableAttribute(&symbolTable, $1);}
-              |    ID '[' term ']' {$$ = getArrayAttribute(&symbolTable, $1, (*$3).decl.variable.value.intVal);}
+location      :    ID {$$ = getVariableAttribute(errorQ, &symbolTable, $1);}
+              |    ID '[' term ']' {$$ = getArrayAttribute(errorQ, &symbolTable, $1, (*$3).decl.variable.value.intVal);}
               ;
 
-method_call   :	   ID '(' ')'   {$$ = getMethodAttribute(&symbolTable, $1, 0);}
-              |    ID '('{cantParams=0; lastCalledMethod=$1;} expression_aux ')' {ReturnType rt = methodReturnType(&symbolTable, lastCalledMethod);
-								if (rt == RetVoid) /* ESTE METHOD_CALL PUEDE SER LLAMADO FUERA DE UNA EXPRESION, POR LO QUE NO TENDRIA QUE OBLIGAR
-													A QUE RETORNE ALGO DE TIPO PRIMITIVO. HAY QUE CORREGIR ESTO-------------------------------*/ 
-									printf("El metodo \"%s\" retorna tipo void, no puede ser usado en una expresion.\n", lastCalledMethod);
+method_call   :	   ID '(' ')'   {cantParams=0; lastCalledMethod=$1; $$ = getMethodAttribute(errorQ, &symbolTable, $1, cantParams);}
+              |    ID '('  {cantParams=0; lastCalledMethod=$1;} expression_aux ')' {ReturnType rt = methodReturnType(errorQ, &symbolTable, $1);
+							/*	if (rt == RetVoid)  ESTE METHOD_CALL PUEDE SER LLAMADO FUERA DE UNA EXPRESION, POR LO QUE NO TENDRIA QUE OBLIGAR
+													A QUE RETORNE ALGO DE TIPO PRIMITIVO. HAY QUE CORREGIR ESTO-------------------------------
+									insertError(eq, toString("El metodo \"", lastCalledMethod, "\" retorna tipo void, no puede ser usado en una expresion."));
+
 								else
 								{
-									/* ESTA BIEN ESTO? createVariable toma algo de tipo PrimitiveType pero se la pasa rt que es de ReturnType */
+									/* ESTA BIEN ESTO? createVariable toma algo de tipo PrimitiveType pero se la pasa rt que es de ReturnType
 									Attribute *aux=createVariable("",rt); setVariableValue(aux,rt,$1); /*habria que ver como setear el
-									valor que retorna la llamada del metodo (que cada metodo tenga un VarValue donde almacenar el resultado)*/
+									valor que retorna la llamada del metodo (que cada metodo tenga un VarValue donde almacenar el resultado)
 									$$ = aux;
-								}
-								}
+								}*/
+							}
 			  
               |    EXTERNINVK '(' STRING ',' typevoid ')'  {if (mType != RetVoid) 
 															{	Attribute *aux=createVariable("",mType); }
@@ -209,8 +214,8 @@ method_call   :	   ID '(' ')'   {$$ = getMethodAttribute(&symbolTable, $1, 0);}
               |    EXTERNINVK '(' STRING ',' typevoid ',' externinvk_arg ')'   {Attribute *at; $$ = at;}
               ;
 
-expression_aux:    expression {cantParams++; correctParamBC(&symbolTable,$1,lastCalledMethod,cantParams);}
-			  |    expression {cantParams++; correctParamIC(&symbolTable,$1,lastCalledMethod,cantParams);} ',' expression_aux 
+expression_aux:    expression {cantParams++; correctParamBC(errorQ, &symbolTable,$1,lastCalledMethod,cantParams);}
+			  |    expression {cantParams++; correctParamIC(errorQ, &symbolTable,$1,lastCalledMethod,cantParams);} ',' expression_aux 
 
 			  ;
               
@@ -265,8 +270,8 @@ factor        :    primary     {$$ = $1;}
 primary       :    INTEGER			{Attribute *aux = createVariable("", Int); setVariableValue(aux,Int,$1); $$=aux;}
               |    FLOAT            {Attribute *aux = createVariable("", Float); setVariableValue(aux,Float,$1); $$=aux;}
               |    BOOLEAN          {Attribute *aux = createVariable("", Bool); setVariableValue(aux,Bool,$1); $$=aux;}
-              |    ID				{$$ = getVariableAttribute(&symbolTable, $1);}								/* ----PREGUNTAR--------- */
-              |    ID '[' term ']'  {$$ = getArrayAttribute(&symbolTable, $1, (*$3).decl.variable.value.intVal);/* aca deberiamos verificar que $3 es de tipo int en lugar de suponerlo?*/} 
+              |    ID				{$$ = getVariableAttribute(errorQ, &symbolTable, $1);}								/* ----PREGUNTAR--------- */
+              |    ID '[' term ']'  {$$ = getArrayAttribute(errorQ, &symbolTable, $1, (*$3).decl.variable.value.intVal);/* aca deberiamos verificar que $3 es de tipo int en lugar de suponerlo?*/} 
               |    '(' expression ')'  {$$ = $2;}
               |    method_call         {$$ = $1;}
               ;

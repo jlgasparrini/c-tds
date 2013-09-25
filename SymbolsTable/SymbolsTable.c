@@ -3,6 +3,9 @@
 #include <string.h>
 #include "SymbolsTable.h"
 
+extern lineNumb;
+extern columnNumb;
+
 /* Initializes the SymbolsTable */
 void initializeSymbolsTable(SymbolsTable *aSymbolsTable)
 {
@@ -12,7 +15,7 @@ void initializeSymbolsTable(SymbolsTable *aSymbolsTable)
 }
 
 /* Insert a element in the current level of the SymbolsTable. */
-void pushElement(SymbolsTable *aSymbolsTable, Attribute *at)
+void pushElement(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attribute *at)
 {
 	if ((*aSymbolsTable).currentLevel > 0)
 	{  
@@ -25,7 +28,7 @@ void pushElement(SymbolsTable *aSymbolsTable, Attribute *at)
             idAux = (*at).decl.array.id;
 
         if (searchIdInLevel(aSymbolsTable, idAux) != NULL) 
-			printf("SymbolsTable.c: pushElement Warning: dicho identificador ya se encuentra en uso.\n");
+			insertError(eq, toString("El identificador ", idAux, " ya se encuentra en uso."));
 		else
 			insert((*(*aSymbolsTable).top).list, at); 
 	}
