@@ -36,9 +36,6 @@ Attribute* search(LinkedList *l, char *id);
 /* Return Attribute* of the last defined method in the list. */
 Attribute* getLastDefinedMethod(LinkedList *l);
 
-/* Delete an element of the list. */
-void delete(LinkedList *l, char *id);
- 
 /* Delete all the elements of the list. */
 void deleteAll(LinkedList *l);
 

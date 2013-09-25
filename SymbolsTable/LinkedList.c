@@ -73,55 +73,6 @@ Attribute* getLastDefinedMethod(LinkedList *l)
     return NULL;
 }
 
-/* Delete an element of the list. */
-void delete(LinkedList *l, char *id)
-{
-    Attribute *auxAttr = search(l, id);
-    if ((*l).size > 0 && auxAttr != NULL)
-    {
-        Node *aux = (*l).first;
-        Node *previous = aux;
-        int i = 0;
-        int flag = 0; //True
-        while (i < (*l).size && flag == 0)
-        {
-            if ((*(*aux).data).type == Variable)
-            {
-                if (strcmp(id, (*(*aux).data).decl.variable.id) == 0)
-                    flag = 1;
-            }
-            if ((*(*aux).data).type == Method)
-           {
-                if (strcmp(id, (*(*aux).data).decl.method.id) == 0)
-                    flag = 1;
-            }
-            if ((*(*aux).data).type == Array)
-            {
-                if (strcmp(id, (*(*aux).data).decl.array.id) == 0)
-                    flag = 1;
-            }
-            if (flag != 1) //Item not found.
-            {
-                previous=aux;
-                aux = (*aux).next;
-                i++;
-            }
-            else //Item found.
-            {
-                (*previous).next = (*aux).next;
-                (*l).size--;
-                if (i == 0)
-                {
-                    aux = (*l).first;
-                    (*l).first = (*(*l).first).next;    
-                }
-               //free((*aux).data);
-                free(aux);
-            }
-        }
-    }
-}
-
 /* Delete all the elements of the list. */
 void deleteAll(LinkedList *l)
 {
