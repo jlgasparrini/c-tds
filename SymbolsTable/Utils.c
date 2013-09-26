@@ -5,8 +5,6 @@
 #include "SymbolsTable.h"
 #include "Utils.h"
 #include "../ErrorsQueue/ErrorsQueue.h"
-extern lineNumb;
-extern columnNumb;
 
 /* Returns an attribute of ID "id" and Variable structure. Otherwise returns NULL */
 Attribute* getVariableAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id)
@@ -23,19 +21,24 @@ Attribute* getVariableAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, ch
 	return attr;
 }
 
-/* Returns an attribute in the position "pos" of the ID "id" and Array structure. Otherwise returns NULL */
-Attribute* getArrayAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id, int pos)
+/* Returns an attribute in the position "(*aux).decl.variable.value.intVal" of the ID "id" and Array structure. Otherwise returns NULL */
+Attribute* getArrayAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id, Attribute *aux)
 {
+	if((*aux).decl.variable.type != Int)
+	{
+		insertError(eq, toString("El indice con el que se trata de acceder a \"", id, "\" no corresponde a una posicion de arreglo."));
+		return NULL;
+	}
+
 	Attribute *attr = searchIdInSymbolsTable(aSymbolsTable, id);
 	if(attr == NULL) 
 		insertError(eq, toString("El identificador \"", id, "\" no esta definido."));
     else
 		if((*attr).type != Array)
-		{
 			insertError(eq, toString("El identificador \"", id, "\" no corresponde a un arreglo."));
-			return NULL;
-		}
-	return attr; /* ACA DEBERIA RETORNARSE LA VARIABLE QUE SE ENCUENTRA EN EL ARREGLO EN LA POSICION "pos"-------------------------------------- */
+		else
+			return createVariable("",(*attr).decl.array.type); /* ACA DEBERIA RETORNARSE LA VARIABLE QUE SE ENCUENTRA EN EL ARREGLO EN LA POSICION "pos"-------------------------------------- */
+	return NULL;
 }
 
 /* verificar si este metodo no tendria que retornar el valor de retorno del metodo!! ---------------------------------------------------------*/
@@ -51,6 +54,7 @@ Attribute* getMethodAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char
         else
         { 
             if ((*attr).decl.method.paramSize != paramSize) /* if the method doesn't have the same amount of parameters */
+			{
 		 		if ((*attr).decl.method.paramSize == 0)
 					insertError(eq, toString("La llamada al metodo \"", id, "\" no debe contener parametros."));
 		 		else
@@ -65,6 +69,9 @@ Attribute* getMethodAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char
 			//		free(number);
 				//	free(msg);
 				}
+			}
+			else
+				return createVariable("",(*attr).decl.method.type);
         }
     }
 }

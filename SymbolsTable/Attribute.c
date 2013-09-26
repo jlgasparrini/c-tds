@@ -1,5 +1,5 @@
 /*
-	Implementation of STManagement.h
+	Implementation of Attribute.h
  */
 
 #include <stdio.h>
@@ -47,6 +47,7 @@ Attribute* createParameter(Attribute *attr, unsigned char pos, char *id, Primiti
     {  
 		Attribute *aux = createVariable(id, type);
 		addParameter(&(*attr).decl.method, &(*aux).decl.variable, pos);            
+//		(*attr).decl.method.paramSize = pos;
 		return aux;
     } 
 	printf("Ya se han alcanzado la cantidad maxima de parametros del metodo \"%s\".", (*attr).decl.method.id);
