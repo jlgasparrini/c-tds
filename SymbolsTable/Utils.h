@@ -24,6 +24,22 @@ unsigned char correctParamBC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attri
 	Returns 1 otherwise */
 unsigned char correctParamIC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attribute *attr, char* lastCalledMethod, unsigned char paramSize);
 
+/* Insert an error message if the attribute "attr" isn't a variable of type "type" */
+void controlVariableType(ErrorsQueue *eq, Attribute *attr, PrimitiveType type);
+
+/* Insert an error message if attributes "attr1" and "attr2" aren't of the same type and both variables or arrays */
+void controlAssignation(ErrorsQueue *eq, Attribute *attr1, char* op, Attribute *attr2);
+
+/* Insert an error message if the "lastUsedMethod" haven't got "void" return type */
+void checkReturn(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* lastUsedMethod);
+
+/* Insert an error message if the "lastUsedMethod" doesn't return "void" or if it has a different return type that the definition */
+void checkReturnExpression(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* lastUsedMethod, Attribute *attr);
+
+/* Returns the array at the position specified by attr.decl.variable.value.intValue if attr has "int" type
+	Otherwise insert an error message because the attribute haven't got "int" type and create a default variable of "int" type */
+Attribute* checkArrayPos(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id, Attribute* attr);
+
 /* -------------------------------Methods used to form expressions------------------------------ */
 
 /* Return an attribute with the or operation applied to oper1 and oper2. */
