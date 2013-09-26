@@ -69,6 +69,9 @@ Attribute* createParameter(Attribute *attr, unsigned char pos, char* id, Primiti
 /* Adds the "var" variable in the position "pos" of the method "method" */
 void addParameter(StMethod *method, StVariable *var, unsigned char pos);
 
+/* Sets the amount of parameters that will have the method attr */
+void setAmountOfParameters(Attribute *attr, unsigned char amount);
+
 /* Sets the value of the variable that contains "attr" with the respective "value" */
 void setVariableValue(Attribute *attr, PrimitiveType type, char *value);
 #endif

@@ -68,24 +68,20 @@ void popLevel(SymbolsTable *aSymbolsTable)
 /* Searches for the id in all levels of the SymbolsTable. 
  * Return Attribute* iff the id was't found. NULL if the id wasn't found.
  */
-Attribute* searchIdInSymbolsTable(SymbolsTable *aSymbolsTable, char *id) 
+Attribute* searchIdInSymbolsTable(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char *id) 
 {
-	int found = 0; // "found == 0" equals to "not founded" 
 	int i;
 	SymbolsTableNode *auxTop = (*aSymbolsTable).top;
     Attribute *auxAttr;
-	for (i = (*aSymbolsTable).currentLevel; i > 0 && found == 0; i--)
+	for (i = (*aSymbolsTable).currentLevel; i > 0; i--)
 	{
         auxAttr = search(((*auxTop).list), id);
 		if (auxAttr != NULL)
-			found = 1;
-		else
-			auxTop = (*auxTop).next;
+			return auxAttr;	
+		auxTop = (*auxTop).next;
 	}
-    if (found == 1)
-        return auxAttr;
-    else
-        return NULL;
+	insertError(eq, toString("El identificador \"", id, "\" no esta definido."));
+    return NULL;
 }
 
 /* Searches for the id in the current level of the SymbolsTable.  

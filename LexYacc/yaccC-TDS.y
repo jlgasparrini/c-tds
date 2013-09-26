@@ -11,20 +11,19 @@
 extern FILE *yyin;
 ErrorsQueue *errorQ;						/* Errors Queue definition */
 SymbolsTable symbolTable;					/* <----Symbols Table Definition----- */
-unsigned char cantParams = 0;				/* Amount of parameters that will have a method */
+unsigned char cantParams = 0;				/* Amount of parameters that a method will have */
 PrimitiveType vaType;						/* Type of the variable or array */
 ReturnType mType;							/* Return type of the method */
-char *lastCalledMethod, *lastUsedMethod;	/* Name of the last defined method (lastCalledMethod) and the last used method (lastUsedMethod) */
-											/* We don't use lastDefinedMethod because it's a method already */
+char *lastDefMethod, *lastCalledMethod;		/* Name of the last defined method (lastDefMethod) and the last called method (lastCalledMethod) */
 int yydebug = 1;
 
 int yyerror (char *str)
 {
-        if (strcmp(str, "syntax error") == 0)
-			insertError(errorQ,toString("Error GRAMATICO.","",""));
-        else
-			insertError(errorQ,toString("Error DESCONOCIDO: ",str,"."));
 		printErrorList(errorQ);
+        if (strcmp(str, "syntax error") == 0)
+			printf ("%s",toString("Error GRAMATICO.","",""));
+        else
+			printf ("%s",toString("Error DESCONOCIDO: \"",str,"\"."));
         return 0;
 }
  
@@ -109,20 +108,23 @@ type          :		INTW		{vaType = Int; mType = RetInt;}
               |		BOOLEANW	{vaType = Bool; mType = RetBool;}
               ;
 
-method_decl   :     type ID {lastCalledMethod = $2; pushElement(errorQ,&symbolTable,createMethod($2,mType,0)); pushLevel(&symbolTable);} param block {popLevel(&symbolTable);}
-              |		method_decl type ID {lastCalledMethod = $3; pushElement(errorQ,&symbolTable,createMethod($3,mType,0)); pushLevel(&symbolTable);} param block {popLevel(&symbolTable);}
-              |     VOID ID {lastCalledMethod = $2; pushElement(errorQ,&symbolTable,createMethod($2,RetVoid,0)); pushLevel(&symbolTable);} param block {popLevel(&symbolTable);}
-              |	    method_decl VOID ID {lastCalledMethod = $3; pushElement(errorQ,&symbolTable,createMethod($3,RetVoid,0)); pushLevel(&symbolTable);} param block {popLevel(&symbolTable);}
+method_decl   :     type ID {lastDefMethod=$2; pushElement(errorQ,&symbolTable,createMethod($2,mType,0)); pushLevel(&symbolTable);} param block {popLevel(&symbolTable);}
+              |		method_decl type ID {lastDefMethod=$3; pushElement(errorQ,&symbolTable,createMethod($3,mType,0)); pushLevel(&symbolTable);} param block {popLevel(&symbolTable);}
+              |     VOID ID {lastDefMethod=$2; pushElement(errorQ,&symbolTable,createMethod($2,RetVoid,0)); pushLevel(&symbolTable);} param block {popLevel(&symbolTable);}
+              |	    method_decl VOID ID {lastDefMethod=$3; pushElement(errorQ,&symbolTable,createMethod($3,RetVoid,0)); pushLevel(&symbolTable);} param block {popLevel(&symbolTable);}
               ;
 
-param		  :    '(' ')' {cantParams = 0;}
-			  |    '(' {cantParams = 0;} parameters ')'
-			  ;
+param		  :    '(' ')' {cantParams = 0; setAmountOfParameters(searchIdInSymbolsTable(errorQ,&symbolTable,lastDefMethod),0);}
+			  |    '(' {cantParams = 0;} parameters {setAmountOfParameters(searchIdInSymbolsTable(errorQ,&symbolTable,lastDefMethod),cantParams);} ')'
+			  ;    /* esta bien hecho esto asi? no se cuentan primero todos los parametros dentro del no terminal "parameters" 
+						y una vez que matchea con esta regla "param", setea cantParams en 0 y luego reduce a "param" ----------------------
+						-------------------------------------------------------------------------------------------------------------------
+						------------------------------------------------------------------------------------------------------------------*/
               
 parameters    :		type ID {Attribute *aux = createParameter(lastDefinedMethod(&symbolTable),cantParams,$2,vaType);
-								if (aux != NULL) {pushElement(errorQ, &symbolTable,aux); cantParams++;}}
+								if (aux != NULL) {pushElement(errorQ,&symbolTable,aux); cantParams++;}}
 			  |		type ID ',' {Attribute *aux = createParameter(lastDefinedMethod(&symbolTable),cantParams,$2,vaType);
-								if (aux != NULL) {pushElement(errorQ, &symbolTable,aux); cantParams++;}} parameters 
+								if (aux != NULL) {pushElement(errorQ,&symbolTable,aux); cantParams++;}} parameters 
 			  ;
 
 block         :    '{' '}'
@@ -151,8 +153,8 @@ statement     :    conditional
 action        :
               |    BREAK 
               |    CONTINUE 
-			  |	   RETURN {checkReturn(errorQ,&symbolTable,lastCalledMethod);}
-			  |	   RETURN expression {checkReturnExpression(errorQ,&symbolTable,lastCalledMethod,$2);}
+			  |	   RETURN {checkReturn(errorQ,&symbolTable,lastDefMethod);}
+			  |	   RETURN expression {checkReturnExpression(errorQ,&symbolTable,lastDefMethod,$2);}
               |    asignation 
               |    method_call                        
               ;
@@ -187,14 +189,14 @@ location      :    ID {$$ = getVariableAttribute(errorQ, &symbolTable, $1);}
               |    ID '[' term ']' {$$ = checkArrayPos(errorQ,&symbolTable,$1,$3);}
               ;
 
-method_call   :	   ID '(' ')' {cantParams=0; lastUsedMethod = $1; $$ = getMethodAttribute(errorQ, &symbolTable, $1, cantParams);}
-              |    ID '(' {cantParams=0; lastUsedMethod = $1;} expression_aux ')' {$$ = getMethodAttribute(errorQ,&symbolTable,$1,cantParams);}
-              |    EXTERNINVK '(' STRING ',' typevoid ')' {if (mType != RetVoid) {Attribute *aux=createVariable("",mType); $$ = aux;}}
-              |    EXTERNINVK '(' STRING ',' typevoid ',' externinvk_arg ')' {if (mType != RetVoid) {Attribute *aux=createVariable("",mType); $$=aux;}}
+method_call   :	   ID '(' ')' {cantParams=0; lastCalledMethod = $1; $$ = getMethodAttribute(errorQ, &symbolTable, $1, cantParams);}
+              |    ID '(' {cantParams=0; lastCalledMethod = $1;} expression_aux ')' {$$ = getMethodAttribute(errorQ,&symbolTable,$1,cantParams);}
+              |    EXTERNINVK '(' STRING ',' typevoid ')' {if (mType != RetVoid) $$=createVariable("",mType);}
+              |    EXTERNINVK '(' STRING ',' typevoid ',' externinvk_arg ')' {if (mType != RetVoid) $$=createVariable("",mType);}
               ;
 
-expression_aux:    expression {cantParams++; correctParamBC(errorQ,&symbolTable,$1,lastUsedMethod,cantParams);}
-			  |    expression {cantParams++; correctParamIC(errorQ,&symbolTable,$1,lastUsedMethod,cantParams);} ',' expression_aux 
+expression_aux:    expression {cantParams++; correctParamBC(errorQ,&symbolTable,$1,lastCalledMethod,cantParams);}
+			  |    expression {cantParams++; correctParamIC(errorQ,&symbolTable,$1,lastCalledMethod,cantParams);} ',' expression_aux 
 			  ;
               
 typevoid      :    type                            
@@ -204,10 +206,9 @@ typevoid      :    type
 externinvk_arg:    arg                           
               |    externinvk_arg ',' arg       
               ;
-							/*se verifica que todas las expresiones de extern_invk_arg que se usen en externinvk tengan 
-							el mismo tipo typeVoid ------ HAY QUE HACER ESTO O PUEDEN SER DE CUALQUIER TIPO?*/					
-							/* en caso de que puedan ser de cualquier tipo, eliminar la linea { } de abajo! */
-arg           :    expression {if ((*$1).decl.variable.type != mType) insertError(errorQ,toString("Error en \"externinvk\". La expresion no retorna algo de tipo \"",getType(mType),"\"."));}
+							/* Se verifica que todas las expresiones de extern_invk_arg que se usen en externinvk tengan 
+							el mismo tipo typeVoid. En caso de querer aplicar esta restriccion, eliminar el comentario de la siguiente linea */
+arg           :    expression /*{if ((*$1).decl.variable.type != mType) insertError(errorQ,toString("Error en \"externinvk\". La expresion no retorna algo de tipo \"",getType(mType),"\"."));}*/
               |    STRING                     
               ;
               
@@ -253,8 +254,10 @@ primary       :    INTEGER			{Attribute *aux = createVariable("", Int); setVaria
               |    ID				{$$ = getVariableAttribute(errorQ,&symbolTable,$1);}				
               |    ID '[' term ']'  {$$ = checkArrayPos(errorQ,&symbolTable,$1,$3);} 
               |    '(' expression ')'  {$$ = $2;}
-              |    method_call         {if (methodReturnType(errorQ,&symbolTable,lastUsedMethod) == RetVoid)
-											insertError(errorQ,toString("El metodo \"",lastUsedMethod,"\" no puede ser usado en una expresion ya que retorna void."));
+              |    method_call         {if (methodReturnType(errorQ,&symbolTable,lastCalledMethod) == RetVoid)
+										{	insertError(errorQ,toString("El metodo \"",lastCalledMethod,"\" no puede ser usado en una expresion ya que retorna void."));
+											$$ = createVariable("",Int); /* creamos variables int por defecto ------------------------------- */
+										}
 										else $$ = $1;}
               ;
 

@@ -90,6 +90,44 @@ void deleteAll(LinkedList *l)
     (*l).size = 0;
 }
 
+/* Prints the variable info that contains attr */
+void showVariableAttribute(Attribute *attr)
+{
+	printf(" type:.decl.variable:\n");
+    if ((*attr).decl.variable.type == Int)
+        printf("    int %s = %d;\n", (*attr).decl.variable.id, (*attr).decl.variable.value.intVal);
+    if ((*attr).decl.variable.type == Float)
+        printf("    float %s = %f;\n", (*attr).decl.variable.id, (*attr).decl.variable.value.floatVal);
+    if ((*attr).decl.variable.type == Bool)
+        printf("    boolean %s = %d;\n", (*attr).decl.variable.id, (*attr).decl.variable.value.boolVal);
+}
+
+/* Prints the method info that contains attr */
+void showMethodAttribute(Attribute *attr)
+{
+	printf(" type:.decl.method\n");
+	if ((*attr).decl.method.type == RetInt)
+	    printf("    int %s ();\n", (*attr).decl.method.id);
+	if ((*attr).decl.method.type == RetFloat)
+	    printf("    float %s ();\n", (*attr).decl.method.id);
+	if ((*attr).decl.method.type == RetBool)
+	    printf("    boolean %s ();\n", (*attr).decl.method.id);
+	if ((*attr).decl.method.type == RetVoid)
+	    printf("    void %s ();\n", (*attr).decl.method.id);
+}
+
+/* Prints the array info that contains attr */
+void showArrayAttribute(Attribute *attr)
+{
+	printf("    type:.decl.array\n");
+	if ((*attr).decl.array.type == Int)
+	    printf("    int %s [%d];\n", (*attr).decl.array.id, (*attr).decl.array.length);
+	if ((*attr).decl.variable.type == Float)
+	    printf("    float %s [%d];\n", (*attr).decl.array.id, (*attr).decl.array.length);
+	if ((*attr).decl.variable.type == Bool)
+	    printf("    boolean %s [%d];\n", (*attr).decl.array.id, (*attr).decl.array.length);
+}
+
 /* Print in display the elements of the list. */
 void print_list(LinkedList *l)
 {
@@ -100,45 +138,13 @@ void print_list(LinkedList *l)
         printf("      empty...\n");
     while (i < (*l).size) 
     {
-        if ((*(*aux).data).type != Variable && (*(*aux).data).type != Method && (*(*aux).data).type != Array)
-            printf("\n\nESTO NO DEBERIA DE PASAR JAMAS!!!!!!!!!\n\n");
         if ((*(*aux).data).type == Variable)
-        {
-            printf(" .decl.variable:\n");
-            if ((*(*aux).data).decl.variable.type == Int)
-                printf("    int %s = %d;\n\n", (*(*aux).data).decl.variable.id, (*(*aux).data).decl.variable.value.intVal);
-            if ((*(*aux).data).decl.variable.type == Float)
-                printf("    float %s = %f;\n\n", (*(*aux).data).decl.variable.id, (*(*aux).data).decl.variable.value.floatVal);
-            if ((*(*aux).data).decl.variable.type == Bool)
-                printf("    boolean %s = %d;\n\n", (*(*aux).data).decl.variable.id, (*(*aux).data).decl.variable.value.boolVal);
-        }
-       
+			showVariableAttribute((*aux).data);
         if ((*(*aux).data).type == Method)
-        {
-            printf(" type:.decl.method\n");
-            printf(" id: %s\n", (*(*aux).data).decl.method.id);
-            if ((*(*aux).data).decl.method.type == RetInt)
-                printf("    int %s ();\n\n", (*(*aux).data).decl.method.id);
-            if ((*(*aux).data).decl.method.type == RetFloat)
-                printf("    float %s ();\n\n", (*(*aux).data).decl.method.id);
-            if ((*(*aux).data).decl.method.type == RetBool)
-                printf("    boolean %s ();\n\n", (*(*aux).data).decl.method.id);
-            if ((*(*aux).data).decl.method.type == RetVoid)
-                printf("    void %s ();\n\n", (*(*aux).data).decl.method.id);
-        }
-
+			showMethodAttribute((*aux).data);
         if ((*(*aux).data).type == Array)
-        {
-            printf("    type:.decl.array\n");
-            printf("    id: %s\n", (*(*aux).data).decl.array.id);
-            if ((*(*aux).data).decl.array.type == Int)
-                printf("    int %s [%d];\n\n", (*(*aux).data).decl.array.id, (*(*aux).data).decl.array.length);
-            if ((*(*aux).data).decl.variable.type == Float)
-                printf("    float %s [%d];\n\n", (*(*aux).data).decl.array.id, (*(*aux).data).decl.array.length);
-            if ((*(*aux).data).decl.variable.type == Bool)
-                printf("    boolean %s [%d];\n\n", (*(*aux).data).decl.array.id, (*(*aux).data).decl.array.length);
-        }
-        aux = (*aux).next;
+			showArrayAttribute((*aux).data);
+		aux = (*aux).next;
         i++;
     }
 }

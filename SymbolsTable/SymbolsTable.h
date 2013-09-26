@@ -40,7 +40,7 @@ void pushLevel(SymbolsTable *aSymbolsTable);
 void popLevel(SymbolsTable *aSymbolsTable);
 
 /* Searches for the element in all levels of the SymbolsTable. */
-Attribute* searchIdInSymbolsTable(SymbolsTable *aSymbolsTable, char *id);
+Attribute* searchIdInSymbolsTable(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char *id);
 
 /* Searches for the id in the current level of the SymbolsTable. */ 
 Attribute* searchIdInLevel(SymbolsTable *aSymbolsTable, char *id); 

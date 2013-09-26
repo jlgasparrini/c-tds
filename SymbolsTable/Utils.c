@@ -9,10 +9,8 @@
 /* Returns an attribute of ID "id" and Variable structure. Otherwise returns NULL */
 Attribute* getVariableAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id)
 {
-	Attribute *attr = searchIdInSymbolsTable(aSymbolsTable, id);
-	if(attr == NULL) 
-		insertError(eq, toString("El identificador \"", id, "\" no esta definido."));
-    else
+	Attribute *attr = searchIdInSymbolsTable(eq, aSymbolsTable, id);
+	if(attr != NULL) 
 		if((*attr).type != Variable)
 		{
 			insertError(eq, toString("El identificador \"", id, "\" no corresponde a una variable."));
@@ -29,11 +27,8 @@ Attribute* getArrayAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char*
 		insertError(eq, toString("El indice con el que se trata de acceder a \"", id, "\" no corresponde a una posicion de arreglo."));
 		return NULL;
 	}
-
-	Attribute *attr = searchIdInSymbolsTable(aSymbolsTable, id);
-	if(attr == NULL) 
-		insertError(eq, toString("El identificador \"", id, "\" no esta definido."));
-    else
+	Attribute *attr = searchIdInSymbolsTable(eq, aSymbolsTable, id);
+	if(attr != NULL) 
 		if((*attr).type != Array)
 			insertError(eq, toString("El identificador \"", id, "\" no corresponde a un arreglo."));
 		else
@@ -45,10 +40,8 @@ Attribute* getArrayAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char*
 /* Returns the respective variable attribute that the method return. "paramSize" is for checking if the amount of parameters is right */
 Attribute* getMethodAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id, unsigned char paramSize)
 { 
-	Attribute *attr = searchIdInSymbolsTable(aSymbolsTable, id);
-    if(attr == NULL) 
-		insertError(eq,toString("El identificador \"", id, "\" no esta definido."));
-    else
+	Attribute *attr = searchIdInSymbolsTable(eq, aSymbolsTable, id);
+    if(attr != NULL) 
     {
         if((*attr).type != Method)
 			insertError(eq,toString("El identificador \"", id,"\" no corresponde a un metodo."));
@@ -75,6 +68,7 @@ Attribute* getMethodAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char
 				return createVariable("",(*attr).decl.method.type);
         }
     }
+	return NULL;
 }
 
 /* creates an attribute and assign it as a parameter of "method" containing the information included.
@@ -114,14 +108,13 @@ unsigned char correctParameterType(StVariable *var, Attribute *attr, unsigned ch
 /* Returns the ReturnType of the method with id "id" */
 ReturnType methodReturnType(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id)
 {
-	Attribute *attr = searchIdInSymbolsTable(aSymbolsTable, id);
-	if(attr == NULL) 
-		insertError(eq, toString("El identificador \"", id, "\" no esta definido."));
-    else
+	Attribute *attr = searchIdInSymbolsTable(eq, aSymbolsTable, id);
+	if(attr != NULL) 
         if((*attr).type != Method)
 			insertError(eq, toString("El identificador \"", id, "\" no corresponde a un metodo."));
 		else
 			return (*attr).decl.method.type;
+	return RetInt; /* retorno por defecto el tipo int */
 }
 
 /* Returns the string corresponding to "type" */
@@ -141,13 +134,12 @@ char* getType(PrimitiveType type)
 	Returns 1 otherwise */
 unsigned char correctParamBC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attribute *attr, char* lastCalledMethod, unsigned char paramSize)
 {
-	Attribute *aux = searchIdInSymbolsTable(aSymbolsTable, lastCalledMethod);
-	if(aux == NULL) 
-		insertError(eq, toString("El identificador \"", lastCalledMethod, "\" no esta definido."));
-    else
+	Attribute *aux = searchIdInSymbolsTable(eq, aSymbolsTable, lastCalledMethod);
+	if(aux != NULL) 
         if((*aux).type != Method)
 			insertError(eq, toString("El identificador \"", lastCalledMethod, "\" no corresponde a un metodo."));
 		else
+		{
 			if (paramSize == (*aux).decl.method.paramSize) 
 			{
 				if (correctParameterType(&(*attr).decl.variable, aux, paramSize) == 0) 
@@ -169,6 +161,7 @@ unsigned char correctParamBC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attri
 			}
 			else
 				insertError(eq,toString("Error en llamada al metodo \"", lastCalledMethod, "\". No se tiene la misma cantidad de parametros que en su declaracion."));  
+		}
 	return 1;
 }
 
@@ -177,10 +170,8 @@ unsigned char correctParamBC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attri
 	Returns 1 otherwise */
 unsigned char correctParamIC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attribute *attr, char* lastCalledMethod, unsigned char paramSize)
 {
-	Attribute *aux = searchIdInSymbolsTable(aSymbolsTable, lastCalledMethod);
-	if(aux == NULL) 
-		insertError(eq, toString("El identificador \"", lastCalledMethod, "\" no esta definido."));
-    else
+	Attribute *aux = searchIdInSymbolsTable(eq, aSymbolsTable, lastCalledMethod);
+	if(aux != NULL) 
         if((*aux).type != Method)
 			insertError(eq, toString("El identificador \"", lastCalledMethod, "\" no corresponde a un metodo."));
 		else
@@ -273,7 +264,7 @@ Attribute* checkArrayPos(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id,
 	else
 	{
 		insertError(eq, toString("La expresion para acceder a la posicion del arreglo \"", id, "\" debe ser de tipo int.")); 
-		Attribute *aux = searchIdInSymbolsTable(aSymbolsTable,id); /* ver si se crea de forma correcta!!!*/
+		Attribute *aux = searchIdInSymbolsTable(eq, aSymbolsTable,id); /* ver si se crea de forma correcta!!!*/
 		return createVariable("",(*aux).decl.array.type);
 	}
 }

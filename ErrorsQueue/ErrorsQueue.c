@@ -104,10 +104,13 @@ void printErrorList(ErrorsQueue *eq)
 	{
 		ErrorNode *aux = (*eq).firstIN; 
    	 	int i = 0;
-   	 	printf("Errores semanticos al compilar:\n\n");
+		if ((*eq).size == 1)
+			printf("-- %d error semantico al compilar:\n",(*eq).size);
+		else
+			printf("-- %d errores semanticos al compilar:\n",(*eq).size);
    	 	while (i < (*eq).size)
    	 	{
-   	 	    printf("%s\n", (*aux).error);
+   	 	    printf("%d- %s\n", i+1, (*aux).error);
    	 		aux = (*aux).next;
    	 	    i++;
    	 	}
