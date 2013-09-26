@@ -272,20 +272,28 @@ Attribute* checkArrayPos(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id,
 /* ---------------------------------------expression and conjunction no-terminal---------------------------------------------- */
 
 /* Return an attribute with the or operation applied to oper1 and oper2. */
-Attribute* returnOr(Attribute *oper1, Attribute *oper2)
+Attribute* returnOr(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
     if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && ((*oper2).decl.variable.type == Bool))
         return createVariable("", (*oper1).decl.variable.type);
-    return NULL;
+    else
+    {
+		insertError(eq, toString("La expresion logica \"", "OR", "\" no tiene operadores de tipo booleano.")); 
+        return createVariable("", Bool);
+    }
 }
 
 
 /* Return an attribute with the and operation applied to oper1 and oper2. */
-Attribute* returnAnd(Attribute *oper1, Attribute *oper2)
+Attribute* returnAnd(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
     if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && ((*oper2).decl.variable.type == Bool))
         return createVariable("", (*oper1).decl.variable.type);
-    return NULL;
+    else
+    {
+		insertError(eq, toString("La expresion logica \"", "AND", "\" no tiene operadores de tipo booleano.")); 
+        return createVariable("", Bool);
+    }
 
 }
 /* ---------------------------------------expression and conjunction no-terminal ended-------------------------------------- */
@@ -308,114 +316,114 @@ Attribute* returnEqual(Attribute *oper1, Attribute *oper2)
 /* ---------------------------------------relation no-terminal ------------------------------------------------ */
 
 /* Return an attribute with the minor comparison operation applied to oper1 and oper2. */
-Attribute* returnMinorComparison(Attribute *oper1, Attribute *oper2)
+Attribute* returnMinorComparison(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
-    if ((*oper1).decl.variable.type == Bool && (*oper2).decl.variable.type == Bool)
-        return createVariable("", Bool); /* QUE HACER EN ESTE CASO? FALSE < TRUE == TRUE?? O DIRECTAMENTE MOSTRAR COMO SI ES UN ERROR? 
-                                            EN CASO DE QUE SE MUESTRE COMO ERROR, ESTE IF DEBERIA ELIMINARSE --------------------------------*/
-
-    if ((*oper1).decl.variable.type != Bool && (*oper2).decl.variable.type != Bool)
+    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type)
+        return createVariable("", (*oper1).decl.variable.type); 
+    else
+    {
+		insertError(eq, toString("La operacion \"", "<", "\" no tiene operadores correctos.")); 
         return createVariable("", Bool);
-
-    return NULL;
+    }
 }
 
 /* Return an attribute with the major comparison operation applied to oper1 and oper2. */
-Attribute* returnMajorComparison(Attribute *oper1, Attribute *oper2)
+Attribute* returnMajorComparison(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
-    if ((*oper1).decl.variable.type == Bool && (*oper2).decl.variable.type == Bool)
-        return createVariable("", Bool); /* QUE HACER EN ESTE CASO? FALSE > TRUE == FALSE?? O DIRECTAMENTE MOSTRAR COMO SI ES UN ERROR? 
-                                            EN CASO DE QUE SE MUESTRE COMO ERROR, ESTE IF DEBERIA ELIMINARSE --------------------------------*/
-
-    if ((*oper1).decl.variable.type != Bool && (*oper2).decl.variable.type != Bool)
+    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type)
+        return createVariable("", (*oper1).decl.variable.type); 
+    else
+    {
+		insertError(eq, toString("La operacion \"", ">", "\" no tiene operadores correctos.")); 
         return createVariable("", Bool);
-
-    return NULL;
+    }
 }
 
 /* Return an attribute with the greater or equal comparison operation applied to oper1 and oper2. */
-Attribute* returnGEqualComparison(Attribute *oper1, Attribute *oper2)
+Attribute* returnGEqualComparison(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
-    if ((*oper1).decl.variable.type == Bool && (*oper2).decl.variable.type == Bool)
-        return createVariable("", Bool); /* QUE HACER EN ESTE CASO? FALSE >= TRUE == FALSE?? O DIRECTAMENTE MOSTRAR COMO SI ES UN ERROR? 
-                                            EN CASO DE QUE SE MUESTRE COMO ERROR, ESTE IF DEBERIA ELIMINARSE --------------------------------*/
-
-    if ((*oper1).decl.variable.type != Bool && (*oper2).decl.variable.type != Bool)
-        return createVariable("", Bool); /*  EL CASO 3 >= 3.2 */
-
-    return NULL;
+    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type)
+        return createVariable("", (*oper1).decl.variable.type); 
+    else
+    {
+		insertError(eq, toString("La operacion \"", ">=", "\" no tiene operadores correctos.")); 
+        return createVariable("", Bool);
+    }
 }
 
 /* Return an attribute with the less or equal comparison operation applied to oper1 and oper2. */
-Attribute* returnLEqualComparison(Attribute *oper1, Attribute *oper2)
+Attribute* returnLEqualComparison(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
-    if ((*oper1).decl.variable.type == Bool && (*oper2).decl.variable.type == Bool)
-        return createVariable("", Bool); /* QUE HACER EN ESTE CASO? FALSE <= TRUE == TRUE?? O DIRECTAMENTE MOSTRAR COMO SI ES UN ERROR? 
-                                            EN CASO DE QUE SE MUESTRE COMO ERROR, ESTE IF DEBERIA ELIMINARSE --------------------------------*/
-
-    if ((*oper1).decl.variable.type != Bool && (*oper2).decl.variable.type != Bool)
+    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type)
+        return createVariable("", (*oper1).decl.variable.type); 
+    else
+    {
+		insertError(eq, toString("La operacion \"", "<=", "\" no tiene operadores correctos.")); 
         return createVariable("", Bool);
-
-    return NULL;
+    }
 }
 /* ---------------------------------------relation no-terminal ended---------------------------------------- */
 
 /* ---------------------------------------term no-terminal ------------------------------------------------ */
 
 /* Return an attribute with the add operation. */
-Attribute* returnAdd(Attribute *oper1, Attribute *oper2)
+Attribute* returnAdd(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
-    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && ((*oper2).decl.variable.type == Bool))
-        return NULL;
     if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && ((*oper2).decl.variable.type != Bool))
         return createVariable("", (*oper1).decl.variable.type);
-    if ((*oper1).decl.variable.type != (*oper2).decl.variable.type && ((*oper2).decl.variable.type != Bool))
+    else
+    {
+		insertError(eq, toString("La operacion \"", "+", "\" no tiene operadores correctos.")); 
         return createVariable("", Int);
-    return NULL;
+    }
 }
 
 /* Return an attribute with the sub operation. */
-Attribute* returnSub(Attribute *oper1, Attribute *oper2)
+Attribute* returnSub(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
-    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && ((*oper2).decl.variable.type == Bool))
-        return NULL;
     if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && ((*oper2).decl.variable.type != Bool))
         return createVariable("", (*oper1).decl.variable.type);
-    if ((*oper1).decl.variable.type != (*oper2).decl.variable.type && ((*oper2).decl.variable.type != Bool))
+    else
+    {
+		insertError(eq, toString("La operacion \"", "-", "\" no tiene operadores correctos.")); 
         return createVariable("", Int);
+    }
 }
 
 /* Return an attribute with the mod operation. */
-Attribute* returnMod(Attribute *oper1, Attribute *oper2)
+Attribute* returnMod(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
-    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && ((*oper2).decl.variable.type == Bool))
-        return NULL;
     if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && ((*oper2).decl.variable.type != Bool))
         return createVariable("", (*oper1).decl.variable.type);
-    if ((*oper1).decl.variable.type != (*oper2).decl.variable.type && ((*oper2).decl.variable.type != Bool))
+    else
+    {
+		insertError(eq, toString("La operacion \"", "%", "\" no tiene operadores correctos.")); 
         return createVariable("", Int);
+    }
 }
 
 /* Return an attribute with the div operation. */
-Attribute* returnDiv(Attribute *oper1, Attribute *oper2)
+Attribute* returnDiv(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
-    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && ((*oper2).decl.variable.type == Bool))
-        return NULL;
     if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && ((*oper2).decl.variable.type != Bool))
         return createVariable("", (*oper1).decl.variable.type);
-    if ((*oper1).decl.variable.type != (*oper2).decl.variable.type && ((*oper2).decl.variable.type != Bool))
+    else
+    {
+		insertError(eq, toString("La operacion \"", "/", "\" no tiene operadores correctos.")); 
         return createVariable("", Int);
+    }
 }
 
 /* Return an attribute with the mult operation. */
-Attribute* returnMult(Attribute *oper1, Attribute *oper2)
+Attribute* returnMult(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
-    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && ((*oper2).decl.variable.type == Bool))
-        return NULL;
     if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && ((*oper2).decl.variable.type != Bool))
         return createVariable("", (*oper1).decl.variable.type);
-    if ((*oper1).decl.variable.type != (*oper2).decl.variable.type && ((*oper2).decl.variable.type != Bool))
+    else
+    {
+		insertError(eq, toString("La operacion \"", "*", "\" no tiene operadores correctos.")); 
         return createVariable("", Int);
+    }
 }
 
 /* ---------------------------------------term no-terminal ended----------------------------------------- */

@@ -213,11 +213,11 @@ arg           :    expression /*{if ((*$1).decl.variable.type != mType) insertEr
               ;
               
 expression    :    conjunction                   {$$ = $1;}                             
-              |    expression OR conjunction     {$$ = returnOr($1, $3);}
+              |    expression OR conjunction     {$$ = returnOr(errorQ, $1, $3);}
               ;
 
 conjunction   :    inequality                    {$$ = $1;}                                
-              |    conjunction AND inequality    {$$ = returnAnd($1, $3);}
+              |    conjunction AND inequality    {$$ = returnAnd(errorQ, $1, $3);}
               ;
 
 inequality    :    comparison                       {$$ = $1;}                             
@@ -229,18 +229,18 @@ comparison    :    relation                   {$$ = $1;}
               ;
 
 relation      :    term                 {$$ = $1;}
-              |    term '<' term        {$$ = returnMinorComparison($1, $3);}
-              |    term '>' term        {$$ = returnMajorComparison($1, $3);}
-              |    term GEQUAL term     {$$ = returnGEqualComparison($1, $3);}
-              |    term LEQUAL term     {$$ = returnLEqualComparison($1, $3);}
+              |    term '<' term        {$$ = returnMinorComparison(errorQ, $1, $3);}
+              |    term '>' term        {$$ = returnMajorComparison(errorQ, $1, $3);}
+              |    term GEQUAL term     {$$ = returnGEqualComparison(errorQ, $1, $3);}
+              |    term LEQUAL term     {$$ = returnLEqualComparison(errorQ, $1, $3);}
               ;
 
 term          :    factor          {$$ = $1;}
-              |    term '+' factor {$$ = returnAdd($1, $3);}
-              |    term '-' factor {$$ = returnSub($1, $3);} 
-              |    term '%' factor {$$ = returnMod($1, $3);} 
-              |    term '/' factor {$$ = returnDiv($1, $3);} 
-              |    term '*' factor {$$ = returnMult($1, $3);} 
+              |    term '+' factor {$$ = returnAdd(errorQ, $1, $3);}
+              |    term '-' factor {$$ = returnSub(errorQ, $1, $3);} 
+              |    term '%' factor {$$ = returnMod(errorQ, $1, $3);} 
+              |    term '/' factor {$$ = returnDiv(errorQ, $1, $3);} 
+              |    term '*' factor {$$ = returnMult(errorQ, $1, $3);} 
               ;
 
 factor        :    primary     {$$ = $1;}  
