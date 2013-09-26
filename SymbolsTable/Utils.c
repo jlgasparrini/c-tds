@@ -42,6 +42,7 @@ Attribute* getArrayAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char*
 }
 
 /* verificar si este metodo no tendria que retornar el valor de retorno del metodo!! ---------------------------------------------------------*/
+/* Returns the respective variable attribute that the method return. "paramSize" is for checking if the amount of parameters is right */
 Attribute* getMethodAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id, unsigned char paramSize)
 { 
 	Attribute *attr = searchIdInSymbolsTable(aSymbolsTable, id);
@@ -59,14 +60,14 @@ Attribute* getMethodAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char
 					insertError(eq, toString("La llamada al metodo \"", id, "\" no debe contener parametros."));
 		 		else
 				{
-					char* number = (char*) malloc (digitAmount(paramSize)*sizeof(char));
-					sprintf(number,"%d",paramSize);
+					char* number = (char*) malloc (digitAmount((*attr).decl.method.paramSize)*sizeof(char));
+					sprintf(number,"%d",(*attr).decl.method.paramSize);
 					char* msg = (char*) malloc ((strlen("\" no contiene sus ")+strlen(number)+strlen(" parametros correspondientes."))*sizeof(char));
 					strcat(msg, "\" no contiene sus ");
 					strcat(msg, number);
 					strcat(msg, " parametros correspondientes.");
 					insertError(eq, toString("La llamada al metodo \"", id, msg));
-			//		free(number);
+				//	free(number);
 				//	free(msg);
 				}
 			}
@@ -183,7 +184,7 @@ unsigned char correctParamIC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attri
         if((*aux).type != Method)
 			insertError(eq, toString("El identificador \"", lastCalledMethod, "\" no corresponde a un metodo."));
 		else
-			if (paramSize == (*aux).decl.method.paramSize) 
+			if (paramSize <= (*aux).decl.method.paramSize) 
 				if (correctParameterType(&(*attr).decl.variable, aux, paramSize) == 0) 
 					return 0;
 				else
@@ -205,12 +206,14 @@ unsigned char correctParamIC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attri
 	return 1;
 }
 
+/* Insert an error message if the attribute "attr" isn't a variable of type "type" */
 void controlVariableType(ErrorsQueue *eq, Attribute *attr, PrimitiveType type)
 {
     if ((*attr).decl.variable.type != type)	
         insertError(eq, toString("La expresion no es del tipo \"", getType(type), "\"."));
 }
 
+/* Insert an error message if attributes "attr1" and "attr2" aren't of the same type and both variables or arrays */
 void controlAssignation(ErrorsQueue *eq, Attribute *attr1, char* op, Attribute *attr2)
 {
 	if ((*attr1).type != Method)
@@ -226,6 +229,7 @@ void controlAssignation(ErrorsQueue *eq, Attribute *attr1, char* op, Attribute *
 		insertError(eq, toString("El identificador izquierdo de la asignacion ", "", " no debe ser un metodo."));
 }
 
+/* Insert an error message if the "lastUsedMethod" haven't got "void" return type */
 void checkReturn(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* lastUsedMethod)
 {
 	ReturnType rt = methodReturnType(eq, aSymbolsTable, lastUsedMethod);
@@ -240,6 +244,7 @@ void checkReturn(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* lastUsedMet
 	}
 }
 
+/* Insert an error message if the "lastUsedMethod" doesn't return "void" or if it has a different return type that the definition */
 void checkReturnExpression(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* lastUsedMethod, Attribute *attr)
 {
 	ReturnType rt = methodReturnType(eq, aSymbolsTable, lastUsedMethod);
@@ -259,7 +264,19 @@ void checkReturnExpression(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* l
 		}
 }
 
-
+/* Returns the array at the position specified by attr.decl.variable.value.intValue if attr has "int" type
+	Otherwise insert an error message because the attribute haven't got "int" type and create a default variable of "int" type */
+Attribute* checkArrayPos(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id, Attribute* attr)
+{
+	if ((*attr).decl.variable.type == Int) 
+		return getArrayAttribute(eq,aSymbolsTable,id,attr);
+	else
+	{
+		insertError(eq, toString("La expresion para acceder a la posicion del arreglo \"", id, "\" debe ser de tipo int.")); 
+		Attribute *aux = searchIdInSymbolsTable(aSymbolsTable,id); /* ver si se crea de forma correcta!!!*/
+		return createVariable("",(*aux).decl.array.type);
+	}
+}
 
 /* ---------------------------------------expression and conjunction no-terminal---------------------------------------------- */
 
