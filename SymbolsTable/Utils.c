@@ -5,8 +5,6 @@
 #include "SymbolsTable.h"
 #include "Utils.h"
 #include "../ErrorsQueue/ErrorsQueue.h"
-extern lineNumb;
-extern columnNumb;
 
 /* Returns an attribute of ID "id" and Variable structure. Otherwise returns NULL */
 Attribute* getVariableAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id)
@@ -200,8 +198,16 @@ unsigned char correctParamIC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attri
 
 void controlVariableType(ErrorsQueue *eq, Attribute *attr, PrimitiveType type)
 {
-	if ((*attr).decl.variable.type != type)	
-		insertError(eq, toString("La expresion no es del tipo \"", getType(type), "\"."));
+	if ((*attr).type == Variable)	
+    {
+        if ((*attr).decl.variable.type != type)	
+            insertError(eq, toString("La expresion no es del tipo \"", getType(type), "\"."));
+    }
+	if ((*attr).type == Method)	
+    {
+        if ((*attr).decl.method.type != type)	
+            insertError(eq, toString("La expresion no es del tipo \"", getType(type), "\"."));
+    }
 }
 
 void controlAssignation(ErrorsQueue *eq, Attribute *attr1, char* op, Attribute *attr2)
