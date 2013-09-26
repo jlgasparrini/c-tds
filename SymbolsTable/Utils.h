@@ -43,10 +43,10 @@ Attribute* checkArrayPos(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id,
 /* -------------------------------Methods used to form expressions------------------------------ */
 
 /* Return an attribute with the or operation applied to oper1 and oper2. */
-Attribute* returnOr(Attribute *oper1, Attribute *oper2);
+Attribute* returnOr(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2);
 
 /* Return an attribute with the and operation applied to oper1 and oper2. */
-Attribute* returnAnd(Attribute *oper1, Attribute *oper2);
+Attribute* returnAnd(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2);
 
 /* Return an attribute with the distinct operation applied to oper1 and oper2. */
 Attribute* returnDistinct(Attribute *oper1, Attribute *oper2);
@@ -55,30 +55,30 @@ Attribute* returnDistinct(Attribute *oper1, Attribute *oper2);
 Attribute* returnEqual(Attribute *oper1, Attribute *oper2);
 
 /* Return an attribute with the minor comparison operation applied to oper1 and oper2. */
-Attribute* returnMinorComparison(Attribute *oper1, Attribute *oper2);
+Attribute* returnMinorComparison(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2);
 
 /* Return an attribute with the major comparison operation applied to oper1 and oper2. */
-Attribute* returnMajorComparison(Attribute *oper1, Attribute *oper2);
+Attribute* returnMajorComparison(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2);
 
 /* Return an attribute with the greater or equal comparison operation applied to oper1 and oper2. */
-Attribute* returnGEqualComparison(Attribute *oper1, Attribute *oper2);
+Attribute* returnGEqualComparison(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2);
 
 /* Return an attribute with the less or equal comparison operation applied to oper1 and oper2. */
-Attribute* returnLEqualComparison(Attribute *oper1, Attribute *oper2);
+Attribute* returnLEqualComparison(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2);
 
 /* Return an attribute with the add operation applied to oper1 and oper2. */
-Attribute* returnAdd(Attribute *oper1, Attribute *oper2);
+Attribute* returnAdd(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2);
 
 /* Return an attribute with the sub operation applied to oper1 and oper2. */
-Attribute* returnSub(Attribute *oper1, Attribute *oper2); 
+Attribute* returnSub(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2); 
 
 /* Return an attribute with the mod operation applied to oper1 and oper2. */
-Attribute* returnMod(Attribute *oper1, Attribute *oper2); 
+Attribute* returnMod(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2); 
 
 /* Return an attribute with the div operation applied to oper1 and oper2. */
-Attribute* returnDiv(Attribute *oper1, Attribute *oper2); 
+Attribute* returnDiv(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2); 
 
 /* Return an attribute with the mult operation applied to oper1 and oper2. */
-Attribute* returnMult(Attribute *oper1, Attribute *oper2);
+Attribute* returnMult(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2);
 
 #endif
