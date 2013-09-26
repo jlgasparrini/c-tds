@@ -207,16 +207,8 @@ unsigned char correctParamIC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attri
 
 void controlVariableType(ErrorsQueue *eq, Attribute *attr, PrimitiveType type)
 {
-	if ((*attr).type == Variable)	
-    {
-        if ((*attr).decl.variable.type != type)	
-            insertError(eq, toString("La expresion no es del tipo \"", getType(type), "\"."));
-    }
-	if ((*attr).type == Method)	
-    {
-        if ((*attr).decl.method.type != type)	
-            insertError(eq, toString("La expresion no es del tipo \"", getType(type), "\"."));
-    }
+    if ((*attr).decl.variable.type != type)	
+        insertError(eq, toString("La expresion no es del tipo \"", getType(type), "\"."));
 }
 
 void controlAssignation(ErrorsQueue *eq, Attribute *attr1, char* op, Attribute *attr2)
@@ -365,41 +357,57 @@ Attribute* returnLEqualComparison(Attribute *oper1, Attribute *oper2)
 /* Return an attribute with the add operation. */
 Attribute* returnAdd(Attribute *oper1, Attribute *oper2)
 {
+    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && ((*oper2).decl.variable.type == Bool))
+        return NULL;
     if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && ((*oper2).decl.variable.type != Bool))
         return createVariable("", (*oper1).decl.variable.type);
+    if ((*oper1).decl.variable.type != (*oper2).decl.variable.type && ((*oper2).decl.variable.type != Bool))
+        return createVariable("", Int);
     return NULL;
 }
 
 /* Return an attribute with the sub operation. */
 Attribute* returnSub(Attribute *oper1, Attribute *oper2)
 {
+    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && ((*oper2).decl.variable.type == Bool))
+        return NULL;
     if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && ((*oper2).decl.variable.type != Bool))
         return createVariable("", (*oper1).decl.variable.type);
-    return NULL;
+    if ((*oper1).decl.variable.type != (*oper2).decl.variable.type && ((*oper2).decl.variable.type != Bool))
+        return createVariable("", Int);
 }
 
 /* Return an attribute with the mod operation. */
 Attribute* returnMod(Attribute *oper1, Attribute *oper2)
 {
+    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && ((*oper2).decl.variable.type == Bool))
+        return NULL;
     if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && ((*oper2).decl.variable.type != Bool))
         return createVariable("", (*oper1).decl.variable.type);
-    return NULL;
+    if ((*oper1).decl.variable.type != (*oper2).decl.variable.type && ((*oper2).decl.variable.type != Bool))
+        return createVariable("", Int);
 }
 
 /* Return an attribute with the div operation. */
 Attribute* returnDiv(Attribute *oper1, Attribute *oper2)
 {
+    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && ((*oper2).decl.variable.type == Bool))
+        return NULL;
     if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && ((*oper2).decl.variable.type != Bool))
         return createVariable("", (*oper1).decl.variable.type);
-    return NULL;
+    if ((*oper1).decl.variable.type != (*oper2).decl.variable.type && ((*oper2).decl.variable.type != Bool))
+        return createVariable("", Int);
 }
 
 /* Return an attribute with the mult operation. */
 Attribute* returnMult(Attribute *oper1, Attribute *oper2)
 {
-    if (((*oper1).decl.variable.type == (*oper2).decl.variable.type) && ((*oper2).decl.variable.type != Bool))
+    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && ((*oper2).decl.variable.type == Bool))
+        return NULL;
+    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && ((*oper2).decl.variable.type != Bool))
         return createVariable("", (*oper1).decl.variable.type);
-    return NULL;
+    if ((*oper1).decl.variable.type != (*oper2).decl.variable.type && ((*oper2).decl.variable.type != Bool))
+        return createVariable("", Int);
 }
 
 /* ---------------------------------------term no-terminal ended----------------------------------------- */
