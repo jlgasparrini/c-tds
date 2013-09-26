@@ -9,25 +9,22 @@
 #  include  "../ErrorsQueue/ErrorsQueue.h"
 
 extern FILE *yyin;
-extern lineNumb;
-extern columnNumb;
 ErrorsQueue *errorQ;
 SymbolsTable symbolTable;   /* <----Definicion de la tabla de simbolos----- */
-Attribute *auxAtr;          /* Atributo auxiliar usado para la creacion de nuevos atributos */           
 unsigned char cantParams = 0;  /* Cantidad de parametros que tendra un metodo */
 PrimitiveType vaType; /* Type of the variable or array */
 ReturnType mType;     /* Return type of the method */
-char* lastCalledMethod;
+char *lastCalledMethod, *lastUsedMethod;
 
 int yydebug = 1;
 
 int yyerror (char *str)
 {
-		printErrorList(errorQ);
         if (strcmp(str, "syntax error") == 0)
-            fprintf(stderr,"Error gramatico en la linea: %d.%d\n", lineNumb, columnNumb);
+			insertError(errorQ,toString("Error GRAMATICO.","",""));
         else
-            printf("ERROR DESCONOCIDO:%s\n", str);
+			insertError(errorQ,toString("Error DESCONOCIDO: ",str,"."));
+		printErrorList(errorQ);
         return 0;
 }
  
@@ -79,6 +76,7 @@ out(char *msg) {
 %left '*' '/'
 %left '%'
 %type<at> expression conjunction inequality comparison relation term factor primary method_call location
+%type<stringValue> assig_op
 
 /* %type<at> es solo para no-terminales!! */
 /*      %type<at> field      */
@@ -88,7 +86,7 @@ out(char *msg) {
 
 /* ------------------- PROGRAM -------------------- */
 
-program       :    CLASS ID '{' '}' {finalizar();} 
+program       :    CLASS ID '{' '}' {errorQ=initializeQueue(); finalizar();} 
               |    CLASS ID '{' {initializeSymbolsTable(&symbolTable); pushLevel(&symbolTable); errorQ=initializeQueue();} body {popLevel(&symbolTable); finalizar();} '}' 
               ;
 
@@ -96,7 +94,7 @@ body          :    fields_decls method_decl
               |    fields_decls
               |    method_decl
               ;
-			     						/* o $$1.at.decl.variable.type */
+
 fields_decls  :    type fields ';' 			
               |    fields_decls type fields ';' 	
 			  ;
@@ -104,24 +102,20 @@ fields_decls  :    type fields ';'
 fields        :    field 	
 			  |    fields ',' field 	    
 			  ;
-										/*aca hay que crear el atributo nuevo*/
+
 field         :    ID					{pushElement(errorQ, &symbolTable, createVariable($1, vaType));}
               |    ID '[' INTEGER ']'	{pushElement(errorQ, &symbolTable, createArray($1, vaType, atoi($3)));}
               ;
 
 type          :		INTW		{vaType = Int; mType = RetInt;} 
               |		FLOATW		{vaType = Float; mType = RetFloat;}
-              |		BOOLEANW	{vaType = Bool; mType = RetVoid;}
+              |		BOOLEANW	{vaType = Bool; mType = RetBool;}
               ;
 
-method_decl   :     type ID {if (searchIdInSymbolsTable(&symbolTable, $2) == NULL) {Attribute *aux = createMethod($2, mType, 0); pushElement(errorQ, &symbolTable, aux); pushLevel(&symbolTable);}
-							else insertError(errorQ, toString("El identificador \"", $2,"\" ya se encuentra definido."));} param block {popLevel(&symbolTable);}
-              |		method_decl type ID {if (searchIdInSymbolsTable(&symbolTable, $3) == NULL) {Attribute *aux = createMethod($3, mType, 0); pushElement(errorQ, &symbolTable, aux); pushLevel(&symbolTable);}
-							else insertError(errorQ, toString("El identificador \"",$3,"\" ya se encuentra definido."));} param block {popLevel(&symbolTable);}
-              |     VOID ID {if (searchIdInSymbolsTable(&symbolTable, $2) == NULL) {Attribute *aux = createMethod($2, RetVoid, 0); pushElement(errorQ, &symbolTable, aux); pushLevel(&symbolTable);}
-							else insertError(errorQ, toString("El identificador \"", $2,"\" ya se encuentra definido."));} param block {popLevel(&symbolTable);}
-              |	    method_decl VOID ID {if (searchIdInSymbolsTable(&symbolTable, $3) == NULL) {Attribute *aux = createMethod($3, RetVoid, 0); pushElement(errorQ, &symbolTable, aux); pushLevel(&symbolTable);}
-							else insertError(errorQ, toString("El identificador \"",$3,"\" ya se encuentra definido."));} param block {popLevel(&symbolTable);}
+method_decl   :     type ID {lastCalledMethod = $2; pushElement(errorQ,&symbolTable,createMethod($2,mType,0)); pushLevel(&symbolTable);} param block {popLevel(&symbolTable);}
+              |		method_decl type ID {lastCalledMethod = $3; pushElement(errorQ,&symbolTable,createMethod($3,mType,0)); pushLevel(&symbolTable);} param block {popLevel(&symbolTable);}
+              |     VOID ID {lastCalledMethod = $2; pushElement(errorQ,&symbolTable,createMethod($2,RetVoid,0)); pushLevel(&symbolTable);} param block {popLevel(&symbolTable);}
+              |	    method_decl VOID ID {lastCalledMethod = $3; pushElement(errorQ,&symbolTable,createMethod($3,RetVoid,0)); pushLevel(&symbolTable);} param block {popLevel(&symbolTable);}
               ;
 
 param		  :    '(' ')' {cantParams = 0;}
@@ -160,29 +154,30 @@ statement     :    conditional
 action        :
               |    BREAK 
               |    CONTINUE 
-			  |	   RETURN
-			  |	   RETURN expression
+			  |	   RETURN {checkReturn(errorQ,&symbolTable,lastCalledMethod);}
+			  |	   RETURN expression {checkReturnExpression(errorQ,&symbolTable,lastCalledMethod,$2);}
               |    asignation 
               |    method_call                        
               ;
               
-asignation    :    location assig_op expression;
+asignation    :    location assig_op expression {controlAssignation(errorQ,$1,$2,$3);}
+			  ;
               
-assig_op      :    '=' 
-              |    PLUSEQUAL
-              |    MINUSEQUAL
+assig_op      :    '=' {$$ = "=";} 
+              |    PLUSEQUAL {$$ = $1;}
+              |    MINUSEQUAL {$$ = $1;}
               ;
 
 /* -------------------- END OF STATEMENTS ------------------------------- */
 
 /* -------------------- CONDITIONALS AND CICLES ------------------------------ */
 
-conditional   :    IF '(' expression ')' block ELSE block
-			  |    IF '(' expression ')' block
+conditional   :    IF '(' expression ')' block {controlVariableType(errorQ,$3,Bool);} ELSE block 
+			  |    IF '(' expression ')' block {controlVariableType(errorQ,$3,Bool);}
 			  ;
 
-iteration     :    WHILE expression {} block
-              |    FOR ID '=' expression ',' expression {} block                
+iteration     :    WHILE expression {controlVariableType(errorQ,$2,Bool);} block
+              |    FOR ID '=' expression ',' expression {getVariableAttribute(errorQ,&symbolTable,$2); controlVariableType(errorQ,$4,Int); controlVariableType(errorQ,$6,Int);} block                
               ;                                                               
 
 /* -------------------- END OF CONDITIONALS AND CICLES ------------------------------- */
@@ -190,33 +185,28 @@ iteration     :    WHILE expression {} block
 /* -------------------- EXPRESSIONS ------------------------------- */
 
 location      :    ID {$$ = getVariableAttribute(errorQ, &symbolTable, $1);}
-              |    ID '[' term ']' {$$ = getArrayAttribute(errorQ, &symbolTable, $1, (*$3).decl.variable.value.intVal);}
+              |    ID '[' term ']' {if ((*$3).decl.variable.type == Int) 
+										$$ = getArrayAttribute(errorQ,&symbolTable,$1,(*$3).decl.variable.value.intVal);
+									else 
+										insertError(errorQ, toString("La expresion para acceder a la posicion del arreglo \"", $1, "\" debe ser de tipo int")); 
+									}
               ;
 
-method_call   :	   ID '(' ')'   {cantParams=0; lastCalledMethod=$1; $$ = getMethodAttribute(errorQ, &symbolTable, $1, cantParams);}
-              |    ID '('  {cantParams=0; lastCalledMethod=$1;} expression_aux ')' {ReturnType rt = methodReturnType(errorQ, &symbolTable, $1);
-							/*	if (rt == RetVoid)  ESTE METHOD_CALL PUEDE SER LLAMADO FUERA DE UNA EXPRESION, POR LO QUE NO TENDRIA QUE OBLIGAR
-													A QUE RETORNE ALGO DE TIPO PRIMITIVO. HAY QUE CORREGIR ESTO-------------------------------
-									insertError(eq, toString("El metodo \"", lastCalledMethod, "\" retorna tipo void, no puede ser usado en una expresion."));
-
-								else
-								{
-									/* ESTA BIEN ESTO? createVariable toma algo de tipo PrimitiveType pero se la pasa rt que es de ReturnType
-									Attribute *aux=createVariable("",rt); setVariableValue(aux,rt,$1); /*habria que ver como setear el
-									valor que retorna la llamada del metodo (que cada metodo tenga un VarValue donde almacenar el resultado)
-									$$ = aux;
+method_call   :	   ID '(' ')'   {cantParams=0; lastUsedMethod = $1; $$ = getMethodAttribute(errorQ, &symbolTable, $1, cantParams);}
+              |    ID '('  {cantParams=0; lastUsedMethod = $1;} expression_aux ')' {ReturnType rt = methodReturnType(errorQ, &symbolTable, $1);
+								/* ESTA BIEN ESTO? createVariable toma algo de tipo PrimitiveType pero se la pasa rt que es de ReturnType
+									if (rt != RetVoid)
+									{Attribute *aux=createVariable("",rt); setVariableValue(aux,rt,$1); $$ = aux;}
+									habria que ver como setear el valor que retorna la llamada del metodo (que cada metodo tenga un VarValue donde almacenar el resultado)
 								}*/
 							}
 			  
-              |    EXTERNINVK '(' STRING ',' typevoid ')'  {if (mType != RetVoid) 
-															{	Attribute *aux=createVariable("",mType); }
-														}
-              |    EXTERNINVK '(' STRING ',' typevoid ',' externinvk_arg ')'   {Attribute *at; $$ = at;}
+              |    EXTERNINVK '(' STRING ',' typevoid ')' {if (mType != RetVoid) {Attribute *aux=createVariable("",mType); $$ = aux;}}
+              |    EXTERNINVK '(' STRING ',' typevoid ',' externinvk_arg ')' {if (mType != RetVoid) {Attribute *aux=createVariable("",mType); $$ = aux;}}
               ;
 
-expression_aux:    expression {cantParams++; correctParamBC(errorQ, &symbolTable,$1,lastCalledMethod,cantParams);}
-			  |    expression {cantParams++; correctParamIC(errorQ, &symbolTable,$1,lastCalledMethod,cantParams);} ',' expression_aux 
-
+expression_aux:    expression {cantParams++; correctParamBC(errorQ,&symbolTable,$1,lastUsedMethod,cantParams);}
+			  |    expression {cantParams++; correctParamIC(errorQ,&symbolTable,$1,lastUsedMethod,cantParams);} ',' expression_aux 
 			  ;
               
 typevoid      :    type                            
@@ -273,7 +263,9 @@ primary       :    INTEGER			{Attribute *aux = createVariable("", Int); setVaria
               |    ID				{$$ = getVariableAttribute(errorQ, &symbolTable, $1);}								/* ----PREGUNTAR--------- */
               |    ID '[' term ']'  {$$ = getArrayAttribute(errorQ, &symbolTable, $1, (*$3).decl.variable.value.intVal);/* aca deberiamos verificar que $3 es de tipo int en lugar de suponerlo?*/} 
               |    '(' expression ')'  {$$ = $2;}
-              |    method_call         {$$ = $1;}
+              |    method_call         {if (methodReturnType(errorQ,&symbolTable,lastUsedMethod) == RetVoid)
+											insertError(errorQ,toString("El metodo \"",lastUsedMethod,"\" no puede ser usado en una expresion ya que retorna void."));
+										else $$ = $1;}
               ;
 
 /* ------------------------- END OF EXPRESSIONS ------------------------------- */

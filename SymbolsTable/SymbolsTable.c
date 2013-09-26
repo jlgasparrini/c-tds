@@ -3,8 +3,7 @@
 #include <string.h>
 #include "SymbolsTable.h"
 
-extern lineNumb;
-extern columnNumb;
+#include "../ErrorsQueue/ErrorsQueue.h"
 
 /* Initializes the SymbolsTable */
 void initializeSymbolsTable(SymbolsTable *aSymbolsTable)
@@ -33,7 +32,7 @@ void pushElement(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attribute *at)
 			insert((*(*aSymbolsTable).top).list, at); 
 	}
 	else
-		printf("SymbolsTable.c: pushElement Warning: la tabla no tiene ningun nivel.\n");
+		printf("%s\n",toString("SymbolsTable: pushElement Warning: la tabla no tiene ningun nivel.","",""));
 }
 
 /* Insert a new level in the SymbolsTable. */
@@ -48,7 +47,7 @@ void pushLevel(SymbolsTable *aSymbolsTable)
 		(*aSymbolsTable).currentLevel++;     
     } 
     else
-        printf("SymbolsTable.c: pushLevel Warning: Error al reservar espacio en memoria.\n");
+        printf("%s\n",toString("SymbolsTable: pushLevel Warning: Error al reservar espacio en memoria.","",""));
 }
  
 /* Remove the entire current level of the SymbolsTable. */
@@ -63,7 +62,7 @@ void popLevel(SymbolsTable *aSymbolsTable)
 		(*aSymbolsTable).currentLevel--;
     }
     else
-		printf("SymbolsTable.c: popLevel Warning: Pila sin mas niveles que descartar.\n");
+		printf("%s\n",toString("SymbolsTable: popLevel Warning: Pila sin mas niveles que descartar.","",""));
 }
  
 /* Searches for the id in all levels of the SymbolsTable. 

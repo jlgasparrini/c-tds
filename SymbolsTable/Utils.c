@@ -5,6 +5,8 @@
 #include "SymbolsTable.h"
 #include "Utils.h"
 #include "../ErrorsQueue/ErrorsQueue.h"
+extern lineNumb;
+extern columnNumb;
 
 /* Returns an attribute of ID "id" and Variable structure. Otherwise returns NULL */
 Attribute* getVariableAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id)
@@ -195,6 +197,62 @@ unsigned char correctParamIC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attri
 				insertError(eq,toString("Error en llamada al metodo \"", lastCalledMethod, "\". Se tiene mayor cantidad de parametros que en su declaracion."));  
 	return 1;
 }
+
+void controlVariableType(ErrorsQueue *eq, Attribute *attr, PrimitiveType type)
+{
+	if ((*attr).decl.variable.type != type)	
+		insertError(eq, toString("La expresion no es del tipo \"", getType(type), "\"."));
+}
+
+void controlAssignation(ErrorsQueue *eq, Attribute *attr1, char* op, Attribute *attr2)
+{
+	if ((*attr1).type != Method)
+	{
+		if ((*attr1).type == Variable)
+			if ((*attr1).decl.variable.type != (*attr2).decl.variable.type)
+				insertError(eq, toString("El lado derecho de la asignacion debe ser de tipo \"", getType((*attr1).decl.variable.type), "\"."));
+		if ((*attr1).type == Array)
+			if ((*attr1).decl.array.type != (*attr2).decl.array.type)
+				insertError(eq, toString("El lado derecho de la asignacion debe ser de tipo \"", getType((*attr1).decl.array.type), "\"."));
+	}
+	else
+		insertError(eq, toString("El identificador izquierdo de la asignacion ", "", " no debe ser un metodo."));
+}
+
+void checkReturn(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* lastUsedMethod)
+{
+	ReturnType rt = methodReturnType(eq, aSymbolsTable, lastUsedMethod);
+	if (rt != RetVoid)
+	{
+		char* msg = (char*) malloc ((strlen("\" debe retornar una expresion de tipo \"")+strlen(getType(rt))+strlen("\"."))*sizeof(char));
+		strcat(msg, "\" debe retornar una expresion de tipo \"");
+		strcat(msg, getType(rt));
+		strcat(msg, "\".");
+		insertError(eq, toString("El metodo \"", lastUsedMethod, msg));
+//		free(msg);
+	}
+}
+
+void checkReturnExpression(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* lastUsedMethod, Attribute *attr)
+{
+	ReturnType rt = methodReturnType(eq, aSymbolsTable, lastUsedMethod);
+	if (rt == RetVoid)
+		insertError(eq,toString("El metodo \"",lastUsedMethod,"\" no puede retornar una expresion ya que retorna void."));
+	else
+		if (rt != (*attr).decl.variable.type)
+		{
+			char* msg = (char*) malloc ((strlen("\" debe retornar una expresion de tipo \"")+strlen(getType(rt))+strlen("\", no de tipo \"")+strlen(getType((*attr).decl.variable.type))+strlen("\"."))*sizeof(char));
+			strcat(msg, "\" debe retornar una expresion de tipo \"");
+			strcat(msg, getType(rt));
+			strcat(msg, "\", no de tipo \"");
+			strcat(msg, getType((*attr).decl.variable.type));
+			strcat(msg, "\".");
+			insertError(eq, toString("El metodo \"", lastUsedMethod, msg));
+	//		free(msg);
+		}
+}
+
+
 
 /* ---------------------------------------expression and conjunction no-terminal---------------------------------------------- */
 
