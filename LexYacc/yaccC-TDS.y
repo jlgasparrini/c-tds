@@ -186,7 +186,7 @@ iteration     :    WHILE expression {controlVariableType(errorQ,$2,Bool);} block
 
 location      :    ID {$$ = getVariableAttribute(errorQ, &symbolTable, $1);}
               |    ID '[' term ']' {if ((*$3).decl.variable.type == Int) 
-										$$ = getArrayAttribute(errorQ,&symbolTable,$1,(*$3).decl.variable.value.intVal);
+										$$ = getArrayAttribute(errorQ,&symbolTable,$1,$3);
 									else 
 										insertError(errorQ, toString("La expresion para acceder a la posicion del arreglo \"", $1, "\" debe ser de tipo int")); 
 									}
@@ -260,8 +260,8 @@ factor        :    primary     {$$ = $1;}
 primary       :    INTEGER			{Attribute *aux = createVariable("", Int); setVariableValue(aux,Int,$1); $$=aux;}
               |    FLOAT            {Attribute *aux = createVariable("", Float); setVariableValue(aux,Float,$1); $$=aux;}
               |    BOOLEAN          {Attribute *aux = createVariable("", Bool); setVariableValue(aux,Bool,$1); $$=aux;}
-              |    ID				{$$ = getVariableAttribute(errorQ, &symbolTable, $1);}								/* ----PREGUNTAR--------- */
-              |    ID '[' term ']'  {$$ = getArrayAttribute(errorQ, &symbolTable, $1, (*$3).decl.variable.value.intVal);/* aca deberiamos verificar que $3 es de tipo int en lugar de suponerlo?*/} 
+              |    ID				{$$ = getVariableAttribute(errorQ,&symbolTable,$1);}								/* ----PREGUNTAR--------- */
+              |    ID '[' term ']'  {$$ = getArrayAttribute(errorQ,&symbolTable,$1,$3);/* aca deberiamos verificar que $3 es de tipo int en lugar de suponerlo?*/} 
               |    '(' expression ')'  {$$ = $2;}
               |    method_call         {if (methodReturnType(errorQ,&symbolTable,lastUsedMethod) == RetVoid)
 											insertError(errorQ,toString("El metodo \"",lastUsedMethod,"\" no puede ser usado en una expresion ya que retorna void."));
