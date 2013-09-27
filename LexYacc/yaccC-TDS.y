@@ -20,10 +20,11 @@ int yydebug = 1;
 int yyerror (char *str)
 {
 		printErrorList(errorQ);
+        deleteAllErrors(errorQ);
         if (strcmp(str, "syntax error") == 0)
-			printf ("%s",toString("Error GRAMATICO.","",""));
+			printf("%s\n",toString("Error GRAMATICO.","",""));
         else
-			printf ("%s",toString("Error DESCONOCIDO: \"",str,"\"."));
+			printf("%s\n",toString("Error DESCONOCIDO: \"",str,"\"."));
         return 0;
 }
  
@@ -46,6 +47,7 @@ main( argc, argv )
 
 finalizar() {
 		printErrorList(errorQ);
+        deleteAllErrors(errorQ);
         printf("------Se termino de parsear.----------\n");
 }
 
@@ -83,7 +85,7 @@ out(char *msg) {
 /* ------------------- PROGRAM -------------------- */
 
 program       :    CLASS ID '{' '}' {errorQ=initializeQueue(); finalizar();} 
-              |    CLASS ID '{' {initializeSymbolsTable(&symbolTable); pushLevel(&symbolTable); errorQ=initializeQueue();} body {popLevel(&symbolTable); finalizar();} '}' 
+              |    CLASS ID '{' {initializeSymbolsTable(&symbolTable); pushLevel(&symbolTable); errorQ=initializeQueue();} body {checkMain(errorQ,&symbolTable); popLevel(&symbolTable); finalizar();} '}' 
               ;
 
 body          :    fields_decls method_decl
@@ -95,8 +97,8 @@ fields_decls  :    type fields ';'
               |    fields_decls type fields ';' 	
 			  ;
 
-fields        :    field 	
-			  |    fields ',' field 	    
+fields        :    field
+			  |    fields ',' field
 			  ;
 
 field         :    ID					{pushElement(errorQ, &symbolTable, createVariable($1, vaType));}
@@ -115,7 +117,7 @@ method_decl   :     type ID {lastDefMethod=$2; pushElement(errorQ,&symbolTable,c
               ;
 
 param		  :    '(' ')' {cantParams = 0; setAmountOfParameters(searchIdInSymbolsTable(errorQ,&symbolTable,lastDefMethod),0);}
-			  |    '(' {cantParams = 0;} parameters {setAmountOfParameters(searchIdInSymbolsTable(errorQ,&symbolTable,lastDefMethod),cantParams);} ')'
+			  |    '(' {if (strcmp(lastDefMethod,"main") == 0) insertError(errorQ,toString("El metodo \"main\" no debe contener parametros.","","")); cantParams = 0;} parameters {setAmountOfParameters(searchIdInSymbolsTable(errorQ,&symbolTable,lastDefMethod),cantParams);} ')'
 			  ;    /* esta bien hecho esto asi? no se cuentan primero todos los parametros dentro del no terminal "parameters" 
 						y una vez que matchea con esta regla "param", setea cantParams en 0 y luego reduce a "param" ----------------------
 						-------------------------------------------------------------------------------------------------------------------
@@ -204,11 +206,10 @@ typevoid      :    type
               ;
 
 externinvk_arg:    arg                           
-              |    externinvk_arg ',' arg       
+              |    arg ',' externinvk_arg
               ;
-							/* Se verifica que todas las expresiones de extern_invk_arg que se usen en externinvk tengan 
-							el mismo tipo typeVoid. En caso de querer aplicar esta restriccion, eliminar el comentario de la siguiente linea */
-arg           :    expression /*{if ((*$1).decl.variable.type != mType) insertError(errorQ,toString("Error en \"externinvk\". La expresion no retorna algo de tipo \"",getType(mType),"\"."));}*/
+						
+arg           :    expression
               |    STRING                     
               ;
               

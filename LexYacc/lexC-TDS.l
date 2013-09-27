@@ -64,10 +64,10 @@ cbracket	"]"
 [ ]							    {columnNumb++;};
 [\t]							{columnNumb=columnNumb + 4;}
 \n                              {lineNumb++; columnNumb = 1;}
-"/*"                            {BEGIN(comment);}
-<comment>"*/"	                {BEGIN(INITIAL);}
-<comment>(.|\n)
-"//"(.)*
+"/*"                            {columnNumb = columnNumb + 2; BEGIN(comment);}
+<comment>"*/"	                {columnNumb = columnNumb + 2; BEGIN(INITIAL);}
+<comment>(.|\n)                 {if (strcmp(yytext,"\n") == 0) {lineNumb++; columnNumb=1;} else columnNumb++;}
+"//"(.)*                        
 {plus}                          {columnNumb++; return('+');}
 {minus}                         {columnNumb++; return('-');}
 {mult}                          {columnNumb++; return('*');}

@@ -19,21 +19,22 @@ Attribute* getVariableAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, ch
 	return attr;
 }
 
-/* Returns an attribute in the position "(*aux).decl.variable.value.intVal" of the ID "id" and Array structure. Otherwise returns NULL */
-Attribute* getArrayAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id, Attribute *aux)
+/* Returns an attribute in the position "pos" of the ID "id" and Array structure. Otherwise returns NULL */
+Attribute* getArrayAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attribute *attr, unsigned int pos)
 {
-	if((*aux).decl.variable.type != Int)
-	{
-		insertError(eq, toString("El indice con el que se trata de acceder a \"", id, "\" no corresponde a una posicion de arreglo."));
-		return NULL;
-	}
-	Attribute *attr = searchIdInSymbolsTable(eq, aSymbolsTable, id);
-	if(attr != NULL) 
-		if((*attr).type != Array)
-			insertError(eq, toString("El identificador \"", id, "\" no corresponde a un arreglo."));
-		else
-			return createVariable("",(*attr).decl.array.type); /* ACA DEBERIA RETORNARSE LA VARIABLE QUE SE ENCUENTRA EN EL ARREGLO EN LA POSICION "pos"-------------------------------------- */
-	return NULL;
+    if((*attr).type != Array)
+        if((*attr).type == Method)
+            insertError(eq, toString("El identificador \"", (*attr).decl.method.id, "\" no corresponde a un arreglo."));
+        else
+            insertError(eq, toString("El identificador \"", (*attr).decl.variable.id, "\" no corresponde a un arreglo."));
+    else    
+        if (pos < 0 || pos >= (*attr).decl.array.length)
+        {
+            insertError(eq, toString("Error. Indice fuera de rango para acceder al arreglo \"", (*attr).decl.array.id, "\".")); 
+            return createVariable("",(*attr).decl.array.type);
+        }
+        else
+                return createVariable("",(*attr).decl.array.type); /* ACA DEBERIA RETORNARSE LA VARIABLE QUE SE ENCUENTRA EN EL ARREGLO EN LA POSICION "pos"-------------------------------------- */
 }
 
 /* verificar si este metodo no tendria que retornar el valor de retorno del metodo!! ---------------------------------------------------------*/
@@ -51,18 +52,7 @@ Attribute* getMethodAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char
 			{
 		 		if ((*attr).decl.method.paramSize == 0)
 					insertError(eq, toString("La llamada al metodo \"", id, "\" no debe contener parametros."));
-		 		else
-				{
-					char* number = (char*) malloc (digitAmount((*attr).decl.method.paramSize)*sizeof(char));
-					sprintf(number,"%d",(*attr).decl.method.paramSize);
-					char* msg = (char*) malloc ((strlen("\" no contiene sus ")+strlen(number)+strlen(" parametros correspondientes."))*sizeof(char));
-					strcat(msg, "\" no contiene sus ");
-					strcat(msg, number);
-					strcat(msg, " parametros correspondientes.");
-					insertError(eq, toString("La llamada al metodo \"", id, msg));
-				//	free(number);
-				//	free(msg);
-				}
+				return createVariable("",(*attr).decl.method.type);
 			}
 			else
 				return createVariable("",(*attr).decl.method.type);
@@ -160,7 +150,10 @@ unsigned char correctParamBC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attri
 				}
 			}
 			else
-				insertError(eq,toString("Error en llamada al metodo \"", lastCalledMethod, "\". No se tiene la misma cantidad de parametros que en su declaracion."));  
+                if (paramSize < (*aux).decl.method.paramSize)
+                    insertError(eq,toString("Error en llamada al metodo \"", lastCalledMethod, "\". Se tiene menor cantidad de parametros que en su declaracion."));  
+                else
+                    insertError(eq,toString("Error en llamada al metodo \"", lastCalledMethod, "\". Se tiene mayor cantidad de parametros que en su declaracion."));  
 		}
 	return 1;
 }
@@ -175,7 +168,9 @@ unsigned char correctParamIC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attri
         if((*aux).type != Method)
 			insertError(eq, toString("El identificador \"", lastCalledMethod, "\" no corresponde a un metodo."));
 		else
+        {
 			if (paramSize <= (*aux).decl.method.paramSize) 
+            {
 				if (correctParameterType(&(*attr).decl.variable, aux, paramSize) == 0) 
 					return 0;
 				else
@@ -192,8 +187,10 @@ unsigned char correctParamIC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attri
 				//	free(number);
 				//	free(f);
 				}
+            }
 			else
 				insertError(eq,toString("Error en llamada al metodo \"", lastCalledMethod, "\". Se tiene mayor cantidad de parametros que en su declaracion."));  
+        }
 	return 1;
 }
 
@@ -259,14 +256,30 @@ void checkReturnExpression(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* l
 	Otherwise insert an error message because the attribute haven't got "int" type and create a default variable of "int" type */
 Attribute* checkArrayPos(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id, Attribute* attr)
 {
-	if ((*attr).decl.variable.type == Int) 
-		return getArrayAttribute(eq,aSymbolsTable,id,attr);
-	else
-	{
-		insertError(eq, toString("La expresion para acceder a la posicion del arreglo \"", id, "\" debe ser de tipo int.")); 
-		Attribute *aux = searchIdInSymbolsTable(eq, aSymbolsTable,id); /* ver si se crea de forma correcta!!!*/
-		return createVariable("",(*aux).decl.array.type);
-	}
+    Attribute *aux = searchIdInSymbolsTable(eq,aSymbolsTable,id);
+    if (aux != NULL)
+    {
+        if ((*attr).decl.variable.type == Int)
+            return getArrayAttribute(eq,aSymbolsTable,aux,(*attr).decl.variable.value.intVal);
+        else
+        {
+            insertError(eq, toString("La expresion para acceder a la posicion del arreglo \"", id, "\" debe ser de tipo int.")); 
+            return createVariable("",(*aux).decl.array.type);
+        }
+    }
+    else
+        return createVariable("",Int);
+}
+
+/* Checks if the program have a "main" method and it haven't got parameters */
+void checkMain(ErrorsQueue *eq, SymbolsTable *aSymbolsTable)
+{
+    Attribute *attr = searchIdInSymbolsTable(eq, aSymbolsTable,"main");
+    if (attr == NULL)
+        insertError(eq, "El programa no tiene un metodo \"main\".");
+    else
+        if ((*attr).type != Method)
+            insertError(eq, "El identificador \"main\" solo puede ser un metodo.");
 }
 
 /* ---------------------------------------expression and conjunction no-terminal---------------------------------------------- */
@@ -278,7 +291,7 @@ Attribute* returnOr(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
         return createVariable("", (*oper1).decl.variable.type);
     else
     {
-		insertError(eq, toString("La expresion logica \"", "OR", "\" no tiene operadores de tipo booleano.")); 
+		insertError(eq, toString("La expresion logica \"", "OR", "\" no tiene ambos operandos de tipo booleano.")); 
         return createVariable("", Bool);
     }
 }
@@ -291,7 +304,7 @@ Attribute* returnAnd(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
         return createVariable("", (*oper1).decl.variable.type);
     else
     {
-		insertError(eq, toString("La expresion logica \"", "AND", "\" no tiene operadores de tipo booleano.")); 
+		insertError(eq, toString("La expresion logica \"", "AND", "\" no tiene ambos operandos de tipo booleano.")); 
         return createVariable("", Bool);
     }
 
@@ -319,10 +332,10 @@ Attribute* returnEqual(Attribute *oper1, Attribute *oper2)
 Attribute* returnMinorComparison(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
     if ((*oper1).decl.variable.type == (*oper2).decl.variable.type)
-        return createVariable("", (*oper1).decl.variable.type); 
+        return createVariable("", Bool); 
     else
     {
-		insertError(eq, toString("La operacion \"", "<", "\" no tiene operadores correctos.")); 
+		insertError(eq, toString("El operador \"", "<", "\" no tiene ambos operandos de tipo correcto.")); 
         return createVariable("", Bool);
     }
 }
@@ -331,10 +344,10 @@ Attribute* returnMinorComparison(ErrorsQueue *eq, Attribute *oper1, Attribute *o
 Attribute* returnMajorComparison(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
     if ((*oper1).decl.variable.type == (*oper2).decl.variable.type)
-        return createVariable("", (*oper1).decl.variable.type); 
+        return createVariable("", Bool); 
     else
     {
-		insertError(eq, toString("La operacion \"", ">", "\" no tiene operadores correctos.")); 
+		insertError(eq, toString("El operador \"", ">", "\" no tiene ambos operandos de tipo correcto.")); 
         return createVariable("", Bool);
     }
 }
@@ -343,10 +356,10 @@ Attribute* returnMajorComparison(ErrorsQueue *eq, Attribute *oper1, Attribute *o
 Attribute* returnGEqualComparison(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
     if ((*oper1).decl.variable.type == (*oper2).decl.variable.type)
-        return createVariable("", (*oper1).decl.variable.type); 
+        return createVariable("", Bool); 
     else
     {
-		insertError(eq, toString("La operacion \"", ">=", "\" no tiene operadores correctos.")); 
+		insertError(eq, toString("El operador \"", ">=", "\" no tiene ambos operandos de tipo correcto.")); 
         return createVariable("", Bool);
     }
 }
@@ -355,10 +368,10 @@ Attribute* returnGEqualComparison(ErrorsQueue *eq, Attribute *oper1, Attribute *
 Attribute* returnLEqualComparison(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
     if ((*oper1).decl.variable.type == (*oper2).decl.variable.type)
-        return createVariable("", (*oper1).decl.variable.type); 
+        return createVariable("", Bool); 
     else
     {
-		insertError(eq, toString("La operacion \"", "<=", "\" no tiene operadores correctos.")); 
+		insertError(eq, toString("El operador \"", "<=", "\" no tiene ambos operandos de tipo correcto.")); 
         return createVariable("", Bool);
     }
 }
@@ -373,7 +386,7 @@ Attribute* returnAdd(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
         return createVariable("", (*oper1).decl.variable.type);
     else
     {
-		insertError(eq, toString("La operacion \"", "+", "\" no tiene operadores correctos.")); 
+		insertError(eq, toString("El operador \"", "+", "\" no tiene ambos operandos de tipo correcto.")); 
         return createVariable("", Int);
     }
 }
@@ -385,7 +398,7 @@ Attribute* returnSub(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
         return createVariable("", (*oper1).decl.variable.type);
     else
     {
-		insertError(eq, toString("La operacion \"", "-", "\" no tiene operadores correctos.")); 
+		insertError(eq, toString("El operador \"", "-", "\" no tiene ambos operandos de tipo correcto.")); 
         return createVariable("", Int);
     }
 }
@@ -393,11 +406,11 @@ Attribute* returnSub(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 /* Return an attribute with the mod operation. */
 Attribute* returnMod(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
-    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && ((*oper2).decl.variable.type != Bool))
-        return createVariable("", (*oper1).decl.variable.type);
+    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && ((*oper2).decl.variable.type == Int))
+        return createVariable("", Int);
     else
     {
-		insertError(eq, toString("La operacion \"", "%", "\" no tiene operadores correctos.")); 
+		insertError(eq, toString("El operador \"", "%", "\" no tiene ambos operandos de tipo correcto.")); 
         return createVariable("", Int);
     }
 }
@@ -406,10 +419,15 @@ Attribute* returnMod(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 Attribute* returnDiv(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
     if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && ((*oper2).decl.variable.type != Bool))
-        return createVariable("", (*oper1).decl.variable.type);
+    {
+        if ((*oper1).decl.variable.type == Float)
+            return createVariable("", Float); // retorna la division real
+        else 
+            return createVariable("", Int); // retorna la division entera de valores enteros. Retorna q de un numero x, tal que:  x = q.a + r
+    }
     else
     {
-		insertError(eq, toString("La operacion \"", "/", "\" no tiene operadores correctos.")); 
+		insertError(eq, toString("El operador \"", "/", "\" no tiene ambos operandos de tipo correcto.")); 
         return createVariable("", Int);
     }
 }
@@ -421,7 +439,7 @@ Attribute* returnMult(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
         return createVariable("", (*oper1).decl.variable.type);
     else
     {
-		insertError(eq, toString("La operacion \"", "*", "\" no tiene operadores correctos.")); 
+		insertError(eq, toString("El operador \"", "*", "\" no tiene ambos operandos de tipo correcto.")); 
         return createVariable("", Int);
     }
 }

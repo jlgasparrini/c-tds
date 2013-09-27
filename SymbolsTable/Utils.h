@@ -5,7 +5,7 @@
 Attribute* getVariableAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id);
 
 /* Returns an attribute in the position "pos" of the ID "id" and Array structure. Otherwise returns NULL */
-Attribute* getArrayAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id, Attribute *aux);
+Attribute* getArrayAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attribute *attr, unsigned int pos);
 
 /* creates an attribute and assign it as a parameter of "method" containing the information included.
 	Returns a pointer to the attribute if the parameter was created successful. Returns NULL otherwise. */
@@ -39,6 +39,10 @@ void checkReturnExpression(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* l
 /* Returns the array at the position specified by attr.decl.variable.value.intValue if attr has "int" type
 	Otherwise insert an error message because the attribute haven't got "int" type and create a default variable of "int" type */
 Attribute* checkArrayPos(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id, Attribute* attr);
+
+/* Checks if the program have a "main" method and it haven't got parameters */
+void checkMain(ErrorsQueue *eq, SymbolsTable *aSymbolsTable);
+
 
 /* -------------------------------Methods used to form expressions------------------------------ */
 
