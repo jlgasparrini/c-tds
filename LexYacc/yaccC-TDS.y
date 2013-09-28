@@ -87,7 +87,7 @@ out(char *msg) {
 /* ------------------- PROGRAM -------------------- */
 
 program       :    CLASS ID '{' '}' {errorQ=initializeQueue(); finalizar();} 
-              |    CLASS ID '{' {initializeSymbolsTable(&symbolTable); pushLevel(&symbolTable); errorQ=initializeQueue();} body {checkMain(errorQ,&symbolTable); popLevel(&symbolTable); finalizar();} '}' 
+              |    CLASS ID '{' {initializeSymbolsTable(&symbolTable); pushLevel(&symbolTable); paramsStack=initializeSS(); errorQ=initializeQueue();} body {checkMain(errorQ,&symbolTable); popLevel(&symbolTable); finalizar();} '}' 
               ;
 
 body          :    fields_decls method_decl
@@ -194,7 +194,7 @@ location      :    ID {$$ = getVariableAttribute(errorQ, &symbolTable, $1);}
               ;
 
 method_call   :	   ID '(' ')' {cantParams=0; lastCalledMethod = $1; $$ = getMethodAttribute(errorQ, &symbolTable, $1, 0);}
-              |    ID '(' {cantParams=0; lastCalledMethod = $1;} expression_aux ')' {$$ = getMethodAttribute(errorQ,&symbolTable,$1,cantParams);}
+              |    ID '(' {insertString(paramsStack,intToString(cantParams)); cantParams=0; lastCalledMethod = $1;} expression_aux ')' {cantParams=atoi(removeLastString(paramsStack)); printf("ACA TENES EL CANT PARAMS GIL!!!     %d ............. \n", cantParams); $$ = getMethodAttribute(errorQ,&symbolTable,$1,cantParams);}
               |    EXTERNINVK '(' STRING ',' typevoid ')' {if (mType != RetVoid) $$=createVariable("",mType);}
               |    EXTERNINVK '(' STRING ',' typevoid ',' externinvk_arg ')' {if (mType != RetVoid) $$=createVariable("",mType);}
               ;

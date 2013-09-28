@@ -43,15 +43,18 @@ Attribute* createMethod(char *id, ReturnType type, unsigned char paramAmount)
 	Returns a pointer to the attribute if the parameter was created successful. Returns NULL otherwise. */
 Attribute* createParameter(Attribute *attr, unsigned char pos, char *id, PrimitiveType type)
 {
-    if (pos < MAX_PARAMS-1)
-    {  
-		Attribute *aux = createVariable(id, type);
-		addParameter(&(*attr).decl.method, &(*aux).decl.variable, pos);            
-//		(*attr).decl.method.paramSize = pos;
-		return aux;
-    } 
-	printf("Ya se han alcanzado la cantidad maxima de parametros del metodo \"%s\".", (*attr).decl.method.id);
-	return NULL;
+    if ((attr != NULL) && ((*attr).type = Method))
+    {
+        if (pos < MAX_PARAMS-1)
+        {  
+            Attribute *aux = createVariable(id, type);
+            addParameter(&(*attr).decl.method, &(*aux).decl.variable, pos);            
+    //		(*attr).decl.method.paramSize = pos;
+            return aux;
+        } 
+        printf("Ya se han alcanzado la cantidad maxima de parametros del metodo \"%s\".", (*attr).decl.method.id);
+    }
+    return NULL;
 }
 
 /* Adds the "var" variable in the position "pos" of the method "method" */
