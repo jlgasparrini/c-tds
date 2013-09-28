@@ -7,8 +7,8 @@ float sumatoria(float b){
         total = 0.0;
         i = b;
         
-	while(i > 0  || i > 0 )   {
-		if(i > 0){
+	while(i > 0.0  || i > 0.0 )   {
+		if(i > 0.0){
 			total = total + i;
                 }
 		i -= 1.0;

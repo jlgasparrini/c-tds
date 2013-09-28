@@ -15,11 +15,11 @@ int pruArrreglos(int a, int b ){
 
 int main(){
      
-     A[1] = 58 - (-6) ; 
-     C[2] = !((4 < 6)) ;
-     C[3] = ( 5 >= A[ 7 -(3+3) ]) || true ;
+//     A[1] = 58 - (-6) ; 
+ //    C[2] = !((4 < 6)) ;
+//     C[3] = ( 5 >= A[ 7 -(3+3) ]) || true ;
      y= C; // Error C es un arreglo 
-     externinvk("printf", int ,"%d resultado : ", pruArreglos(4, 8 ) , B); // B no esta declarada
+ //    externinvk("printf", int ,"%d resultado : ", pruArreglos(4, 8 ) , B); // B no esta declarada
     
     return 1;
     
