@@ -66,7 +66,7 @@ Attribute* getMethodAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char
 Attribute* arrangeParameter(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, unsigned char paramSize, char* id, PrimitiveType type)  
 {
 	Attribute *aux = lastDefinedMethod(aSymbolsTable);
-	if (searchIdInLevel(aSymbolsTable, id))
+	if (searchIdInLevel(aSymbolsTable, id) == NULL)
 	{	
 		aux = createParameter(aux, paramSize, id, type);
 		pushElement(eq, aSymbolsTable, aux);
