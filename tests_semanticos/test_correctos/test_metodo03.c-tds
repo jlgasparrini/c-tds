@@ -22,5 +22,6 @@ class Test_metodos {
                 int A[1];
                 res = false;
 		A[0] = resto(inc(5),10.2);
+        return A[0];
 	}
 }

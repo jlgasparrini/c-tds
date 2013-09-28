@@ -38,7 +38,7 @@ char* removeLastString(StringStack *s)
     if ((*s).size > 0)
     {
         SNode *auxNode = (*s).first;
-        char* auxVal = (*auxNode).val; // ver de hacer strdup((*auxNode).val)  para copiar el valor en un nuevo espacio de memoria!!!!!!!!!!
+        char* auxVal = strdup((*auxNode).val); // ver de hacer strdup((*auxNode).val)  para copiar el valor en un nuevo espacio de memoria!!!!!!!!!!
 		(*s).first = (*auxNode).next;
         free(auxNode);
 		(*s).size--;
