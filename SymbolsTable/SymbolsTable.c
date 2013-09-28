@@ -18,18 +18,21 @@ void pushElement(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attribute *at)
 {
 	if ((*aSymbolsTable).currentLevel > 0)
 	{  
-        char *idAux;
-        if ((*at).type == Variable)
-            idAux = (*at).decl.variable.id;
-        if ((*at).type == Method)
-            idAux = (*at).decl.method.id;
-        if ((*at).type == Array)
-            idAux = (*at).decl.array.id;
+        if (at!=NULL)
+        {
+            char *idAux;
+            if ((*at).type == Variable)
+                idAux = (*at).decl.variable.id;
+            if ((*at).type == Method)
+                idAux = (*at).decl.method.id;
+            if ((*at).type == Array)
+                idAux = (*at).decl.array.id;
 
-        if (searchIdInLevel(aSymbolsTable, idAux) != NULL) 
-			insertError(eq, toString("El identificador ", idAux, " ya se encuentra en uso."));
-		else
-			insert((*(*aSymbolsTable).top).list, at); 
+            if (searchIdInLevel(aSymbolsTable, idAux) != NULL) 
+                insertError(eq, toString("El identificador ", idAux, " ya se encuentra en uso."));
+            else
+                insert((*(*aSymbolsTable).top).list, at); 
+        }
 	}
 	else
 		printf("%s\n",toString("SymbolsTable: pushElement Warning: la tabla no tiene ningun nivel.","",""));

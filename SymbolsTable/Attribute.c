@@ -65,10 +65,15 @@ void addParameter(StMethod *method, StVariable *var, unsigned char pos)
 /* Sets the amount of parameters that will have the method attr */
 void setAmountOfParameters(Attribute *attr, unsigned char amount)
 {
+    if ((*attr).type == Method)
+    {
 	if (amount > MAX_PARAMS)	
 		printf("El metodo \"%s\" no puede tener mas de %d parametros.\n", (*attr).decl.method.id, MAX_PARAMS);
 	else
 		(*attr).decl.method.paramSize = amount;
+    }
+    else
+        printf("ERRORASO!!!");
 }
 
 /* Sets the value of the variable that contains "attr" with the respective "value" */
