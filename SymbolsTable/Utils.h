@@ -1,18 +1,23 @@
 #ifndef Utils_H
 #define Utils_H
+#include "Attribute.h"
+#include "SymbolsTable.h"
 
+#include "../ErrorsQueue/ErrorsQueue.h"
 /* Returns an attribute of ID "id" and Variable structure. Otherwise returns NULL */
 Attribute* getVariableAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id);
 
 /* Returns an attribute in the position "pos" of the ID "id" and Array structure. Otherwise returns NULL */
 Attribute* getArrayAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attribute *attr, unsigned int pos);
 
-/* creates an attribute and assign it as a parameter of "method" containing the information included.
-	Returns a pointer to the attribute if the parameter was created successful. Returns NULL otherwise. */
-Attribute* arrangeParameter(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, unsigned char paramSize, char* id, PrimitiveType type); 
-
 /* Returns the ReturnType of the method with id "id" */
 ReturnType methodReturnType(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id);
+
+/* Returns the amount of digits that has the int "value" */
+unsigned int digitAmount(int value);
+
+/* Returns the string representation of the int "value" */
+char* intToString(int value);
 
 /* Returns 0 if the type parameter in "paramSize" position of the method's parameters is equal to the type of "var" 
    and the amount of params are equal.

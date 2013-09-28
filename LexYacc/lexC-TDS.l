@@ -55,7 +55,7 @@ dotcomma    ";"
 string      "\""{ascii}*"\"" 
 expVal      [Ee][+-]{int}
 externinvk  "externinvk"
-ascii		[-!-:<-~ ]	
+ascii		[-!#-:<-~ ']	
 obracket	"["
 cbracket	"]"
 

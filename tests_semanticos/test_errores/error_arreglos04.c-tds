@@ -3,7 +3,7 @@ class test_arreglos{
 int A[5] ;
 boolean C[10];
 
-int pruArrreglos(int a, int b ){
+int pruArreglos(int a, int b ){
          boolean c ;
          c =  false && C[2];
          C[a + b] = ((a < b)) ; 

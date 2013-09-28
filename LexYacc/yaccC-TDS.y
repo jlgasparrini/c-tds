@@ -5,13 +5,15 @@
 #  include  <stdlib.h>
 #  include  "../SymbolsTable/Attribute.h"
 #  include  "../SymbolsTable/SymbolsTable.h"
+#  include  "../SymbolsTable/StringStack.h"
 #  include  "../SymbolsTable/Utils.h"
 #  include  "../ErrorsQueue/ErrorsQueue.h"
 
 extern FILE *yyin;
 ErrorsQueue *errorQ;						/* Errors Queue definition */
 SymbolsTable symbolTable;					/* <----Symbols Table Definition----- */
-unsigned char cantParams = 0;				/* Amount of parameters that a method will have */
+StringStack *paramsStack, *methodsIDStack;  /* StringStack containing the amount of parameters and lastCalledMethods in each level of method_call*/
+unsigned char cantParams = 0, returns;/* Amount of parameters and amount of returns that a method will have */
 PrimitiveType vaType;						/* Type of the variable or array */
 ReturnType mType;							/* Return type of the method */
 char *lastDefMethod, *lastCalledMethod;		/* Name of the last defined method (lastDefMethod) and the last called method (lastCalledMethod) */
@@ -110,10 +112,10 @@ type          :		INTW		{vaType = Int; mType = RetInt;}
               |		BOOLEANW	{vaType = Bool; mType = RetBool;}
               ;
 
-method_decl   :     type ID {lastDefMethod=$2; pushElement(errorQ,&symbolTable,createMethod($2,mType,0)); pushLevel(&symbolTable);} param block {popLevel(&symbolTable);}
-              |		method_decl type ID {lastDefMethod=$3; pushElement(errorQ,&symbolTable,createMethod($3,mType,0)); pushLevel(&symbolTable);} param block {popLevel(&symbolTable);}
-              |     VOID ID {lastDefMethod=$2; pushElement(errorQ,&symbolTable,createMethod($2,RetVoid,0)); pushLevel(&symbolTable);} param block {popLevel(&symbolTable);}
-              |	    method_decl VOID ID {lastDefMethod=$3; pushElement(errorQ,&symbolTable,createMethod($3,RetVoid,0)); pushLevel(&symbolTable);} param block {popLevel(&symbolTable);}
+method_decl   :     type ID {lastDefMethod=$2; pushElement(errorQ,&symbolTable,createMethod($2,mType,0)); pushLevel(&symbolTable); returns=0;} param block {popLevel(&symbolTable); if(returns==0) insertError(errorQ,toString("El metodo \"",$2,"\" debe tener al menos un return."));}
+              |		method_decl type ID {lastDefMethod=$3; pushElement(errorQ,&symbolTable,createMethod($3,mType,0)); pushLevel(&symbolTable); returns=0;} param block {popLevel(&symbolTable); if(returns==0) insertError(errorQ,toString("El metodo \"",$3,"\" debe tener al menos un return."));}
+              |     VOID ID {lastDefMethod=$2; pushElement(errorQ,&symbolTable,createMethod($2,RetVoid,0)); pushLevel(&symbolTable); returns=0;} param block {popLevel(&symbolTable); if(returns==0) insertError(errorQ,toString("El metodo \"",$2,"\" debe tener al menos un return."));}
+              |	    method_decl VOID ID {lastDefMethod=$3; pushElement(errorQ,&symbolTable,createMethod($3,RetVoid,0)); pushLevel(&symbolTable); returns=0;} param block {popLevel(&symbolTable); if(returns==0) insertError(errorQ,toString("El metodo \"",$3,"\" debe tener al menos un return."));}
               ;
 
 param		  :    '(' ')' {cantParams = 0; setAmountOfParameters(searchIdInSymbolsTable(errorQ,&symbolTable,lastDefMethod),0);}
@@ -155,8 +157,8 @@ statement     :    conditional
 action        :
               |    BREAK 
               |    CONTINUE 
-			  |	   RETURN {checkReturn(errorQ,&symbolTable,lastDefMethod);}
-			  |	   RETURN expression {checkReturnExpression(errorQ,&symbolTable,lastDefMethod,$2);}
+			  |	   RETURN {returns++; checkReturn(errorQ,&symbolTable,lastDefMethod);}
+			  |	   RETURN expression {returns++; checkReturnExpression(errorQ,&symbolTable,lastDefMethod,$2);}
               |    asignation 
               |    method_call                        
               ;
@@ -191,7 +193,7 @@ location      :    ID {$$ = getVariableAttribute(errorQ, &symbolTable, $1);}
               |    ID '[' term ']' {$$ = checkArrayPos(errorQ,&symbolTable,$1,$3);}
               ;
 
-method_call   :	   ID '(' ')' {cantParams=0; lastCalledMethod = $1; $$ = getMethodAttribute(errorQ, &symbolTable, $1, cantParams);}
+method_call   :	   ID '(' ')' {cantParams=0; lastCalledMethod = $1; $$ = getMethodAttribute(errorQ, &symbolTable, $1, 0);}
               |    ID '(' {cantParams=0; lastCalledMethod = $1;} expression_aux ')' {$$ = getMethodAttribute(errorQ,&symbolTable,$1,cantParams);}
               |    EXTERNINVK '(' STRING ',' typevoid ')' {if (mType != RetVoid) $$=createVariable("",mType);}
               |    EXTERNINVK '(' STRING ',' typevoid ',' externinvk_arg ')' {if (mType != RetVoid) $$=createVariable("",mType);}

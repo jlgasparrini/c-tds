@@ -91,10 +91,7 @@ Attribute* searchIdInLevel(SymbolsTable *aSymbolsTable, char *id)
 {
     SymbolsTableNode *auxTop = (*aSymbolsTable).top;
     Attribute *auxAttr = search(((*auxTop).list), id);
-	if (auxAttr != NULL)
-        return auxAttr;
-    else
-		return NULL;
+    return auxAttr;
 }
 
 /* Return the last defined method in the current level */

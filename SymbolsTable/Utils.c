@@ -1,10 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "Attribute.h"
-#include "SymbolsTable.h"
 #include "Utils.h"
-#include "../ErrorsQueue/ErrorsQueue.h"
 
 /* Returns an attribute of ID "id" and Variable structure. Otherwise returns NULL */
 Attribute* getVariableAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id)
@@ -61,31 +58,6 @@ Attribute* getMethodAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char
 	return NULL;
 }
 
-/* creates an attribute and assign it as a parameter of "method" containing the information included.
-	Returns a pointer to the attribute if the parameter was created successful. Returns NULL otherwise. */
-Attribute* arrangeParameter(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, unsigned char paramSize, char* id, PrimitiveType type)  
-{
-	Attribute *aux = lastDefinedMethod(aSymbolsTable);
-	if (searchIdInLevel(aSymbolsTable, id))
-	{	
-		aux = createParameter(aux, paramSize, id, type);
-		pushElement(eq, aSymbolsTable, aux);
-		return aux;
-	}
-	char* number = (char*) malloc (digitAmount(paramSize)*sizeof(char));
-	sprintf(number,"%d",paramSize);
-	char* msg = (char*) malloc ((strlen(". El identificador del ")+strlen(number)+strlen("° parametro \"")+strlen(id)+strlen("\", ya se encuentra utilizado."))*sizeof(char));
-	strcat(msg,"\". El identificador del ");
-	strcat(msg, number);
-	strcat(msg,"° parametro \"");
-	strcat(msg, id);
-	strcat(msg,"\" ya se encuentra utilizado.");
-	insertError(eq,toString("Error en el metodo \"", (*aux).decl.method.id, msg));  
-//	free(number);
-//	free(msg);
-	return NULL;
-}
-
 /* Returns 0 if the type of the parameter on the position "pos" of the method "attr" is equal to the type of "var"
 	Returns 1 otherwise */
 unsigned char correctParameterType(StVariable *var, Attribute *attr, unsigned char pos)
@@ -117,6 +89,26 @@ char* getType(PrimitiveType type)
 	if (type == Bool)
 		return "boolean";
 	return "incorrect type";
+}
+
+/* Returns the amount of digits that has the int "value" */
+unsigned int digitAmount(int value)
+{
+	int count = 0;
+    while (value > 0)
+    {
+	    value = value/10;
+        count++;
+    }
+    return count;
+}
+
+/* Returns the string representation of the int "value" */
+char* intToString(int value)
+{
+   char *aux = (char*) malloc (digitAmount(value)*sizeof(char)); 
+   sprintf(aux,"%d",value);
+   return aux;
 }
 
 /* Returns 0 if the type parameter in "paramSize" position of the method's parameters is equal to the type of "var" 

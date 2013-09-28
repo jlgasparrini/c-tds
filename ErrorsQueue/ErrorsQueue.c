@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "../SymbolsTable/Utils.h"
 /*
  * An errors queue implementation.
  */
@@ -19,21 +20,9 @@ ErrorsQueue* initializeQueue()
     return aux;
 }
 
-/* Returns the amount of digits that has an int value */
-unsigned int digitAmount(int value)
-{
-	int count = 0;
-    while (value > 0)
-    {
-	    value = value/10;
-        count++;
-    }
-    return count;
-}
-
 /* Returns the string formed by putting together all the parameters */
 char* toString(char *init, char *id, char *message)
-{																						   /* +      1     + */
+{																						   
 	char* msg = (char*) malloc ((strlen(init)+strlen(id)+strlen(message)+strlen(" Error en linea: ")+digitAmount(lineNumb)+strlen(".")+digitAmount(columnNumb))*sizeof(char));
 	strcat(msg,init);  
 	strcat(msg,id); 

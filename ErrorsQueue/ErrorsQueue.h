@@ -29,9 +29,6 @@ typedef struct
 /* Returns an initialized queue. */ 
 ErrorsQueue* initializeQueue();
 
-/* Returns the amount of digits that has an int value */
-unsigned int digitAmount(int value);
-
 /* Returns the string formed by putting together all the parameters */
 char* toString(char *init, char *id, char *message);
 
