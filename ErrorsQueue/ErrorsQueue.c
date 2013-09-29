@@ -1,11 +1,12 @@
+/*
+ * An errors queue implementation.
+ */
+
 #include "ErrorsQueue.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include "../SymbolsTable/Utils.h"
-/*
- * An errors queue implementation.
- */
 
 extern lineNumb;
 extern columnNumb;

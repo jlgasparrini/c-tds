@@ -1,0 +1,41 @@
+class test_continuebreak{
+
+int x;
+
+float pruContinue(float x, int b){
+
+	float i;
+	int n; 
+	float total;
+        total = -1.0;
+        n= 23;
+        i = 23.1;
+
+	while(i >= 0.0){
+		i = i - 1.1;
+		if (x < total){
+			if(i != 0.0){
+				total = total * x * i;
+                        }
+			continue;
+		}
+		else {
+			total = -1000.2343 + 6752.1;
+			
+			break;
+
+		}	
+	
+
+	}
+
+
+	return -2.1 * total;
+}
+
+int main(){
+    return x;
+    externinvk("printf", float , pruContinue( ));
+}
+
+}

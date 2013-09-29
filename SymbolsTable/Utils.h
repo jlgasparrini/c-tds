@@ -2,8 +2,8 @@
 #define Utils_H
 #include "Attribute.h"
 #include "SymbolsTable.h"
-
 #include "../ErrorsQueue/ErrorsQueue.h"
+
 /* Returns an attribute of ID "id" and Variable structure. Otherwise returns NULL */
 Attribute* getVariableAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id);
 
@@ -12,6 +12,9 @@ Attribute* getArrayAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attri
 
 /* Returns the ReturnType of the method with id "id" */
 ReturnType methodReturnType(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id);
+
+/* Returns the type of the attribute, although it is a variable, array or method */
+ReturnType getAttributeType(Attribute *attr);
 
 /* Returns the amount of digits that has the int "value" */
 unsigned int digitAmount(int value);

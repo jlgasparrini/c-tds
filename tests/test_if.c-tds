@@ -1,0 +1,26 @@
+class test_if{
+
+float pruAritmetica(float b, float c ){
+    float res;
+	if(b > c){
+		res = b - c;
+    }
+	
+    if(b == c){
+		res = 3.4*b;
+    }
+	else{
+		res = b*c;
+    }
+
+	return res;
+}
+
+int main(){
+
+    externinvk("printf", int , pruAritmetica(4.1,8.4 ));
+    externinvk("printf", boolean);
+    return 2;
+}
+
+}

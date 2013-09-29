@@ -1,0 +1,12 @@
+class test_main_return{
+
+    int pruMult( ){
+        int a;
+            a = 5;
+        return ( a * 7);
+    }
+
+    int main(){  // error, main no tiene return
+        externinvk("printf", int , pruMult()); 
+    }
+}

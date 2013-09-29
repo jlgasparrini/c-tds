@@ -79,6 +79,17 @@ ReturnType methodReturnType(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* 
 	return RetInt; /* retorno por defecto el tipo int */
 }
 
+/* Returns the type of the attribute, although it is a variable, array or method */
+ReturnType getAttributeType(Attribute *attr)
+{
+    if((*attr).type == Variable)
+		return (*attr).decl.variable.type;
+    if((*attr).type != Array)
+		return (*attr).decl.array.type;
+    if((*attr).type == Method)
+		return (*attr).decl.method.type;
+}
+
 /* Returns the string corresponding to "type" */
 char* getType(PrimitiveType type)
 {
@@ -308,7 +319,8 @@ Attribute* returnAnd(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 /* Return an attribute with the distinct operation applied to oper1 and oper2. */
 Attribute* returnDistinct(Attribute *oper1, Attribute *oper2)
 {
-    return createVariable("", Bool);
+    return createVariable("", Bool); /* 2 != false is true. It is valid?? ------------------------------------------------------------------- */
+									 /* ----------------------------------------------------------------------------------------------------- */
 }
 
 /* Return an attribute with the equal operation applied to oper1 and oper2. */
@@ -323,11 +335,12 @@ Attribute* returnEqual(Attribute *oper1, Attribute *oper2)
 /* Return an attribute with the minor comparison operation applied to oper1 and oper2. */
 Attribute* returnMinorComparison(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
-    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type)
+    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type) /* true < false is valid?? --------------------------------------------- */
+																	/* ---------------------------------------------------------------------- */
         return createVariable("", Bool); 
     else
     {
-		insertError(eq, toString("El operador \"", "<", "\" no tiene ambos operandos de tipo correcto.")); 
+		insertError(eq, toString("El operador \"", "<", "\" no tiene ambos operandos de tipo correcto o del mismo tipo.")); 
         return createVariable("", Bool);
     }
 }
@@ -335,11 +348,12 @@ Attribute* returnMinorComparison(ErrorsQueue *eq, Attribute *oper1, Attribute *o
 /* Return an attribute with the major comparison operation applied to oper1 and oper2. */
 Attribute* returnMajorComparison(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
-    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type)
+    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type) /* true > false is valid?? ---------------------------------------------- */
+																	/* ---------------------------------------------------------------------- */
         return createVariable("", Bool); 
     else
     {
-		insertError(eq, toString("El operador \"", ">", "\" no tiene ambos operandos de tipo correcto.")); 
+		insertError(eq, toString("El operador \"", ">", "\" no tiene ambos operandos de tipo correcto o del mismo tipo.")); 
         return createVariable("", Bool);
     }
 }
@@ -347,11 +361,11 @@ Attribute* returnMajorComparison(ErrorsQueue *eq, Attribute *oper1, Attribute *o
 /* Return an attribute with the greater or equal comparison operation applied to oper1 and oper2. */
 Attribute* returnGEqualComparison(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
-    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type)
-        return createVariable("", Bool); 
+    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type) /* true >= false is valid?? --------------------------------------------- */
+        return createVariable("", Bool);							/* ---------------------------------------------------------------------- */
     else
     {
-		insertError(eq, toString("El operador \"", ">=", "\" no tiene ambos operandos de tipo correcto.")); 
+		insertError(eq, toString("El operador \"", ">=", "\" no tiene ambos operandos de tipo correcto o del mismo tipo.")); 
         return createVariable("", Bool);
     }
 }
@@ -359,11 +373,12 @@ Attribute* returnGEqualComparison(ErrorsQueue *eq, Attribute *oper1, Attribute *
 /* Return an attribute with the less or equal comparison operation applied to oper1 and oper2. */
 Attribute* returnLEqualComparison(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
-    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type)
+    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type) /* true <= false is valid?? --------------------------------------------- */
+																	/* ---------------------------------------------------------------------- */
         return createVariable("", Bool); 
     else
     {
-		insertError(eq, toString("El operador \"", "<=", "\" no tiene ambos operandos de tipo correcto.")); 
+		insertError(eq, toString("El operador \"", "<=", "\" no tiene ambos operandos de tipo correcto o del mismo tipo.")); 
         return createVariable("", Bool);
     }
 }
@@ -378,7 +393,7 @@ Attribute* returnAdd(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
         return createVariable("", (*oper1).decl.variable.type);
     else
     {
-		insertError(eq, toString("El operador \"", "+", "\" no tiene ambos operandos de tipo correcto.")); 
+		insertError(eq, toString("El operador \"", "+", "\" no tiene ambos operandos de tipo correcto o del mismo tipo.")); 
         return createVariable("", Int);
     }
 }
@@ -390,7 +405,7 @@ Attribute* returnSub(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
         return createVariable("", (*oper1).decl.variable.type);
     else
     {
-		insertError(eq, toString("El operador \"", "-", "\" no tiene ambos operandos de tipo correcto.")); 
+		insertError(eq, toString("El operador \"", "-", "\" no tiene ambos operandos de tipo correcto o del mismo tipo.")); 
         return createVariable("", Int);
     }
 }
@@ -402,7 +417,7 @@ Attribute* returnMod(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
         return createVariable("", Int);
     else
     {
-		insertError(eq, toString("El operador \"", "%", "\" no tiene ambos operandos de tipo correcto.")); 
+		insertError(eq, toString("El operador \"", "%", "\" no tiene ambos operandos de tipo correcto o del mismo tipo.")); 
         return createVariable("", Int);
     }
 }
@@ -419,7 +434,7 @@ Attribute* returnDiv(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
     }
     else
     {
-		insertError(eq, toString("El operador \"", "/", "\" no tiene ambos operandos de tipo correcto.")); 
+		insertError(eq, toString("El operador \"", "/", "\" no tiene ambos operandos de tipo correcto o del mismo tipo.")); 
         return createVariable("", Int);
     }
 }
@@ -431,7 +446,7 @@ Attribute* returnMult(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
         return createVariable("", (*oper1).decl.variable.type);
     else
     {
-		insertError(eq, toString("El operador \"", "*", "\" no tiene ambos operandos de tipo correcto.")); 
+		insertError(eq, toString("El operador \"", "*", "\" no tiene ambos operandos de tipo correcto o del mismo tipo.")); 
         return createVariable("", Int);
     }
 }

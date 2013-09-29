@@ -1,0 +1,15 @@
+class test_mod{
+
+int pruAritmetica( ){
+	
+    /* nada */  int a;
+            a = 90;
+		return (a % 7 );
+	}
+
+float main(){
+    return 23.45;
+    externinvk("printf", int , pruAritmetica( ));
+}
+
+}

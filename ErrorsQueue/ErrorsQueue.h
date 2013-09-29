@@ -1,4 +1,3 @@
-
 /*
  * A errors queue header.
  */

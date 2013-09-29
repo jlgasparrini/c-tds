@@ -1,0 +1,11 @@
+class test_arreglos{
+
+int A[589.6] ; // tamaño de arreglo debe ser un numero entero
+float B [56 + 6]; // tamaño de arreglo no puede ser una expresion
+boolean C [x];  // tamaño de arreglo no puede ser una variable
+
+int main(){
+    return;
+}
+
+}

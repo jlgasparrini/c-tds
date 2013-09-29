@@ -1,9 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include "SymbolsTable.h"
-
-#include "../ErrorsQueue/ErrorsQueue.h"
 
 /* Initializes the SymbolsTable */
 void initializeSymbolsTable(SymbolsTable *aSymbolsTable)

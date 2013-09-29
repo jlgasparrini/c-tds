@@ -384,7 +384,7 @@ static yyconst flex_int16_t yy_accept[132] =
        11,   42,   15,   24,   18,   16,   19,   14,   53,   25,
        26,   53,   53,   53,   53,   53,   53,   53,   53,   53,
        22,   54,   23,    6,    6,   33,    0,   38,   37,   30,
-       31,   43,    4,    7,    0,   42,    0,   34,   32,   35,
+        0,   42,   31,   43,    4,    7,    0,   34,   32,   35,
        53,   53,   53,   53,   53,   53,   53,   53,   53,   53,
        47,   53,   53,   53,   53,   53,   36,    5,    0,    7,
         0,   53,   53,   53,   53,   53,   53,   53,   53,   50,
@@ -440,21 +440,21 @@ static yyconst flex_int32_t yy_meta[52] =
 
 static yyconst flex_int16_t yy_base[136] =
     {   0,
-        0,    0,  147,  146,  157,  160,  160,  160,  160,  134,
-      149,  160,  145,  160,  160,  160,  131,  160,  130,  133,
-       40,   37,  160,  160,  128,  127,  126,  160,    0,  160,
-      160,   17,   15,   21,   31,   27,  113,  104,  104,  108,
-      160,   93,  160,  160,  125,  160,  135,  160,  160,  160,
-      160,   47,  160,    0,  122,   48,   62,  160,  160,  160,
-        0,   98,  104,  107,   96,   92,   90,   94,   91,   89,
-        0,   86,   85,   83,   90,   89,  160,  160,   63,    0,
-      107,   85,   93,   79,   77,   86,   85,   75,   87,    0,
-        0,   71,   81,   81,   74,   94,   93,   76,   71,   65,
+        0,    0,  149,  148,  159,  162,  162,  162,  162,  136,
+      151,  162,  147,  162,  162,  162,  133,  162,   36,  136,
+       43,   41,  162,  162,  131,  130,  129,  162,    0,  162,
+      162,   20,   24,   25,   38,   31,  116,  107,  107,  111,
+      162,   96,  162,  162,  128,  162,  138,  162,  162,  162,
+      125,   54,  162,   56,  162,    0,   63,  162,  162,  162,
+        0,  101,  107,  110,   99,   95,   93,   97,   94,   92,
+        0,   89,   88,   86,   93,   92,  162,  162,   68,    0,
+      110,   88,   96,   82,   80,   89,   88,   78,   90,    0,
+        0,   74,   84,   84,   77,   97,   96,   79,   74,   68,
 
-       70,    0,   64,   71,   60,   61,    0,    0,   68,   83,
-       70,    0,    0,   59,   58,    0,    0,   57,    0,   56,
-       50,   57,    0,    0,   59,   50,    0,   34,   41,    0,
-      160,   82,   84,   64,   88
+       73,    0,   67,   74,   63,   64,    0,    0,   71,   86,
+       73,    0,    0,   62,   61,    0,    0,   58,    0,   49,
+       42,   49,    0,    0,   51,   44,    0,   23,   18,    0,
+      162,   90,   92,   49,   96
     } ;
 
 static yyconst flex_int16_t yy_def[136] =
@@ -464,7 +464,7 @@ static yyconst flex_int16_t yy_def[136] =
       131,  131,  131,  131,  131,  131,  131,  131,  134,  131,
       131,  134,  134,  134,  134,  134,  134,  134,  134,  134,
       131,  131,  131,  131,  131,  131,  133,  131,  131,  131,
-      131,  131,  131,  135,  131,  131,  131,  131,  131,  131,
+      131,  131,  131,  131,  131,  135,  131,  131,  131,  131,
       134,  134,  134,  134,  134,  134,  134,  134,  134,  134,
       134,  134,  134,  134,  134,  134,  131,  131,  131,  135,
       131,  134,  134,  134,  134,  134,  134,  134,  134,  134,
@@ -476,60 +476,60 @@ static yyconst flex_int16_t yy_def[136] =
         0,  131,  131,  131,  131
     } ;
 
-static yyconst flex_int16_t yy_nxt[212] =
+static yyconst flex_int16_t yy_nxt[214] =
     {   0,
         6,    7,    8,    9,   10,   11,    6,   12,   13,   14,
        15,   16,   17,   18,   19,   20,   21,   22,   23,   24,
        25,   26,   27,   28,   29,   29,   30,   31,    6,   29,
        32,   33,   29,   34,   35,   29,   36,   29,   29,   29,
        29,   37,   29,   38,   29,   39,   40,   29,   41,   42,
-       43,   53,   55,   64,   56,   65,   54,   62,   63,   66,
-       68,   71,   57,   55,   52,   56,   72,   61,   67,   69,
-       57,   70,   79,   57,   81,   96,   81,   96,  130,  129,
-       79,   57,   44,   44,   44,   44,   47,   47,   80,  128,
-       80,   80,  127,  126,  125,  124,  123,  122,  121,  120,
+       43,   51,   61,   52,   55,  130,   51,   53,   52,   56,
+       62,   63,   64,   66,   65,   71,   57,   68,  129,   51,
+       72,   52,   67,   54,   57,   81,   69,   81,   70,   57,
+       96,   79,   96,  128,  127,  126,  125,   57,  124,   79,
+       44,   44,   44,   44,   47,   47,   80,  123,   80,   80,
 
-      110,  119,  118,  117,  116,  115,  114,  113,  112,  111,
-       97,  110,  109,  108,  107,  106,  105,  104,  103,  102,
-      101,  100,   99,   98,   97,   95,   94,   93,   92,   91,
-       90,   89,   88,   87,   86,   85,   84,   83,   82,   52,
-       48,   78,   77,   76,   75,   74,   73,   60,   59,   58,
-       52,   51,   50,   49,   48,   46,  131,   45,   45,    5,
-      131,  131,  131,  131,  131,  131,  131,  131,  131,  131,
+      122,  121,  120,  110,  119,  118,  117,  116,  115,  114,
+      113,  112,  111,   97,  110,  109,  108,  107,  106,  105,
+      104,  103,  102,  101,  100,   99,   98,   97,   95,   94,
+       93,   92,   91,   90,   89,   88,   87,   86,   85,   84,
+       83,   82,   54,   48,   78,   77,   76,   75,   74,   73,
+       60,   59,   58,   54,   50,   49,   48,   46,  131,   45,
+       45,    5,  131,  131,  131,  131,  131,  131,  131,  131,
       131,  131,  131,  131,  131,  131,  131,  131,  131,  131,
       131,  131,  131,  131,  131,  131,  131,  131,  131,  131,
       131,  131,  131,  131,  131,  131,  131,  131,  131,  131,
 
       131,  131,  131,  131,  131,  131,  131,  131,  131,  131,
-      131
+      131,  131,  131
     } ;
 
-static yyconst flex_int16_t yy_chk[212] =
+static yyconst flex_int16_t yy_chk[214] =
     {   0,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,   21,   22,   33,   22,   33,   21,   32,   32,   34,
-       35,   36,   22,   56,   52,   56,   36,  134,   34,   35,
-       22,   35,   52,   56,   57,   79,   57,   79,  129,  128,
-       52,   56,  132,  132,  132,  132,  133,  133,  135,  126,
-      135,  135,  125,  122,  121,  120,  118,  115,  114,  111,
+        1,   19,  134,   19,   21,  129,   22,   19,   22,   21,
+       32,   32,   33,   34,   33,   36,   22,   35,  128,   52,
+       36,   52,   34,   54,   22,   57,   35,   57,   35,   52,
+       79,   54,   79,  126,  125,  122,  121,   52,  120,   54,
+      132,  132,  132,  132,  133,  133,  135,  118,  135,  135,
 
-      110,  109,  106,  105,  104,  103,  101,  100,   99,   98,
-       97,   96,   95,   94,   93,   92,   89,   88,   87,   86,
-       85,   84,   83,   82,   81,   76,   75,   74,   73,   72,
-       70,   69,   68,   67,   66,   65,   64,   63,   62,   55,
-       47,   45,   42,   40,   39,   38,   37,   27,   26,   25,
-       20,   19,   17,   13,   11,   10,    5,    4,    3,  131,
-      131,  131,  131,  131,  131,  131,  131,  131,  131,  131,
+      115,  114,  111,  110,  109,  106,  105,  104,  103,  101,
+      100,   99,   98,   97,   96,   95,   94,   93,   92,   89,
+       88,   87,   86,   85,   84,   83,   82,   81,   76,   75,
+       74,   73,   72,   70,   69,   68,   67,   66,   65,   64,
+       63,   62,   51,   47,   45,   42,   40,   39,   38,   37,
+       27,   26,   25,   20,   17,   13,   11,   10,    5,    4,
+        3,  131,  131,  131,  131,  131,  131,  131,  131,  131,
       131,  131,  131,  131,  131,  131,  131,  131,  131,  131,
       131,  131,  131,  131,  131,  131,  131,  131,  131,  131,
       131,  131,  131,  131,  131,  131,  131,  131,  131,  131,
 
       131,  131,  131,  131,  131,  131,  131,  131,  131,  131,
-      131
+      131,  131,  131
     } ;
 
 static yy_state_type yy_last_accepting_state;
@@ -552,10 +552,11 @@ char *yytext;
 #include "../SymbolsTable/Attribute.h"
 #include "y.tab.h"
 
+
 unsigned int lineNumb = 1;
 unsigned int columnNumb = 1;
 
-#line 559 "lex.yy.c"
+#line 560 "lex.yy.c"
 
 #define INITIAL 0
 #define comment 1
@@ -743,10 +744,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 62 "lexC-TDS.l"
+#line 63 "lexC-TDS.l"
 
 
-#line 750 "lex.yy.c"
+#line 751 "lex.yy.c"
 
 	if ( !(yy_init) )
 		{
@@ -805,7 +806,7 @@ yy_match:
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
 			++yy_cp;
 			}
-		while ( yy_base[yy_current_state] != 160 );
+		while ( yy_base[yy_current_state] != 162 );
 
 yy_find_action:
 		yy_act = yy_accept[yy_current_state];
@@ -831,282 +832,282 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 64 "lexC-TDS.l"
+#line 65 "lexC-TDS.l"
 {columnNumb++;};
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 65 "lexC-TDS.l"
+#line 66 "lexC-TDS.l"
 {columnNumb=columnNumb + 4;}
 	YY_BREAK
 case 3:
 /* rule 3 can match eol */
 YY_RULE_SETUP
-#line 66 "lexC-TDS.l"
+#line 67 "lexC-TDS.l"
 {lineNumb++; columnNumb = 1;}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 67 "lexC-TDS.l"
+#line 68 "lexC-TDS.l"
 {columnNumb = columnNumb + 2; BEGIN(comment);}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 68 "lexC-TDS.l"
+#line 69 "lexC-TDS.l"
 {columnNumb = columnNumb + 2; BEGIN(INITIAL);}
 	YY_BREAK
 case 6:
 /* rule 6 can match eol */
 YY_RULE_SETUP
-#line 69 "lexC-TDS.l"
+#line 70 "lexC-TDS.l"
 {if (strcmp(yytext,"\n") == 0) {lineNumb++; columnNumb=1;} else columnNumb++;}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 70 "lexC-TDS.l"
+#line 71 "lexC-TDS.l"
 
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 71 "lexC-TDS.l"
+#line 72 "lexC-TDS.l"
 {columnNumb++; return('+');}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 72 "lexC-TDS.l"
+#line 73 "lexC-TDS.l"
 {columnNumb++; return('-');}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 73 "lexC-TDS.l"
+#line 74 "lexC-TDS.l"
 {columnNumb++; return('*');}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 74 "lexC-TDS.l"
+#line 75 "lexC-TDS.l"
 {columnNumb++; return('*');}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 75 "lexC-TDS.l"
+#line 76 "lexC-TDS.l"
 {columnNumb++; return('%');}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 76 "lexC-TDS.l"
+#line 77 "lexC-TDS.l"
 {columnNumb++; return('!');}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 77 "lexC-TDS.l"
+#line 78 "lexC-TDS.l"
 {columnNumb++; return('?');}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 78 "lexC-TDS.l"
+#line 79 "lexC-TDS.l"
 {columnNumb++; return(':');}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 79 "lexC-TDS.l"
+#line 80 "lexC-TDS.l"
 {columnNumb++; return('=');}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 80 "lexC-TDS.l"
+#line 81 "lexC-TDS.l"
 {columnNumb++; return(',');}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 81 "lexC-TDS.l"
+#line 82 "lexC-TDS.l"
 {columnNumb++; return('<');}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 82 "lexC-TDS.l"
+#line 83 "lexC-TDS.l"
 {columnNumb++; return('>');}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 83 "lexC-TDS.l"
+#line 84 "lexC-TDS.l"
 {columnNumb++; return('(');}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 84 "lexC-TDS.l"
+#line 85 "lexC-TDS.l"
 {columnNumb++; return(')');}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 85 "lexC-TDS.l"
+#line 86 "lexC-TDS.l"
 {columnNumb++; return('{');}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 86 "lexC-TDS.l"
+#line 87 "lexC-TDS.l"
 {columnNumb++; return('}');}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 87 "lexC-TDS.l"
+#line 88 "lexC-TDS.l"
 {columnNumb++; return(';');}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 88 "lexC-TDS.l"
+#line 89 "lexC-TDS.l"
 {columnNumb++; return('[');}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 89 "lexC-TDS.l"
+#line 90 "lexC-TDS.l"
 {columnNumb++; return(']');}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 90 "lexC-TDS.l"
+#line 91 "lexC-TDS.l"
 {columnNumb=columnNumb+strlen(yytext); yylval.stringValue = strdup(yytext); return(INTW);}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 91 "lexC-TDS.l"
+#line 92 "lexC-TDS.l"
 {columnNumb=columnNumb+strlen(yytext); yylval.stringValue = strdup(yytext); return(FLOATW);}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 92 "lexC-TDS.l"
+#line 93 "lexC-TDS.l"
 {columnNumb=columnNumb+strlen(yytext); yylval.stringValue = strdup(yytext); return(BOOLEANW);}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 93 "lexC-TDS.l"
+#line 94 "lexC-TDS.l"
 {columnNumb=columnNumb+strlen(yytext); return(PLUSEQUAL);}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 94 "lexC-TDS.l"
+#line 95 "lexC-TDS.l"
 {columnNumb=columnNumb+strlen(yytext); return(MINUSEQUAL);}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 95 "lexC-TDS.l"
+#line 96 "lexC-TDS.l"
 {columnNumb=columnNumb+strlen(yytext); return(EQUAL);}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 96 "lexC-TDS.l"
+#line 97 "lexC-TDS.l"
 {columnNumb=columnNumb+strlen(yytext); return(DISTINCT);} 
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 97 "lexC-TDS.l"
+#line 98 "lexC-TDS.l"
 {columnNumb=columnNumb+strlen(yytext); return(LEQUAL);}
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 98 "lexC-TDS.l"
+#line 99 "lexC-TDS.l"
 {columnNumb=columnNumb+strlen(yytext); return(GEQUAL);}
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 99 "lexC-TDS.l"
+#line 100 "lexC-TDS.l"
 {columnNumb=columnNumb+strlen(yytext); return(OR);}
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 100 "lexC-TDS.l"
+#line 101 "lexC-TDS.l"
 {columnNumb=columnNumb+strlen(yytext); return(AND);}
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 101 "lexC-TDS.l"
+#line 102 "lexC-TDS.l"
 {columnNumb=columnNumb+strlen(yytext); return(STRING);}
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 102 "lexC-TDS.l"
+#line 103 "lexC-TDS.l"
 {columnNumb=columnNumb+strlen(yytext); return(EXTERNINVK);}
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 103 "lexC-TDS.l"
+#line 104 "lexC-TDS.l"
 {columnNumb=columnNumb+strlen(yytext); yylval.stringValue = strdup(yytext); return(BOOLEAN);}
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 104 "lexC-TDS.l"
+#line 105 "lexC-TDS.l"
 {columnNumb=columnNumb+strlen(yytext); yylval.stringValue = strdup(yytext); return(BOOLEAN);}
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 105 "lexC-TDS.l"
+#line 106 "lexC-TDS.l"
 {columnNumb=columnNumb+strlen(yytext); yylval.stringValue = strdup(yytext); return(INTEGER);}
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 106 "lexC-TDS.l"
+#line 107 "lexC-TDS.l"
 {columnNumb=columnNumb+strlen(yytext); yylval.stringValue = strdup(yytext); return(FLOAT);}
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 107 "lexC-TDS.l"
+#line 108 "lexC-TDS.l"
 {columnNumb=columnNumb+strlen(yytext); return(BREAK);}
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 108 "lexC-TDS.l"
+#line 109 "lexC-TDS.l"
 {columnNumb=columnNumb+strlen(yytext); return(CLASS);}
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 109 "lexC-TDS.l"
+#line 110 "lexC-TDS.l"
 {columnNumb=columnNumb+strlen(yytext); return(CONTINUE);}
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 110 "lexC-TDS.l"
+#line 111 "lexC-TDS.l"
 {columnNumb=columnNumb+strlen(yytext); return(IF);}
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 111 "lexC-TDS.l"
+#line 112 "lexC-TDS.l"
 {columnNumb=columnNumb+strlen(yytext); return(ELSE);}
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 112 "lexC-TDS.l"
+#line 113 "lexC-TDS.l"
 {columnNumb=columnNumb+strlen(yytext); return(WHILE);}
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 113 "lexC-TDS.l"
+#line 114 "lexC-TDS.l"
 {columnNumb=columnNumb+strlen(yytext); return(FOR);}
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 114 "lexC-TDS.l"
+#line 115 "lexC-TDS.l"
 {columnNumb=columnNumb+strlen(yytext); return(RETURN);}
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 115 "lexC-TDS.l"
+#line 116 "lexC-TDS.l"
 {columnNumb=columnNumb+strlen(yytext); return(VOID);}
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 116 "lexC-TDS.l"
+#line 117 "lexC-TDS.l"
 {columnNumb=columnNumb+strlen(yytext); yylval.stringValue = strdup(yytext); return(ID);}
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 117 "lexC-TDS.l"
+#line 118 "lexC-TDS.l"
 {printf( "Error lexico en la linea: %d.%d.   Simbolo invalido: \"%s\"\n",lineNumb,columnNumb,yytext);}
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 120 "lexC-TDS.l"
+#line 121 "lexC-TDS.l"
 ECHO;
 	YY_BREAK
-#line 1110 "lex.yy.c"
+#line 1111 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(comment):
 	yyterminate();
@@ -2105,7 +2106,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 120 "lexC-TDS.l"
+#line 121 "lexC-TDS.l"
 
 
 

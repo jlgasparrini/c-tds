@@ -1,0 +1,19 @@
+class test_class{
+   int c;
+   
+   int alo(int x){
+      return x*x;
+   }
+
+   int alo2(int x, int y){
+      return alo(x) + x*y;
+   }
+   
+    void main(){
+        int resultado;
+        {resultado = 34;}
+        resultado = alo2(alo(resultado), alo2(alo2(2,5), resultado*alo(resultado)  )  );
+        return;
+   }
+
+}

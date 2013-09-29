@@ -6,7 +6,6 @@
 #include <stdio.h>
 #include <string.h>
 #include "StringStack.h"
-#include  "../ErrorsQueue/ErrorsQueue.h"
 
 /* Returns an initialized StringStack. */ 
 StringStack* initializeSS()
@@ -38,14 +37,12 @@ char* removeLastString(StringStack *s)
     if ((*s).size > 0)
     {
         SNode *auxNode = (*s).first;
-        char* auxVal = strdup((*auxNode).val); // ver de hacer strdup((*auxNode).val)  para copiar el valor en un nuevo espacio de memoria!!!!!!!!!!
+        char* auxVal = strdup((*auxNode).val);
 		(*s).first = (*auxNode).next;
         free(auxNode);
 		(*s).size--;
         return auxVal;
     }
-    else
-		printf("%s\n",toString("StringStack: removeLastNumber Warning: Pila sin mas strings que descartar.","",""));
     return "";
 }
 
@@ -54,6 +51,5 @@ char* topString(StringStack *s)
 {
     if ((*s).size > 0)
         return (*(*s).first).val;
-	printf("%s\n",toString("StringStack: removeLastNumber Warning: La pila esta vacia.","",""));
     return "";
 }

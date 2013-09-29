@@ -1,0 +1,21 @@
+class pp{
+
+int factorial(int n){
+
+    int total;
+	int i; 
+        //float _2nombre; 
+        boolean 9while; //no puede comenzar con nro
+        int ___; // esto no es valido
+ 
+	while(i > 0){
+
+		total += total * i;
+		i = i - 1;
+
+	}
+	return total;
+} // end method factorial
+
+void main() { return;}
+} // end class pp

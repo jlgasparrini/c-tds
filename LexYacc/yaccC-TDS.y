@@ -13,10 +13,11 @@ extern FILE *yyin;
 ErrorsQueue *errorQ;						/* Errors Queue definition */
 SymbolsTable symbolTable;					/* <----Symbols Table Definition----- */
 StringStack *paramsStack, *methodsIDStack;  /* StringStack containing the amount of parameters and lastCalledMethods in each level of method_call*/
-unsigned char cantParams = 0, returns;		/* Amount of parameters and amount of returns that a method will have */
+unsigned char cantParams = 0, returns;		/* Amount of parameters and amount of returns that a method will have. */
+unsigned char iter = 0;						/* Number of "while" or "for" in the current block */
 PrimitiveType vaType;						/* Type of the variable or array */
 ReturnType mType;							/* Return type of the method */
-char *lastDefMethod, *lastCalledMethod = "";		/* Name of the last defined method (lastDefMethod) and the last called method (lastCalledMethod) */
+char *lastDefMethod, *lastCalledMethod = "";/* Name of the last defined method (lastDefMethod) and the last called method (lastCalledMethod) */
 int yydebug = 1;
 
 int yyerror (char *str)
@@ -87,7 +88,9 @@ out(char *msg) {
 /* ------------------- PROGRAM -------------------- */
 
 program       :    CLASS ID '{' '}' {errorQ=initializeQueue(); finalizar();} 
-              |    CLASS ID '{' {initializeSymbolsTable(&symbolTable); pushLevel(&symbolTable); errorQ=initializeQueue(); paramsStack=initializeSS(); methodsIDStack=initializeSS();} body {checkMain(errorQ,&symbolTable); popLevel(&symbolTable); finalizar();} '}' 
+              |    CLASS ID '{' {initializeSymbolsTable(&symbolTable); pushLevel(&symbolTable); errorQ=initializeQueue();
+								paramsStack=initializeSS(); methodsIDStack=initializeSS();} body 
+								{checkMain(errorQ,&symbolTable); popLevel(&symbolTable); finalizar();} '}' 
               ;
 
 body          :    fields_decls method_decl
@@ -103,8 +106,9 @@ fields        :    field
 			  |    fields ',' field
 			  ;
 
-field         :    ID					{pushElement(errorQ, &symbolTable, createVariable($1, vaType));}
-              |    ID '[' INTEGER ']'	{pushElement(errorQ, &symbolTable, createArray($1, vaType, atoi($3)));}
+field         :    ID			{pushElement(errorQ, &symbolTable, createVariable($1, vaType));}
+              |    ID '[' INTEGER {if (atoi($3) <= 0) insertError(errorQ,toString("Error en definicion del arreglo \"",$1,"\". El tamaño del arreglo debe ser un entero mayor que 0."));
+										pushElement(errorQ, &symbolTable, createArray($1, vaType, atoi($3)));} ']'	
               ;
 
 type          :		INTW		{vaType = Int; mType = RetInt;} 
@@ -118,14 +122,16 @@ method_decl   :     type ID {lastDefMethod=$2; pushElement(errorQ,&symbolTable,c
               |	    method_decl VOID ID {lastDefMethod=$3; pushElement(errorQ,&symbolTable,createMethod($3,RetVoid,0)); pushLevel(&symbolTable); returns=0;} param block {popLevel(&symbolTable); if(returns==0) insertError(errorQ,toString("El metodo \"",$3,"\" debe tener al menos un return."));}
               ;
 
-param		  :    '(' ')' {cantParams = 0; setAmountOfParameters(searchIdInSymbolsTable(errorQ,&symbolTable,lastDefMethod),0);}
-			  |    '(' {if (strcmp(lastDefMethod,"main") == 0) insertError(errorQ,toString("El metodo \"main\" no debe contener parametros.","","")); cantParams = 0;} parameters {setAmountOfParameters(searchIdInSymbolsTable(errorQ,&symbolTable,lastDefMethod),cantParams);} ')'
+param		  :    '(' {cantParams = 0; setAmountOfParameters(searchIdInSymbolsTable(errorQ,&symbolTable,lastDefMethod),0);} ')' 
+			  |    '(' {if (strcmp(lastDefMethod,"main") == 0)
+							insertError(errorQ,toString("El metodo \"main\" no debe contener parametros.","","")); cantParams = 0;}
+					parameters {setAmountOfParameters(searchIdInSymbolsTable(errorQ,&symbolTable,lastDefMethod),cantParams);} ')'
 			  ;
               
 parameters    :		type ID {Attribute *aux = createParameter(lastDefinedMethod(&symbolTable),cantParams,$2,vaType);
 								if (aux != NULL) {pushElement(errorQ,&symbolTable,aux); cantParams++;}}
-			  |		type ID ',' {Attribute *aux = createParameter(lastDefinedMethod(&symbolTable),cantParams,$2,vaType);
-								if (aux != NULL) {pushElement(errorQ,&symbolTable,aux); cantParams++;}} parameters 
+			  |		type ID {Attribute *aux = createParameter(lastDefinedMethod(&symbolTable),cantParams,$2,vaType);
+								if (aux != NULL) {pushElement(errorQ,&symbolTable,aux); cantParams++;}} ',' parameters 
 			  ;
 
 block         :    '{' '}'
@@ -148,12 +154,12 @@ statements    :    statement
 statement     :    conditional 
               |    iteration 
               |    action ';'     
-              |    block
+              |    {pushLevel(&symbolTable);} block {popLevel(&symbolTable);}
               ;
               
 action        :
-              |    BREAK 
-              |    CONTINUE 
+              |    BREAK {if (iter==0) insertError(errorQ,toString("Error. Solo se puede usar la sentencia \"break\" dentro de un ciclo.","",""));}
+              |    CONTINUE {if (iter==0) insertError(errorQ,toString("Error. Solo se puede usar la sentencia \"continue\" dentro de un ciclo.","",""));}
 			  |	   RETURN {returns++; checkReturn(errorQ,&symbolTable,lastDefMethod);}
 			  |	   RETURN expression {returns++; checkReturnExpression(errorQ,&symbolTable,lastDefMethod,$2);}
               |    asignation 
@@ -176,10 +182,10 @@ conditional   :    IF '(' expression ')' block {controlVariableType(errorQ,$3,Bo
 			  |    IF '(' expression ')' block {controlVariableType(errorQ,$3,Bool);}
 			  ;
 
-iteration     :    WHILE expression {controlVariableType(errorQ,$2,Bool);} block
-              |    FOR ID '=' expression ',' expression {if ((*getVariableAttribute(errorQ,&symbolTable,$2)).decl.variable.type != Int)
-															insertError(errorQ,toString("El identificador \"", $2, "\" no pertenece a una variable de tipo \"int\""));
-														controlVariableType(errorQ,$4,Int); controlVariableType(errorQ,$6,Int);} block                
+iteration     :    WHILE expression {controlVariableType(errorQ,$2,Bool); iter++;} block {iter--;}
+              |    FOR ID {if ((*getVariableAttribute(errorQ,&symbolTable,$2)).decl.variable.type != Int)
+							insertError(errorQ,toString("El identificador \"", $2, "\" no pertenece a una variable de tipo \"int\""));}
+					'=' expression ',' expression {controlVariableType(errorQ,$5,Int); controlVariableType(errorQ,$7,Int); iter++;} block {iter--;}
               ;                                                               
 
 /* -------------------- END OF CONDITIONALS AND CICLES ------------------------------- */
@@ -240,17 +246,17 @@ relation      :    term                 {$$ = $1;}
               |    term LEQUAL term     {$$ = returnLEqualComparison(errorQ, $1, $3);}
               ;
 
-term          :    factor          {$$ = $1;}
-              |    term '+' factor {$$ = returnAdd(errorQ, $1, $3);}
-              |    term '-' factor {$$ = returnSub(errorQ, $1, $3);} 
-              |    term '%' factor {$$ = returnMod(errorQ, $1, $3);} 
-              |    term '/' factor {$$ = returnDiv(errorQ, $1, $3);} 
-              |    term '*' factor {$$ = returnMult(errorQ, $1, $3);} 
+term          :    factor			{$$ = $1;}
+              |    term '+' factor	{$$ = returnAdd(errorQ, $1, $3);}
+              |    term '-' factor	{$$ = returnSub(errorQ, $1, $3);} 
+              |    term '%' factor	{$$ = returnMod(errorQ, $1, $3);} 
+              |    term '/' factor	{$$ = returnDiv(errorQ, $1, $3);} 
+              |    term '*' factor	{$$ = returnMult(errorQ, $1, $3);} 
               ;
 
-factor        :    primary     {$$ = $1;}  
-              |    '!' factor  {$$ = $2;} 
-              |    '-' factor  {$$ = $2;}
+factor        :    primary		{$$ = $1;}  
+              |    '!' factor	{$$ = $2;} 
+              |    '-' factor	{$$ = $2;}
               ;
 
 primary       :    INTEGER			{Attribute *aux = createVariable("", Int); setVariableValue(aux,Int,$1); $$=aux;}

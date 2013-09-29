@@ -3,6 +3,7 @@
 #include "../SymbolsTable/Attribute.h"
 #include "y.tab.h"
 
+
 unsigned int lineNumb = 1;
 unsigned int columnNumb = 1;
 %}
@@ -26,7 +27,7 @@ letter      [a-zA-Z]
 digit       [0-9]
 dot         "."
 int         {digit}+
-float		{int}{expVal}|{int}*{dot}{int}{expVal}?
+float		-?{int}{expVal}|-?{int}*{dot}{int}{expVal}?
 plus        "+"
 minus       "-"
 mult        "*"
@@ -102,7 +103,7 @@ cbracket	"]"
 {externinvk}					{columnNumb=columnNumb+strlen(yytext); return(EXTERNINVK);}
 {true}                          {columnNumb=columnNumb+strlen(yytext); yylval.stringValue = strdup(yytext); return(BOOLEAN);}
 {false}                         {columnNumb=columnNumb+strlen(yytext); yylval.stringValue = strdup(yytext); return(BOOLEAN);}
-{int}                           {columnNumb=columnNumb+strlen(yytext); yylval.stringValue = strdup(yytext); return(INTEGER);}
+-?{int}                         {columnNumb=columnNumb+strlen(yytext); yylval.stringValue = strdup(yytext); return(INTEGER);}
 {float}						    {columnNumb=columnNumb+strlen(yytext); yylval.stringValue = strdup(yytext); return(FLOAT);}
 {break}                         {columnNumb=columnNumb+strlen(yytext); return(BREAK);}
 {class}                         {columnNumb=columnNumb+strlen(yytext); return(CLASS);}
