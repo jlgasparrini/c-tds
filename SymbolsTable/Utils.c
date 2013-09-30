@@ -291,7 +291,11 @@ void checkMain(ErrorsQueue *eq, SymbolsTable *aSymbolsTable)
 Attribute* returnOr(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
     if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && ((*oper2).decl.variable.type == Bool))
-        return createVariable("", (*oper1).decl.variable.type);
+    {
+        Attribute *aux = createVariable("", Bool);
+        (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.boolVal) || ((*oper2).decl.variable.value.boolVal);
+        return aux;
+    }
     else
     {
 		insertError(eq, toString("La expresion logica \"", "OR", "\" no tiene ambos operandos de tipo booleano.")); 
@@ -304,7 +308,11 @@ Attribute* returnOr(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 Attribute* returnAnd(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
     if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && ((*oper2).decl.variable.type == Bool))
-        return createVariable("", (*oper1).decl.variable.type);
+    {
+        Attribute *aux = createVariable("", Bool);
+        (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.boolVal) && ((*oper2).decl.variable.value.boolVal);
+        return aux;
+    }
     else
     {
 		insertError(eq, toString("La expresion logica \"", "AND", "\" no tiene ambos operandos de tipo booleano.")); 
@@ -317,16 +325,45 @@ Attribute* returnAnd(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 /* ---------------------------------------inequality and comparison no-terminal-------------------------------------------- */
 
 /* Return an attribute with the distinct operation applied to oper1 and oper2. */
-Attribute* returnDistinct(Attribute *oper1, Attribute *oper2)
+Attribute* returnDistinct(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
-    return createVariable("", Bool); /* 2 != false is true. It is valid?? ------------------------------------------------------------------- */
-									 /* ----------------------------------------------------------------------------------------------------- */
+    if ((*oper1).decl.variable.type == Bool) 
+    {
+        Attribute *aux = createVariable("", (*oper1).decl.variable.type);
+        if ((*oper1).decl.variable.type == Float)
+            (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.floatVal) != ((*oper2).decl.variable.value.floatVal);
+        if ((*oper1).decl.variable.type == Int)
+            (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.intVal) != ((*oper2).decl.variable.value.intVal);
+        if ((*oper1).decl.variable.type == Bool)
+            (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.boolVal) != ((*oper2).decl.variable.value.boolVal);
+        return aux;
+    }
+    else
+    {
+		insertError(eq, toString("El operador \"", "!=", "\" no tiene ambos operandos de tipo correcto o del mismo tipo.")); 
+        return createVariable("", Bool);
+    }
 }
 
 /* Return an attribute with the equal operation applied to oper1 and oper2. */
-Attribute* returnEqual(Attribute *oper1, Attribute *oper2)
+Attribute* returnEqual(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
-    return createVariable("", Bool);
+    if ((*oper1).decl.variable.type == Bool) 
+    {
+        Attribute *aux = createVariable("", (*oper1).decl.variable.type);
+        if ((*oper1).decl.variable.type == Float)
+            (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.floatVal) == ((*oper2).decl.variable.value.floatVal);
+        if ((*oper1).decl.variable.type == Int)
+            (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.intVal) == ((*oper2).decl.variable.value.intVal);
+        if ((*oper1).decl.variable.type == Bool)
+            (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.boolVal) == ((*oper2).decl.variable.value.boolVal);
+        return aux;
+    }
+    else
+    {
+		insertError(eq, toString("El operador \"", "==", "\" no tiene ambos operandos de tipo correcto o del mismo tipo.")); 
+        return createVariable("", Bool);
+    }
 }
 /* ------------------------------------inequality and comparison no-terminal ended---------------------------------------- */
 
@@ -335,9 +372,15 @@ Attribute* returnEqual(Attribute *oper1, Attribute *oper2)
 /* Return an attribute with the minor comparison operation applied to oper1 and oper2. */
 Attribute* returnMinorComparison(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
-    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type) /* true < false is valid?? --------------------------------------------- */
-																	/* ---------------------------------------------------------------------- */
-        return createVariable("", Bool); 
+    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && (*oper2).decl.variable.type != Bool) 
+    {
+        Attribute *aux = createVariable("", Bool);
+        if ((*oper1).decl.variable.type == Float)
+            (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.floatVal) > ((*oper2).decl.variable.value.floatVal);
+        if ((*oper1).decl.variable.type == Int)
+            (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.intVal) > ((*oper2).decl.variable.value.intVal);
+        return aux;
+    }
     else
     {
 		insertError(eq, toString("El operador \"", "<", "\" no tiene ambos operandos de tipo correcto o del mismo tipo.")); 
@@ -348,9 +391,15 @@ Attribute* returnMinorComparison(ErrorsQueue *eq, Attribute *oper1, Attribute *o
 /* Return an attribute with the major comparison operation applied to oper1 and oper2. */
 Attribute* returnMajorComparison(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
-    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type) /* true > false is valid?? ---------------------------------------------- */
-																	/* ---------------------------------------------------------------------- */
-        return createVariable("", Bool); 
+    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && (*oper2).decl.variable.type != Bool) 
+    {
+        Attribute *aux = createVariable("", Bool);
+        if ((*oper1).decl.variable.type == Float)
+            (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.floatVal) < ((*oper2).decl.variable.value.floatVal);
+        if ((*oper1).decl.variable.type == Int)
+            (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.intVal) < ((*oper2).decl.variable.value.intVal);
+        return aux;
+    }
     else
     {
 		insertError(eq, toString("El operador \"", ">", "\" no tiene ambos operandos de tipo correcto o del mismo tipo.")); 
@@ -361,8 +410,15 @@ Attribute* returnMajorComparison(ErrorsQueue *eq, Attribute *oper1, Attribute *o
 /* Return an attribute with the greater or equal comparison operation applied to oper1 and oper2. */
 Attribute* returnGEqualComparison(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
-    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type) /* true >= false is valid?? --------------------------------------------- */
-        return createVariable("", Bool);							/* ---------------------------------------------------------------------- */
+    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && (*oper2).decl.variable.type != Bool) 
+    {
+        Attribute *aux = createVariable("", Bool);
+        if ((*oper1).decl.variable.type == Float)
+            (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.floatVal) >= ((*oper1).decl.variable.value.floatVal);
+        if ((*oper1).decl.variable.type == Int)
+            (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.intVal) >= ((*oper1).decl.variable.value.intVal);
+        return aux;
+    }
     else
     {
 		insertError(eq, toString("El operador \"", ">=", "\" no tiene ambos operandos de tipo correcto o del mismo tipo.")); 
@@ -373,9 +429,15 @@ Attribute* returnGEqualComparison(ErrorsQueue *eq, Attribute *oper1, Attribute *
 /* Return an attribute with the less or equal comparison operation applied to oper1 and oper2. */
 Attribute* returnLEqualComparison(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
-    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type) /* true <= false is valid?? --------------------------------------------- */
-																	/* ---------------------------------------------------------------------- */
-        return createVariable("", Bool); 
+    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && (*oper2).decl.variable.type != Bool) 
+    {
+        Attribute *aux = createVariable("", (*oper1).decl.variable.type);
+        if ((*oper1).decl.variable.type == Float)
+            (*aux).decl.variable.value.floatVal = ((*oper1).decl.variable.value.floatVal) <= ((*oper2).decl.variable.value.floatVal);
+        if ((*oper1).decl.variable.type == Int)
+            (*aux).decl.variable.value.intVal = ((*oper1).decl.variable.value.intVal) <= ((*oper2).decl.variable.value.intVal);
+        return aux;
+    }
     else
     {
 		insertError(eq, toString("El operador \"", "<=", "\" no tiene ambos operandos de tipo correcto o del mismo tipo.")); 
@@ -390,7 +452,14 @@ Attribute* returnLEqualComparison(ErrorsQueue *eq, Attribute *oper1, Attribute *
 Attribute* returnAdd(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
     if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && ((*oper2).decl.variable.type != Bool))
-        return createVariable("", (*oper1).decl.variable.type);
+    {
+        Attribute *aux = createVariable("", (*oper1).decl.variable.type);
+        if ((*oper1).decl.variable.type == Float)
+            (*aux).decl.variable.value.floatVal = ((*oper1).decl.variable.value.floatVal) + ((*oper2).decl.variable.value.floatVal);
+        if ((*oper1).decl.variable.type == Int)
+            (*aux).decl.variable.value.intVal = ((*oper1).decl.variable.value.intVal) + ((*oper2).decl.variable.value.intVal);
+        return aux;
+    }
     else
     {
 		insertError(eq, toString("El operador \"", "+", "\" no tiene ambos operandos de tipo correcto o del mismo tipo.")); 
@@ -402,7 +471,14 @@ Attribute* returnAdd(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 Attribute* returnSub(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
     if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && ((*oper2).decl.variable.type != Bool))
-        return createVariable("", (*oper1).decl.variable.type);
+    {
+        Attribute *aux = createVariable("", (*oper1).decl.variable.type);
+        if ((*oper1).decl.variable.type == Float)
+            (*aux).decl.variable.value.floatVal = ((*oper1).decl.variable.value.floatVal) - ((*oper2).decl.variable.value.floatVal);
+        if ((*oper1).decl.variable.type == Int)
+            (*aux).decl.variable.value.intVal = ((*oper1).decl.variable.value.intVal) - ((*oper2).decl.variable.value.intVal);
+        return aux;
+    }
     else
     {
 		insertError(eq, toString("El operador \"", "-", "\" no tiene ambos operandos de tipo correcto o del mismo tipo.")); 
@@ -414,10 +490,15 @@ Attribute* returnSub(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 Attribute* returnMod(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
     if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && ((*oper2).decl.variable.type == Int))
-        return createVariable("", Int);
+    {
+        Attribute *aux = createVariable("", (*oper1).decl.variable.type);
+        if ((*oper1).decl.variable.type == Int)
+            (*aux).decl.variable.value.intVal = ((*oper1).decl.variable.value.intVal) % ((*oper2).decl.variable.value.intVal);
+        return aux;
+    }
     else
     {
-		insertError(eq, toString("El operador \"", "%", "\" no tiene ambos operandos de tipo correcto o del mismo tipo.")); 
+		insertError(eq, toString("El operador \"", "%", "\" solo soporta tipo INT y/o no tiene ambos operandos del mismo tipo.")); 
         return createVariable("", Int);
     }
 }
@@ -427,10 +508,12 @@ Attribute* returnDiv(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
     if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && ((*oper2).decl.variable.type != Bool))
     {
+        Attribute *aux = createVariable("", (*oper1).decl.variable.type);
         if ((*oper1).decl.variable.type == Float)
-            return createVariable("", Float); // retorna la division real
-        else 
-            return createVariable("", Int); // retorna la division entera de valores enteros. Retorna q de un numero x, tal que:  x = q.a + r
+            (*aux).decl.variable.value.intVal = ((*oper1).decl.variable.value.floatVal) / ((*oper2).decl.variable.value.floatVal);
+        if ((*oper1).decl.variable.type == Int)
+            (*aux).decl.variable.value.intVal = ((*oper1).decl.variable.value.intVal) / ((*oper2).decl.variable.value.intVal);
+        return aux;
     }
     else
     {
@@ -443,7 +526,14 @@ Attribute* returnDiv(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 Attribute* returnMult(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
     if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && ((*oper2).decl.variable.type != Bool))
-        return createVariable("", (*oper1).decl.variable.type);
+    {
+        Attribute *aux = createVariable("", (*oper1).decl.variable.type);
+        if ((*oper1).decl.variable.type == Int)
+            (*aux).decl.variable.value.intVal = ((*oper1).decl.variable.value.intVal) * ((*oper2).decl.variable.value.intVal);
+        if ((*oper1).decl.variable.type == Float)
+            (*aux).decl.variable.value.floatVal = ((*oper1).decl.variable.value.floatVal) * ((*oper2).decl.variable.value.floatVal);
+        return aux;
+    }
     else
     {
 		insertError(eq, toString("El operador \"", "*", "\" no tiene ambos operandos de tipo correcto o del mismo tipo.")); 

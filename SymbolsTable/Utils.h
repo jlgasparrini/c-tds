@@ -61,10 +61,10 @@ Attribute* returnOr(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2);
 Attribute* returnAnd(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2);
 
 /* Return an attribute with the distinct operation applied to oper1 and oper2. */
-Attribute* returnDistinct(Attribute *oper1, Attribute *oper2);
+Attribute* returnDistinct(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2);
 
 /* Return an attribute with the equal operation applied to oper1 and oper2. */
-Attribute* returnEqual(Attribute *oper1, Attribute *oper2);
+Attribute* returnEqual(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2);
 
 /* Return an attribute with the minor comparison operation applied to oper1 and oper2. */
 Attribute* returnMinorComparison(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2);

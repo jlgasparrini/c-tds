@@ -52,6 +52,7 @@ finalizar() {
 		printErrorList(errorQ);
         deleteAllErrors(errorQ);
         printf("------Se termino de parsear.----------\n");
+		// mostrar la lista de codigos 3D
 }
 
 out(char *msg) {
@@ -232,11 +233,11 @@ conjunction   :    inequality                    {$$ = $1;}
               ;
 
 inequality    :    comparison                       {$$ = $1;}                             
-              |    inequality DISTINCT comparison   {$$ = returnDistinct($1, $3);}
+              |    inequality DISTINCT comparison   {$$ = returnDistinct(errorQ, $1, $3);}
               ;
 
 comparison    :    relation                   {$$ = $1;} 
-              |    relation EQUAL relation    {$$ = returnEqual($1, $3);}
+              |    relation EQUAL relation    {$$ = returnEqual(errorQ, $1, $3);}
               ;
 
 relation      :    term                 {$$ = $1;}

@@ -121,6 +121,7 @@ finalizar() {
 		printErrorList(errorQ);
         deleteAllErrors(errorQ);
         printf("------Se termino de parsear.----------\n");
+		// mostrar la lista de codigos 3D
 }
 
 out(char *msg) {
@@ -131,7 +132,7 @@ out(char *msg) {
 
 
 /* Line 268 of yacc.c  */
-#line 135 "y.tab.c"
+#line 136 "y.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -222,7 +223,7 @@ typedef union YYSTYPE
 {
 
 /* Line 293 of yacc.c  */
-#line 65 "yaccC-TDS.y"
+#line 66 "yaccC-TDS.y"
 
 	char *stringValue;
 	Attribute *at;
@@ -230,7 +231,7 @@ typedef union YYSTYPE
 
 
 /* Line 293 of yacc.c  */
-#line 234 "y.tab.c"
+#line 235 "y.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -242,7 +243,7 @@ typedef union YYSTYPE
 
 
 /* Line 343 of yacc.c  */
-#line 246 "y.tab.c"
+#line 247 "y.tab.c"
 
 #ifdef short
 # undef short
@@ -575,18 +576,18 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    90,    90,    91,    93,    91,    96,    97,    98,   101,
-     102,   105,   106,   109,   110,   110,   114,   115,   116,   119,
-     119,   120,   120,   121,   121,   122,   122,   125,   125,   126,
-     128,   126,   131,   133,   133,   137,   138,   141,   142,   143,
-     146,   147,   154,   155,   156,   157,   157,   160,   161,   162,
-     163,   164,   165,   166,   169,   172,   173,   174,   181,   181,
-     182,   185,   185,   186,   188,   186,   195,   196,   199,   202,
-     202,   206,   207,   210,   211,   211,   214,   215,   218,   219,
-     222,   223,   226,   227,   230,   231,   234,   235,   238,   239,
-     242,   243,   244,   245,   246,   249,   250,   251,   252,   253,
-     254,   257,   258,   259,   262,   263,   264,   265,   266,   267,
-     268
+       0,    91,    91,    92,    94,    92,    97,    98,    99,   102,
+     103,   106,   107,   110,   111,   111,   115,   116,   117,   120,
+     120,   121,   121,   122,   122,   123,   123,   126,   126,   127,
+     129,   127,   132,   134,   134,   138,   139,   142,   143,   144,
+     147,   148,   155,   156,   157,   158,   158,   161,   162,   163,
+     164,   165,   166,   167,   170,   173,   174,   175,   182,   182,
+     183,   186,   186,   187,   189,   187,   196,   197,   200,   203,
+     203,   207,   208,   211,   212,   212,   215,   216,   219,   220,
+     223,   224,   227,   228,   231,   232,   235,   236,   239,   240,
+     243,   244,   245,   246,   247,   250,   251,   252,   253,   254,
+     255,   258,   259,   260,   263,   264,   265,   266,   267,   268,
+     269
 };
 #endif
 
@@ -1656,14 +1657,14 @@ yyreduce:
         case 2:
 
 /* Line 1806 of yacc.c  */
-#line 90 "yaccC-TDS.y"
+#line 91 "yaccC-TDS.y"
     {errorQ=initializeQueue(); finalizar();}
     break;
 
   case 3:
 
 /* Line 1806 of yacc.c  */
-#line 91 "yaccC-TDS.y"
+#line 92 "yaccC-TDS.y"
     {initializeSymbolsTable(&symbolTable); pushLevel(&symbolTable); errorQ=initializeQueue();
 								paramsStack=initializeSS(); methodsIDStack=initializeSS();}
     break;
@@ -1671,21 +1672,21 @@ yyreduce:
   case 4:
 
 /* Line 1806 of yacc.c  */
-#line 93 "yaccC-TDS.y"
+#line 94 "yaccC-TDS.y"
     {checkMain(errorQ,&symbolTable); popLevel(&symbolTable); finalizar();}
     break;
 
   case 13:
 
 /* Line 1806 of yacc.c  */
-#line 109 "yaccC-TDS.y"
+#line 110 "yaccC-TDS.y"
     {pushElement(errorQ, &symbolTable, createVariable((yyvsp[(1) - (1)].stringValue), vaType));}
     break;
 
   case 14:
 
 /* Line 1806 of yacc.c  */
-#line 110 "yaccC-TDS.y"
+#line 111 "yaccC-TDS.y"
     {if (atoi((yyvsp[(3) - (3)].stringValue)) <= 0) insertError(errorQ,toString("Error en definicion del arreglo \"",(yyvsp[(1) - (3)].stringValue),"\". El tamaño del arreglo debe ser un entero mayor que 0."));
 										pushElement(errorQ, &symbolTable, createArray((yyvsp[(1) - (3)].stringValue), vaType, atoi((yyvsp[(3) - (3)].stringValue))));}
     break;
@@ -1693,91 +1694,91 @@ yyreduce:
   case 16:
 
 /* Line 1806 of yacc.c  */
-#line 114 "yaccC-TDS.y"
+#line 115 "yaccC-TDS.y"
     {vaType = Int; mType = RetInt;}
     break;
 
   case 17:
 
 /* Line 1806 of yacc.c  */
-#line 115 "yaccC-TDS.y"
+#line 116 "yaccC-TDS.y"
     {vaType = Float; mType = RetFloat;}
     break;
 
   case 18:
 
 /* Line 1806 of yacc.c  */
-#line 116 "yaccC-TDS.y"
+#line 117 "yaccC-TDS.y"
     {vaType = Bool; mType = RetBool;}
     break;
 
   case 19:
 
 /* Line 1806 of yacc.c  */
-#line 119 "yaccC-TDS.y"
+#line 120 "yaccC-TDS.y"
     {lastDefMethod=(yyvsp[(2) - (2)].stringValue); pushElement(errorQ,&symbolTable,createMethod((yyvsp[(2) - (2)].stringValue),mType,0)); pushLevel(&symbolTable); returns=0;}
     break;
 
   case 20:
 
 /* Line 1806 of yacc.c  */
-#line 119 "yaccC-TDS.y"
+#line 120 "yaccC-TDS.y"
     {popLevel(&symbolTable); if(returns==0) insertError(errorQ,toString("El metodo \"",(yyvsp[(2) - (5)].stringValue),"\" debe tener al menos un return."));}
     break;
 
   case 21:
 
 /* Line 1806 of yacc.c  */
-#line 120 "yaccC-TDS.y"
+#line 121 "yaccC-TDS.y"
     {lastDefMethod=(yyvsp[(3) - (3)].stringValue); pushElement(errorQ,&symbolTable,createMethod((yyvsp[(3) - (3)].stringValue),mType,0)); pushLevel(&symbolTable); returns=0;}
     break;
 
   case 22:
 
 /* Line 1806 of yacc.c  */
-#line 120 "yaccC-TDS.y"
+#line 121 "yaccC-TDS.y"
     {popLevel(&symbolTable); if(returns==0) insertError(errorQ,toString("El metodo \"",(yyvsp[(3) - (6)].stringValue),"\" debe tener al menos un return."));}
     break;
 
   case 23:
 
 /* Line 1806 of yacc.c  */
-#line 121 "yaccC-TDS.y"
+#line 122 "yaccC-TDS.y"
     {lastDefMethod=(yyvsp[(2) - (2)].stringValue); pushElement(errorQ,&symbolTable,createMethod((yyvsp[(2) - (2)].stringValue),RetVoid,0)); pushLevel(&symbolTable); returns=0;}
     break;
 
   case 24:
 
 /* Line 1806 of yacc.c  */
-#line 121 "yaccC-TDS.y"
+#line 122 "yaccC-TDS.y"
     {popLevel(&symbolTable); if(returns==0) insertError(errorQ,toString("El metodo \"",(yyvsp[(2) - (5)].stringValue),"\" debe tener al menos un return."));}
     break;
 
   case 25:
 
 /* Line 1806 of yacc.c  */
-#line 122 "yaccC-TDS.y"
+#line 123 "yaccC-TDS.y"
     {lastDefMethod=(yyvsp[(3) - (3)].stringValue); pushElement(errorQ,&symbolTable,createMethod((yyvsp[(3) - (3)].stringValue),RetVoid,0)); pushLevel(&symbolTable); returns=0;}
     break;
 
   case 26:
 
 /* Line 1806 of yacc.c  */
-#line 122 "yaccC-TDS.y"
+#line 123 "yaccC-TDS.y"
     {popLevel(&symbolTable); if(returns==0) insertError(errorQ,toString("El metodo \"",(yyvsp[(3) - (6)].stringValue),"\" debe tener al menos un return."));}
     break;
 
   case 27:
 
 /* Line 1806 of yacc.c  */
-#line 125 "yaccC-TDS.y"
+#line 126 "yaccC-TDS.y"
     {cantParams = 0; setAmountOfParameters(searchIdInSymbolsTable(errorQ,&symbolTable,lastDefMethod),0);}
     break;
 
   case 29:
 
 /* Line 1806 of yacc.c  */
-#line 126 "yaccC-TDS.y"
+#line 127 "yaccC-TDS.y"
     {if (strcmp(lastDefMethod,"main") == 0)
 							insertError(errorQ,toString("El metodo \"main\" no debe contener parametros.","","")); cantParams = 0;}
     break;
@@ -1785,14 +1786,14 @@ yyreduce:
   case 30:
 
 /* Line 1806 of yacc.c  */
-#line 128 "yaccC-TDS.y"
+#line 129 "yaccC-TDS.y"
     {setAmountOfParameters(searchIdInSymbolsTable(errorQ,&symbolTable,lastDefMethod),cantParams);}
     break;
 
   case 32:
 
 /* Line 1806 of yacc.c  */
-#line 131 "yaccC-TDS.y"
+#line 132 "yaccC-TDS.y"
     {Attribute *aux = createParameter(lastDefinedMethod(&symbolTable),cantParams,(yyvsp[(2) - (2)].stringValue),vaType);
 								if (aux != NULL) {pushElement(errorQ,&symbolTable,aux); cantParams++;}}
     break;
@@ -1800,7 +1801,7 @@ yyreduce:
   case 33:
 
 /* Line 1806 of yacc.c  */
-#line 133 "yaccC-TDS.y"
+#line 134 "yaccC-TDS.y"
     {Attribute *aux = createParameter(lastDefinedMethod(&symbolTable),cantParams,(yyvsp[(2) - (2)].stringValue),vaType);
 								if (aux != NULL) {pushElement(errorQ,&symbolTable,aux); cantParams++;}}
     break;
@@ -1808,105 +1809,105 @@ yyreduce:
   case 45:
 
 /* Line 1806 of yacc.c  */
-#line 157 "yaccC-TDS.y"
+#line 158 "yaccC-TDS.y"
     {pushLevel(&symbolTable);}
     break;
 
   case 46:
 
 /* Line 1806 of yacc.c  */
-#line 157 "yaccC-TDS.y"
+#line 158 "yaccC-TDS.y"
     {popLevel(&symbolTable);}
     break;
 
   case 48:
 
 /* Line 1806 of yacc.c  */
-#line 161 "yaccC-TDS.y"
+#line 162 "yaccC-TDS.y"
     {if (iter==0) insertError(errorQ,toString("Error. Solo se puede usar la sentencia \"break\" dentro de un ciclo.","",""));}
     break;
 
   case 49:
 
 /* Line 1806 of yacc.c  */
-#line 162 "yaccC-TDS.y"
+#line 163 "yaccC-TDS.y"
     {if (iter==0) insertError(errorQ,toString("Error. Solo se puede usar la sentencia \"continue\" dentro de un ciclo.","",""));}
     break;
 
   case 50:
 
 /* Line 1806 of yacc.c  */
-#line 163 "yaccC-TDS.y"
+#line 164 "yaccC-TDS.y"
     {returns++; checkReturn(errorQ,&symbolTable,lastDefMethod);}
     break;
 
   case 51:
 
 /* Line 1806 of yacc.c  */
-#line 164 "yaccC-TDS.y"
+#line 165 "yaccC-TDS.y"
     {returns++; checkReturnExpression(errorQ,&symbolTable,lastDefMethod,(yyvsp[(2) - (2)].at));}
     break;
 
   case 54:
 
 /* Line 1806 of yacc.c  */
-#line 169 "yaccC-TDS.y"
+#line 170 "yaccC-TDS.y"
     {controlAssignation(errorQ,(yyvsp[(1) - (3)].at),(yyvsp[(2) - (3)].stringValue),(yyvsp[(3) - (3)].at));}
     break;
 
   case 55:
 
 /* Line 1806 of yacc.c  */
-#line 172 "yaccC-TDS.y"
+#line 173 "yaccC-TDS.y"
     {(yyval.stringValue) = "=";}
     break;
 
   case 56:
 
 /* Line 1806 of yacc.c  */
-#line 173 "yaccC-TDS.y"
+#line 174 "yaccC-TDS.y"
     {(yyval.stringValue) = (yyvsp[(1) - (1)].stringValue);}
     break;
 
   case 57:
 
 /* Line 1806 of yacc.c  */
-#line 174 "yaccC-TDS.y"
+#line 175 "yaccC-TDS.y"
     {(yyval.stringValue) = (yyvsp[(1) - (1)].stringValue);}
     break;
 
   case 58:
 
 /* Line 1806 of yacc.c  */
-#line 181 "yaccC-TDS.y"
+#line 182 "yaccC-TDS.y"
     {controlVariableType(errorQ,(yyvsp[(3) - (5)].at),Bool);}
     break;
 
   case 60:
 
 /* Line 1806 of yacc.c  */
-#line 182 "yaccC-TDS.y"
+#line 183 "yaccC-TDS.y"
     {controlVariableType(errorQ,(yyvsp[(3) - (5)].at),Bool);}
     break;
 
   case 61:
 
 /* Line 1806 of yacc.c  */
-#line 185 "yaccC-TDS.y"
+#line 186 "yaccC-TDS.y"
     {controlVariableType(errorQ,(yyvsp[(2) - (2)].at),Bool); iter++;}
     break;
 
   case 62:
 
 /* Line 1806 of yacc.c  */
-#line 185 "yaccC-TDS.y"
+#line 186 "yaccC-TDS.y"
     {iter--;}
     break;
 
   case 63:
 
 /* Line 1806 of yacc.c  */
-#line 186 "yaccC-TDS.y"
+#line 187 "yaccC-TDS.y"
     {if ((*getVariableAttribute(errorQ,&symbolTable,(yyvsp[(2) - (2)].stringValue))).decl.variable.type != Int)
 							insertError(errorQ,toString("El identificador \"", (yyvsp[(2) - (2)].stringValue), "\" no pertenece a una variable de tipo \"int\""));}
     break;
@@ -1914,35 +1915,35 @@ yyreduce:
   case 64:
 
 /* Line 1806 of yacc.c  */
-#line 188 "yaccC-TDS.y"
+#line 189 "yaccC-TDS.y"
     {controlVariableType(errorQ,(yyvsp[(5) - (7)].at),Int); controlVariableType(errorQ,(yyvsp[(7) - (7)].at),Int); iter++;}
     break;
 
   case 65:
 
 /* Line 1806 of yacc.c  */
-#line 188 "yaccC-TDS.y"
+#line 189 "yaccC-TDS.y"
     {iter--;}
     break;
 
   case 66:
 
 /* Line 1806 of yacc.c  */
-#line 195 "yaccC-TDS.y"
+#line 196 "yaccC-TDS.y"
     {(yyval.at) = getVariableAttribute(errorQ, &symbolTable, (yyvsp[(1) - (1)].stringValue));}
     break;
 
   case 67:
 
 /* Line 1806 of yacc.c  */
-#line 196 "yaccC-TDS.y"
+#line 197 "yaccC-TDS.y"
     {(yyval.at) = checkArrayPos(errorQ,&symbolTable,(yyvsp[(1) - (4)].stringValue),(yyvsp[(3) - (4)].at));}
     break;
 
   case 68:
 
 /* Line 1806 of yacc.c  */
-#line 199 "yaccC-TDS.y"
+#line 200 "yaccC-TDS.y"
     {cantParams=0; insertString(paramsStack,intToString(cantParams));
 								lastCalledMethod=(yyvsp[(1) - (3)].stringValue); (yyval.at)=getMethodAttribute(errorQ,&symbolTable,(yyvsp[(1) - (3)].stringValue),0);}
     break;
@@ -1950,7 +1951,7 @@ yyreduce:
   case 69:
 
 /* Line 1806 of yacc.c  */
-#line 202 "yaccC-TDS.y"
+#line 203 "yaccC-TDS.y"
     {insertString(paramsStack,intToString(cantParams)); cantParams=0;
 							insertString(methodsIDStack,lastCalledMethod); lastCalledMethod = (yyvsp[(1) - (2)].stringValue);}
     break;
@@ -1958,245 +1959,245 @@ yyreduce:
   case 70:
 
 /* Line 1806 of yacc.c  */
-#line 204 "yaccC-TDS.y"
+#line 205 "yaccC-TDS.y"
     {(yyval.at) = getMethodAttribute(errorQ,&symbolTable,(yyvsp[(1) - (5)].stringValue),cantParams); cantParams=atoi(removeLastString(paramsStack));}
     break;
 
   case 71:
 
 /* Line 1806 of yacc.c  */
-#line 206 "yaccC-TDS.y"
+#line 207 "yaccC-TDS.y"
     {if (mType != RetVoid) (yyval.at)=createVariable("",mType);}
     break;
 
   case 72:
 
 /* Line 1806 of yacc.c  */
-#line 207 "yaccC-TDS.y"
+#line 208 "yaccC-TDS.y"
     {if (mType != RetVoid) (yyval.at)=createVariable("",mType);}
     break;
 
   case 73:
 
 /* Line 1806 of yacc.c  */
-#line 210 "yaccC-TDS.y"
+#line 211 "yaccC-TDS.y"
     {cantParams++; correctParamBC(errorQ,&symbolTable,(yyvsp[(1) - (1)].at),lastCalledMethod,cantParams);}
     break;
 
   case 74:
 
 /* Line 1806 of yacc.c  */
-#line 211 "yaccC-TDS.y"
+#line 212 "yaccC-TDS.y"
     {cantParams++; correctParamIC(errorQ,&symbolTable,(yyvsp[(1) - (1)].at),lastCalledMethod,cantParams);}
     break;
 
   case 77:
 
 /* Line 1806 of yacc.c  */
-#line 215 "yaccC-TDS.y"
+#line 216 "yaccC-TDS.y"
     {mType = RetVoid;}
     break;
 
   case 82:
 
 /* Line 1806 of yacc.c  */
-#line 226 "yaccC-TDS.y"
+#line 227 "yaccC-TDS.y"
     {(yyval.at) = (yyvsp[(1) - (1)].at);}
     break;
 
   case 83:
 
 /* Line 1806 of yacc.c  */
-#line 227 "yaccC-TDS.y"
+#line 228 "yaccC-TDS.y"
     {(yyval.at) = returnOr(errorQ, (yyvsp[(1) - (3)].at), (yyvsp[(3) - (3)].at));}
     break;
 
   case 84:
 
 /* Line 1806 of yacc.c  */
-#line 230 "yaccC-TDS.y"
+#line 231 "yaccC-TDS.y"
     {(yyval.at) = (yyvsp[(1) - (1)].at);}
     break;
 
   case 85:
 
 /* Line 1806 of yacc.c  */
-#line 231 "yaccC-TDS.y"
+#line 232 "yaccC-TDS.y"
     {(yyval.at) = returnAnd(errorQ, (yyvsp[(1) - (3)].at), (yyvsp[(3) - (3)].at));}
     break;
 
   case 86:
 
 /* Line 1806 of yacc.c  */
-#line 234 "yaccC-TDS.y"
+#line 235 "yaccC-TDS.y"
     {(yyval.at) = (yyvsp[(1) - (1)].at);}
     break;
 
   case 87:
 
 /* Line 1806 of yacc.c  */
-#line 235 "yaccC-TDS.y"
-    {(yyval.at) = returnDistinct((yyvsp[(1) - (3)].at), (yyvsp[(3) - (3)].at));}
+#line 236 "yaccC-TDS.y"
+    {(yyval.at) = returnDistinct(errorQ, (yyvsp[(1) - (3)].at), (yyvsp[(3) - (3)].at));}
     break;
 
   case 88:
 
 /* Line 1806 of yacc.c  */
-#line 238 "yaccC-TDS.y"
+#line 239 "yaccC-TDS.y"
     {(yyval.at) = (yyvsp[(1) - (1)].at);}
     break;
 
   case 89:
 
 /* Line 1806 of yacc.c  */
-#line 239 "yaccC-TDS.y"
-    {(yyval.at) = returnEqual((yyvsp[(1) - (3)].at), (yyvsp[(3) - (3)].at));}
+#line 240 "yaccC-TDS.y"
+    {(yyval.at) = returnEqual(errorQ, (yyvsp[(1) - (3)].at), (yyvsp[(3) - (3)].at));}
     break;
 
   case 90:
 
 /* Line 1806 of yacc.c  */
-#line 242 "yaccC-TDS.y"
+#line 243 "yaccC-TDS.y"
     {(yyval.at) = (yyvsp[(1) - (1)].at);}
     break;
 
   case 91:
 
 /* Line 1806 of yacc.c  */
-#line 243 "yaccC-TDS.y"
+#line 244 "yaccC-TDS.y"
     {(yyval.at) = returnMinorComparison(errorQ, (yyvsp[(1) - (3)].at), (yyvsp[(3) - (3)].at));}
     break;
 
   case 92:
 
 /* Line 1806 of yacc.c  */
-#line 244 "yaccC-TDS.y"
+#line 245 "yaccC-TDS.y"
     {(yyval.at) = returnMajorComparison(errorQ, (yyvsp[(1) - (3)].at), (yyvsp[(3) - (3)].at));}
     break;
 
   case 93:
 
 /* Line 1806 of yacc.c  */
-#line 245 "yaccC-TDS.y"
+#line 246 "yaccC-TDS.y"
     {(yyval.at) = returnGEqualComparison(errorQ, (yyvsp[(1) - (3)].at), (yyvsp[(3) - (3)].at));}
     break;
 
   case 94:
 
 /* Line 1806 of yacc.c  */
-#line 246 "yaccC-TDS.y"
+#line 247 "yaccC-TDS.y"
     {(yyval.at) = returnLEqualComparison(errorQ, (yyvsp[(1) - (3)].at), (yyvsp[(3) - (3)].at));}
     break;
 
   case 95:
 
 /* Line 1806 of yacc.c  */
-#line 249 "yaccC-TDS.y"
+#line 250 "yaccC-TDS.y"
     {(yyval.at) = (yyvsp[(1) - (1)].at);}
     break;
 
   case 96:
 
 /* Line 1806 of yacc.c  */
-#line 250 "yaccC-TDS.y"
+#line 251 "yaccC-TDS.y"
     {(yyval.at) = returnAdd(errorQ, (yyvsp[(1) - (3)].at), (yyvsp[(3) - (3)].at));}
     break;
 
   case 97:
 
 /* Line 1806 of yacc.c  */
-#line 251 "yaccC-TDS.y"
+#line 252 "yaccC-TDS.y"
     {(yyval.at) = returnSub(errorQ, (yyvsp[(1) - (3)].at), (yyvsp[(3) - (3)].at));}
     break;
 
   case 98:
 
 /* Line 1806 of yacc.c  */
-#line 252 "yaccC-TDS.y"
+#line 253 "yaccC-TDS.y"
     {(yyval.at) = returnMod(errorQ, (yyvsp[(1) - (3)].at), (yyvsp[(3) - (3)].at));}
     break;
 
   case 99:
 
 /* Line 1806 of yacc.c  */
-#line 253 "yaccC-TDS.y"
+#line 254 "yaccC-TDS.y"
     {(yyval.at) = returnDiv(errorQ, (yyvsp[(1) - (3)].at), (yyvsp[(3) - (3)].at));}
     break;
 
   case 100:
 
 /* Line 1806 of yacc.c  */
-#line 254 "yaccC-TDS.y"
+#line 255 "yaccC-TDS.y"
     {(yyval.at) = returnMult(errorQ, (yyvsp[(1) - (3)].at), (yyvsp[(3) - (3)].at));}
     break;
 
   case 101:
 
 /* Line 1806 of yacc.c  */
-#line 257 "yaccC-TDS.y"
+#line 258 "yaccC-TDS.y"
     {(yyval.at) = (yyvsp[(1) - (1)].at);}
     break;
 
   case 102:
 
 /* Line 1806 of yacc.c  */
-#line 258 "yaccC-TDS.y"
+#line 259 "yaccC-TDS.y"
     {(yyval.at) = (yyvsp[(2) - (2)].at);}
     break;
 
   case 103:
 
 /* Line 1806 of yacc.c  */
-#line 259 "yaccC-TDS.y"
+#line 260 "yaccC-TDS.y"
     {(yyval.at) = (yyvsp[(2) - (2)].at);}
     break;
 
   case 104:
 
 /* Line 1806 of yacc.c  */
-#line 262 "yaccC-TDS.y"
+#line 263 "yaccC-TDS.y"
     {Attribute *aux = createVariable("", Int); setVariableValue(aux,Int,(yyvsp[(1) - (1)].stringValue)); (yyval.at)=aux;}
     break;
 
   case 105:
 
 /* Line 1806 of yacc.c  */
-#line 263 "yaccC-TDS.y"
+#line 264 "yaccC-TDS.y"
     {Attribute *aux = createVariable("", Float); setVariableValue(aux,Float,(yyvsp[(1) - (1)].stringValue)); (yyval.at)=aux;}
     break;
 
   case 106:
 
 /* Line 1806 of yacc.c  */
-#line 264 "yaccC-TDS.y"
+#line 265 "yaccC-TDS.y"
     {Attribute *aux = createVariable("", Bool); setVariableValue(aux,Bool,(yyvsp[(1) - (1)].stringValue)); (yyval.at)=aux;}
     break;
 
   case 107:
 
 /* Line 1806 of yacc.c  */
-#line 265 "yaccC-TDS.y"
+#line 266 "yaccC-TDS.y"
     {(yyval.at) = getVariableAttribute(errorQ,&symbolTable,(yyvsp[(1) - (1)].stringValue));}
     break;
 
   case 108:
 
 /* Line 1806 of yacc.c  */
-#line 266 "yaccC-TDS.y"
+#line 267 "yaccC-TDS.y"
     {(yyval.at) = checkArrayPos(errorQ,&symbolTable,(yyvsp[(1) - (4)].stringValue),(yyvsp[(3) - (4)].at));}
     break;
 
   case 109:
 
 /* Line 1806 of yacc.c  */
-#line 267 "yaccC-TDS.y"
+#line 268 "yaccC-TDS.y"
     {(yyval.at) = (yyvsp[(2) - (3)].at);}
     break;
 
   case 110:
 
 /* Line 1806 of yacc.c  */
-#line 268 "yaccC-TDS.y"
+#line 269 "yaccC-TDS.y"
     {if (methodReturnType(errorQ,&symbolTable,lastCalledMethod) == RetVoid)
 										{	insertError(errorQ,toString("El metodo \"",lastCalledMethod,"\" no puede ser usado en una expresion ya que retorna void."));
 											(yyval.at) = createVariable("",Int); /* creamos variables int por defecto ------------------------------- */
@@ -2208,7 +2209,7 @@ yyreduce:
 
 
 /* Line 1806 of yacc.c  */
-#line 2212 "y.tab.c"
+#line 2213 "y.tab.c"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2439,7 +2440,7 @@ yyreturn:
 
 
 /* Line 2067 of yacc.c  */
-#line 278 "yaccC-TDS.y"
+#line 279 "yaccC-TDS.y"
 
 
 
