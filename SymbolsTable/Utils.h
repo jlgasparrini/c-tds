@@ -33,7 +33,7 @@ unsigned char correctParamBC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attri
 unsigned char correctParamIC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attribute *attr, char* lastCalledMethod, unsigned char paramSize);
 
 /* Insert an error message if the attribute "attr" isn't a variable of type "type" */
-void controlVariableType(ErrorsQueue *eq, Attribute *attr, PrimitiveType type);
+int controlVariableType(ErrorsQueue *eq, Attribute *attr, PrimitiveType type);
 
 /* Insert an error message if attributes "attr1" and "attr2" aren't of the same type and both variables or arrays */
 void controlAssignation(ErrorsQueue *eq, Attribute *attr1, char* op, Attribute *attr2);

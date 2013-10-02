@@ -198,9 +198,9 @@ unsigned char correctParamIC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attri
 }
 
 /* Insert an error message if the attribute "attr" isn't a variable of type "type" */
-void controlVariableType(ErrorsQueue *eq, Attribute *attr, PrimitiveType type)
+int controlVariableType(ErrorsQueue *eq, Attribute *attr, PrimitiveType type)
 {
-    if ((*attr).decl.variable.type != type)	
+    if (getAttributeType(attr) != type)	
         insertError(eq, toString("La expresion no es del tipo \"", getType(type), "\"."));
 }
 
@@ -209,12 +209,8 @@ void controlAssignation(ErrorsQueue *eq, Attribute *attr1, char* op, Attribute *
 {
 	if ((*attr1).type != Method)
 	{
-		if ((*attr1).type == Variable)
-			if ((*attr1).decl.variable.type != (*attr2).decl.variable.type)
-				insertError(eq, toString("El lado derecho de la asignacion debe ser de tipo \"", getType((*attr1).decl.variable.type), "\"."));
-		if ((*attr1).type == Array)
-			if ((*attr1).decl.array.type != (*attr2).decl.array.type)
-				insertError(eq, toString("El lado derecho de la asignacion debe ser de tipo \"", getType((*attr1).decl.array.type), "\"."));
+        if (getAttributeType(attr1) != getAttributeType(attr2))
+            insertError(eq, toString("El lado derecho de la asignacion debe ser de tipo \"", getType(getAttributeType(attr1)), "\"."));
 	}
 	else
 		insertError(eq, toString("El identificador izquierdo de la asignacion ", "", " no debe ser un metodo."));
@@ -242,13 +238,13 @@ void checkReturnExpression(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* l
 	if (rt == RetVoid)
 		insertError(eq,toString("El metodo \"",lastUsedMethod,"\" no puede retornar una expresion ya que retorna void."));
 	else
-		if (rt != (*attr).decl.variable.type)
+		if (rt != getAttributeType(attr))
 		{
-			char* msg = (char*) malloc ((strlen("\" debe retornar una expresion de tipo \"")+strlen(getType(rt))+strlen("\", no de tipo \"")+strlen(getType((*attr).decl.variable.type))+strlen("\"."))*sizeof(char));
+			char* msg = (char*) malloc ((strlen("\" debe retornar una expresion de tipo \"")+strlen(getType(rt))+strlen("\", no de tipo \"")+strlen(getType(getAttributeType(attr)))+strlen("\"."))*sizeof(char));
 			strcat(msg, "\" debe retornar una expresion de tipo \"");
 			strcat(msg, getType(rt));
 			strcat(msg, "\", no de tipo \"");
-			strcat(msg, getType((*attr).decl.variable.type));
+			strcat(msg, getType(getAttributeType(attr)));
 			strcat(msg, "\".");
 			insertError(eq, toString("El metodo \"", lastUsedMethod, msg));
 	//		free(msg);
@@ -262,7 +258,7 @@ Attribute* checkArrayPos(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id,
     Attribute *aux = searchIdInSymbolsTable(eq,aSymbolsTable,id);
     if (aux != NULL)
     {
-        if ((*attr).decl.variable.type == Int)
+        if (getAttributeType(attr) == Int)
             return getArrayAttribute(eq,aSymbolsTable,aux,(*attr).decl.variable.value.intVal);
         else
         {
@@ -290,7 +286,7 @@ void checkMain(ErrorsQueue *eq, SymbolsTable *aSymbolsTable)
 /* Return an attribute with the or operation applied to oper1 and oper2. */
 Attribute* returnOr(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
-    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && ((*oper2).decl.variable.type == Bool))
+    if (getAttributeType(oper1) == getAttributeType(oper2) && (getAttributeType(oper2) == Bool))
     {
         Attribute *aux = createVariable("", Bool);
         (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.boolVal) || ((*oper2).decl.variable.value.boolVal);
@@ -307,7 +303,7 @@ Attribute* returnOr(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 /* Return an attribute with the and operation applied to oper1 and oper2. */
 Attribute* returnAnd(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
-    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && ((*oper2).decl.variable.type == Bool))
+    if (getAttributeType(oper1) == getAttributeType(oper2) && (getAttributeType(oper2) == Bool))
     {
         Attribute *aux = createVariable("", Bool);
         (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.boolVal) && ((*oper2).decl.variable.value.boolVal);
@@ -327,14 +323,14 @@ Attribute* returnAnd(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 /* Return an attribute with the distinct operation applied to oper1 and oper2. */
 Attribute* returnDistinct(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
-    if ((*oper1).decl.variable.type == Bool) 
+    if (getAttributeType(oper1) == Bool) 
     {
-        Attribute *aux = createVariable("", (*oper1).decl.variable.type);
-        if ((*oper1).decl.variable.type == Float)
+        Attribute *aux = createVariable("", getAttributeType(oper1));
+        if (getAttributeType(oper1) == Float)
             (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.floatVal) != ((*oper2).decl.variable.value.floatVal);
-        if ((*oper1).decl.variable.type == Int)
+        if (getAttributeType(oper1) == Int)
             (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.intVal) != ((*oper2).decl.variable.value.intVal);
-        if ((*oper1).decl.variable.type == Bool)
+        if (getAttributeType(oper1) == Bool)
             (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.boolVal) != ((*oper2).decl.variable.value.boolVal);
         return aux;
     }
@@ -348,14 +344,14 @@ Attribute* returnDistinct(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 /* Return an attribute with the equal operation applied to oper1 and oper2. */
 Attribute* returnEqual(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
-    if ((*oper1).decl.variable.type == Bool) 
+    if (getAttributeType(oper1) == Bool) 
     {
-        Attribute *aux = createVariable("", (*oper1).decl.variable.type);
-        if ((*oper1).decl.variable.type == Float)
+        Attribute *aux = createVariable("", getAttributeType(oper1));
+        if (getAttributeType(oper1) == Float)
             (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.floatVal) == ((*oper2).decl.variable.value.floatVal);
-        if ((*oper1).decl.variable.type == Int)
+        if (getAttributeType(oper1) == Int)
             (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.intVal) == ((*oper2).decl.variable.value.intVal);
-        if ((*oper1).decl.variable.type == Bool)
+        if (getAttributeType(oper1) == Bool)
             (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.boolVal) == ((*oper2).decl.variable.value.boolVal);
         return aux;
     }
@@ -372,12 +368,12 @@ Attribute* returnEqual(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 /* Return an attribute with the minor comparison operation applied to oper1 and oper2. */
 Attribute* returnMinorComparison(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
-    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && (*oper2).decl.variable.type != Bool) 
+    if (getAttributeType(oper1) == getAttributeType(oper2) && getAttributeType(oper2) != Bool) 
     {
         Attribute *aux = createVariable("", Bool);
-        if ((*oper1).decl.variable.type == Float)
+        if (getAttributeType(oper1) == Float)
             (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.floatVal) > ((*oper2).decl.variable.value.floatVal);
-        if ((*oper1).decl.variable.type == Int)
+        if (getAttributeType(oper1) == Int)
             (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.intVal) > ((*oper2).decl.variable.value.intVal);
         return aux;
     }
@@ -391,12 +387,12 @@ Attribute* returnMinorComparison(ErrorsQueue *eq, Attribute *oper1, Attribute *o
 /* Return an attribute with the major comparison operation applied to oper1 and oper2. */
 Attribute* returnMajorComparison(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
-    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && (*oper2).decl.variable.type != Bool) 
+    if (getAttributeType(oper1) == getAttributeType(oper2) && getAttributeType(oper2) != Bool) 
     {
         Attribute *aux = createVariable("", Bool);
-        if ((*oper1).decl.variable.type == Float)
+        if (getAttributeType(oper1) == Float)
             (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.floatVal) < ((*oper2).decl.variable.value.floatVal);
-        if ((*oper1).decl.variable.type == Int)
+        if (getAttributeType(oper1) == Int)
             (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.intVal) < ((*oper2).decl.variable.value.intVal);
         return aux;
     }
@@ -410,12 +406,12 @@ Attribute* returnMajorComparison(ErrorsQueue *eq, Attribute *oper1, Attribute *o
 /* Return an attribute with the greater or equal comparison operation applied to oper1 and oper2. */
 Attribute* returnGEqualComparison(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
-    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && (*oper2).decl.variable.type != Bool) 
+    if (getAttributeType(oper1) == getAttributeType(oper2) && getAttributeType(oper2) != Bool) 
     {
         Attribute *aux = createVariable("", Bool);
-        if ((*oper1).decl.variable.type == Float)
+        if (getAttributeType(oper1) == Float)
             (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.floatVal) >= ((*oper1).decl.variable.value.floatVal);
-        if ((*oper1).decl.variable.type == Int)
+        if (getAttributeType(oper1) == Int)
             (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.intVal) >= ((*oper1).decl.variable.value.intVal);
         return aux;
     }
@@ -429,12 +425,12 @@ Attribute* returnGEqualComparison(ErrorsQueue *eq, Attribute *oper1, Attribute *
 /* Return an attribute with the less or equal comparison operation applied to oper1 and oper2. */
 Attribute* returnLEqualComparison(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
-    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && (*oper2).decl.variable.type != Bool) 
+    if (getAttributeType(oper1) == getAttributeType(oper2) && getAttributeType(oper2) != Bool) 
     {
-        Attribute *aux = createVariable("", (*oper1).decl.variable.type);
-        if ((*oper1).decl.variable.type == Float)
+        Attribute *aux = createVariable("", getAttributeType(oper1));
+        if (getAttributeType(oper1) == Float)
             (*aux).decl.variable.value.floatVal = ((*oper1).decl.variable.value.floatVal) <= ((*oper2).decl.variable.value.floatVal);
-        if ((*oper1).decl.variable.type == Int)
+        if (getAttributeType(oper1) == Int)
             (*aux).decl.variable.value.intVal = ((*oper1).decl.variable.value.intVal) <= ((*oper2).decl.variable.value.intVal);
         return aux;
     }
@@ -451,12 +447,12 @@ Attribute* returnLEqualComparison(ErrorsQueue *eq, Attribute *oper1, Attribute *
 /* Return an attribute with the add operation. */
 Attribute* returnAdd(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
-    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && ((*oper2).decl.variable.type != Bool))
+    if (getAttributeType(oper1) == getAttributeType(oper2) && (getAttributeType(oper2) != Bool))
     {
-        Attribute *aux = createVariable("", (*oper1).decl.variable.type);
-        if ((*oper1).decl.variable.type == Float)
+        Attribute *aux = createVariable("", getAttributeType(oper1));
+        if (getAttributeType(oper1) == Float)
             (*aux).decl.variable.value.floatVal = ((*oper1).decl.variable.value.floatVal) + ((*oper2).decl.variable.value.floatVal);
-        if ((*oper1).decl.variable.type == Int)
+        if (getAttributeType(oper1) == Int)
             (*aux).decl.variable.value.intVal = ((*oper1).decl.variable.value.intVal) + ((*oper2).decl.variable.value.intVal);
         return aux;
     }
@@ -470,12 +466,12 @@ Attribute* returnAdd(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 /* Return an attribute with the sub operation. */
 Attribute* returnSub(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
-    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && ((*oper2).decl.variable.type != Bool))
+    if (getAttributeType(oper1) == getAttributeType(oper2) && (getAttributeType(oper2) != Bool))
     {
-        Attribute *aux = createVariable("", (*oper1).decl.variable.type);
-        if ((*oper1).decl.variable.type == Float)
+        Attribute *aux = createVariable("", getAttributeType(oper1));
+        if (getAttributeType(oper1) == Float)
             (*aux).decl.variable.value.floatVal = ((*oper1).decl.variable.value.floatVal) - ((*oper2).decl.variable.value.floatVal);
-        if ((*oper1).decl.variable.type == Int)
+        if (getAttributeType(oper1) == Int)
             (*aux).decl.variable.value.intVal = ((*oper1).decl.variable.value.intVal) - ((*oper2).decl.variable.value.intVal);
         return aux;
     }
@@ -489,10 +485,10 @@ Attribute* returnSub(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 /* Return an attribute with the mod operation. */
 Attribute* returnMod(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
-    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && ((*oper2).decl.variable.type == Int))
+    if (getAttributeType(oper1) == getAttributeType(oper2) && (getAttributeType(oper2) == Int))
     {
-        Attribute *aux = createVariable("", (*oper1).decl.variable.type);
-        if ((*oper1).decl.variable.type == Int)
+        Attribute *aux = createVariable("", getAttributeType(oper1));
+        if (getAttributeType(oper1) == Int)
             (*aux).decl.variable.value.intVal = ((*oper1).decl.variable.value.intVal) % ((*oper2).decl.variable.value.intVal);
         return aux;
     }
@@ -506,12 +502,12 @@ Attribute* returnMod(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 /* Return an attribute with the div operation. */
 Attribute* returnDiv(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
-    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && ((*oper2).decl.variable.type != Bool))
+    if (getAttributeType(oper1) == getAttributeType(oper2) && (getAttributeType(oper2) != Bool))
     {
-        Attribute *aux = createVariable("", (*oper1).decl.variable.type);
-        if ((*oper1).decl.variable.type == Float)
+        Attribute *aux = createVariable("", getAttributeType(oper1));
+        if (getAttributeType(oper1) == Float)
             (*aux).decl.variable.value.intVal = ((*oper1).decl.variable.value.floatVal) / ((*oper2).decl.variable.value.floatVal);
-        if ((*oper1).decl.variable.type == Int)
+        if (getAttributeType(oper1) == Int)
             (*aux).decl.variable.value.intVal = ((*oper1).decl.variable.value.intVal) / ((*oper2).decl.variable.value.intVal);
         return aux;
     }
@@ -525,12 +521,11 @@ Attribute* returnDiv(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 /* Return an attribute with the mult operation. */
 Attribute* returnMult(ErrorsQueue *eq, Attribute *oper1, Attribute *oper2)
 {
-    if ((*oper1).decl.variable.type == (*oper2).decl.variable.type && ((*oper2).decl.variable.type != Bool))
+    if (getAttributeType(oper1) == getAttributeType(oper2) && (getAttributeType(oper2) != Bool))
     {
-        Attribute *aux = createVariable("", (*oper1).decl.variable.type);
-        if ((*oper1).decl.variable.type == Int)
+        Attribute *aux = createVariable("", getAttributeType(oper1));
+        if (getAttributeType(oper1) == Int)
             (*aux).decl.variable.value.intVal = ((*oper1).decl.variable.value.intVal) * ((*oper2).decl.variable.value.intVal);
-        if ((*oper1).decl.variable.type == Float)
             (*aux).decl.variable.value.floatVal = ((*oper1).decl.variable.value.floatVal) * ((*oper2).decl.variable.value.floatVal);
         return aux;
     }
