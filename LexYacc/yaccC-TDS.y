@@ -11,7 +11,7 @@
 #  include	"../Stack/stack.h"
 #  include  "../Stack/label.h"
 #  include  "../Code3D/gencode3d.h"
-#  include   "../Code3D/codespecs.h"
+#  include  "../Code3D/codespecs.h"
 
 extern FILE *yyin;
 ErrorsQueue *errorQ;						/* Errors Queue definition */
@@ -31,6 +31,7 @@ int  labelCount = 0;
 Stack *labelsCYC;
 Stack *labelsWhile;
 Stack *labelsFor;
+Stack *labelsMethod;
 
 /*Create new Label*/
 char* newLabel() {
@@ -80,7 +81,7 @@ finalizar() {
         //int i;
         //for (i = 0; i < cantCodes; i++) {
         //        Code3D *code = get_code(lcode3d, i);
-        //        toString(code);
+        //        toString3DC(code);
         //}
 }
 
@@ -234,39 +235,38 @@ statement     :    conditional
               
 action        :
               |    BREAK {
-							if (isEmpty(labelsWhile)|| isEmpty(labelsFor)) {
+							if (isEmpty(labelsWhile) && isEmpty(labelsFor)) {
 								insertError(errorQ,toString("Error. Solo se puede usar la sentencia \"break\" dentro de un ciclo.","",""));
 							} else {
-								add_CodeLabel(lcode3d, newCode(GOTOLABEL), peek(labelWhile)->label); //Go to Label of End of While
+								add_CodeLabel(lcode3d, newCode(GOTOLABEL), peek(labelsWhile)->label); //Go to Label of End of While
 							}
 					}
               |    CONTINUE {
-							if (isEmpty(labelsWhile)|| isEmpty(labelsFor)) {
+							if (isEmpty(labelsWhile) && isEmpty(labelsFor)) {
                                 insertError(errorQ,toString("Error. Solo se puede usar la sentencia \"continue\" dentro de un ciclo.","",""));
 							} else {
-                                Label *endOfWhile = pop(labelWhile); //Label of End of While
-								add_CodeLabel(lcode3d, newCode(GOTOLABEL), peek(labelWhile)->label); //Go to Label of Init of While
-								push(labelWhile, endOfWhile->label, NULL);
+                                Label *endOfWhile = pop(labelsWhile); //Label of End of While
+								add_CodeLabel(lcode3d, newCode(GOTOLABEL), peek(labelsWhile)->label); //Go to Label of Init of While
+								push(labelsWhile, endOfWhile->label, NULL);
 							} 
 					}
 			  |	   RETURN {
 							returns++; 
 							checkReturn(errorQ,&symbolTable,lastDefMethod);
-							Code3D *ret = newCode(COM_RETURN);
-							setCode1D(ret, void);
-							add_code(lcode3d, ret);
-							// TODO
-					}
+							Code3D *ret = newCode(COM_RETURN); ///////////////////////////////////////////////////////////////////////////////////////
+							setCode1D(ret, void);  //////////////////////// que quiere decir con "void" acá?? ///////////////////////////////////////
+							add_code(lcode3d, ret); ////////////////////////////////////////////////////////////////////////////////////////////////
+					}   
 			  |	   RETURN expression {
 									returns++; 									
-									if (checkReturnExpression(errorQ,&symbolTable,lastDefMethod,$2) == 0) { //CHEK TIPE
-										Code3D *loadToReturn = newCode(LOAD_MEM);
-										setCode2D(loadToReturn, ($2), retorno); //fijarse de como puedo obtener la variable de retorno
-										add_code(lcode3d, loadToReturn);
-										Code3D *ret = newCode(COM_RETURN);
-										setCode1D(ret, retorno);
-										add_code(lcode3d, ret);
-									}
+									if (checkReturnExpression(errorQ,&symbolTable,lastDefMethod,$2) == 0) { ////////////////////////////////////////////////////
+										Code3D *loadToReturn = newCode(LOAD_MEM); /////////////////////////////////////////////////////////////////////////////
+										setCode2D(loadToReturn, ($2), methodReturnType(errorQ,&symbolTable,lastDefMethod)); //fijarse de como puedo obtener la variable de retorno
+										add_code(lcode3d, loadToReturn); ////////////////////////////////////////////////////////////////////////////////////
+										Code3D *ret = newCode(COM_RETURN); /////////////////////////////////////////////////////////////////////////////////
+										setCode1D(ret, retorno);  }////////// "retorno" ver aca como obtener la variable de retorno del metodo ////////////
+										add_code(lcode3d, ret);  /////////////////////////////////////////////////////////////////////////////////////////
+									}                           /////////////////////////////////////////////////////////////////////////////////////////
 					}
               |    asignation 
               |    method_call                        
@@ -274,29 +274,30 @@ action        :
               
 asignation    :    location assig_op expression {
 							controlAssignation(errorQ,$1,$2,$3);
-							if (strcmp($2, PLUSEQUAL) == 0){
+                            Code3D *add;
+							if (strcmp($2, "+=") == 0){
 								if ((getAttributeType($1) == Int) && (getAttributeType($3) == Int)){
-									Code3D *add = newCode(COM_ADD_INT);
+									add = newCode(COM_ADD_INT);
 								} 
 								if ((getAttributeType($1) == Float) && (getAttributeType($3) == Float)){
-									Code3D *add = newCode(COM_ADD_FLOAT);
+									add = newCode(COM_ADD_FLOAT);
 								}
 								setCode2D(add, ($1), ($3));
-								add_code(lcode3d, add)
+								add_code(lcode3d, add);
 							} 
-							if (strcmp($2, MINUSEQUAL) == 0){
+							if (strcmp($2, "-=") == 0){
 								if ((getAttributeType($1) == Int) && (getAttributeType($3) == Int)){
-									Code3D *add = newCode(COM_MINUS_INT);
+									add = newCode(COM_MINUS_INT);
 								} 
 								if ((getAttributeType($1) == Float) && (getAttributeType($3) == Float)){
-									Code3D *add = newCode(COM_MINUS_FLOAT);																				
+									add = newCode(COM_MINUS_FLOAT);																				
 								}
 								setCode2D(add, ($1), ($3));
-								add_code(lcode3d, add)
+								add_code(lcode3d, add);
 							}
 							Code3D *asig = newCode(STORE_MEM);
 							setCode2D(asig, ($3), ($1));
-							add_code(lcode3d, asig)
+							add_code(lcode3d, asig);
 					}
 			  ;
               
@@ -309,7 +310,7 @@ assig_op      :    '=' {$$ = "=";}
 
 /* -------------------- CONDITIONALS AND CICLES ------------------------------ */
 
-conditional   :    IF '(' expression { 
+conditional   :    IF '(' expression ')' block { 
                                 if (controlType(errorQ,$3,Bool) == 0) {
                                         char *ifLabel = newLabel();
                                         char *elseLabel = newLabel();
@@ -320,19 +321,16 @@ conditional   :    IF '(' expression {
                                         push(labelsCYC, elseLabel, NULL);
                                         push(labelsCYC, endLabel, NULL);
 								}
-					}')' block {
 								add_CodeLabel(lcode3d, newCode(GOTOLABEL), peek(labelsCYC)->label); //Go to Label of End
-										
 					} ELSE {
                                 Label *markEnd = pop(labelsCYC);
 								add_CodeLabel(lcode3d, newCode(COM_MARK), pop(labelsCYC)->label); // Mark to Label of Else
                                 push(labelsCYC, markEnd->label, NULL);
                     } block {
-                                Label *markEnd = pop(labelsCYC);
-								add_CodeLabel(lcode3d, newCode(GOTOLABEL), markEnd->label); // Go to Label of End
-								add_CodeLabel(lcode3d, newCode(COM_MARK), markEnd->label); // Mark to Label of End
+								add_CodeLabel(lcode3d, newCode(GOTOLABEL), peek(labelsCYC)->label); // Go to Label of End
+								add_CodeLabel(lcode3d, newCode(COM_MARK), pop(labelsCYC)->label); // Mark to Label of End
                     }
-			  |    IF '(' expression { 
+			  |    IF '(' expression ')' block { 
                                 if (controlType(errorQ,$3,Bool) == 0) {
                                         char *ifLabel = newLabel();
                                         char *endLabel = newLabel();
@@ -341,10 +339,8 @@ conditional   :    IF '(' expression {
                                         add_CodeLabel(lcode3d, newCode(COM_MARK), ifLabel); // Mark to Label of If
                                         push(labelsCYC, endLabel, NULL);
                                 }
-					}')' block {
-								Label *marcEnd = pop(labelsCYC);
-								add_CodeLabel(lcode3d, newCode(GOTOLABEL), markEnd->label); // Go to Label of End
-								add_CodeLabel(lcode3d, newCode(COM_MARK), markEnd->label); // Mark to Label of End
+								add_CodeLabel(lcode3d, newCode(GOTOLABEL), peek(labelsCYC)->label); // Go to Label of End
+								add_CodeLabel(lcode3d, newCode(COM_MARK), pop(labelsCYC)->label); // Mark to Label of End
 					}
 			  ;
 
@@ -352,7 +348,7 @@ iteration     :    WHILE {
                             char *whileLabel = newLabel(); 
 							push(labelsWhile,whileLabel,NULL);
 							add_CodeLabel(lcode3d, newCode(COM_MARK), whileLabel); // Mark to Label of While
-                    }expression {
+                    } expression {
 							if (controlType(errorQ,$3,Bool) == 0) {
 								char *endLabel = newLabel(); 
 								push(labelsWhile, endLabel, NULL);
