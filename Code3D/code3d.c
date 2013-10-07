@@ -7,9 +7,6 @@
 #include <stdio.h>
 #include <string.h>
 
-
-
-
 Code3D* newCode(int comm) {
     Code3D *new = (Code3D*) malloc(sizeof(Code3D));
     Param *param1 = (Param*) malloc(sizeof(Param));
@@ -24,8 +21,6 @@ Code3D* newCode(int comm) {
     new->command = comm;
     return new;
 }
-
-
 
 int getCommand(Code3D *code) {
     return code->command;    
@@ -51,7 +46,7 @@ bool isFloat(Code3D *code, int param) {
     }      
 }
 
-bool isBool(Code3D *code, int param); {
+bool isBool(Code3D *code, int param) {
     if (param == 1) {
         return code->param1->type == CodeBOOL;
     } else if (param == 2) {
@@ -61,7 +56,7 @@ bool isBool(Code3D *code, int param); {
     }
 }
 
-bool isLabel(Code3D *code, int param)) {
+bool isLabel(Code3D *code, int param) {
     if (param == 1) {
         return code->param1->type == CodeLABEL;
     } else if (param == 2) {
@@ -165,7 +160,7 @@ void setBool(Code3D *code, int param, bool boolAttri) {
     }
 }
 
-void setFloat(Code3D *code, int param, float floatAttri); {
+void setFloat(Code3D *code, int param, float floatAttri) {
     if (param == 1) {
         code->param1->type = CodeFLOAT;
         code->param1->val = (Value*) malloc(sizeof(Value));
