@@ -3,8 +3,8 @@
 #include "Attribute.h"
 #include "SymbolsTable.h"
 #include "../ErrorsQueue/ErrorsQueue.h"
-#include  "../CodeC3D/gencode3d.h"
-#import   "../CodeC3D/codespecs.h"
+#include  "../Code3D/gencode3d.h"
+#include   "../Code3D/codespecs.h"
 
 /* Returns an attribute of ID "id" and Variable structure. Otherwise returns NULL */
 Attribute* getVariableAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id);

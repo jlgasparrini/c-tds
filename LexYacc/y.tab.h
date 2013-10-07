@@ -101,7 +101,7 @@ typedef union YYSTYPE
 {
 
 /* Line 2068 of yacc.c  */
-#line 66 "yaccC-TDS.y"
+#line 95 "yaccC-TDS.y"
 
 	char *stringValue;
 	Attribute *at;

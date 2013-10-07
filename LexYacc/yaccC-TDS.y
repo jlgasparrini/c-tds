@@ -10,8 +10,8 @@
 #  include  "../ErrorsQueue/ErrorsQueue.h"
 #  include	"../Stack/stack.h"
 #  include  "../Stack/label.h"
-#  include  "../CodeC3D/gencode3d.h"
-#  import   "../CodeC3D/codespecs.h"
+#  include  "../Code3D/gencode3d.h"
+#  include   "../Code3D/codespecs.h"
 
 extern FILE *yyin;
 ErrorsQueue *errorQ;						/* Errors Queue definition */
@@ -353,11 +353,11 @@ iteration     :    WHILE {
 							push(labelsWhile,whileLabel,NULL);
 							add_CodeLabel(lcode3d, newCode(COM_MARK), whileLabel); // Mark to Label of While
                     }expression {
-							if (controlType(errorQ,$2,Bool) == 0) {
+							if (controlType(errorQ,$3,Bool) == 0) {
 								char *endLabel = newLabel(); 
 								push(labelsWhile, endLabel, NULL);
 								char *expressionLabel = newLabel();
-								add_CodeLabelCond(lcode3d, newCode(GOTOLABEL_COND),($2), expressionLabel); // Go to Label of Expression
+								add_CodeLabelCond(lcode3d, newCode(GOTOLABEL_COND),($3), expressionLabel); // Go to Label of Expression
 								add_CodeLabel(lcode3d, newCode(GOTOLABEL), endLabel); // Go to Label of End
 								add_CodeLabel(lcode3d, newCode(COM_MARK), expressionLabel); // Mark to Label of Expression           
                             }
@@ -371,17 +371,17 @@ iteration     :    WHILE {
 						push(labelsFor,forLabel,NULL);
 						add_CodeLabel(lcode3d, newCode(COM_MARK), forLabel); // Mark to Label of For
                     }ID {
-						if (getAttributeType(getVariableAttribute(errorQ,&symbolTable,$2)) != Int){
-							insertError(errorQ,toString("El identificador \"", $2, "\" no pertenece a una variable de tipo \"int\""));
+						if (getAttributeType(getVariableAttribute(errorQ,&symbolTable,$3)) != Int){
+							insertError(errorQ,toString("El identificador \"", $3, "\" no pertenece a una variable de tipo \"int\""));
 						}
 					}
 					'=' expression ',' expression {
-								if ((controlType(errorQ,$4,Int) == 0) && (controlType(errorQ,$6,Int)== 0)) {
+								if ((controlType(errorQ,$6,Int) == 0) && (controlType(errorQ,$8,Int)== 0)) {
 									char *endLabel = newLabel();									 
 									push(labelsFor, endLabel, NULL);
 									char *expressionLabel = newLabel();
 									Attribute *res = createVariable("", Bool);
-									returnEqual(errorQ, lcode3d, $4, $6, res); //creo la comparacion la hago aca o lo hago en assembler?
+									returnEqual(errorQ, lcode3d, $6, $8, res); //creo la comparacion la hago aca o lo hago en assembler?
 									add_CodeLabelCond(lcode3d, newCode(GOTOLABEL_COND), res, expressionLabel); // Go to Label of Expression (falta hacer la comparacion)
 									add_CodeLabel(lcode3d, newCode(GOTOLABEL), endLabel); // Go to Label of End
 									add_CodeLabel(lcode3d, newCode(COM_MARK), expressionLabel); // Mark to Label of Expression           
