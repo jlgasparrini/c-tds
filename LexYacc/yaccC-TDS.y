@@ -8,16 +8,39 @@
 #  include  "../SymbolsTable/StringStack.h"
 #  include  "../SymbolsTable/Utils.h"
 #  include  "../ErrorsQueue/ErrorsQueue.h"
+#  include	"../Stack/stack.h"
+#  include  "../Stack/label.h"
+#  include  "../CodeC3D/gencode3d.h"
+#  import   "../CodeC3D/codespecs.h"
 
 extern FILE *yyin;
 ErrorsQueue *errorQ;						/* Errors Queue definition */
 SymbolsTable symbolTable;					/* <----Symbols Table Definition----- */
 StringStack *paramsStack, *methodsIDStack;  /* StringStack containing the amount of parameters and lastCalledMethods in each level of method_call*/
 unsigned char cantParams = 0, returns;		/* Amount of parameters and amount of returns that a method will have. */
-unsigned char iter = 0;						/* Number of "while" or "for" in the current block */
 PrimitiveType vaType;						/* Type of the variable or array */
 ReturnType mType;							/* Return type of the method */
 char *lastDefMethod, *lastCalledMethod = "";/* Name of the last defined method (lastDefMethod) and the last called method (lastCalledMethod) */
+
+/*Variables used to code 3D*/
+
+LCode3D *lcode3d;
+char *labelID = "label_%d";
+int  labelCount = 0;
+
+Stack *labelsCYC;
+Stack *labelsWhile;
+Stack *labelsFor;
+
+/*Create new Label*/
+char* newLabel() {
+        char *labelName = malloc(sizeof(char)*20);
+        sprintf(labelName, labelID, labelCount);
+        labelCount++;
+        return labelName;
+}
+
+
 int yydebug = 1;
 
 int yyerror (char *str)
@@ -52,7 +75,13 @@ finalizar() {
 		printErrorList(errorQ);
         deleteAllErrors(errorQ);
         printf("------Se termino de parsear.----------\n");
-		// mostrar la lista de codigos 3D
+		// show the list of code 3D
+		//int cantCodes = cantCode(lcode3d);
+        //int i;
+        //for (i = 0; i < cantCodes; i++) {
+        //        Code3D *code = get_code(lcode3d, i);
+        //        toString(code);
+        //}
 }
 
 out(char *msg) {
@@ -88,10 +117,26 @@ out(char *msg) {
 
 /* ------------------- PROGRAM -------------------- */
 
-program       :    CLASS ID '{' '}' {errorQ=initializeQueue(); finalizar();} 
-              |    CLASS ID '{' {initializeSymbolsTable(&symbolTable); pushLevel(&symbolTable); errorQ=initializeQueue();
-								paramsStack=initializeSS(); methodsIDStack=initializeSS();} body 
-								{checkMain(errorQ,&symbolTable); popLevel(&symbolTable); finalizar();} '}' 
+program       :    CLASS ID '{' '}' {
+									errorQ=initializeQueue(); 
+									finalizar();
+					} 
+              |    CLASS ID '{' {
+									initializeSymbolsTable(&symbolTable); 
+									pushLevel(&symbolTable);
+									errorQ=initializeQueue();
+									paramsStack=initializeSS(); 
+									methodsIDStack=initializeSS();
+									labelsCYC = newStack();
+                                    labelsWhile = newStack();
+									labelsFor = newStack();
+									labelsMethod = newStack();
+									lcode3d = initLCode3D();
+					} body {
+								checkMain(errorQ,&symbolTable); 
+								popLevel(&symbolTable); 
+								finalizar();
+					} '}' 
               ;
 
 body          :    fields_decls method_decl
@@ -117,10 +162,39 @@ type          :		INTW		{vaType = Int; mType = RetInt;}
               |		BOOLEANW	{vaType = Bool; mType = RetBool;}
               ;
 
-method_decl   :     type ID {lastDefMethod=$2; pushElement(errorQ,&symbolTable,createMethod($2,mType,0)); pushLevel(&symbolTable); returns=0;} param block {popLevel(&symbolTable); if(returns==0) insertError(errorQ,toString("El metodo \"",$2,"\" debe tener al menos un return."));}
-              |		method_decl type ID {lastDefMethod=$3; pushElement(errorQ,&symbolTable,createMethod($3,mType,0)); pushLevel(&symbolTable); returns=0;} param block {popLevel(&symbolTable); if(returns==0) insertError(errorQ,toString("El metodo \"",$3,"\" debe tener al menos un return."));}
-              |     VOID ID {lastDefMethod=$2; pushElement(errorQ,&symbolTable,createMethod($2,RetVoid,0)); pushLevel(&symbolTable); returns=0;} param block {popLevel(&symbolTable); if(returns==0) insertError(errorQ,toString("El metodo \"",$2,"\" debe tener al menos un return."));}
-              |	    method_decl VOID ID {lastDefMethod=$3; pushElement(errorQ,&symbolTable,createMethod($3,RetVoid,0)); pushLevel(&symbolTable); returns=0;} param block {popLevel(&symbolTable); if(returns==0) insertError(errorQ,toString("El metodo \"",$3,"\" debe tener al menos un return."));}
+method_decl   :     type ID {
+								lastDefMethod=$2; 
+								pushElement(errorQ,&symbolTable,createMethod($2,mType,0)); 
+								pushLevel(&symbolTable); returns=0;
+					} param block {
+								popLevel(&symbolTable); 
+								if(returns==0) insertError(errorQ,toString("El metodo \"",$2,"\" debe tener al menos un return."));
+					}
+              |		method_decl type ID {
+								lastDefMethod=$3; 
+								pushElement(errorQ,&symbolTable,createMethod($3,mType,0)); 
+								pushLevel(&symbolTable); returns=0;
+					} param block {
+								popLevel(&symbolTable); 
+								if(returns==0) insertError(errorQ,toString("El metodo \"",$3,"\" debe tener al menos un return."));
+					}
+              |     VOID ID {
+								lastDefMethod=$2; 
+								pushElement(errorQ,&symbolTable,createMethod($2,RetVoid,0)); 
+								pushLevel(&symbolTable); returns=0;
+					} param block {
+								popLevel(&symbolTable); 
+								if(returns==0) insertError(errorQ,toString("El metodo \"",$2,"\" debe tener al menos un return."));
+					}
+              |	    method_decl VOID ID {
+								lastDefMethod=$3; 
+								pushElement(errorQ,&symbolTable,createMethod($3,RetVoid,0)); 
+								pushLevel(&symbolTable); 
+								returns=0;
+					} param block {
+								popLevel(&symbolTable); 
+								if(returns==0) insertError(errorQ,toString("El metodo \"",$3,"\" debe tener al menos un return."));
+					}
               ;
 
 param		  :    '(' {cantParams = 0; setAmountOfParameters(searchIdInSymbolsTable(errorQ,&symbolTable,lastDefMethod),0);} ')' 
@@ -159,15 +233,71 @@ statement     :    conditional
               ;
               
 action        :
-              |    BREAK {if (iter==0) insertError(errorQ,toString("Error. Solo se puede usar la sentencia \"break\" dentro de un ciclo.","",""));}
-              |    CONTINUE {if (iter==0) insertError(errorQ,toString("Error. Solo se puede usar la sentencia \"continue\" dentro de un ciclo.","",""));}
-			  |	   RETURN {returns++; checkReturn(errorQ,&symbolTable,lastDefMethod);}
-			  |	   RETURN expression {returns++; checkReturnExpression(errorQ,&symbolTable,lastDefMethod,$2);}
+              |    BREAK {
+							if (isEmpty(labelsWhile)|| isEmpty(labelsFor)) {
+								insertError(errorQ,toString("Error. Solo se puede usar la sentencia \"break\" dentro de un ciclo.","",""));
+							} else {
+								add_CodeLabel(lcode3d, newCode(GOTOLABEL), peek(labelWhile)->label); //Go to Label of End of While
+							}
+					}
+              |    CONTINUE {
+							if (isEmpty(labelsWhile)|| isEmpty(labelsFor)) {
+                                insertError(errorQ,toString("Error. Solo se puede usar la sentencia \"continue\" dentro de un ciclo.","",""));
+							} else {
+                                Label *endOfWhile = pop(labelWhile); //Label of End of While
+								add_CodeLabel(lcode3d, newCode(GOTOLABEL), peek(labelWhile)->label); //Go to Label of Init of While
+								push(labelWhile, endOfWhile->label, NULL);
+							} 
+					}
+			  |	   RETURN {
+							returns++; 
+							checkReturn(errorQ,&symbolTable,lastDefMethod);
+							Code3D *ret = newCode(COM_RETURN);
+							setCode1D(ret, void);
+							add_code(lcode3d, ret);
+							// TODO
+					}
+			  |	   RETURN expression {
+									returns++; 									
+									if (checkReturnExpression(errorQ,&symbolTable,lastDefMethod,$2) == 0) { //CHEK TIPE
+										Code3D *loadToReturn = newCode(LOAD_MEM);
+										setCode2D(loadToReturn, ($2), retorno); //fijarse de como puedo obtener la variable de retorno
+										add_code(lcode3d, loadToReturn);
+										Code3D *ret = newCode(COM_RETURN);
+										setCode1D(ret, retorno);
+										add_code(lcode3d, ret);
+									}
+					}
               |    asignation 
               |    method_call                        
               ;
               
-asignation    :    location assig_op expression {controlAssignation(errorQ,$1,$2,$3);}
+asignation    :    location assig_op expression {
+							controlAssignation(errorQ,$1,$2,$3);
+							if (strcmp($2, PLUSEQUAL) == 0){
+								if ((getAttributeType($1) == Int) && (getAttributeType($3) == Int)){
+									Code3D *add = newCode(COM_ADD_INT);
+								} 
+								if ((getAttributeType($1) == Float) && (getAttributeType($3) == Float)){
+									Code3D *add = newCode(COM_ADD_FLOAT);
+								}
+								setCode2D(add, ($1), ($3));
+								add_code(lcode3d, add)
+							} 
+							if (strcmp($2, MINUSEQUAL) == 0){
+								if ((getAttributeType($1) == Int) && (getAttributeType($3) == Int)){
+									Code3D *add = newCode(COM_MINUS_INT);
+								} 
+								if ((getAttributeType($1) == Float) && (getAttributeType($3) == Float)){
+									Code3D *add = newCode(COM_MINUS_FLOAT);																				
+								}
+								setCode2D(add, ($1), ($3));
+								add_code(lcode3d, add)
+							}
+							Code3D *asig = newCode(STORE_MEM);
+							setCode2D(asig, ($3), ($1));
+							add_code(lcode3d, asig)
+					}
 			  ;
               
 assig_op      :    '=' {$$ = "=";} 
@@ -179,14 +309,88 @@ assig_op      :    '=' {$$ = "=";}
 
 /* -------------------- CONDITIONALS AND CICLES ------------------------------ */
 
-conditional   :    IF '(' expression ')' block {controlVariableType(errorQ,$3,Bool);} ELSE block 
-			  |    IF '(' expression ')' block {controlVariableType(errorQ,$3,Bool);}
+conditional   :    IF '(' expression { 
+                                if (controlType(errorQ,$3,Bool) == 0) {
+                                        char *ifLabel = newLabel();
+                                        char *elseLabel = newLabel();
+                                        char *endLabel = newLabel();
+										add_CodeLabelCond(lcode3d, newCode(GOTOLABEL_COND), ($3), ifLabel); //Go to Label of If
+										add_CodeLabel(lcode3d, newCode(GOTOLABEL), elseLabel); //Go to Label of Else
+                                        add_CodeLabel(lcode3d, newCode(COM_MARK), ifLabel); // Mark to Label of If
+                                        push(labelsCYC, elseLabel, NULL);
+                                        push(labelsCYC, endLabel, NULL);
+								}
+					}')' block {
+								add_CodeLabel(lcode3d, newCode(GOTOLABEL), peek(labelsCYC)->label); //Go to Label of End
+										
+					} ELSE {
+                                Label *markEnd = pop(labelsCYC);
+								add_CodeLabel(lcode3d, newCode(COM_MARK), pop(labelsCYC)->label); // Mark to Label of Else
+                                push(labelsCYC, markEnd->label, NULL);
+                    } block {
+                                Label *markEnd = pop(labelsCYC);
+								add_CodeLabel(lcode3d, newCode(GOTOLABEL), markEnd->label); // Go to Label of End
+								add_CodeLabel(lcode3d, newCode(COM_MARK), markEnd->label); // Mark to Label of End
+                    }
+			  |    IF '(' expression { 
+                                if (controlType(errorQ,$3,Bool) == 0) {
+                                        char *ifLabel = newLabel();
+                                        char *endLabel = newLabel();
+										add_CodeLabelCond(lcode3d, newCode(GOTOLABEL_COND), ($3), ifLabel); //Go to Label of If
+										add_CodeLabel(lcode3d, newCode(GOTOLABEL), endLabel); //Go to Label of End
+                                        add_CodeLabel(lcode3d, newCode(COM_MARK), ifLabel); // Mark to Label of If
+                                        push(labelsCYC, endLabel, NULL);
+                                }
+					}')' block {
+								Label *marcEnd = pop(labelsCYC);
+								add_CodeLabel(lcode3d, newCode(GOTOLABEL), markEnd->label); // Go to Label of End
+								add_CodeLabel(lcode3d, newCode(COM_MARK), markEnd->label); // Mark to Label of End
+					}
 			  ;
 
-iteration     :    WHILE expression {controlVariableType(errorQ,$2,Bool); iter++;} block {iter--;}
-              |    FOR ID {if ((*getVariableAttribute(errorQ,&symbolTable,$2)).decl.variable.type != Int)
-							insertError(errorQ,toString("El identificador \"", $2, "\" no pertenece a una variable de tipo \"int\""));}
-					'=' expression ',' expression {controlVariableType(errorQ,$5,Int); controlVariableType(errorQ,$7,Int); iter++;} block {iter--;}
+iteration     :    WHILE {     
+                            char *whileLabel = newLabel(); 
+							push(labelsWhile,whileLabel,NULL);
+							add_CodeLabel(lcode3d, newCode(COM_MARK), whileLabel); // Mark to Label of While
+                    }expression {
+							if (controlType(errorQ,$2,Bool) == 0) {
+								char *endLabel = newLabel(); 
+								push(labelsWhile, endLabel, NULL);
+								char *expressionLabel = newLabel();
+								add_CodeLabelCond(lcode3d, newCode(GOTOLABEL_COND),($2), expressionLabel); // Go to Label of Expression
+								add_CodeLabel(lcode3d, newCode(GOTOLABEL), endLabel); // Go to Label of End
+								add_CodeLabel(lcode3d, newCode(COM_MARK), expressionLabel); // Mark to Label of Expression           
+                            }
+					} block {							
+							Label *endOfCycle = pop(labelsWhile); 														
+							add_CodeLabel(lcode3d, newCode(GOTOLABEL), pop(labelsWhile)->label); // Go to Label of While
+							add_CodeLabel(lcode3d, newCode(COM_MARK), endOfCycle->label); // Mark to Label of End
+					}
+              |    FOR {     
+                        char *forLabel = newLabel(); 
+						push(labelsFor,forLabel,NULL);
+						add_CodeLabel(lcode3d, newCode(COM_MARK), forLabel); // Mark to Label of For
+                    }ID {
+						if (getAttributeType(getVariableAttribute(errorQ,&symbolTable,$2)) != Int){
+							insertError(errorQ,toString("El identificador \"", $2, "\" no pertenece a una variable de tipo \"int\""));
+						}
+					}
+					'=' expression ',' expression {
+								if ((controlType(errorQ,$4,Int) == 0) && (controlType(errorQ,$6,Int)== 0)) {
+									char *endLabel = newLabel();									 
+									push(labelsFor, endLabel, NULL);
+									char *expressionLabel = newLabel();
+									Attribute *res = createVariable("", Bool);
+									returnEqual(errorQ, lcode3d, $4, $6, res); //creo la comparacion la hago aca o lo hago en assembler?
+									add_CodeLabelCond(lcode3d, newCode(GOTOLABEL_COND), res, expressionLabel); // Go to Label of Expression (falta hacer la comparacion)
+									add_CodeLabel(lcode3d, newCode(GOTOLABEL), endLabel); // Go to Label of End
+									add_CodeLabel(lcode3d, newCode(COM_MARK), expressionLabel); // Mark to Label of Expression           
+								}
+					} block {
+							Label *endOfCycle = pop(labelsFor); 							 							
+							add_CodeLabel(lcode3d, newCode(GOTOLABEL), pop(labelsFor)->label); // Go to Label of For
+							add_CodeLabel(lcode3d, newCode(COM_MARK), endOfCycle->label); // Mark to Label of End
+					}
               ;                                                               
 
 /* -------------------- END OF CONDITIONALS AND CICLES ------------------------------- */
@@ -224,45 +428,45 @@ arg           :    expression
               |    STRING                     
               ;
               
-expression    :    conjunction                   {$$ = $1;}                             
-              |    expression OR conjunction     {$$ = returnOr(errorQ, $1, $3);}
+expression    :    conjunction                  {$$ = $1;}                             
+              |    expression OR conjunction    {$$ = returnOr(errorQ, lcode3d, $1, $3, $$);}
               ;
 
-conjunction   :    inequality                    {$$ = $1;}                                
-              |    conjunction AND inequality    {$$ = returnAnd(errorQ, $1, $3);}
+conjunction   :    inequality                   {$$ = $1;}                                
+              |    conjunction AND inequality   {$$ = returnAnd(errorQ, lcode3d, $1, $3, $$);}
               ;
 
 inequality    :    comparison                       {$$ = $1;}                             
-              |    inequality DISTINCT comparison   {$$ = returnDistinct(errorQ, $1, $3);}
+              |    inequality DISTINCT comparison   {$$ = returnDistinct(errorQ, lcode3d, $1, $3, $$);}
               ;
 
 comparison    :    relation                   {$$ = $1;} 
-              |    relation EQUAL relation    {$$ = returnEqual(errorQ, $1, $3);}
+              |    relation EQUAL relation    {$$ = returnEqual(errorQ, lcode3d, $1, $3, $$);}
               ;
 
 relation      :    term                 {$$ = $1;}
-              |    term '<' term        {$$ = returnMinorComparison(errorQ, $1, $3);}
-              |    term '>' term        {$$ = returnMajorComparison(errorQ, $1, $3);}
-              |    term GEQUAL term     {$$ = returnGEqualComparison(errorQ, $1, $3);}
-              |    term LEQUAL term     {$$ = returnLEqualComparison(errorQ, $1, $3);}
+              |    term '<' term        {$$ = returnMinorComparison(errorQ, lcode3d, $1, $3, $$);}
+              |    term '>' term        {$$ = returnMajorComparison(errorQ, lcode3d, $1, $3, $$);}
+              |    term GEQUAL term     {$$ = returnGEqualComparison(errorQ, lcode3d, $1, $3, $$);}
+              |    term LEQUAL term     {$$ = returnLEqualComparison(errorQ, lcode3d, $1, $3, $$);}
               ;
 
 term          :    factor			{$$ = $1;}
-              |    term '+' factor	{$$ = returnAdd(errorQ, $1, $3);}
-              |    term '-' factor	{$$ = returnSub(errorQ, $1, $3);} 
-              |    term '%' factor	{$$ = returnMod(errorQ, $1, $3);} 
-              |    term '/' factor	{$$ = returnDiv(errorQ, $1, $3);} 
-              |    term '*' factor	{$$ = returnMult(errorQ, $1, $3);} 
+              |    term '+' factor	{$$ = returnAdd(errorQ, lcode3d, $1, $3, $$);}
+              |    term '-' factor	{$$ = returnSub(errorQ, lcode3d, $1, $3, $$);}
+              |    term '%' factor	{$$ = returnMod(errorQ, lcode3d, $1, $3, $$);}
+              |    term '/' factor	{$$ = returnDiv(errorQ, lcode3d, $1, $3, $$);}
+              |    term '*' factor	{$$ = returnMult(errorQ, lcode3d, $1, $3, $$);}
               ;
 
 factor        :    primary		{$$ = $1;}  
-              |    '!' factor	{$$ = $2;} 
-              |    '-' factor	{$$ = $2;}
+              |    '!' factor	{$$ = returnNot(errorQ, lcode3d, $2, $$);}
+              |    '-' factor	{$$ = returnNeg(errorQ, lcode3d, $2, $$);}
               ;
 
-primary       :    INTEGER			{Attribute *aux = createVariable("", Int); setVariableValue(aux,Int,$1); $$=aux;}
-              |    FLOAT            {Attribute *aux = createVariable("", Float); setVariableValue(aux,Float,$1); $$=aux;}
-              |    BOOLEAN          {Attribute *aux = createVariable("", Bool); setVariableValue(aux,Bool,$1); $$=aux;}
+primary       :    INTEGER			{$$ = returnValue(lcode3d, Int, $1, $$);}
+              |    FLOAT            {$$ = returnValue(lcode3d, Float, $1, $$);}
+              |    BOOLEAN          {$$ = returnValue(lcode3d, Bool, $1, $$);}
               |    ID				{$$ = getVariableAttribute(errorQ,&symbolTable,$1);}				
               |    ID '[' term ']'  {$$ = checkArrayPos(errorQ,&symbolTable,$1,$3);} 
               |    '(' expression ')'  {$$ = $2;}
