@@ -11,7 +11,7 @@ yacc -d yaccC-TDS.y
 echo
 echo   Compilando c....
 cd ..
-gcc -o c-tds LexYacc/lex.yy.c LexYacc/y.tab.c SymbolsTable/SymbolsTable.c SymbolsTable/LinkedList.c SymbolsTable/Utils.c SymbolsTable/Attribute.c ErrorsQueue/ErrorsQueue.c SymbolsTable/StringStack.c 
+gcc -o c-tds LexYacc/lex.yy.c LexYacc/y.tab.c SymbolsTable/SymbolsTable.c SymbolsTable/LinkedList.c SymbolsTable/Utils.c SymbolsTable/Attribute.c ErrorsQueue/ErrorsQueue.c SymbolsTable/StringStack.c Code3D/gencode3d.c
 echo 
 echo   Fin de compilacion.          #Presione ENTER para terminar.
 #read
