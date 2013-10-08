@@ -262,14 +262,13 @@ void setCode2D(Code3D *code, Attribute *attri1, Attribute *attriRes){
 	setNull(code, 3);
 }
 
-void setComand1D(Code3D *code, Attribute *attri1){
+void setCode1D(Code3D *code, Attribute *attri1){
 	setAttribute(code, 1, attri1);
     setNull(code, 2);
     setNull(code, 3);
 }
 
-
-void toString(Code3D *code) {
+void toString3DC(Code3D *code) {
 	// Ver si funciona
 	// printf("Comando %i ", getCommand(code));
 	// printf("Parametro 1 tipo %i \n", code->param1->type);

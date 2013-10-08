@@ -242,8 +242,10 @@ unsigned char checkReturnExpression(ErrorsQueue *eq, SymbolsTable *aSymbolsTable
 {
 	ReturnType rt = methodReturnType(eq, aSymbolsTable, lastUsedMethod);
 	if (rt == RetVoid)
+    {
 		insertError(eq,toString("El metodo \"",lastUsedMethod,"\" no puede retornar una expresion ya que retorna void."));
 		return 1;
+    }
 	else
 		if (rt != getAttributeType(attr))
 		{
@@ -254,7 +256,7 @@ unsigned char checkReturnExpression(ErrorsQueue *eq, SymbolsTable *aSymbolsTable
 			strcat(msg, getType(getAttributeType(attr)));
 			strcat(msg, "\".");
 			insertError(eq, toString("El metodo \"", lastUsedMethod, msg));
-			return 1:
+			return 1;
 	//		free(msg);
 		}
 		return 0;
@@ -491,15 +493,16 @@ Attribute* returnAdd(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attrib
 {
     if ((getAttributeType(oper1) == getAttributeType(oper2)) && (getAttributeType(oper2) != Bool))
     {
+        Code3D *codeAdd;
         Attribute *aux = createVariable("", getAttributeType(oper1));
         if (getAttributeType(oper1) == Float)
 		{
-			Code3D *codeAdd = newCode(COM_ADD_FLOAT);
+			codeAdd = newCode(COM_ADD_FLOAT);
             (*aux).decl.variable.value.floatVal = ((*oper1).decl.variable.value.floatVal) + ((*oper2).decl.variable.value.floatVal);
         }
 		if (getAttributeType(oper1) == Int)
 		{
-			Code3D *codeAdd = newCode(COM_ADD_INT);
+			codeAdd = newCode(COM_ADD_INT);
             (*aux).decl.variable.value.intVal = ((*oper1).decl.variable.value.intVal) + ((*oper2).decl.variable.value.intVal);
         }
 		setCode3D(codeAdd, oper1, oper2, operRes);
@@ -519,15 +522,16 @@ Attribute* returnSub(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attrib
 {
     if (getAttributeType(oper1) == getAttributeType(oper2) && (getAttributeType(oper2) != Bool))
     {
+        Code3D *codeSub;
         Attribute *aux = createVariable("", getAttributeType(oper1));
         if (getAttributeType(oper1) == Float)
         {    
-			Code3D *codeSub = newCode(COM_MINUS_FLOAT);
+			codeSub = newCode(COM_MINUS_FLOAT);
 			(*aux).decl.variable.value.floatVal = ((*oper1).decl.variable.value.floatVal) - ((*oper2).decl.variable.value.floatVal);
         }
 		if (getAttributeType(oper1) == Int)
         {
-			Code3D *codeSub = newCode(COM_MINUS_INT);											
+			codeSub = newCode(COM_MINUS_INT);											
 			(*aux).decl.variable.value.intVal = ((*oper1).decl.variable.value.intVal) - ((*oper2).decl.variable.value.intVal);
         }
 		setCode3D(codeSub, oper1, oper2, operRes);
@@ -547,15 +551,16 @@ Attribute* returnMod(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attrib
 {
     if (getAttributeType(oper1) == getAttributeType(oper2) && (getAttributeType(oper2) != Bool)) // ver por que solamente toma int
     {
+        Code3D *codeMod;
         Attribute *aux = createVariable("", getAttributeType(oper1));
 		if (getAttributeType(oper1) == Float)
         {    
-			Code3D *codeMod = newCode(COM_MOD_FLOAT);
+			codeMod = newCode(COM_MOD_FLOAT);
 			(*aux).decl.variable.value.floatVal = fmod(((*oper1).decl.variable.value.floatVal), ((*oper2).decl.variable.value.floatVal));
         }
         if (getAttributeType(oper1) == Int)
         {
-			Code3D *codeMod = newCode(COM_MOD_INT);
+			codeMod = newCode(COM_MOD_INT);
 			(*aux).decl.variable.value.intVal = ((*oper1).decl.variable.value.intVal) % ((*oper2).decl.variable.value.intVal);
         }
 		setCode3D(codeMod, oper1, oper2, operRes);
@@ -575,15 +580,16 @@ Attribute* returnDiv(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attrib
 {
     if (getAttributeType(oper1) == getAttributeType(oper2) && (getAttributeType(oper2) != Bool))
     {
+        Code3D *codeDiv;
         Attribute *aux = createVariable("", getAttributeType(oper1));
         if (getAttributeType(oper1) == Float)
         {    
-			Code3D *codeDiv = newCode(COM_DIV_FLOAT);
+			codeDiv = newCode(COM_DIV_FLOAT);
 			(*aux).decl.variable.value.intVal = ((*oper1).decl.variable.value.floatVal) / ((*oper2).decl.variable.value.floatVal);
         }
 		if (getAttributeType(oper1) == Int)
 		{
-			Code3D *codeDiv = newCode(COM_DIV_INT);
+			codeDiv = newCode(COM_DIV_INT);
             (*aux).decl.variable.value.intVal = ((*oper1).decl.variable.value.intVal) / ((*oper2).decl.variable.value.intVal);
         }
 		setCode3D(codeDiv, oper1, oper2, operRes);
@@ -603,19 +609,20 @@ Attribute* returnMult(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attri
 {
     if (getAttributeType(oper1) == getAttributeType(oper2) && (getAttributeType(oper2) != Bool))
     {
+        Code3D *codeMult;
         Attribute *aux = createVariable("", getAttributeType(oper1));
         if (getAttributeType(oper1) == Float)
 		{
-			Code3D *codeMult = newCode(COM_MULT_FLOAT);
+			codeMult = newCode(COM_MULT_FLOAT);
 		    (*aux).decl.variable.value.floatVal = ((*oper1).decl.variable.value.floatVal) * ((*oper2).decl.variable.value.floatVal);
 		}
 		if (getAttributeType(oper1) == Int)
 		{	
-			Code3D *codeMult = newCode(COM_MULT_INT);
+			codeMult = newCode(COM_MULT_INT);
             (*aux).decl.variable.value.intVal = ((*oper1).decl.variable.value.intVal) * ((*oper2).decl.variable.value.intVal);
         }
-		setCode3D(codeMultFloat, oper1, oper2, operRes);
-		add_code(lcode3d, codeMultFloat);
+		setCode3D(codeMult, oper1, oper2, operRes);
+		add_code(lcode3d, codeMult);
 		return aux;
     }
     else
@@ -649,17 +656,18 @@ Attribute* returnNot(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attrib
 /* Insert a new code3D Neg in a list of Codes */
 Attribute* returnNeg(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *operRes)
 {
-    if (getAttributeType(oper1) == Int) || (getAttributeType(oper1) == Float)
+    if (getAttributeType(oper1) == Int || getAttributeType(oper1) == Float)
     {
+        Code3D *codeNeg;
         Attribute *aux = createVariable("", getAttributeType(oper1));
         if (getAttributeType(oper1) == Float)
 		{
-			Code3D *codeNeg = newCode(COM_NEG_FLOAT);
+			codeNeg = newCode(COM_NEG_FLOAT);
 		    (*aux).decl.variable.value.floatVal = -((*oper1).decl.variable.value.floatVal);
 		}
 		if (getAttributeType(oper1) == Int)
 		{	
-			Code3D *codeNeg = newCode(COM_NEG_INT);
+			codeNeg = newCode(COM_NEG_INT);
             (*aux).decl.variable.value.intVal = -((*oper1).decl.variable.value.intVal);
         }
 		setCode2D(codeNeg, oper1, operRes);
@@ -688,13 +696,13 @@ Attribute* returnValue(LCode3D *lcode3d, PrimitiveType type, char *oper1, Attrib
 		setFloat(codeValue, 1, atof(oper1));
 	if (type == Bool)
 	{
-		if (strcmp(value, "false") == 0)
+		if (strcmp(oper1, "false") == 0)
 			setBool(codeValue, 1, False);
-		if (strcmp(value, "true") == 0)
+		if (strcmp(oper1, "true") == 0)
 			setBool(codeValue, 1, True);		
 	}
-	setAttribute(code, 2, operRes);
-	setNull(code, 3);
+	setAttribute(codeValue, 2, operRes);
+	setNull(codeValue, 3);
 	add_code(lcode3d, codeValue);	
 	Attribute *aux = createVariable("", type); 
 	setVariableValue(aux, type, oper1);

@@ -80,6 +80,6 @@ void setCode3D(Code3D *code, Attribute *attri1, Attribute *attri2, Attribute *at
 void setCode2D(Code3D *code, Attribute *attri1, Attribute *attriRes);
 void setCode1D(Code3D *code, Attribute *attri1);
 
-void toString(Code3D *code);
+void toString3DC(Code3D *code);
 
 #endif
