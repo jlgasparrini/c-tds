@@ -34,6 +34,7 @@ typedef struct               /* A method has: 				       									*/
 	ReturnType type; 		 /* A "return type" (int, float, boolean, void) 					    */
 	unsigned char paramSize; /* An attribute indicating the number of parameters of the method      */
 	StVariable parameters[MAX_PARAMS];/* An array with the parameters, in case of having them  		*/
+	VarValue returnValue;    /* The return value of the current method								*/
 } StMethod;
 
 typedef union               /* A declaration is: 													*/

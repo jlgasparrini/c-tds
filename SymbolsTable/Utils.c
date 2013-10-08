@@ -35,9 +35,8 @@ Attribute* getArrayAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attri
                 return createVariable("",(*attr).decl.array.type); /* ACA DEBERIA RETORNARSE LA VARIABLE QUE SE ENCUENTRA EN EL ARREGLO EN LA POSICION "pos"-------------------------------------- */
 }
 
-/* verificar si este metodo no tendria que retornar el valor de retorno del metodo!! ---------------------------------------------------------*/
-/* Returns the respective variable attribute that the method return. "paramSize" is for checking if the amount of parameters is right */
-Attribute* getMethodAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id, unsigned char paramSize)
+/* Sets the return attribute of the method with id "id" */
+void setMethodReturnAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id, StVariable *value)
 { 
 	Attribute *attr = searchIdInSymbolsTable(eq, aSymbolsTable, id);
     if(attr != NULL) 
@@ -45,17 +44,49 @@ Attribute* getMethodAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char
         if((*attr).type != Method)
 			insertError(eq,toString("El identificador \"", id,"\" no corresponde a un metodo."));
         else
-        { 
-            if ((*attr).decl.method.paramSize != paramSize) /* if the method doesn't have the same amount of parameters */
+		{	
+			if (getAttributeType(attr) == RetVoid)
+				insertError(eq,toString("El metodo \"", id,"\" retorna void, no puede setearse ningun atributo de retorno."));
+			else
 			{
-		 		if ((*attr).decl.method.paramSize == 0)
+				if ((*value).type == Int)				
+					(*attr).decl.method.returnValue.intVal = (*value).value.intVal;
+				if ((*value).type == Float)				
+					(*attr).decl.method.returnValue.floatVal = (*value).value.floatVal;
+				if ((*value).type == Bool)				
+					(*attr).decl.method.returnValue.boolVal = (*value).value.boolVal;
+			}
+		}
+    }
+}
+
+/* Returns the respective variable attribute that the method return. "paramSize" is for checking if the amount of parameters is right */
+Attribute* getMethodAttribute(ErrorsQueue eq, SymbolsTable *aSymbolsTable, char id, unsigned char paramSize)
+{
+	Attribute *attr = searchIdInSymbolsTable(eq, aSymbolsTable, id);
+	if(attr != NULL)
+	{
+		if((*attr).type != Method)
+			insertError(eq,toString("El identificador \"", id,"\" no corresponde a un metodo."));
+		else
+		{
+			if ((attr).decl.method.paramSize != paramSize) /* if the method doesn't have the same amount of parameters */
+			{
+				if ((*attr).decl.method.paramSize == 0)
 					insertError(eq, toString("La llamada al metodo \"", id, "\" no debe contener parametros."));
-				return createVariable("",(*attr).decl.method.type);
+				else
+					insertError(eq, toString("La llamada al metodo \"", id, "\" no contiene la misma cantidad parametros."));
+				return createVariable("", getAttributeType(attr));
 			}
 			else
-				return createVariable("",(*attr).decl.method.type);
-        }
-    }
+			{
+				if (getAttributeType(attr) == RetVoid)
+					insertError(eq,toString("El metodo \"", id,"\" retorna void, no puede obtenerse ningun atributo de retorno."));
+				else
+					return createVariable("", getAttributeType(attr));
+			}
+		}
+	}
 	return NULL;
 }
 

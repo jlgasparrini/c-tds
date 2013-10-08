@@ -15,6 +15,12 @@ Attribute* getArrayAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attri
 /* Returns the ReturnType of the method with id "id" */
 ReturnType methodReturnType(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id);
 
+/* Sets the return attribute of the method with id "id" */
+ReturnType setMethodReturnAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id);
+
+/* Returns the respective variable attribute that the method return. "paramSize" is for checking if the amount of parameters is right */
+Attribute* getMethodAttribute(ErrorsQueue eq, SymbolsTable *aSymbolsTable, char id, unsigned char paramSize);
+
 /* Returns the type of the attribute, although it is a variable, array or method */
 ReturnType getAttributeType(Attribute *attr);
 

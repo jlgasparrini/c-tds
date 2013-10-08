@@ -264,7 +264,7 @@ action        :
 										setCode2D(loadToReturn, ($2), methodReturnType(errorQ,&symbolTable,lastDefMethod)); //fijarse de como puedo obtener la variable de retorno
 										add_code(lcode3d, loadToReturn); ////////////////////////////////////////////////////////////////////////////////////
 										Code3D *ret = newCode(COM_RETURN); /////////////////////////////////////////////////////////////////////////////////
-										setCode1D(ret, retorno);  }////////// "retorno" ver aca como obtener la variable de retorno del metodo ////////////
+										setCode1D(ret, getMethodReturnAttribute(errorQ,&symbolTable,lastDefMethod)); }////////// "retorno" ver aca como obtener la variable de retorno del metodo /////////////
 										add_code(lcode3d, ret);  /////////////////////////////////////////////////////////////////////////////////////////
 									}                           /////////////////////////////////////////////////////////////////////////////////////////
               |    asignation 
