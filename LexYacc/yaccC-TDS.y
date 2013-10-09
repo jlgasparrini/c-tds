@@ -52,7 +52,7 @@ int yyerror (char *str)
         if (strcmp(str, "syntax error") == 0)
 			printf("%s\n",toString("Error GRAMATICO.","",""));
         else
-			printf("%s\n",toString("Error DESCONOCIDO: \"",str,"\"."));
+			printf("%s\n","Solucione errores semanticos.");
         return 0;
 }
  
@@ -75,19 +75,24 @@ main( argc, argv )
 
 finalizar() {
         int cantErrors = 0;
-		printErrorList(errorQ);
         cantErrors = (*errorQ).size;
-        deleteAllErrors(errorQ);
-        printf("------Se termino de parsear.----------\n");
-		// show the list of code 3D
-        if (cantErrors == 0) {
+        if (cantErrors > 0) 
+        {
+            printErrorList(errorQ);
+            deleteAllErrors(errorQ);
+            yyerror("");
+        }
+        else
+        {
+            // show the list of code 3D
             int cantCodes = cantCode(lcode3d);
             int i;
             for (i = 0; i < cantCodes; i++) {
-                    Code3D *code = get_code(lcode3d, i);
+                Code3D *code = get_code(lcode3d, i);
                 toString3DC(code);
             }
         }
+        printf("------Se termino de parsear.----------\n");
 }
 
 out(char *msg) {

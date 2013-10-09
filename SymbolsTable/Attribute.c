@@ -149,7 +149,7 @@ void setFloatVal(Attribute *attr, float value)
 	if ((*attr).type == Variable)
 		(*attr).decl.variable.value.floatVal = value;
 	if ((*attr).type == Method)
-		return (*attr).decl.method.returnValue.floatVal = value;
+		(*attr).decl.method.returnValue.floatVal = value;
 }
 
 /* Sets the boolVal of the attribute */
