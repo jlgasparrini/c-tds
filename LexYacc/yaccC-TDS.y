@@ -9,9 +9,10 @@
 #  include  "../SymbolsTable/Utils.h"
 #  include  "../ErrorsQueue/ErrorsQueue.h"
 #  include	"../Stack/stack.h"
-#  include  "../Stack/label.h"
-#  include  "../Code3D/gencode3d.h"
-#  include  "../Code3D/codespecs.h"
+#  include  "../Stack/label.h" //////////// ver si esta bien que esten aca, ya que al eliminarlos sigue compilando todo OK
+#  include  "../Code3D/gencode3d.h" /////// ver si esta bien que esten aca, ya que al eliminarlos sigue compilando todo OK
+#  include  "../Code3D/codespecs.h" /////// ver si esta bien que esten aca, ya que al eliminarlos sigue compilando todo OK
+
 
 extern FILE *yyin;
 ErrorsQueue *errorQ;						/* Errors Queue definition */
@@ -253,20 +254,22 @@ action        :
 			  |	   RETURN {
 							returns++; 
 							checkReturn(errorQ,&symbolTable,lastDefMethod);
-							Code3D *ret = newCode(COM_RETURN); ///////////////////////////////////////////////////////////////////////////////////////
-							setCode1D(ret, void);  //////////////////////// que quiere decir con "void" acá?? ///////////////////////////////////////
-							add_code(lcode3d, ret); ////////////////////////////////////////////////////////////////////////////////////////////////
+							Code3D *ret = newCode(COM_RETURN); ///////////////////////////////////////////////////////////////////////////
+						//	setCode1D(ret, void);  ////////DESCOMENTAR ESTA LINEA!!!!!!!!!!!!////////////////////////////////////////////
+							add_code(lcode3d, ret); ////////////////////////////////////////////////////////////////////////////////////
 					}   
 			  |	   RETURN expression {
 									returns++; 									
-									if (checkReturnExpression(errorQ,&symbolTable,lastDefMethod,$2) == 0) { ////////////////////////////////////////////////////
-										Code3D *loadToReturn = newCode(LOAD_MEM); /////////////////////////////////////////////////////////////////////////////
-										setCode2D(loadToReturn, ($2), methodReturnType(errorQ,&symbolTable,lastDefMethod)); //fijarse de como puedo obtener la variable de retorno
-										add_code(lcode3d, loadToReturn); ////////////////////////////////////////////////////////////////////////////////////
-										Code3D *ret = newCode(COM_RETURN); /////////////////////////////////////////////////////////////////////////////////
-										setCode1D(ret, getMethodReturnAttribute(errorQ,&symbolTable,lastDefMethod)); }////////// "retorno" ver aca como obtener la variable de retorno del metodo /////////////
-										add_code(lcode3d, ret);  /////////////////////////////////////////////////////////////////////////////////////////
-									}                           /////////////////////////////////////////////////////////////////////////////////////////
+									if (checkReturnExpression(errorQ,&symbolTable,lastDefMethod,$2) == 0)
+									{ 
+										Code3D *loadToReturn = newCode(LOAD_MEM); 
+										setCode2D(loadToReturn, ($2), getMethodReturnAttribute(errorQ,&symbolTable,lastDefMethod)); 
+										add_code(lcode3d, loadToReturn);
+										Code3D *ret = newCode(COM_RETURN);
+										setCode1D(ret, getMethodReturnAttribute(errorQ,&symbolTable,lastDefMethod));
+										add_code(lcode3d, ret);  
+									}                           
+									}
               |    asignation 
               |    method_call                        
               ;

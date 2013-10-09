@@ -43,10 +43,9 @@ void add_listC3D(ListC3D *list, Code3D *elem, int index) {
                 runner = getNext_nodeC3D(runner);
                 i++;
             }
-            NodeC3D *new = newNodeC3D_info_next(elem, getNext_nodeC3D(runner));
-            defineNext_nodeC3D(runner, new);
+            setNext_nodeC3D(runner, newNodeC3D_info_next(elem, getNext_nodeC3D(runner)));
         }
-        (*list).size = size_listC3D(list) + 1;
+        (*list).size++;
     }
 }
 
@@ -65,9 +64,9 @@ void delete_listC3D(ListC3D *list, int index) {
                 i++;
             }
             del = getNext_nodeC3D(runner);
-            defineNext_nodeC3D(runner, getNext_nodeC3D(getNext_nodeC3D(runner)));
+            setNext_nodeC3D(runner, getNext_nodeC3D(getNext_nodeC3D(runner)));
         }
         free(del);
-        (*list).size = size_listC3D(list) - 1;
+        (*list).size--;
     }
 }

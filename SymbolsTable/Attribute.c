@@ -94,3 +94,69 @@ void setVariableValue(Attribute *attr, PrimitiveType type, char *value)
 			(*attr).decl.variable.value.boolVal = True;
 	}
 }
+
+/* Returns the ID of the specified attribute */
+char* getID(Attribute *attr)
+{
+	if ((*attr).type == Variable)
+		return (*attr).decl.variable.id;
+	if ((*attr).type == Method)
+		return (*attr).decl.method.id;
+	if ((*attr).type == Array)
+		return (*attr).decl.array.id;
+
+}
+
+/* Returns the intVal of the attribute */
+int getIntVal(Attribute *attr)
+{
+	if ((*attr).type == Variable)
+		return (*attr).decl.variable.value.intVal;
+	if ((*attr).type == Method)
+		return (*attr).decl.method.returnValue.intVal;
+}
+
+/* Returns the floatVal of the attribute */
+float getFloatVal(Attribute *attr)
+{
+	if ((*attr).type == Variable)
+		return (*attr).decl.variable.value.floatVal;
+	if ((*attr).type == Method)
+		return (*attr).decl.method.returnValue.floatVal;
+}
+
+/* Returns the boolVal of the attribute */
+Boolean getBoolVal(Attribute *attr)
+{
+	if ((*attr).type == Variable)
+		return (*attr).decl.variable.value.boolVal;
+	if ((*attr).type == Method)
+		return (*attr).decl.method.returnValue.boolVal;
+}
+
+/* Sets the intVal of the attribute */
+void setIntVal(Attribute *attr, int value)
+{
+	if ((*attr).type == Variable)
+		(*attr).decl.variable.value.intVal = value;
+	if ((*attr).type == Method)
+		(*attr).decl.method.returnValue.intVal = value;
+}
+
+/* Sets the floatVal of the attribute */
+void setFloatVal(Attribute *attr, float value)
+{
+	if ((*attr).type == Variable)
+		(*attr).decl.variable.value.floatVal = value;
+	if ((*attr).type == Method)
+		return (*attr).decl.method.returnValue.floatVal = value;
+}
+
+/* Sets the boolVal of the attribute */
+void setBoolVal(Attribute *attr, Boolean value)
+{
+	if ((*attr).type == Variable)
+		(*attr).decl.variable.value.boolVal = value;
+	if ((*attr).type == Method)
+		(*attr).decl.method.returnValue.boolVal = value;
+}

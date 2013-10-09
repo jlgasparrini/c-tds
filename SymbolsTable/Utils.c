@@ -22,17 +22,35 @@ Attribute* getArrayAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attri
 {
     if((*attr).type != Array)
         if((*attr).type == Method)
-            insertError(eq, toString("El identificador \"", (*attr).decl.method.id, "\" no corresponde a un arreglo."));
+            insertError(eq, toString("El identificador \"", getID(attr), "\" no corresponde a un arreglo."));
         else
-            insertError(eq, toString("El identificador \"", (*attr).decl.variable.id, "\" no corresponde a un arreglo."));
+            insertError(eq, toString("El identificador \"", getID(attr), "\" no corresponde a un arreglo."));
     else    
         if (pos < 0 || pos >= (*attr).decl.array.length)
         {
-            insertError(eq, toString("Error. Indice fuera de rango para acceder al arreglo \"", (*attr).decl.array.id, "\".")); 
-            return createVariable("",(*attr).decl.array.type);
+            insertError(eq, toString("Error. Indice fuera de rango para acceder al arreglo \"", getID(attr), "\".")); 
+            return createVariable("",getAttributeType(attr));
         }
         else
-                return createVariable("",(*attr).decl.array.type); /* ACA DEBERIA RETORNARSE LA VARIABLE QUE SE ENCUENTRA EN EL ARREGLO EN LA POSICION "pos"-------------------------------------- */
+            return createVariable("",getAttributeType(attr)); /* ACA DEBERIA RETORNARSE LA VARIABLE QUE SE ENCUENTRA EN EL ARREGLO EN LA POSICION "pos"-------------------------------------- */
+}
+
+/* Returns the return attribute of the method with id "id" */
+Attribute* getMethodReturnAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id)
+{ 
+	Attribute *attr = searchIdInSymbolsTable(eq, aSymbolsTable, id);
+    if(attr != NULL) 
+    {
+        if((*attr).type != Method)
+			insertError(eq,toString("El identificador \"", id,"\" no corresponde a un metodo."));
+        else
+		{	
+			if (getAttributeType(attr) == RetVoid)
+				insertError(eq,toString("El metodo \"", id,"\" retorna void, no puede setearse ningun atributo de retorno."));
+			else
+				return createVariable("",getAttributeType(attr));
+		}
+    }
 }
 
 /* Sets the return attribute of the method with id "id" */
@@ -50,18 +68,18 @@ void setMethodReturnAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char
 			else
 			{
 				if ((*value).type == Int)				
-					(*attr).decl.method.returnValue.intVal = (*value).value.intVal;
+					setIntVal(attr, (*value).value.intVal);
 				if ((*value).type == Float)				
-					(*attr).decl.method.returnValue.floatVal = (*value).value.floatVal;
+					setFloatVal(attr, (*value).value.floatVal);
 				if ((*value).type == Bool)				
-					(*attr).decl.method.returnValue.boolVal = (*value).value.boolVal;
+					setBoolVal(attr, (*value).value.boolVal);
 			}
 		}
     }
 }
 
 /* Returns the respective variable attribute that the method return. "paramSize" is for checking if the amount of parameters is right */
-Attribute* getMethodAttribute(ErrorsQueue eq, SymbolsTable *aSymbolsTable, char id, unsigned char paramSize)
+Attribute* getMethodAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char *id, unsigned char paramSize)
 {
 	Attribute *attr = searchIdInSymbolsTable(eq, aSymbolsTable, id);
 	if(attr != NULL)
@@ -70,7 +88,7 @@ Attribute* getMethodAttribute(ErrorsQueue eq, SymbolsTable *aSymbolsTable, char 
 			insertError(eq,toString("El identificador \"", id,"\" no corresponde a un metodo."));
 		else
 		{
-			if ((attr).decl.method.paramSize != paramSize) /* if the method doesn't have the same amount of parameters */
+			if ((*attr).decl.method.paramSize != paramSize) /* if the method doesn't have the same amount of parameters */
 			{
 				if ((*attr).decl.method.paramSize == 0)
 					insertError(eq, toString("La llamada al metodo \"", id, "\" no debe contener parametros."));
@@ -87,7 +105,7 @@ Attribute* getMethodAttribute(ErrorsQueue eq, SymbolsTable *aSymbolsTable, char 
 			}
 		}
 	}
-	return NULL;
+	return NULL; /////////////////////////////////////////////habria que retornar un attribute valido!!
 }
 
 /* Returns 0 if the type of the parameter on the position "pos" of the method "attr" is equal to the type of "var"
@@ -107,7 +125,7 @@ ReturnType methodReturnType(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* 
         if((*attr).type != Method)
 			insertError(eq, toString("El identificador \"", id, "\" no corresponde a un metodo."));
 		else
-			return (*attr).decl.method.type;
+			return getAttributeType(attr);
 	return RetInt; /* retorno por defecto el tipo int */
 }
 
@@ -301,7 +319,7 @@ Attribute* checkArrayPos(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id,
     if (aux != NULL)
     {
         if (getAttributeType(attr) == Int)
-            return getArrayAttribute(eq,aSymbolsTable,aux,(*attr).decl.variable.value.intVal);
+            return getArrayAttribute(eq,aSymbolsTable,aux,getIntVal(attr));
         else
         {
             insertError(eq, toString("La expresion para acceder a la posicion del arreglo \"", id, "\" debe ser de tipo int.")); 
@@ -335,7 +353,7 @@ Attribute* returnOr(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribu
 		setCode3D(codeOr, oper1, oper2, operRes);
 		add_code(lcode3d, codeOr); 
 		Attribute *aux = createVariable("", Bool);
-        (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.boolVal) || ((*oper2).decl.variable.value.boolVal);
+		setBoolVal(aux, getBoolVal(oper1) || getBoolVal(oper2));
         return aux;
     }
     else
@@ -356,7 +374,7 @@ Attribute* returnAnd(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attrib
 		setCode3D(codeAnd, oper1, oper2, operRes);
 		add_code(lcode3d, codeAnd); 
         Attribute *aux = createVariable("", Bool);
-        (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.boolVal) && ((*oper2).decl.variable.value.boolVal);
+		setBoolVal(aux, getBoolVal(oper1) && getBoolVal(oper2));
         return aux;
     }
     else
@@ -381,11 +399,11 @@ Attribute* returnDistinct(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, A
 		add_code(lcode3d, codeDist);
 		Attribute *aux = createVariable("", Bool);
         if (getAttributeType(oper1) == Float)
-            (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.floatVal) != ((*oper2).decl.variable.value.floatVal);
+			setBoolVal(aux, getFloatVal(oper1) != getFloatVal(oper2));
         if (getAttributeType(oper1) == Int)
-            (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.intVal) != ((*oper2).decl.variable.value.intVal);
+			setBoolVal(aux, getIntVal(oper1) != getIntVal(oper2));
         if (getAttributeType(oper1) == Bool)
-            (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.boolVal) != ((*oper2).decl.variable.value.boolVal);
+			setBoolVal(aux, getBoolVal(oper1) != getBoolVal(oper2));
         return aux;
     }
     else
@@ -406,11 +424,11 @@ Attribute* returnEqual(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attr
 		add_code(lcode3d, codeEqual); 
 		Attribute *aux = createVariable("", Bool);
         if (getAttributeType(oper1) == Float)
-            (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.floatVal) == ((*oper2).decl.variable.value.floatVal);
+			setBoolVal(aux, getFloatVal(oper1) == getFloatVal(oper2));
         if (getAttributeType(oper1) == Int)
-            (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.intVal) == ((*oper2).decl.variable.value.intVal);
+			setBoolVal(aux, getIntVal(oper1) == getIntVal(oper2));
         if (getAttributeType(oper1) == Bool)
-            (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.boolVal) == ((*oper2).decl.variable.value.boolVal);
+			setBoolVal(aux, getBoolVal(oper1) == getBoolVal(oper2));
         return aux;
     }
     else
@@ -434,9 +452,9 @@ Attribute* returnMinorComparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *o
 		add_code(lcode3d, codeMinor); 
         Attribute *aux = createVariable("", Bool);
         if (getAttributeType(oper1) == Float)
-            (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.floatVal) > ((*oper2).decl.variable.value.floatVal);
+			setBoolVal(aux, getFloatVal(oper1) > getFloatVal(oper2));
         if (getAttributeType(oper1) == Int)
-            (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.intVal) > ((*oper2).decl.variable.value.intVal);
+			setBoolVal(aux, getIntVal(oper1) > getIntVal(oper2));
         return aux;
     }
     else
@@ -457,9 +475,9 @@ Attribute* returnMajorComparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *o
 		add_code(lcode3d, codeGreat); 
 		Attribute *aux = createVariable("", Bool);
         if (getAttributeType(oper1) == Float)
-            (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.floatVal) < ((*oper2).decl.variable.value.floatVal);
+			setBoolVal(aux, getFloatVal(oper1) < getFloatVal(oper2));
         if (getAttributeType(oper1) == Int)
-            (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.intVal) < ((*oper2).decl.variable.value.intVal);
+			setBoolVal(aux, getIntVal(oper1) < getIntVal(oper2));
         return aux;
     }
     else
@@ -480,9 +498,9 @@ Attribute* returnGEqualComparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *
 		add_code(lcode3d, codeGEqual);
 		Attribute *aux = createVariable("", Bool);
         if (getAttributeType(oper1) == Float)
-            (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.floatVal) >= ((*oper1).decl.variable.value.floatVal);
+			setBoolVal(aux, getFloatVal(oper1) >= getFloatVal(oper2));
         if (getAttributeType(oper1) == Int)
-            (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.intVal) >= ((*oper1).decl.variable.value.intVal);
+			setBoolVal(aux, getIntVal(oper1) >= getIntVal(oper2));
         return aux;
     }
     else
@@ -503,9 +521,9 @@ Attribute* returnLEqualComparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *
 		add_code(lcode3d, codeLEqual); 
 		Attribute *aux = createVariable("", getAttributeType(oper1));
         if (getAttributeType(oper1) == Float)
-            (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.floatVal) <= ((*oper2).decl.variable.value.floatVal);
+			setBoolVal(aux, getFloatVal(oper1) <= getFloatVal(oper2));
         if (getAttributeType(oper1) == Int)
-            (*aux).decl.variable.value.boolVal = ((*oper1).decl.variable.value.intVal) <= ((*oper2).decl.variable.value.intVal);
+			setBoolVal(aux, getIntVal(oper1) <= getIntVal(oper2));
         return aux;
     }
     else
@@ -529,12 +547,12 @@ Attribute* returnAdd(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attrib
         if (getAttributeType(oper1) == Float)
 		{
 			codeAdd = newCode(COM_ADD_FLOAT);
-            (*aux).decl.variable.value.floatVal = ((*oper1).decl.variable.value.floatVal) + ((*oper2).decl.variable.value.floatVal);
+			setFloatVal(aux,getFloatVal(oper1) + getFloatVal(oper2));
         }
 		if (getAttributeType(oper1) == Int)
 		{
 			codeAdd = newCode(COM_ADD_INT);
-            (*aux).decl.variable.value.intVal = ((*oper1).decl.variable.value.intVal) + ((*oper2).decl.variable.value.intVal);
+			setIntVal(aux,getIntVal(oper1) + getIntVal(oper2));
         }
 		setCode3D(codeAdd, oper1, oper2, operRes);
 		add_code(lcode3d, codeAdd);
@@ -554,16 +572,18 @@ Attribute* returnSub(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attrib
     if (getAttributeType(oper1) == getAttributeType(oper2) && (getAttributeType(oper2) != Bool))
     {
         Code3D *codeSub;
+        Code3D *codeMod;
         Attribute *aux = createVariable("", getAttributeType(oper1));
         if (getAttributeType(oper1) == Float)
         {    
 			codeSub = newCode(COM_MINUS_FLOAT);
-			(*aux).decl.variable.value.floatVal = ((*oper1).decl.variable.value.floatVal) - ((*oper2).decl.variable.value.floatVal);
+			setFloatVal(aux,getFloatVal(oper1) - getFloatVal(oper2));
         }
 		if (getAttributeType(oper1) == Int)
         {
 			codeSub = newCode(COM_MINUS_INT);											
-			(*aux).decl.variable.value.intVal = ((*oper1).decl.variable.value.intVal) - ((*oper2).decl.variable.value.intVal);
+			codeMod = newCode(COM_MOD_INT);
+			setIntVal(aux,getIntVal(oper1) - getIntVal(oper2));
         }
 		setCode3D(codeSub, oper1, oper2, operRes);
 		add_code(lcode3d, codeSub); 
@@ -580,20 +600,12 @@ Attribute* returnSub(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attrib
 /* Insert a new code3D Mod in a list of Codes */
 Attribute* returnMod(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *oper2, Attribute *operRes)
 {
-    if (getAttributeType(oper1) == getAttributeType(oper2) && (getAttributeType(oper2) != Bool)) // ver por que solamente toma int
+    if (getAttributeType(oper1) == getAttributeType(oper2) && (getAttributeType(oper2) == Int))
     {
         Code3D *codeMod;
         Attribute *aux = createVariable("", getAttributeType(oper1));
-		if (getAttributeType(oper1) == Float)
-        {    
-			codeMod = newCode(COM_MOD_FLOAT);
-			(*aux).decl.variable.value.floatVal = fmod(((*oper1).decl.variable.value.floatVal), ((*oper2).decl.variable.value.floatVal));
-        }
-        if (getAttributeType(oper1) == Int)
-        {
-			codeMod = newCode(COM_MOD_INT);
-			(*aux).decl.variable.value.intVal = ((*oper1).decl.variable.value.intVal) % ((*oper2).decl.variable.value.intVal);
-        }
+		codeMod = newCode(COM_MOD_INT);
+		setIntVal(aux,getIntVal(oper1) % getIntVal(oper2));
 		setCode3D(codeMod, oper1, oper2, operRes);
 		add_code(lcode3d, codeMod); 
 		return aux;
@@ -616,12 +628,12 @@ Attribute* returnDiv(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attrib
         if (getAttributeType(oper1) == Float)
         {    
 			codeDiv = newCode(COM_DIV_FLOAT);
-			(*aux).decl.variable.value.intVal = ((*oper1).decl.variable.value.floatVal) / ((*oper2).decl.variable.value.floatVal);
+			setFloatVal(aux,getFloatVal(oper1) / getFloatVal(oper2));
         }
 		if (getAttributeType(oper1) == Int)
 		{
 			codeDiv = newCode(COM_DIV_INT);
-            (*aux).decl.variable.value.intVal = ((*oper1).decl.variable.value.intVal) / ((*oper2).decl.variable.value.intVal);
+			setIntVal(aux,getIntVal(oper1) / getIntVal(oper2));
         }
 		setCode3D(codeDiv, oper1, oper2, operRes);
 		add_code(lcode3d, codeDiv);
@@ -645,12 +657,12 @@ Attribute* returnMult(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attri
         if (getAttributeType(oper1) == Float)
 		{
 			codeMult = newCode(COM_MULT_FLOAT);
-		    (*aux).decl.variable.value.floatVal = ((*oper1).decl.variable.value.floatVal) * ((*oper2).decl.variable.value.floatVal);
+			setFloatVal(aux,getFloatVal(oper1) * getFloatVal(oper2));
 		}
 		if (getAttributeType(oper1) == Int)
 		{	
 			codeMult = newCode(COM_MULT_INT);
-            (*aux).decl.variable.value.intVal = ((*oper1).decl.variable.value.intVal) * ((*oper2).decl.variable.value.intVal);
+			setIntVal(aux,getIntVal(oper1) * getIntVal(oper2));
         }
 		setCode3D(codeMult, oper1, oper2, operRes);
 		add_code(lcode3d, codeMult);
@@ -673,7 +685,7 @@ Attribute* returnNot(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attrib
 		setCode2D(codeNot, oper1, operRes);
 		add_code(lcode3d, codeNot); 
 		Attribute *aux = createVariable("", Bool);			
-		(*aux).decl.variable.value.boolVal = !((*oper1).decl.variable.value.floatVal);
+		setBoolVal(aux, !(getBoolVal(oper1)));
 		return aux;
     }
     else
@@ -694,12 +706,12 @@ Attribute* returnNeg(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attrib
         if (getAttributeType(oper1) == Float)
 		{
 			codeNeg = newCode(COM_NEG_FLOAT);
-		    (*aux).decl.variable.value.floatVal = -((*oper1).decl.variable.value.floatVal);
+			setFloatVal(aux, -getFloatVal(oper1));
 		}
 		if (getAttributeType(oper1) == Int)
 		{	
 			codeNeg = newCode(COM_NEG_INT);
-            (*aux).decl.variable.value.intVal = -((*oper1).decl.variable.value.intVal);
+			setIntVal(aux, -getIntVal(oper1));
         }
 		setCode2D(codeNeg, oper1, operRes);
 		add_code(lcode3d, codeNeg);
