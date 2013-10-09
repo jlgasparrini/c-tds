@@ -14,13 +14,6 @@ typedef union               /* The value that a variable may take can be:       
     Boolean boolVal;		/* A bool value: it will has 0 for False and 1 for True                */
 } VarValue;
 
-typedef struct               /* An array has                                                        */
-{
-    char *id;               /* The "id" of the array     											*/
-    PrimitiveType type;     /* A "type" (int, float, boolean) (the word, name of the type) 	    	*/
-    int length;             /* The length of the array                                              */
-} StArray;
-
 typedef struct              /* A variable has:														*/ 
 {			
 	char *id;				/* The "id" of the variable 											*/
@@ -28,12 +21,20 @@ typedef struct              /* A variable has:														*/
 	VarValue value;			/* A "value" (int, float, true, false) (variable's value') 			    */
 } StVariable;
 
+typedef struct               /* An array has                                                        */
+{
+    char *id;               /* The "id" of the array     											*/
+    PrimitiveType type;     /* A "type" (int, float, boolean) (the word, name of the type) 	    	*/
+    int length;             /* The length of the array                                              */
+	StVariable *arrayValues;  /* ESTO DEBERIA SER UNA LISTA DE ST_VARIABLE!!!!!!!! /* The values of the array -----------------------------------positions----------------------------------------- */
+} StArray;
+
 typedef struct               /* A method has: 				       									*/
 {			 
 	char *id;				 /* The "id" of the method												*/
 	ReturnType type; 		 /* A "return type" (int, float, boolean, void) 					    */
 	unsigned char paramSize; /* An attribute indicating the number of parameters of the method      */
-	StVariable parameters[MAX_PARAMS];/* An array with the parameters, in case of having them  		*/
+	StVariable parameters[MAX_PARAMS]; /* ESTO DEBERIA SER UNA LISTA DE ST_VARIABLE /*  An array with the parameters, in case of having them  		*/
 	VarValue returnValue;    /* The return value of the current method								*/
 } StMethod;
 

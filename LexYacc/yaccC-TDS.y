@@ -35,7 +35,7 @@ Stack *labelsFor;
 Stack *labelsMethod;
 
 /*Create new Label*/
-char* newLabel() {
+char* newLabelName() {
         char *labelName = malloc(sizeof(char)*20);
         sprintf(labelName, labelID, labelCount);
         labelCount++;
@@ -255,7 +255,7 @@ action        :
 							returns++; 
 							checkReturn(errorQ,&symbolTable,lastDefMethod);
 							Code3D *ret = newCode(COM_RETURN); ///////////////////////////////////////////////////////////////////////////
-						//	setCode1D(ret, void);  ////////DESCOMENTAR ESTA LINEA!!!!!!!!!!!!////////////////////////////////////////////
+						//	setCode1D(ret, void);  /////////////// VER ESTA LINEA, NO DEBERIA HABER NADA ////////////////////////////////
 							add_code(lcode3d, ret); ////////////////////////////////////////////////////////////////////////////////////
 					}   
 			  |	   RETURN expression {
@@ -263,7 +263,7 @@ action        :
 									if (checkReturnExpression(errorQ,&symbolTable,lastDefMethod,$2) == 0)
 									{ 
 										Code3D *loadToReturn = newCode(LOAD_MEM); 
-										setCode2D(loadToReturn, ($2), getMethodReturnAttribute(errorQ,&symbolTable,lastDefMethod)); 
+										setCode2D(loadToReturn, $2, getMethodReturnAttribute(errorQ,&symbolTable,lastDefMethod)); 
 										add_code(lcode3d, loadToReturn);
 										Code3D *ret = newCode(COM_RETURN);
 										setCode1D(ret, getMethodReturnAttribute(errorQ,&symbolTable,lastDefMethod));
@@ -312,50 +312,49 @@ assig_op      :    '=' {$$ = "=";}
 
 /* -------------------- CONDITIONALS AND CICLES ------------------------------ */
 
-conditional   :    IF '(' expression ')' block { 
+conditional   :    IF '(' expression { 
                                 if (controlType(errorQ,$3,Bool) == 0) {
-                                        char *ifLabel = newLabel();
-                                        char *elseLabel = newLabel();
-                                        char *endLabel = newLabel();
+                                        char *ifLabel = newLabelName();
+                                        char *elseLabel = newLabelName();
+                                        char *endLabel = newLabelName();
 										add_CodeLabelCond(lcode3d, newCode(GOTOLABEL_COND), ($3), ifLabel); //Go to Label of If
 										add_CodeLabel(lcode3d, newCode(GOTOLABEL), elseLabel); //Go to Label of Else
                                         add_CodeLabel(lcode3d, newCode(COM_MARK), ifLabel); // Mark to Label of If
                                         push(labelsCYC, elseLabel, NULL);
                                         push(labelsCYC, endLabel, NULL);
 								}
-								add_CodeLabel(lcode3d, newCode(GOTOLABEL), peek(labelsCYC)->label); //Go to Label of End
-					} ELSE {
-                                Label *markEnd = pop(labelsCYC);
-								add_CodeLabel(lcode3d, newCode(COM_MARK), pop(labelsCYC)->label); // Mark to Label of Else
-                                push(labelsCYC, markEnd->label, NULL);
-                    } block {
-								add_CodeLabel(lcode3d, newCode(GOTOLABEL), peek(labelsCYC)->label); // Go to Label of End
-								add_CodeLabel(lcode3d, newCode(COM_MARK), pop(labelsCYC)->label); // Mark to Label of End
-                    }
-			  |    IF '(' expression ')' block { 
-                                if (controlType(errorQ,$3,Bool) == 0) {
-                                        char *ifLabel = newLabel();
-                                        char *endLabel = newLabel();
-										add_CodeLabelCond(lcode3d, newCode(GOTOLABEL_COND), ($3), ifLabel); //Go to Label of If
-										add_CodeLabel(lcode3d, newCode(GOTOLABEL), endLabel); //Go to Label of End
-                                        add_CodeLabel(lcode3d, newCode(COM_MARK), ifLabel); // Mark to Label of If
-                                        push(labelsCYC, endLabel, NULL);
-                                }
-								add_CodeLabel(lcode3d, newCode(GOTOLABEL), peek(labelsCYC)->label); // Go to Label of End
-								add_CodeLabel(lcode3d, newCode(COM_MARK), pop(labelsCYC)->label); // Mark to Label of End
+					} ')' block {
+									add_CodeLabel(lcode3d, newCode(GOTOLABEL), peek(labelsCYC)->label); //Go to Label of End
+								}
+					 optional
+			  ;
+
+optional	  :		{
+                        Label *markEnd = pop(labelsCYC);
+						add_CodeLabel(lcode3d, newCode(COM_MARK), pop(labelsCYC)->label); // Mark to Label of Else. There's always an else label, but in case of an if then statement, it is not used
+						add_CodeLabel(lcode3d, newCode(GOTOLABEL), markEnd->label); // Go to Label of End
+						add_CodeLabel(lcode3d, newCode(COM_MARK), markEnd->label); // Mark to Label of End
 					}
+			  |	   ELSE {
+                         Label *markEnd = pop(labelsCYC);
+						 add_CodeLabel(lcode3d, newCode(COM_MARK), pop(labelsCYC)->label); // Mark to Label of Else
+                         push(labelsCYC, markEnd->label, NULL);
+                    } block	{
+								add_CodeLabel(lcode3d, newCode(GOTOLABEL), peek(labelsCYC)->label); // Go to Label of End
+								add_CodeLabel(lcode3d, newCode(COM_MARK), pop(labelsCYC)->label); // Mark to Label of End
+		                    }
 			  ;
 
 iteration     :    WHILE {     
-                            char *whileLabel = newLabel(); 
+                            char *whileLabel = newLabelName(); 
 							push(labelsWhile,whileLabel,NULL);
 							add_CodeLabel(lcode3d, newCode(COM_MARK), whileLabel); // Mark to Label of While
                     } expression {
 							if (controlType(errorQ,$3,Bool) == 0) {
-								char *endLabel = newLabel(); 
+								char *endLabel = newLabelName(); 
 								push(labelsWhile, endLabel, NULL);
-								char *expressionLabel = newLabel();
-								add_CodeLabelCond(lcode3d, newCode(GOTOLABEL_COND),($3), expressionLabel); // Go to Label of Expression
+								char *expressionLabel = newLabelName();
+								add_CodeLabelCond(lcode3d, newCode(GOTOLABEL_COND),$3, expressionLabel); // Go to Label of Expression
 								add_CodeLabel(lcode3d, newCode(GOTOLABEL), endLabel); // Go to Label of End
 								add_CodeLabel(lcode3d, newCode(COM_MARK), expressionLabel); // Mark to Label of Expression           
                             }
@@ -364,8 +363,9 @@ iteration     :    WHILE {
 							add_CodeLabel(lcode3d, newCode(GOTOLABEL), pop(labelsWhile)->label); // Go to Label of While
 							add_CodeLabel(lcode3d, newCode(COM_MARK), endOfCycle->label); // Mark to Label of End
 					}
+
               |    FOR {     
-                        char *forLabel = newLabel(); 
+                        char *forLabel = newLabelName(); 
 						push(labelsFor,forLabel,NULL);
 						add_CodeLabel(lcode3d, newCode(COM_MARK), forLabel); // Mark to Label of For
                     }ID {
@@ -375,11 +375,11 @@ iteration     :    WHILE {
 					}
 					'=' expression ',' expression {
 								if ((controlType(errorQ,$6,Int) == 0) && (controlType(errorQ,$8,Int)== 0)) {
-									char *endLabel = newLabel();									 
+									char *endLabel = newLabelName();									 
 									push(labelsFor, endLabel, NULL);
-									char *expressionLabel = newLabel();
+									char *expressionLabel = newLabelName();
 									Attribute *res = createVariable("", Bool);
-									returnEqual(errorQ, lcode3d, $6, $8, res); //creo la comparacion la hago aca o lo hago en assembler?
+									returnDistinct(errorQ, lcode3d, getVariableAttribute(errorQ, &symbolTable, $3), $8, res); //creo la comparacion la hago aca o lo hago en assembler?
 									add_CodeLabelCond(lcode3d, newCode(GOTOLABEL_COND), res, expressionLabel); // Go to Label of Expression (falta hacer la comparacion)
 									add_CodeLabel(lcode3d, newCode(GOTOLABEL), endLabel); // Go to Label of End
 									add_CodeLabel(lcode3d, newCode(COM_MARK), expressionLabel); // Mark to Label of Expression           
@@ -465,15 +465,17 @@ factor        :    primary		{$$ = $1;}
 primary       :    INTEGER			{$$ = returnValue(lcode3d, Int, $1, $$);}
               |    FLOAT            {$$ = returnValue(lcode3d, Float, $1, $$);}
               |    BOOLEAN          {$$ = returnValue(lcode3d, Bool, $1, $$);}
-              |    ID				{$$ = getVariableAttribute(errorQ,&symbolTable,$1);}				
-              |    ID '[' term ']'  {$$ = checkArrayPos(errorQ,&symbolTable,$1,$3);} 
+              |    ID				{$$ = getVariableAttribute(errorQ,&symbolTable,$1);}
+              |    ID '[' term ']'  {$$ = checkArrayPos(errorQ,&symbolTable,$1,$3);}
               |    '(' expression ')'  {$$ = $2;}
-              |    method_call         {if (methodReturnType(errorQ,&symbolTable,lastCalledMethod) == RetVoid)
+              |    method_call      {
+										if (methodReturnType(errorQ,&symbolTable,lastCalledMethod) == RetVoid)
 										{	insertError(errorQ,toString("El metodo \"",lastCalledMethod,"\" no puede ser usado en una expresion ya que retorna void."));
 											$$ = createVariable("",Int); /* creamos variables int por defecto ------------------------------- */
 										}
 										else $$ = $1;
-										lastCalledMethod=removeLastString(methodsIDStack);}
+										lastCalledMethod=removeLastString(methodsIDStack);
+									}
               ;
 
 /* ------------------------- END OF EXPRESSIONS ------------------------------- */

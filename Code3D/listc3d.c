@@ -19,10 +19,10 @@ Code3D* get_listC3D(ListC3D *list, int index) {
     if (validIndex) {
         int i = 0;
         while (i < index) {
-            runner = getNext_nodeC3D(runner);
+            runner = (NodeC3D*) getNext_nodeC3D(runner);
             i++;
         }
-        return getInfo_nodeC3D(runner);
+        return (Code3D*) getInfo_nodeC3D(runner);
     } 
 }
 
@@ -40,15 +40,14 @@ void add_listC3D(ListC3D *list, Code3D *elem, int index) {
             int i = 0;
             NodeC3D *runner = (*list).init;
             while (i < (index - 1)) {
-                runner = getNext_nodeC3D(runner);
+                runner = (NodeC3D*) getNext_nodeC3D(runner);
                 i++;
             }
-            setNext_nodeC3D(runner, newNodeC3D_info_next(elem, getNext_nodeC3D(runner)));
+            setNext_nodeC3D(runner, newNodeC3D_info_next(elem, (NodeC3D*) getNext_nodeC3D(runner)));
         }
         (*list).size++;
     }
 }
-
 
 void delete_listC3D(ListC3D *list, int index) {
     bool validIndex = (index >= 0) && (index < size_listC3D(list));
@@ -56,14 +55,14 @@ void delete_listC3D(ListC3D *list, int index) {
         NodeC3D *runner = (*list).init;
         NodeC3D *del = (*list).init;
         if (index == 0) {
-            (*list).init = getNext_nodeC3D((*list).init);
+            (*list).init = (NodeC3D*) getNext_nodeC3D((*list).init);
         } else {
             int i = 0;
             while (i < (index - 1)) {
-                runner = getNext_nodeC3D(runner);
+                runner = (NodeC3D*) getNext_nodeC3D(runner);
                 i++;
             }
-            del = getNext_nodeC3D(runner);
+            del = (NodeC3D*) getNext_nodeC3D(runner);
             setNext_nodeC3D(runner, getNext_nodeC3D(getNext_nodeC3D(runner)));
         }
         free(del);

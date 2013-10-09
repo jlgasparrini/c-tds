@@ -24,7 +24,13 @@ Attribute* createArray(char *id, PrimitiveType type, unsigned int length)
 	(*attr).type = Array;
 	(*attr).decl.array.id = strdup(id);
 	(*attr).decl.array.type = type; 
-	(*attr).decl.array.length = length; 
+	(*attr).decl.array.length = length;
+	(*attr).decl.array.arrayValues = (stVariable*) malloc (length*sizeof(StVariable)); /* creates the necessary memory for the array */
+	int i;
+	for(i = 0; i < length; i++)
+	{
+		(*attr).decl.array.arrayValues = createStVariable(type);
+	}
 	return attr;
 }
 
@@ -37,6 +43,20 @@ Attribute* createMethod(char *id, ReturnType type, unsigned char paramAmount)
 	(*attr).decl.method.type = type; 
 	(*attr).decl.method.paramSize = paramAmount;
 	return attr;
+}
+
+/* Creates a stVariable with the respective type and initialized */
+stVariable createStVariable(PrimitiveType type)
+{
+	stVariable *var = (stVariable*) malloc (sizeof(stVariable)); 
+	(*var).type = type;
+	if (type == Int)
+		(*var).value.intVal = 0;
+	if (type == Float)
+		(*var).value.floatVal = 0.0;
+	if (type == Bool)
+		(*var).value.boolVal = False;
+	return var;
 }
 
 /* creates an attribute and assign it as a parameter of "method" containing the information included.
@@ -149,7 +169,7 @@ void setFloatVal(Attribute *attr, float value)
 	if ((*attr).type == Variable)
 		(*attr).decl.variable.value.floatVal = value;
 	if ((*attr).type == Method)
-		return (*attr).decl.method.returnValue.floatVal = value;
+		(*attr).decl.method.returnValue.floatVal = value;
 }
 
 /* Sets the boolVal of the attribute */
