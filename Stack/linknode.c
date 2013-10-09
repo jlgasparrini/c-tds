@@ -14,7 +14,7 @@ Label* newLabel(char *label, Attribute *eval) {
 }
 
 NodeStack* newLinkNode_empty() {
-    NodePila *new = (NodeStack*) malloc(sizeof(NodeStack));
+    NodeStack *new = (NodeStack*) malloc(sizeof(NodeStack));
     new->info = NULL;
     new->next = NULL;
     return new;
@@ -36,7 +36,7 @@ Label* getInfo_linkNode(NodeStack *node) {
     return node->info;
 }
 
-NodePila* getNext_linkNode(NodeStack *node) {
+NodeStack* getNext_linkNode(NodeStack *node) {
     return node->next;
 }
 

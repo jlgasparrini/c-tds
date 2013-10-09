@@ -19,7 +19,7 @@ NodeC3D* newNodeC3D_info(Code3D *info) {
     return new;
 }
 
-NodeC3D* newNodoC3D_info_next(Code3D *info, NodeC3D *next) {
+NodeC3D* newNodeC3D_info_next(Code3D *info, NodeC3D *next) {
     NodeC3D *new = newNodeC3D_info(info);
     new->next = next;
     return new;

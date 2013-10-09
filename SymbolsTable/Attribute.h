@@ -75,4 +75,26 @@ void setAmountOfParameters(Attribute *attr, unsigned char amount);
 
 /* Sets the value of the variable that contains "attr" with the respective "value" */
 void setVariableValue(Attribute *attr, PrimitiveType type, char *value);
+
+/* Returns the ID of the specified attribute */
+char* getID(Attribute *attr);
+
+/* Returns the intVal of the attribute */
+int getIntVal(Attribute *attr);
+
+/* Returns the floatVal of the attribute */
+float getFloatVal(Attribute *attr);
+
+/* Returns the boolVal of the attribute */
+Boolean getBoolVal(Attribute *attr);
+
+/* Sets the intVal of the attribute */
+void setIntVal(Attribute *attr, int value);
+
+/* Sets the floatVal of the attribute */
+void setFloatVal(Attribute *attr, float value);
+
+/* Sets the boolVal of the attribute */
+void setBoolVal(Attribute *attr, Boolean value);
+
 #endif
