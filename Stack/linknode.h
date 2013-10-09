@@ -5,8 +5,8 @@
 *- siguiente    :   un puntero al siguiente nodo                                                *
 *************************************************************************************************/
 
-#ifndef NODE_CADENA_H
-#define NODE_CADENA_H
+#ifndef LINKNODE_H
+#define LINKNODE_H
 
 #include "../SymbolsTable/Attribute.h"
 #include "label.h"

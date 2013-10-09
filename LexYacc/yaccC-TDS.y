@@ -35,7 +35,7 @@ Stack *labelsFor;
 Stack *labelsMethod;
 
 /*Create new Label*/
-char* newLabel() {
+char* newLabelName() {
         char *labelName = malloc(sizeof(char)*20);
         sprintf(labelName, labelID, labelCount);
         labelCount++;
@@ -316,9 +316,9 @@ assig_op      :    '=' {$$ = "=";}
 
 conditional   :    IF '(' expression ')' block { 
                                 if (controlType(errorQ,$3,Bool) == 0) {
-                                        char *ifLabel = newLabel();
-                                        char *elseLabel = newLabel();
-                                        char *endLabel = newLabel();
+                                        char *ifLabel = newLabelName();
+                                        char *elseLabel = newLabelName();
+                                        char *endLabel = newLabelName();
 										add_CodeLabelCond(lcode3d, newCode(GOTOLABEL_COND), ($3), ifLabel); //Go to Label of If
 										add_CodeLabel(lcode3d, newCode(GOTOLABEL), elseLabel); //Go to Label of Else
                                         add_CodeLabel(lcode3d, newCode(COM_MARK), ifLabel); // Mark to Label of If
@@ -336,8 +336,8 @@ conditional   :    IF '(' expression ')' block {
                     }
 			  |    IF '(' expression ')' block { 
                                 if (controlType(errorQ,$3,Bool) == 0) {
-                                        char *ifLabel = newLabel();
-                                        char *endLabel = newLabel();
+                                        char *ifLabel = newLabelName();
+                                        char *endLabel = newLabelName();
 										add_CodeLabelCond(lcode3d, newCode(GOTOLABEL_COND), ($3), ifLabel); //Go to Label of If
 										add_CodeLabel(lcode3d, newCode(GOTOLABEL), endLabel); //Go to Label of End
                                         add_CodeLabel(lcode3d, newCode(COM_MARK), ifLabel); // Mark to Label of If
@@ -349,14 +349,14 @@ conditional   :    IF '(' expression ')' block {
 			  ;
 
 iteration     :    WHILE {     
-                            char *whileLabel = newLabel(); 
+                            char *whileLabel = newLabelName(); 
 							push(labelsWhile,whileLabel,NULL);
 							add_CodeLabel(lcode3d, newCode(COM_MARK), whileLabel); // Mark to Label of While
                     } expression {
 							if (controlType(errorQ,$3,Bool) == 0) {
-								char *endLabel = newLabel(); 
+								char *endLabel = newLabelName(); 
 								push(labelsWhile, endLabel, NULL);
-								char *expressionLabel = newLabel();
+								char *expressionLabel = newLabelName();
 								add_CodeLabelCond(lcode3d, newCode(GOTOLABEL_COND),($3), expressionLabel); // Go to Label of Expression
 								add_CodeLabel(lcode3d, newCode(GOTOLABEL), endLabel); // Go to Label of End
 								add_CodeLabel(lcode3d, newCode(COM_MARK), expressionLabel); // Mark to Label of Expression           
@@ -367,7 +367,7 @@ iteration     :    WHILE {
 							add_CodeLabel(lcode3d, newCode(COM_MARK), endOfCycle->label); // Mark to Label of End
 					}
               |    FOR {     
-                        char *forLabel = newLabel(); 
+                        char *forLabel = newLabelName(); 
 						push(labelsFor,forLabel,NULL);
 						add_CodeLabel(lcode3d, newCode(COM_MARK), forLabel); // Mark to Label of For
                     }ID {
@@ -377,9 +377,9 @@ iteration     :    WHILE {
 					}
 					'=' expression ',' expression {
 								if ((controlType(errorQ,$6,Int) == 0) && (controlType(errorQ,$8,Int)== 0)) {
-									char *endLabel = newLabel();									 
+									char *endLabel = newLabelName();									 
 									push(labelsFor, endLabel, NULL);
-									char *expressionLabel = newLabel();
+									char *expressionLabel = newLabelName();
 									Attribute *res = createVariable("", Bool);
 									returnEqual(errorQ, lcode3d, $6, $8, res); //creo la comparacion la hago aca o lo hago en assembler?
 									add_CodeLabelCond(lcode3d, newCode(GOTOLABEL_COND), res, expressionLabel); // Go to Label of Expression (falta hacer la comparacion)
