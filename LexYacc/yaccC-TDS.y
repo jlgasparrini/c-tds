@@ -73,23 +73,25 @@ main( argc, argv )
     }
 
 finalizar() {
+        int cantErrors = 0;
 		printErrorList(errorQ);
+        cantErrors = (*errorQ).size;
         deleteAllErrors(errorQ);
         printf("------Se termino de parsear.----------\n");
 		// show the list of code 3D
-		//int cantCodes = cantCode(lcode3d);
-        //int i;
-        //for (i = 0; i < cantCodes; i++) {
-        //        Code3D *code = get_code(lcode3d, i);
-        //        toString3DC(code);
-        //}
+        if (cantErrors == 0) {
+            int cantCodes = cantCode(lcode3d);
+            int i;
+            for (i = 0; i < cantCodes; i++) {
+                    Code3D *code = get_code(lcode3d, i);
+                toString3DC(code);
+            }
+        }
 }
 
 out(char *msg) {
         printf("%s\n", msg);
 }
-
-
 %}
 
 %union
