@@ -270,64 +270,64 @@ void setCode1D(Code3D *code, Attribute *attri1){
 
 void toString3DC(Code3D *code) {
 	// Ver si funciona
-	// printf("Comando %i ", getCommand(code));
-	// printf("Parametro 1 tipo %i \n", code->param1->type);
-	// if (isInt(code, 1)){
-	//		printf("Parametro 1 valor %i \n", getInt(code, 1));
-	//}
-	// if (isFloat(code, 1)){
-	//		printf("Parametro 1 valor %f \n", getFloat(code, 1));
-	//}
-	// if (isBool(code, 1)){
-	//		printf("Parametro 1 valor %s \n", getBool(code, 1)? "true" : "false");
-	//}
-	// if (isLabel(code, 1)){
-	//		printf("Parametro 1 valor %s \n", getLabel(code, 1));
-	//}
-	// if (isAttribute(code, 1)){
-	//		printf("Parametro 1 valor Attibute %i \n", getAttribute(code, 1)->type);
-	//}
-	// if (isNull(code, 1)){
-	//		printf("Parametro 1 valor Null \n");
-	//}
-	// printf("Parametro 2 tipo %i \n", code->param2->type);
-	// if (isInt(code, 2)){
-	//		printf("Parametro 2 valor %i \n", getInt(code, 2));
-	//}
-	// if (isFloat(code, 2)){
-	//		printf("Parametro 2 valor %f \n", getFloat(code, 2));
-	//}
-	// if (isBool(code, 2)){
-	//		printf("Parametro 2 valor %s \n", getBool(code, 2)? "true" : "false");
-	//}
-	// if (isLabel(code, 2)){
-	//		printf("Parametro 2 valor %s \n", getLabel(code, 2));
-	//}
-	// if (isAttribute(code, 2)){
-	//		printf("Parametro 2 valor Attibute %i \n", getAttribute(code, 2)->type);
-	//}
-	// if (isNull(code, 2)){
-	//		printf("Parametro 2 valor Null \n");
-	//}
-	// printf("Parametro 3 tipo %i \n", code->param3->type);
-	// if (isInt(code, 3)){
-	//		printf("Parametro 3 valor %i \n", getInt(code, 3));
-	//}
-	// if (isFloat(code, 3)){
-	//		printf("Parametro 3 valor %f \n", getFloat(code, 3));
-	//}
-	// if (isBool(code, 3)){
-	//		printf("Parametro 3 valor %s \n", getBool(code, 3)? "true" : "false");
-	//}
-	// if (isLabel(code, 3)){
-	//		printf("Parametro 3 valor %s \n", getLabel(code, 3));
-	//}
-	// if (isAttribute(code, 3)){
-	//		printf("Parametro 3 valor Attibute %i \n", getAttribute(code, 3)->type);
-	//}
-	// if (isNull(code, 3)){
-	//		printf("Parametro 3 valor Null \n");
-	//}
+    printf("Comando %i ", getCommand(code));
+    printf("Parametro 1 tipo %i \n", code->param1->type);
+    if (isInt(code, 1)){
+        printf("Parametro 1 valor %i \n", getInt(code, 1));
+    }
+    if (isFloat(code, 1)){
+        printf("Parametro 1 valor %f \n", getFloat(code, 1));
+    }
+    if (isBool(code, 1)){
+        printf("Parametro 1 valor %s \n", getBool(code, 1)? "true" : "false");
+    }
+    if (isLabel(code, 1)){
+        printf("Parametro 1 valor %s \n", getLabel(code, 1));
+    }
+    if (isAttribute(code, 1)){
+        printf("Parametro 1 valor Attibute %i \n", getAttribute(code, 1)->type);
+    }
+    if (isNull(code, 1)){
+        printf("Parametro 1 valor Null \n");
+    }
+    printf("Parametro 2 tipo %i \n", code->param2->type);
+    if (isInt(code, 2)){
+        printf("Parametro 2 valor %i \n", getInt(code, 2));
+    }
+    if (isFloat(code, 2)){
+        printf("Parametro 2 valor %f \n", getFloat(code, 2));
+    }
+    if (isBool(code, 2)){
+        printf("Parametro 2 valor %s \n", getBool(code, 2)? "true" : "false");
+    }
+    if (isLabel(code, 2)){
+        printf("Parametro 2 valor %s \n", getLabel(code, 2));
+    }
+    if (isAttribute(code, 2)){
+        printf("Parametro 2 valor Attibute %i \n", getAttribute(code, 2)->type);
+    }
+    if (isNull(code, 2)){
+        printf("Parametro 2 valor Null \n");
+    }
+    printf("Parametro 3 tipo %i \n", code->param3->type);
+    if (isInt(code, 3)){
+        printf("Parametro 3 valor %i \n", getInt(code, 3));
+    }
+    if (isFloat(code, 3)){
+        printf("Parametro 3 valor %f \n", getFloat(code, 3));
+    }
+    if (isBool(code, 3)){
+        printf("Parametro 3 valor %s \n", getBool(code, 3)? "true" : "false");
+    }
+    if (isLabel(code, 3)){
+        printf("Parametro 3 valor %s \n", getLabel(code, 3));
+    }
+    if (isAttribute(code, 3)){
+        printf("Parametro 3 valor Attibute %i \n", getAttribute(code, 3)->type);
+    }
+    if (isNull(code, 3)){
+        printf("Parametro 3 valor Null \n");
+    }
 }
 
 

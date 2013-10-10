@@ -52,7 +52,7 @@ int yyerror (char *str)
         if (strcmp(str, "syntax error") == 0)
 			printf("%s\n",toString("Error GRAMATICO.","",""));
         else
-			printf("%s\n",toString("Error DESCONOCIDO: \"",str,"\"."));
+			printf("%s\n","Solucione errores semanticos.");
         return 0;
 }
  
@@ -74,23 +74,30 @@ main( argc, argv )
     }
 
 finalizar() {
-		printErrorList(errorQ);
-        deleteAllErrors(errorQ);
+        int cantErrors = 0;
+        cantErrors = (*errorQ).size;
+        if (cantErrors > 0) 
+        {
+            printErrorList(errorQ);
+            deleteAllErrors(errorQ);
+            yyerror("");
+        }
+        else
+        {
+            // show the list of code 3D
+            int cantCodes = cantCode(lcode3d);
+            int i;
+            for (i = 0; i < cantCodes; i++) {
+                Code3D *code = get_code(lcode3d, i);
+                toString3DC(code);
+            }
+        }
         printf("------Se termino de parsear.----------\n");
-		// show the list of code 3D
-		//int cantCodes = cantCode(lcode3d);
-        //int i;
-        //for (i = 0; i < cantCodes; i++) {
-        //        Code3D *code = get_code(lcode3d, i);
-        //        toString3DC(code);
-        //}
 }
 
 out(char *msg) {
         printf("%s\n", msg);
 }
-
-
 %}
 
 %union
@@ -340,9 +347,8 @@ optional	  :		{
 						 add_CodeLabel(lcode3d, newCode(COM_MARK), pop(labelsCYC)->label); // Mark to Label of Else
                          push(labelsCYC, markEnd->label, NULL);
                     } block	{
-								add_CodeLabel(lcode3d, newCode(GOTOLABEL), peek(labelsCYC)->label); // Go to Label of End
-								add_CodeLabel(lcode3d, newCode(COM_MARK), pop(labelsCYC)->label); // Mark to Label of End
-		                    }
+								add_CodeLabel(lcode3d, newCode(GOTOLABEL), peek(labelsCYC)->label); //Go to Label of End
+							} 
 			  ;
 
 iteration     :    WHILE {     
