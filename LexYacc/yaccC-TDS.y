@@ -178,7 +178,7 @@ type          :		INTW		{vaType = Int; mType = RetInt;}
 
 method_decl   :     type ID {
 								lastDefMethod=$2; 
-								pushElement(errorQ,&symbolTable,createMethod($2,mType,0)); 
+								pushElement(errorQ,&symbolTable,createMethod($2,mType)); 
 								pushLevel(&symbolTable); returns=0;
 					} param block {
 								popLevel(&symbolTable); 
@@ -186,7 +186,7 @@ method_decl   :     type ID {
 					}
               |		method_decl type ID {
 								lastDefMethod=$3; 
-								pushElement(errorQ,&symbolTable,createMethod($3,mType,0)); 
+								pushElement(errorQ,&symbolTable,createMethod($3,mType)); 
 								pushLevel(&symbolTable); returns=0;
 					} param block {
 								popLevel(&symbolTable); 
@@ -194,7 +194,7 @@ method_decl   :     type ID {
 					}
               |     VOID ID {
 								lastDefMethod=$2; 
-								pushElement(errorQ,&symbolTable,createMethod($2,RetVoid,0)); 
+								pushElement(errorQ,&symbolTable,createMethod($2,RetVoid)); 
 								pushLevel(&symbolTable); returns=0;
 					} param block {
 								popLevel(&symbolTable); 
@@ -202,7 +202,7 @@ method_decl   :     type ID {
 					}
               |	    method_decl VOID ID {
 								lastDefMethod=$3; 
-								pushElement(errorQ,&symbolTable,createMethod($3,RetVoid,0)); 
+								pushElement(errorQ,&symbolTable,createMethod($3,RetVoid)); 
 								pushLevel(&symbolTable); 
 								returns=0;
 					} param block {
@@ -411,11 +411,17 @@ location      :    ID {$$ = getVariableAttribute(errorQ, &symbolTable, $1);}
               ;
 
 method_call   :	   ID '(' ')' {cantParams=0; insertString(paramsStack,intToString(cantParams));
-								lastCalledMethod=$1; $$=getMethodAttribute(errorQ,&symbolTable,$1,0);}
+								lastCalledMethod=$1; $$=checkAndGetMethodRetAttribute(errorQ,&symbolTable,$1,0);}
+					///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+					//////// HAY QUE VER SI ACA NO SE TIENE Q LLAMAR A getMethodReturnAttribute en lugar de checkAndGetMethodRetAttribute!!! /////////////
+					///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
               |    ID '(' {insertString(paramsStack,intToString(cantParams)); cantParams=0;
 							insertString(methodsIDStack,lastCalledMethod); lastCalledMethod = $1;} expression_aux ')' 
-							{$$ = getMethodAttribute(errorQ,&symbolTable,$1,cantParams); cantParams=atoi(removeLastString(paramsStack));} 
+							{$$ = checkAndGetMethodRetAttribute(errorQ,&symbolTable,$1,cantParams); cantParams=atoi(removeLastString(paramsStack));} 
+					///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+					//////// HAY QUE VER SI ACA NO SE TIENE Q LLAMAR A getMethodReturnAttribute en lugar de checkAndGetMethodRetAttribute!!! /////////////
+					///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
               |    EXTERNINVK '(' STRING ',' typevoid ')' {if (mType != RetVoid) $$=createVariable("",mType);}
               |    EXTERNINVK '(' STRING ',' typevoid ',' externinvk_arg ')' {if (mType != RetVoid) $$=createVariable("",mType);}
