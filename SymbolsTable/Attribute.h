@@ -85,6 +85,15 @@ float getFloatVal(Attribute *attr);
 /* Returns the boolVal of the attribute */
 Boolean getBoolVal(Attribute *attr);
 
+/* Returns the intVal of the array attribute in the "pos" position */
+int getArrayIntVal(Attribute *attr, unsigned int pos);
+
+/* Returns the floatVal of the array attribute in the "pos" position */
+float getArrayFloatVal(Attribute *attr, unsigned int pos);
+
+/* Returns the boolVal of the array attribute in the "pos" position */
+Boolean getArrayBoolVal(Attribute *attr, unsigned int pos);
+
 /* Sets the intVal of the attribute */
 void setIntVal(Attribute *attr, int value);
 
@@ -93,5 +102,14 @@ void setFloatVal(Attribute *attr, float value);
 
 /* Sets the boolVal of the attribute */
 void setBoolVal(Attribute *attr, Boolean value);
+
+/* Sets the intVal of the array attribute in the "pos" position */
+void setArrayIntVal(Attribute *attr, unsigned int pos, int value);
+
+/* Sets the floatVal of the array attribute in the "pos" position */
+void setArrayFloatVal(Attribute *attr, unsigned int pos, float value);
+
+/* Sets the boolVal of the array attribute in the "pos" position */
+void setArrayBoolVal(Attribute *attr, unsigned int pos, Boolean value);
 
 #endif

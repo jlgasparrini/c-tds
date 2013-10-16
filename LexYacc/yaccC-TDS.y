@@ -168,7 +168,8 @@ fields        :    field
 
 field         :    ID			{pushElement(errorQ, &symbolTable, createVariable($1, vaType));}
               |    ID '[' INTEGER {if (atoi($3) <= 0) insertError(errorQ,toString("Error en definicion del arreglo \"",$1,"\". El tamaño del arreglo debe ser un entero mayor que 0."));
-										pushElement(errorQ, &symbolTable, createArray($1, vaType, atoi($3)));} ']'	
+										pushElement(errorQ, &symbolTable, createArray($1, vaType, atoi($3)));}
+						']'	
               ;
 
 type          :		INTW		{vaType = Int; mType = RetInt;} 
@@ -218,9 +219,15 @@ param		  :    '(' {cantParams = 0; setAmountOfParameters(searchIdInSymbolsTable(
 			  ;
               
 parameters    :		type ID {Attribute *aux = createParameter(lastDefinedMethod(&symbolTable),cantParams,$2,vaType);
-								if (aux != NULL) {pushElement(errorQ,&symbolTable,aux); cantParams++;}}
+								if (aux != NULL) {pushElement(errorQ,&symbolTable,aux); cantParams++;}
+								else insertError(errorQ,toString("El identificador \"",$2,"\" no puede contener parametros"));
+							}
+
 			  |		type ID {Attribute *aux = createParameter(lastDefinedMethod(&symbolTable),cantParams,$2,vaType);
-								if (aux != NULL) {pushElement(errorQ,&symbolTable,aux); cantParams++;}} ',' parameters 
+								if (aux != NULL) {pushElement(errorQ,&symbolTable,aux); cantParams++;}
+								else insertError(errorQ,toString("El identificador \"",$2,"\" no puede contener parametros"));
+							}
+							',' parameters 
 			  ;
 
 block         :    '{' '}'
@@ -412,16 +419,10 @@ location      :    ID {$$ = getVariableAttribute(errorQ, &symbolTable, $1);}
 
 method_call   :	   ID '(' ')' {cantParams=0; insertString(paramsStack,intToString(cantParams));
 								lastCalledMethod=$1; $$=checkAndGetMethodRetAttribute(errorQ,&symbolTable,$1,0);}
-					///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-					//////// HAY QUE VER SI ACA NO SE TIENE Q LLAMAR A getMethodReturnAttribute en lugar de checkAndGetMethodRetAttribute!!! /////////////
-					///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
               |    ID '(' {insertString(paramsStack,intToString(cantParams)); cantParams=0;
 							insertString(methodsIDStack,lastCalledMethod); lastCalledMethod = $1;} expression_aux ')' 
 							{$$ = checkAndGetMethodRetAttribute(errorQ,&symbolTable,$1,cantParams); cantParams=atoi(removeLastString(paramsStack));} 
-					///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-					//////// HAY QUE VER SI ACA NO SE TIENE Q LLAMAR A getMethodReturnAttribute en lugar de checkAndGetMethodRetAttribute!!! /////////////
-					///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
               |    EXTERNINVK '(' STRING ',' typevoid ')' {if (mType != RetVoid) $$=createVariable("",mType);}
               |    EXTERNINVK '(' STRING ',' typevoid ',' externinvk_arg ')' {if (mType != RetVoid) $$=createVariable("",mType);}
