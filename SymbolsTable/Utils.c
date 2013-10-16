@@ -12,13 +12,13 @@ Attribute* getVariableAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, ch
 		if((*attr).type != Variable)
 		{
 			insertError(eq, toString("El identificador \"", id, "\" no corresponde a una variable."));
-			return NULL;
+			return createVariable("",Int); // Returns an attribute with type Int to continue parsing
 		}
 	return attr;
 }
 
 /* Returns an attribute in the position "pos" of the ID "id" and Array structure. Otherwise returns NULL */
-Attribute* getArrayAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attribute *attr, unsigned int pos)
+Attribute* getArrayAttribute(ErrorsQueue *eq, Attribute *attr, unsigned int pos)
 {
     if((*attr).type != Array)
 		insertError(eq, toString("El identificador \"", getID(attr), "\" no corresponde a un arreglo."));
@@ -32,11 +32,11 @@ Attribute* getArrayAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attri
 		{
 			Attribute *aux = createVariable("", getAttributeType(attr));
 			if (getAttributeType(attr) == Int)
-				setIntVal(aux,getIntVal(attr));
+				setIntVal(aux,getArrayIntVal(attr,pos));
 			if (getAttributeType(attr) == Float)
-				setFloatVal(aux,getFloatVal(attr));
+				setFloatVal(aux,getArrayFloatVal(attr,pos));
 			if (getAttributeType(attr) == Bool)
-				setBoolVal(aux,getIntVal(attr));
+				setBoolVal(aux,getArrayBoolVal(attr,pos));
 			return aux;          
 		}
 	return createVariable("",Int); // Returns an attribute with type Int to continue parsing
@@ -344,15 +344,14 @@ Attribute* checkArrayPos(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id,
     if (aux != NULL)
     {
         if (getAttributeType(attr) == Int)
-            return getArrayAttribute(eq,aSymbolsTable,aux,getIntVal(attr));
+            return getArrayAttribute(eq,aux,getIntVal(attr));
         else
         {
             insertError(eq, toString("La expresion para acceder a la posicion del arreglo \"", id, "\" debe ser de tipo int.")); 
-            return createVariable("",(*aux).decl.array.type);
+            return createVariable("",getAttributeType(aux));
         }
     }
-    else
-        return createVariable("",Int);
+    return createVariable("",Int);
 }
 
 /* Checks if the program have a "main" method and it haven't got parameters */

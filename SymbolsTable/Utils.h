@@ -10,7 +10,7 @@
 Attribute* getVariableAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id);
 
 /* Returns an attribute in the position "pos" of the ID "id" and Array structure. Otherwise returns NULL */
-Attribute* getArrayAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attribute *attr, unsigned int pos);
+Attribute* getArrayAttribute(ErrorsQueue *eq, Attribute *attr, unsigned int pos);
 
 /* Returns the ReturnType of the method with id "id" */
 ReturnType methodReturnType(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id);

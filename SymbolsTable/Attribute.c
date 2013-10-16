@@ -63,13 +63,13 @@ Attribute* createMethod(char *id, ReturnType type)
 	Returns a pointer to the attribute if the parameter was created successful. Returns NULL otherwise. */
 Attribute* createParameter(Attribute *attr, unsigned int pos, char *id, PrimitiveType type)
 {
-	if (attr != NULL)
+	if (attr != NULL && (*attr).type == Method && (*attr).decl.method.type == type)
 	{
 		Attribute *aux = createVariable(id, type);
 		(*attr).decl.method.parameters[pos] = (*aux).decl.variable;
 		return aux;
 	}
-	return NULL; /* The method doesn't exist. Null is returned. (could be informed to the errorQueue too) */
+	return NULL; /* In case of non-desirable cases, Null is returned. */
 }
 
 /* Sets the amount of parameters that will have the method attr */
@@ -134,6 +134,24 @@ Boolean getBoolVal(Attribute *attr)
 		return (*attr).decl.method.returnValue.boolVal;
 }
 
+/* Returns the intVal of the array attribute in the "pos" position */
+int getArrayIntVal(Attribute *attr, unsigned int pos)
+{
+	return (*attr).decl.array.arrayValues[pos].value.intVal;
+}
+
+/* Returns the floatVal of the array attribute in the "pos" position */
+float getArrayFloatVal(Attribute *attr, unsigned int pos)
+{
+	return (*attr).decl.array.arrayValues[pos].value.floatVal;
+}
+
+/* Returns the boolVal of the array attribute in the "pos" position */
+Boolean getArrayBoolVal(Attribute *attr, unsigned int pos)
+{
+	return (*attr).decl.array.arrayValues[pos].value.boolVal;
+}
+
 /* Sets the intVal of the attribute */
 void setIntVal(Attribute *attr, int value)
 {
@@ -159,4 +177,22 @@ void setBoolVal(Attribute *attr, Boolean value)
 		(*attr).decl.variable.value.boolVal = value;
 	if ((*attr).type == Method)
 		(*attr).decl.method.returnValue.boolVal = value;
+}
+
+/* Sets the intVal of the array attribute in the "pos" position */
+void setArrayIntVal(Attribute *attr, unsigned int pos, int value)
+{
+	(*attr).decl.array.arrayValues[pos].value.intVal = value;
+}
+
+/* Sets the floatVal of the array attribute in the "pos" position */
+void setArrayFloatVal(Attribute *attr, unsigned int pos, float value)
+{
+	(*attr).decl.array.arrayValues[pos].value.floatVal = value;
+}
+
+/* Sets the boolVal of the array attribute in the "pos" position */
+void setArrayBoolVal(Attribute *attr, unsigned int pos, Boolean value)
+{
+	(*attr).decl.array.arrayValues[pos].value.boolVal = value;
 }
