@@ -1,56 +1,55 @@
 #ifndef Attribute_H
 #define	Attribute_H
-#define MAX_PARAMS 20
 
 typedef enum {Int, Float, Bool} PrimitiveType;
 typedef enum {False, True} Boolean;
 typedef enum {Variable, Method, Array} StructureType;
 typedef enum {RetInt, RetFloat, RetBool, RetVoid} ReturnType;
 
-typedef union               /* The value that a variable may take can be:                           */
+typedef union               /* The value that a variable may take can be:                   */
 {				
-	int intVal; 			/* An int value 														*/
-    float floatVal;			/* A float value 														*/
-    Boolean boolVal;		/* A bool value: it will has 0 for False and 1 for True                */
+	int intVal; 			/* An int value 											    */
+    float floatVal;			/* A float value 											    */
+    Boolean boolVal;		/* A bool value: it will has 0 for False and 1 for True         */
 } VarValue;
 
-typedef struct              /* A variable has:														*/ 
+typedef struct              /* A variable has:											    */ 
 {			
-	char *id;				/* The "id" of the variable 											*/
-	PrimitiveType type;		/* A "type" (int, float, boolean) (the word, name of the type) 	    	*/
-	VarValue value;			/* A "value" (int, float, true, false) (variable's value') 			    */
+	char *id;				/* The "id" of the variable 								    */
+	PrimitiveType type;		/* A "type" (int, float, boolean) (the word, name of the type)  */
+	VarValue value;			/* A "value" (int, float, true, false) (variable's value') 	    */
 } StVariable;
 
-typedef struct               /* An array has                                                        */
+typedef struct              /* An array has                                                 */
 {
-    char *id;               /* The "id" of the array     											*/
-    PrimitiveType type;     /* A "type" (int, float, boolean) (the word, name of the type) 	    	*/
-    int length;             /* The length of the array                                              */
-	StVariable *arrayValues;  /* ESTO DEBERIA SER UNA LISTA DE ST_VARIABLE!!!!!!!! /* The values of the array -----------------------------------positions----------------------------------------- */
+    char *id;               /* The "id" of the array     									*/
+    PrimitiveType type;     /* A "type" (int, float, boolean) (the word, name of the type) 	*/
+    unsigned int length;    /* The length of the array                                      */
+	StVariable *arrayValues;/* The values of every array position							*/
 } StArray;
 
-typedef struct               /* A method has: 				       									*/
-{			 
-	char *id;				 /* The "id" of the method												*/
-	ReturnType type; 		 /* A "return type" (int, float, boolean, void) 					    */
-	unsigned char paramSize; /* An attribute indicating the number of parameters of the method      */
-	StVariable parameters[MAX_PARAMS]; /* ESTO DEBERIA SER UNA LISTA DE ST_VARIABLE /*  An array with the parameters, in case of having them  		*/
-	VarValue returnValue;    /* The return value of the current method								*/
+typedef struct              /* A method has: 				       							*/
+{			
+	char *id;				/* The "id" of the method										*/
+	ReturnType type; 		/* A "return type" (int, float, boolean, void) 				    */
+	unsigned int paramSize; /* An int value indicating the number of parameters			    */
+	StVariable *parameters; /* An array with the parameters, in case of having them			*/
+	VarValue returnValue;   /* The return value of the current method						*/
 } StMethod;
 
-typedef union               /* A declaration is: 													*/
-{				
-    StVariable variable;	/* A variable    														*/
-    StMethod method;		/* A method 															*/
-    StArray array;          /* An array                                                             */
+typedef union               /* A declaration is: 											*/
+{			
+    StVariable variable;	/* A variable    												*/
+    StMethod method;		/* A method 													*/
+    StArray array;          /* An array                                                     */
 } Declaration;
 
-/*-----------------------   ATTRIBUTE   -------------------------------------------------------*/
+/*-----------------------   ATTRIBUTE   ----------------------------------------------------*/
 
-typedef struct              /* An attribute has:                									*/
-{			
-    StructureType type;		/* type = 0, the attribute is a variable, type = 1, is a method 		*/
-    Declaration decl;		/* Attribute's value 													*/
+typedef struct              /* An attribute has:                							*/
+{		
+    StructureType type;		/* type = 0, the attribute is a variable, type = 1, is a method	*/
+    Declaration decl;		/* Attribute's value 											*/
 } Attribute;
 
 /*------------------------------    METHODS    ---------------------------------------------*/
@@ -62,17 +61,14 @@ Attribute* createVariable(char* id, PrimitiveType type);
 Attribute* createArray(char* id, PrimitiveType type, unsigned int length);
 
 /* creates a method attribute containing the information included in the parameters */
-Attribute* createMethod(char* id, ReturnType type, unsigned char paramAmount);
+Attribute* createMethod(char* id, ReturnType type);
 
 /* creates an attribute and assign it as a parameter of "method" containing the information included.
 	Returns a pointer to the attribute if the parameter was created successful. Returns NULL otherwise. */
-Attribute* createParameter(Attribute *attr, unsigned char pos, char* id, PrimitiveType type);
-
-/* Adds the "var" variable in the position "pos" of the method "method" */
-void addParameter(StMethod *method, StVariable *var, unsigned char pos);
+Attribute* createParameter(Attribute *attr, unsigned int pos, char* id, PrimitiveType type);
 
 /* Sets the amount of parameters that will have the method attr */
-void setAmountOfParameters(Attribute *attr, unsigned char amount);
+void setAmountOfParameters(Attribute *attr, unsigned int amount);
 
 /* Sets the value of the variable that contains "attr" with the respective "value" */
 void setVariableValue(Attribute *attr, PrimitiveType type, char *value);

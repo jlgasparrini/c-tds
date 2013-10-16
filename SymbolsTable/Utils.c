@@ -21,18 +21,25 @@ Attribute* getVariableAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, ch
 Attribute* getArrayAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attribute *attr, unsigned int pos)
 {
     if((*attr).type != Array)
-        if((*attr).type == Method)
-            insertError(eq, toString("El identificador \"", getID(attr), "\" no corresponde a un arreglo."));
-        else
-            insertError(eq, toString("El identificador \"", getID(attr), "\" no corresponde a un arreglo."));
+		insertError(eq, toString("El identificador \"", getID(attr), "\" no corresponde a un arreglo."));
     else    
         if (pos < 0 || pos >= (*attr).decl.array.length)
         {
             insertError(eq, toString("Error. Indice fuera de rango para acceder al arreglo \"", getID(attr), "\".")); 
-            return createVariable("",getAttributeType(attr));
+            return createVariable("",getAttributeType(attr)); // Returns an attribute with the same type to continue parsing
         }
         else
-            return createVariable("",getAttributeType(attr)); /* ACA DEBERIA RETORNARSE LA VARIABLE QUE SE ENCUENTRA EN EL ARREGLO EN LA POSICION "pos"-------------------------------------- */
+		{
+			Attribute *aux = createVariable("", getAttributeType(attr));
+			if (getAttributeType(attr) == Int)
+				setIntVal(aux,getIntVal(attr));
+			if (getAttributeType(attr) == Float)
+				setFloatVal(aux,getFloatVal(attr));
+			if (getAttributeType(attr) == Bool)
+				setBoolVal(aux,getIntVal(attr));
+			return aux;          
+		}
+	return createVariable("",Int); // Returns an attribute with type Int to continue parsing
 }
 
 /* Returns the return attribute of the method with id "id" */
@@ -48,9 +55,19 @@ Attribute* getMethodReturnAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable
 			if (getAttributeType(attr) == RetVoid)
 				insertError(eq,toString("El metodo \"", id,"\" retorna void, no puede setearse ningun atributo de retorno."));
 			else
-				return createVariable("",getAttributeType(attr));
+			{
+				Attribute *aux = createVariable("", getAttributeType(attr));
+				if (getAttributeType(attr) == Int)
+					setIntVal(aux,getIntVal(attr));
+				if (getAttributeType(attr) == Float)
+					setFloatVal(aux,getFloatVal(attr));
+				if (getAttributeType(attr) == Bool)
+					setBoolVal(aux,getIntVal(attr));
+				return aux;
+			}
 		}
     }
+	return createVariable("",Int); // Returns type Int by default in case of having errors
 }
 
 /* Sets the return attribute of the method with id "id" */
@@ -79,7 +96,7 @@ void setMethodReturnAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char
 }
 
 /* Returns the respective variable attribute that the method return. "paramSize" is for checking if the amount of parameters is right */
-Attribute* getMethodAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char *id, unsigned char paramSize)
+Attribute* checkAndGetMethodRetAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char *id, unsigned char paramSize)
 {
 	Attribute *attr = searchIdInSymbolsTable(eq, aSymbolsTable, id);
 	if(attr != NULL)
@@ -96,16 +113,25 @@ Attribute* getMethodAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char
 					insertError(eq, toString("La llamada al metodo \"", id, "\" no contiene la misma cantidad parametros."));
 				return createVariable("", getAttributeType(attr));
 			}
-			else
+			else /* if the method does have the same amount of parameters */
 			{
 				if (getAttributeType(attr) == RetVoid)
 					insertError(eq,toString("El metodo \"", id,"\" retorna void, no puede obtenerse ningun atributo de retorno."));
 				else
-					return createVariable("", getAttributeType(attr));
+				{
+					Attribute *aux = createVariable("", getAttributeType(attr));
+					if (getAttributeType(attr) == Int)
+						setIntVal(aux,getIntVal(attr));
+					if (getAttributeType(attr) == Float)
+						setFloatVal(aux,getFloatVal(attr));
+					if (getAttributeType(attr) == Bool)
+						setBoolVal(aux,getIntVal(attr));
+					return aux;
+				}
 			}
 		}
 	}
-	return NULL; /////////////////////////////////////////////habria que retornar un attribute valido!!
+	return createVariable("",Int); // Returns type Int by default in case of having errors
 }
 
 /* Returns 0 if the type of the parameter on the position "pos" of the method "attr" is equal to the type of "var"
@@ -166,8 +192,7 @@ unsigned int digitAmount(int value)
 
 /* Returns the string representation of the int "value" */
 char* intToString(int value)
-{
-   char *aux = (char*) malloc (digitAmount(value)*sizeof(char)); 
+{ char *aux = (char*) malloc (digitAmount(value)*sizeof(char)); 
    sprintf(aux,"%d",value);
    return aux;
 }
