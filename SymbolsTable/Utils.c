@@ -149,7 +149,7 @@ char* getType(PrimitiveType type)
 		return "float";
 	if (type == Bool)
 		return "boolean";
-	return "incorrect type";
+	return "void";
 }
 
 /* Returns the amount of digits that has the int "value" */

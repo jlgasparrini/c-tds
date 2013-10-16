@@ -87,6 +87,10 @@ finalizar() {
             // show the list of code 3D
             int cantCodes = cantCode(lcode3d);
             int i;
+            printf("Lista de codigos 3 direcciones\n");
+            printf("------------------------------------------------------------\n");
+            printf(" Operacion   |    res     |    arg1    |    arg2 \n");
+            printf("------------------------------------------------------------\n");
             for (i = 0; i < cantCodes; i++) {
                 Code3D *code = get_code(lcode3d, i);
                 toString3DC(code);
@@ -128,6 +132,7 @@ out(char *msg) {
 
 program       :    CLASS ID '{' '}' {
 									errorQ=initializeQueue(); 
+									lcode3d = initLCode3D();
 									finalizar();
 					} 
               |    CLASS ID '{' {

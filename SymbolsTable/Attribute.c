@@ -17,6 +17,21 @@ Attribute* createVariable(char *id, PrimitiveType type)
 	return attr;
 }
 
+
+/* Creates a StVariable with the respective type and initialized */
+StVariable* createStVariable(PrimitiveType type)
+{
+	StVariable *var = (StVariable*) malloc (sizeof(StVariable)); 
+	(*var).type = type;
+	if (type == Int)
+		(*var).value.intVal = 0;
+	if (type == Float)
+		(*var).value.floatVal = 0.0;
+	if (type == Bool)
+		(*var).value.boolVal = False;
+	return var;
+}
+
 /* creates an array attribute containing the information included in the parameters */
 Attribute* createArray(char *id, PrimitiveType type, unsigned int length)
 {
@@ -25,7 +40,7 @@ Attribute* createArray(char *id, PrimitiveType type, unsigned int length)
 	(*attr).decl.array.id = strdup(id);
 	(*attr).decl.array.type = type; 
 	(*attr).decl.array.length = length;
-	(*attr).decl.array.arrayValues = (stVariable*) malloc (length*sizeof(StVariable)); /* creates the necessary memory for the array */
+	(*attr).decl.array.arrayValues = (StVariable*) malloc (length*sizeof(StVariable)); /* creates the necessary memory for the array */
 	int i;
 	for(i = 0; i < length; i++)
 	{
@@ -43,20 +58,6 @@ Attribute* createMethod(char *id, ReturnType type, unsigned char paramAmount)
 	(*attr).decl.method.type = type; 
 	(*attr).decl.method.paramSize = paramAmount;
 	return attr;
-}
-
-/* Creates a stVariable with the respective type and initialized */
-stVariable createStVariable(PrimitiveType type)
-{
-	stVariable *var = (stVariable*) malloc (sizeof(stVariable)); 
-	(*var).type = type;
-	if (type == Int)
-		(*var).value.intVal = 0;
-	if (type == Float)
-		(*var).value.floatVal = 0.0;
-	if (type == Bool)
-		(*var).value.boolVal = False;
-	return var;
 }
 
 /* creates an attribute and assign it as a parameter of "method" containing the information included.

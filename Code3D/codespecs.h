@@ -45,5 +45,8 @@
 #define COM_NEG_INT         33
 #define COM_NEG_FLOAT       34
 
-#endif
+char* getCodeByID(int ID);
 
+char* getTypeByID(int type);
+
+#endif

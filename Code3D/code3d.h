@@ -23,7 +23,7 @@
 #define CodeFLOAT   3
 #define CodeBOOL    4
 
-typedef struct {
+typedef union {
     int         intAttri;
     float       floatAttri;
     bool        boolAttri;
@@ -32,7 +32,7 @@ typedef struct {
 } Value;
 
 typedef struct {
-    int     type; // -1 : null, 0 : Attribute, 1 : label, 2 : Integer, 3 : Float, 4 : Bool
+    int     type; // -1 : void, 0 : Attribute, 1 : label, 2 : Integer, 3 : Float, 4 : Bool
     Value   *val; 
 } Param;
 
