@@ -10,11 +10,10 @@ Attribute* getVariableAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, ch
 	Attribute *attr = searchIdInSymbolsTable(eq, aSymbolsTable, id);
 	if(attr != NULL) 
 		if((*attr).type != Variable)
-		{
 			insertError(eq, toString("El identificador \"", id, "\" no corresponde a una variable."));
-			return createVariable("",Int); // Returns an attribute with type Int to continue parsing
-		}
-	return attr;
+		else
+			return attr;
+	return createVariable("",Int); // Returns an attribute with type Int to continue parsing
 }
 
 /* Returns an attribute in the position "pos" of the ID "id" and Array structure. Otherwise returns NULL */
@@ -346,10 +345,7 @@ Attribute* checkArrayPos(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id,
         if (getAttributeType(attr) == Int)
             return getArrayAttribute(eq,aux,getIntVal(attr));
         else
-        {
             insertError(eq, toString("La expresion para acceder a la posicion del arreglo \"", id, "\" debe ser de tipo int.")); 
-            return createVariable("",getAttributeType(aux));
-        }
     }
     return createVariable("",Int);
 }

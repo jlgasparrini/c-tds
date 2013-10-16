@@ -52,7 +52,8 @@ int yyerror (char *str)
         if (strcmp(str, "syntax error") == 0)
 			printf("%s\n",toString("Error GRAMATICO.","",""));
         else
-			printf("%s\n","Solucione errores semanticos.");
+			if (strcmp(str, "correcto") != 0)
+				printf("%s\n","Error DESCONOCIDO.");
         return 0;
 }
  
@@ -77,11 +78,7 @@ finalizar() {
         int cantErrors = 0;
         cantErrors = (*errorQ).size;
         if (cantErrors > 0) 
-        {
-            printErrorList(errorQ);
-            deleteAllErrors(errorQ);
-            yyerror("");
-        }
+            yyerror("correcto");
         else
         {
             // show the list of code 3D
@@ -220,12 +217,12 @@ param		  :    '(' {cantParams = 0; setAmountOfParameters(searchIdInSymbolsTable(
               
 parameters    :		type ID {Attribute *aux = createParameter(lastDefinedMethod(&symbolTable),cantParams,$2,vaType);
 								if (aux != NULL) {pushElement(errorQ,&symbolTable,aux); cantParams++;}
-								else insertError(errorQ,toString("El identificador \"",$2,"\" no puede contener parametros"));
+								else insertError(errorQ,toString("El identificador \"",$2,"\" no puede contener parametros/esa cantidad de parametros."));
 							}
 
 			  |		type ID {Attribute *aux = createParameter(lastDefinedMethod(&symbolTable),cantParams,$2,vaType);
 								if (aux != NULL) {pushElement(errorQ,&symbolTable,aux); cantParams++;}
-								else insertError(errorQ,toString("El identificador \"",$2,"\" no puede contener parametros"));
+								else insertError(errorQ,toString("El identificador \"",$2,"\" no puede contener parametros/esa cantidad de parametros."));
 							}
 							',' parameters 
 			  ;
@@ -294,31 +291,33 @@ action        :
               ;
               
 asignation    :    location assig_op expression {
-							controlAssignation(errorQ,$1,$2,$3);
-                            Code3D *add;
-							if (strcmp($2, "+=") == 0){
-								if ((getAttributeType($1) == Int) && (getAttributeType($3) == Int)){
-									add = newCode(COM_ADD_INT);
+							if (controlAssignation(errorQ,$1,$2,$3))
+							{
+		                        Code3D *add;
+								if (strcmp($2, "+=") == 0){
+									if ((getAttributeType($1) == Int) && (getAttributeType($3) == Int)){
+										add = newCode(COM_ADD_INT);
+									} 
+									if ((getAttributeType($1) == Float) && (getAttributeType($3) == Float)){
+										add = newCode(COM_ADD_FLOAT);
+									}
+									setCode2D(add, ($1), ($3));
+									add_code(lcode3d, add);
 								} 
-								if ((getAttributeType($1) == Float) && (getAttributeType($3) == Float)){
-									add = newCode(COM_ADD_FLOAT);
+								if (strcmp($2, "-=") == 0){
+									if ((getAttributeType($1) == Int) && (getAttributeType($3) == Int)){
+										add = newCode(COM_MINUS_INT);
+									} 
+									if ((getAttributeType($1) == Float) && (getAttributeType($3) == Float)){
+										add = newCode(COM_MINUS_FLOAT);																				
+									}
+									setCode2D(add, ($1), ($3));
+									add_code(lcode3d, add);
 								}
-								setCode2D(add, ($1), ($3));
-								add_code(lcode3d, add);
-							} 
-							if (strcmp($2, "-=") == 0){
-								if ((getAttributeType($1) == Int) && (getAttributeType($3) == Int)){
-									add = newCode(COM_MINUS_INT);
-								} 
-								if ((getAttributeType($1) == Float) && (getAttributeType($3) == Float)){
-									add = newCode(COM_MINUS_FLOAT);																				
-								}
-								setCode2D(add, ($1), ($3));
-								add_code(lcode3d, add);
+								Code3D *asig = newCode(STORE_MEM);
+								setCode2D(asig, ($3), ($1));
+								add_code(lcode3d, asig);
 							}
-							Code3D *asig = newCode(STORE_MEM);
-							setCode2D(asig, ($3), ($1));
-							add_code(lcode3d, asig);
 					}
 			  ;
               
@@ -414,7 +413,7 @@ iteration     :    WHILE {
 /* -------------------- EXPRESSIONS ------------------------------- */
 
 location      :    ID {$$ = getVariableAttribute(errorQ, &symbolTable, $1);}
-              |    ID '[' term ']' {$$ = checkArrayPos(errorQ,&symbolTable,$1,$3);}
+              |    ID '[' term ']' {if (getAttributeType($3) == Int) lastUsedArrayPosition = atoi($3); $$ = checkArrayPos(errorQ,&symbolTable,$1,$3);}
               ;
 
 method_call   :	   ID '(' ')' {cantParams=0; insertString(paramsStack,intToString(cantParams));

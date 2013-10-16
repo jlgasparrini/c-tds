@@ -56,6 +56,7 @@ Attribute* createMethod(char *id, ReturnType type)
 	(*attr).decl.method.id = strdup(id);
 	(*attr).decl.method.type = type; 
 	(*attr).decl.method.paramSize = 0;
+	(*attr).decl.method.parameters = NULL;
 	return attr;
 }
 
@@ -63,11 +64,16 @@ Attribute* createMethod(char *id, ReturnType type)
 	Returns a pointer to the attribute if the parameter was created successful. Returns NULL otherwise. */
 Attribute* createParameter(Attribute *attr, unsigned int pos, char *id, PrimitiveType type)
 {
-	if (attr != NULL && (*attr).type == Method && (*attr).decl.method.type == type)
+	if (attr != NULL && (*attr).type == Method)
 	{
-		Attribute *aux = createVariable(id, type);
-		(*attr).decl.method.parameters[pos] = (*aux).decl.variable;
-		return aux;
+		StVariable *aux = (StVariable*) realloc ((*attr).decl.method.parameters, (pos+1)*sizeof(StVariable));
+		if (aux != NULL)
+		{
+			(*attr).decl.method.parameters = aux;
+			Attribute *aux = createVariable(id, type);
+			(*attr).decl.method.parameters[pos] = (*aux).decl.variable;
+			return aux;
+		}
 	}
 	return NULL; /* In case of non-desirable cases, Null is returned. */
 }
