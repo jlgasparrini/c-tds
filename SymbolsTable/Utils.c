@@ -282,16 +282,20 @@ unsigned char controlType(ErrorsQueue *eq, Attribute *attr, PrimitiveType type)
 	return 0;
 }
 
-/* Insert an error message if attributes "attr1" and "attr2" aren't of the same type and both variables or arrays */
-void controlAssignation(ErrorsQueue *eq, Attribute *attr1, char* op, Attribute *attr2)
+/* Insert an error message and return 1 if attributes "attr1" and "attr2" aren't of the same type and both variables or arrays
+   Returns 0 otherwise */
+unsigned char controlAssignation(ErrorsQueue *eq, Attribute *attr1, char* op, Attribute *attr2)
 {
 	if ((*attr1).type != Method)
 	{
         if (getAttributeType(attr1) != getAttributeType(attr2))
             insertError(eq, toString("El lado derecho de la asignacion debe ser de tipo \"", getType(getAttributeType(attr1)), "\"."));
+		else
+			return 0;
 	}
 	else
 		insertError(eq, toString("El identificador izquierdo de la asignacion ", "", " no debe ser un metodo."));
+	return 1;
 }
 
 /* Insert an error message if the "lastUsedMethod" haven't got "void" return type */

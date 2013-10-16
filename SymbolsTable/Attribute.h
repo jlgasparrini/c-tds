@@ -6,8 +6,6 @@ typedef enum {False, True} Boolean;
 typedef enum {Variable, Method, Array} StructureType;
 typedef enum {RetInt, RetFloat, RetBool, RetVoid} ReturnType;
 
-struct Attribute;
-
 typedef union               /* The value that a variable may take can be:                   */
 {				
 	int intVal; 			/* An int value 											    */
@@ -27,7 +25,7 @@ typedef struct              /* An array has                                     
     char *id;               /* The "id" of the array     									*/
     PrimitiveType type;     /* A "type" (int, float, boolean) (the word, name of the type) 	*/
     unsigned int length;    /* The length of the array                                      */
-	Attribute *arrayValues;/* The values of every array position							*/
+	StVariable *arrayValues;/* The values of every array position							*/
 } StArray;
 
 typedef struct              /* A method has: 				       							*/

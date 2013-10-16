@@ -47,8 +47,9 @@ unsigned char correctParamIC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attri
 /* Return 1 if ocurred one error, or 0 if all type is ok*/
 unsigned char controlType(ErrorsQueue *eq, Attribute *attr, PrimitiveType type);
 
-/* Insert an error message if attributes "attr1" and "attr2" aren't of the same type and both variables or arrays */
-void controlAssignation(ErrorsQueue *eq, Attribute *attr1, char* op, Attribute *attr2);
+/* Insert an error message and return 1 if attributes "attr1" and "attr2" aren't of the same type and both variables or arrays
+   Returns 0 otherwise */
+unsigned char controlAssignation(ErrorsQueue *eq, Attribute *attr1, char* op, Attribute *attr2);
 
 /* Insert an error message if the "lastUsedMethod" haven't got "void" return type */
 void checkReturn(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* lastUsedMethod);
