@@ -26,7 +26,7 @@ void pushElement(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attribute *at)
                 idAux = (*at).decl.array.id;
 
             if (searchIdInLevel(aSymbolsTable, idAux) != NULL) 
-                insertError(eq, toString("El identificador ", idAux, " ya se encuentra en uso."));
+                insertError(eq, toString("El identificador \"", idAux, "\" ya se encuentra en uso."));
             else
                 insert((*(*aSymbolsTable).top).list, at); 
         }

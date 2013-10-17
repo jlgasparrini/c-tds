@@ -3,59 +3,57 @@
 
 char* getCodeByID(int ID)
 {
-    char *aux;
     switch (ID)
     {
-        case 0: aux = "LOAD_CONST"; break;
-        case 1: aux = "LOAD_MEM"; break;
-        case 2: aux = "STORE_CONST"; break;
-        case 3: aux = "STORE_MEM"; break;
-        case 4: aux = "COM_MINUS_INT"; break;
-        case 5: aux = "COM_ADD_INT"; break;
-        case 6: aux = "COM_SUB_INT"; break;
-        case 7: aux = "COM_MULT_INT"; break;
-        case 8: aux = "COM_DIV_INT"; break;
-        case 9: aux = "COM_MOD_INT"; break;
-        case 10:aux = "COM_PLUSEQ_INT"; break; 
-        case 11:aux = "COM_MINUSEQ_INT"; break; 
-        case 12:aux = "COM_MINUS_FLOAT"; break;
-        case 13:aux = "COM_ADD_FLOAT"; break;
-        case 14:aux = "COM_SUB_FLOAT"; break;
-        case 15:aux = "COM_MULT_FLOAT"; break;
-        case 16:aux = "COM_DIV_FLOAT"; break;
-        case 17:aux = "COM_MOD_FLOAT"; break;
-        case 18:aux = "COM_PLUSEQ_FLOAT"; break; 
-        case 19:aux = "COM_MINUSEQ_FLOAT"; break; 
-        case 20:aux = "COM_EQ"; break;
-        case 21:aux = "COM_DIST"; break;
-        case 22:aux = "COM_GT"; break;
-        case 23:aux = "COM_LR"; break;
-        case 24:aux = "COM_GEQ"; break;
-        case 25:aux = "COM_LEQ"; break;
-        case 26:aux = "COM_OR"; break;
-        case 27:aux = "COM_AND"; break;
-        case 28:aux = "COM_NOT"; break;
-        case 29:aux = "COM_MARK"; break;
-        case 30:aux = "GOTOLABEL"; break;
-        case 31:aux = "GOTOLABEL_COND"; break;
-        case 32:aux = "COM_RETURN"; break;
-        case 33:aux = "COM_NEG_INT"; break;
-        case 34:aux = "COM_NEG_FLOAT"; break;
+        case 0: return "LOAD_CONST";
+        case 1: return "LOAD_MEM";
+        case 2: return "STORE_CONST";
+        case 3: return "STORE_MEM";
+        case 4: return "COM_MINUS_INT";
+        case 5: return "COM_ADD_INT";
+        case 6: return "COM_SUB_INT";
+        case 7: return "COM_MULT_INT";
+        case 8: return "COM_DIV_INT";
+        case 9: return "COM_MOD_INT";
+        case 10: return "COM_PLUSEQ_INT"; 
+        case 11: return "COM_MINUSEQ_INT"; 
+        case 12: return "COM_MINUS_FLOAT";
+        case 13: return "COM_ADD_FLOAT";
+        case 14: return "COM_SUB_FLOAT";
+        case 15: return "COM_MULT_FLOAT";
+        case 16: return "COM_DIV_FLOAT";
+        case 17: return "COM_MOD_FLOAT";
+        case 18: return "COM_PLUSEQ_FLOAT"; 
+        case 19: return "COM_MINUSEQ_FLOAT"; 
+        case 20: return "COM_EQ";
+        case 21: return "COM_DIST";
+        case 22: return "COM_GT";
+        case 23: return "COM_LR";
+        case 24: return "COM_GEQ";
+        case 25: return "COM_LEQ";
+        case 26: return "COM_OR";
+        case 27: return "COM_AND";
+        case 28: return "COM_NOT";
+        case 29: return "COM_MARK";
+        case 30: return "GOTOLABEL";
+        case 31: return "GOTOLABEL_COND";
+        case 32: return "COM_RETURN";
+        case 33: return "COM_NEG_INT";
+        case 34: return "COM_NEG_FLOAT";
     }
-    return aux;
+    return "";
 }
 
 char* getTypeByID(int type)
 {
-    char *aux;
     switch (type)
     {
-        case -1 : aux = "void"; break;
-        case  0 : aux = "Attribute"; break;
-        case  1 : aux = "label";break;
-        case  2 : aux = "Integer"; break;
-        case  3 : aux = "Float"; break;
-        case  4 : aux = "Bool" ; break;
+        case -1 : return "void";
+        case  0 : return "Attribute";
+        case  1 : return "label";
+        case  2 : return "Integer";
+        case  3 : return "Float";
+        case  4 : return "Bool" ;
     }
-    return aux;
+    return "";
 }

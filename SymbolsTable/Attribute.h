@@ -48,7 +48,7 @@ typedef union               /* A declaration is: 											*/
 
 typedef struct              /* An attribute has:                							*/
 {		
-    StructureType type;		/* type = 0, the attribute is a variable, type = 1, is a method	*/
+    StructureType type;		/* type = 0, the attribute is a variable, type = 1, is a method, type = 2, is an array	*/
     Declaration decl;		/* Attribute's value 											*/
 } Attribute;
 

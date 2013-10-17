@@ -22,6 +22,7 @@ Attribute* getArrayAttribute(ErrorsQueue *eq, Attribute *attr, unsigned int pos)
     if((*attr).type != Array)
 		insertError(eq, toString("El identificador \"", getID(attr), "\" no corresponde a un arreglo."));
     else    
+	{
         if (pos < 0 || pos >= (*attr).decl.array.length)
         {
             insertError(eq, toString("Error. Indice fuera de rango para acceder al arreglo \"", getID(attr), "\".")); 
@@ -38,6 +39,7 @@ Attribute* getArrayAttribute(ErrorsQueue *eq, Attribute *attr, unsigned int pos)
 				setBoolVal(aux,getArrayBoolVal(attr,pos));
 			return aux;          
 		}
+	}
 	return createVariable("",Int); // Returns an attribute with type Int to continue parsing
 }
 
@@ -114,10 +116,10 @@ Attribute* checkAndGetMethodRetAttribute(ErrorsQueue *eq, SymbolsTable *aSymbols
 			}
 			else /* if the method does have the same amount of parameters */
 			{
-				if (getAttributeType(attr) == RetVoid)
-					insertError(eq,toString("El metodo \"", id,"\" retorna void, no puede obtenerse ningun atributo de retorno."));
-				else
-				{
+			//	if (getAttributeType(attr) == RetVoid)
+			//		insertError(eq,toString("El metodo \"", id,"\" retorna void, no puede obtenerse ningun atributo de retorno."));
+			//	else
+			//	{
 					Attribute *aux = createVariable("", getAttributeType(attr));
 					if (getAttributeType(attr) == Int)
 						setIntVal(aux,getIntVal(attr));
@@ -126,7 +128,7 @@ Attribute* checkAndGetMethodRetAttribute(ErrorsQueue *eq, SymbolsTable *aSymbols
 					if (getAttributeType(attr) == Bool)
 						setBoolVal(aux,getIntVal(attr));
 					return aux;
-				}
+			//	}
 			}
 		}
 	}
@@ -159,7 +161,7 @@ ReturnType getAttributeType(Attribute *attr)
 {
     if((*attr).type == Variable)
 		return (*attr).decl.variable.type;
-    if((*attr).type != Array)
+    if((*attr).type == Array)
 		return (*attr).decl.array.type;
     if((*attr).type == Method)
 		return (*attr).decl.method.type;
@@ -174,7 +176,7 @@ char* getType(PrimitiveType type)
 		return "float";
 	if (type == Bool)
 		return "boolean";
-	return "void";
+	return "void"; // This is returned when it's not a primitive type
 }
 
 /* Returns the amount of digits that has the int "value" */
@@ -207,14 +209,14 @@ unsigned char correctParamBC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attri
 			insertError(eq, toString("El identificador \"", lastCalledMethod, "\" no corresponde a un metodo."));
 		else
 		{
-			if (paramSize == (*aux).decl.method.paramSize) 
+			if (paramSize+1 == (*aux).decl.method.paramSize) 
 			{
 				if (correctParameterType(&(*attr).decl.variable, aux, paramSize) == 0) 
 					return 0;
 				else
 				{
-					char* number = (char*) malloc (digitAmount(paramSize)*sizeof(char));
-					sprintf(number,"%d",paramSize);
+					char* number = (char*) malloc (digitAmount(paramSize+1)*sizeof(char));
+					sprintf(number,"%d",paramSize+1);
 					char* f = (char*) malloc ((strlen("\". El ")+strlen(number)+strlen("° parametro no es del tipo \"")+strlen(getType((*aux).decl.method.parameters[paramSize].type)+strlen("\".")))*sizeof(char));
 					strcat(f,"\". El ");
 					strcat(f, number);
@@ -246,14 +248,14 @@ unsigned char correctParamIC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attri
 			insertError(eq, toString("El identificador \"", lastCalledMethod, "\" no corresponde a un metodo."));
 		else
         {
-			if (paramSize <= (*aux).decl.method.paramSize) 
+			if (paramSize < (*aux).decl.method.paramSize) 
             {
 				if (correctParameterType(&(*attr).decl.variable, aux, paramSize) == 0) 
 					return 0;
 				else
 				{
-					char* number = (char*) malloc (digitAmount(paramSize)*sizeof(char));
-					sprintf(number,"%d",paramSize);
+					char* number = (char*) malloc (digitAmount(paramSize+1)*sizeof(char));
+					sprintf(number,"%d",paramSize+1);
 					char* f = (char*) malloc ((strlen("\". El ")+strlen(number)+strlen("° parametro no es del tipo \"")+strlen(getType((*aux).decl.method.parameters[paramSize].type)+strlen("\".")))*sizeof(char));
 					strcat(f,"\". El ");
 					strcat(f, number);
@@ -273,10 +275,30 @@ unsigned char correctParamIC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attri
 
 /* Insert an error message if the attribute "attr" isn't a variable of type "type" */
 /* Return 1 if ocurred one error, or 0 if all type is ok*/
-unsigned char controlType(ErrorsQueue *eq, Attribute *attr, PrimitiveType type)
+unsigned char controlType(ErrorsQueue *eq, Attribute *attr, PrimitiveType type, char *operation, int numberOfExpression)
 {
     if (getAttributeType(attr) != type){
-        insertError(eq, toString("La expresion no es del tipo \"", getType(type), "\"."));
+		if (numberOfExpression == 1)
+		{
+			char* f = (char*) malloc ((strlen("La expresion de la sentencia \"")+strlen(operation)+strlen("\" no es del tipo \""))*sizeof(char));
+			strcat(f,"La expresion de la sentencia \"");
+			strcat(f, operation);
+			strcat(f,"\" no es del tipo \"");
+			insertError(eq, toString(f, getType(type), "\"."));
+		}
+		else
+		{
+			char* number = (char*) malloc (sizeof(char));
+			sprintf(number,"%d",numberOfExpression);
+
+			char* f = (char*) malloc ((strlen("La  ° expresion de la sentencia \"")+strlen(operation)+strlen("\" no es del tipo \""))*sizeof(char));
+			strcat(f,"La ");
+			strcat(f, number);
+			strcat(f,"° expresion de la sentencia \"");
+			strcat(f, operation);
+			strcat(f,"\" no es del tipo \"");
+			insertError(eq, toString(f, getType(type), "\"."));
+		}
 		return 1;
 	}
 	return 0;
@@ -347,9 +369,9 @@ Attribute* checkArrayPos(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id,
     if (aux != NULL)
     {
         if (getAttributeType(attr) == Int)
-            return getArrayAttribute(eq,aux,getIntVal(attr));
-        else
-            insertError(eq, toString("La expresion para acceder a la posicion del arreglo \"", id, "\" debe ser de tipo int.")); 
+	        return getArrayAttribute(eq,aux,getIntVal(attr));
+		else
+			insertError(eq, toString("La expresion para acceder a la posicion del arreglo \"", id, "\" debe ser de tipo \"int\".")); 
     }
     return createVariable("",Int);
 }
@@ -543,7 +565,7 @@ Attribute* returnLEqualComparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *
         Code3D *codeLEqual = newCode(COM_LEQ);
 		setCode3D(codeLEqual, oper1, oper2, operRes);
 		add_code(lcode3d, codeLEqual); 
-		Attribute *aux = createVariable("", getAttributeType(oper1));
+		Attribute *aux = createVariable("", Bool);
         if (getAttributeType(oper1) == Float)
 			setBoolVal(aux, getFloatVal(oper1) <= getFloatVal(oper2));
         if (getAttributeType(oper1) == Int)

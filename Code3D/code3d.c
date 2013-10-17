@@ -270,80 +270,80 @@ void setCode1D(Code3D *code, Attribute *attri1){
 
 void toString3DC(Code3D *code) {
     // Ver si funciona
-    printf(" %s |   ", getCodeByID(getCommand(code)));
+    printf("   %s   |   ", getCodeByID(getCommand(code)));
   //  printf("%s   |    ", getTypeByID(code->param1->type));
     if (isNull(code, 1)){
-        printf("  -   |  ");
+        printf("    -     |  ");
     }
     else {
         if (isInt(code, 1)){
-            printf("isInt");
+            printf("(I)");
             printf("%i   |    ", getInt(code, 1));
         }
         if (isFloat(code, 1)){
-            printf("isFloat");
+            printf("(F)");
             printf("%f |  ", getFloat(code, 1));
         }
         if (isBool(code, 1)){
-            printf("isBool");
+            printf("(B)");
             printf("%s |  ", getBool(code, 1)? "true" : "false");
         }
         if (isLabel(code, 1)){
-            printf("isLabel");
+            printf("(L)");
             printf("%s |  ", getLabel(code, 1));
         }
         if (isAttribute(code, 1)){
-            printf("isAttribute");
+            printf("(A)");
             printf("%s |  ", getType(getAttribute(code, 1)->type));
         }
     }
     if (isNull(code, 2)){
-        printf("  -   |  ");
+        printf("    -     |  ");
     }
     else {
         if (isInt(code, 2)){
-            printf("isInt");
+            printf("(I)");
             printf("%i   |    ", getInt(code, 2));
         }
         if (isFloat(code, 2)){
-            printf("isFloat");
+            printf("(F)");
             printf("%f |  ", getFloat(code, 2));
         }
         if (isBool(code, 2)){
-            printf("isBool");
+            printf("(B)");
             printf("%s |  ", getBool(code, 2)? "true" : "false");
         }
         if (isLabel(code, 2)){
-            printf("isLabel");
+            printf("(L)");
             printf("%s |  ", getLabel(code, 2));
         }
         if (isAttribute(code, 2)){
-            printf("isAttribute");
+            printf("(A)");
             printf("%s |  ", getType(getAttribute(code, 2)->type));
         }
     }
     if (isNull(code, 3)){
-        printf("  -   |  ");
+        printf("    -     |  ");
     }
     else {
         if (isInt(code, 3)){
-            printf("isInt");
+            printf("(I)");
             printf("%i   |    ", getInt(code, 3));
         }
         if (isFloat(code, 3)){
-            printf("isFloat");
+            printf("(F)");
             printf("%f |  ", getFloat(code, 3));
         }
         if (isBool(code, 3)){
-            printf("isBool");
+            printf("(B)");
             printf("%s |  ", getBool(code, 3)? "true" : "false");
         }
         if (isLabel(code, 3)){
-            printf("isLabel");
+            printf("(L)");
             printf("%s |  ", getLabel(code, 3));
         }
         if (isAttribute(code, 3)){
-            printf("isAttribute");
+            printf("(A)");
             printf("%s |  ", getType(getAttribute(code, 3)->type));
         }
     }

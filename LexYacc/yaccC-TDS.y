@@ -85,9 +85,9 @@ finalizar() {
             int cantCodes = cantCode(lcode3d);
             int i;
             printf("Lista de codigos 3 direcciones\n");
-            printf("------------------------------------------------------------\n");
-            printf(" Operacion   |    res     |    arg1    |    arg2 \n");
-            printf("------------------------------------------------------------\n");
+            printf("---------------------------------------------------------------------------\n");
+            printf("     Operacion     |       res       |       arg1       |       arg2       \n");
+            printf("---------------------------------------------------------------------------\n");
             for (i = 0; i < cantCodes; i++) {
                 Code3D *code = get_code(lcode3d, i);
                 toString3DC(code);
@@ -164,8 +164,13 @@ fields        :    field
 			  ;
 
 field         :    ID			{pushElement(errorQ, &symbolTable, createVariable($1, vaType));}
-              |    ID '[' INTEGER {if (atoi($3) <= 0) insertError(errorQ,toString("Error en definicion del arreglo \"",$1,"\". El tamaño del arreglo debe ser un entero mayor que 0."));
-										pushElement(errorQ, &symbolTable, createArray($1, vaType, atoi($3)));}
+              |    ID '[' INTEGER {if (atoi($3) <= 0) 
+									{	insertError(errorQ,toString("Error en definicion del arreglo \"",$1,"\". El tamaño del arreglo debe ser un entero mayor que 0."));
+										pushElement(errorQ, &symbolTable, createArray($1, vaType, 10)); /* Array size of 10 in case of error */
+									}
+									else
+										pushElement(errorQ, &symbolTable, createArray($1, vaType, atoi($3)));
+									}
 						']'	
               ;
 
@@ -276,7 +281,7 @@ action        :
 					}   
 			  |	   RETURN expression {
 									returns++; 									
-									if (checkReturnExpression(errorQ,&symbolTable,lastDefMethod,$2) == 0)
+									if (checkReturnExpression(errorQ,&symbolTable,lastDefMethod,$2))
 									{ 
 										Code3D *loadToReturn = newCode(LOAD_MEM); 
 										setCode2D(loadToReturn, $2, getMethodReturnAttribute(errorQ,&symbolTable,lastDefMethod)); 
@@ -331,7 +336,7 @@ assig_op      :    '=' {$$ = "=";}
 /* -------------------- CONDITIONALS AND CICLES ------------------------------ */
 
 conditional   :    IF '(' expression { 
-                                if (controlType(errorQ,$3,Bool) == 0) {
+										controlType(errorQ,$3,Bool,"if",1);
                                         char *ifLabel = newLabelName();
                                         char *elseLabel = newLabelName();
                                         char *endLabel = newLabelName();
@@ -340,7 +345,6 @@ conditional   :    IF '(' expression {
                                         add_CodeLabel(lcode3d, newCode(COM_MARK), ifLabel); // Mark to Label of If
                                         push(labelsCYC, elseLabel, NULL);
                                         push(labelsCYC, endLabel, NULL);
-								}
 					} ')' block {
 									add_CodeLabel(lcode3d, newCode(GOTOLABEL), peek(labelsCYC)->label); //Go to Label of End
 								}
@@ -367,14 +371,13 @@ iteration     :    WHILE {
 							push(labelsWhile,whileLabel,NULL);
 							add_CodeLabel(lcode3d, newCode(COM_MARK), whileLabel); // Mark to Label of While
                     } expression {
-							if (controlType(errorQ,$3,Bool) == 0) {
-								char *endLabel = newLabelName(); 
+								controlType(errorQ,$3,Bool,"while",1);	/* MODIFICADO PORQUE SINO TIRA SEGMENTATION FAULT! */
+								char *endLabel = newLabelName();/* DEBIDO A QUE NO GENERA EL SIG CODIGO Y EN BLOQUE LO TRATA DE ELIMINAR */
 								push(labelsWhile, endLabel, NULL);
 								char *expressionLabel = newLabelName();
 								add_CodeLabelCond(lcode3d, newCode(GOTOLABEL_COND),$3, expressionLabel); // Go to Label of Expression
 								add_CodeLabel(lcode3d, newCode(GOTOLABEL), endLabel); // Go to Label of End
 								add_CodeLabel(lcode3d, newCode(COM_MARK), expressionLabel); // Mark to Label of Expression           
-                            }
 					} block {							
 							Label *endOfCycle = pop(labelsWhile); 														
 							add_CodeLabel(lcode3d, newCode(GOTOLABEL), pop(labelsWhile)->label); // Go to Label of While
@@ -385,13 +388,14 @@ iteration     :    WHILE {
                         char *forLabel = newLabelName(); 
 						push(labelsFor,forLabel,NULL);
 						add_CodeLabel(lcode3d, newCode(COM_MARK), forLabel); // Mark to Label of For
-                    }ID {
+                    } ID {
 						if (getAttributeType(getVariableAttribute(errorQ,&symbolTable,$3)) != Int){
 							insertError(errorQ,toString("El identificador \"", $3, "\" no pertenece a una variable de tipo \"int\""));
 						}
 					}
 					'=' expression ',' expression {
-								if ((controlType(errorQ,$6,Int) == 0) && (controlType(errorQ,$8,Int)== 0)) {
+									controlType(errorQ,$6,Int,"for",2); /* MODIFICADO PORQUE SINO TIRA SEGMENTATION FAULT! */
+									controlType(errorQ,$8,Int,"for",3); /* DEBIDO A QUE NO GENERA EL SIG CODIGO Y EN BLOQUE LO TRATA DE ELIMINAR */
 									char *endLabel = newLabelName();									 
 									push(labelsFor, endLabel, NULL);
 									char *expressionLabel = newLabelName();
@@ -400,7 +404,7 @@ iteration     :    WHILE {
 									add_CodeLabelCond(lcode3d, newCode(GOTOLABEL_COND), res, expressionLabel); // Go to Label of Expression (falta hacer la comparacion)
 									add_CodeLabel(lcode3d, newCode(GOTOLABEL), endLabel); // Go to Label of End
 									add_CodeLabel(lcode3d, newCode(COM_MARK), expressionLabel); // Mark to Label of Expression           
-								}
+								
 					} block {
 							Label *endOfCycle = pop(labelsFor); 							 							
 							add_CodeLabel(lcode3d, newCode(GOTOLABEL), pop(labelsFor)->label); // Go to Label of For
@@ -413,7 +417,7 @@ iteration     :    WHILE {
 /* -------------------- EXPRESSIONS ------------------------------- */
 
 location      :    ID {$$ = getVariableAttribute(errorQ, &symbolTable, $1);}
-              |    ID '[' term ']' { $$ = checkArrayPos(errorQ,&symbolTable,$1,$3);}
+              |    ID '[' expression ']' { $$ = checkArrayPos(errorQ,&symbolTable,$1,$3);}
 			  ;
 				/* --------------------------------------------------------------------------------------- */
 				/* --------------------------------------------------------------------------------------- */
@@ -449,8 +453,8 @@ method_call   :	   ID '(' ')' {cantParams=0; insertString(paramsStack,intToStrin
               |    EXTERNINVK '(' STRING ',' typevoid ',' externinvk_arg ')' {if (mType != RetVoid) $$=createVariable("",mType);}
               ;
 
-expression_aux:    expression {cantParams++; correctParamBC(errorQ,&symbolTable,$1,lastCalledMethod,cantParams);}
-			  |    expression {cantParams++; correctParamIC(errorQ,&symbolTable,$1,lastCalledMethod,cantParams);} ',' expression_aux 
+expression_aux:    expression {correctParamBC(errorQ,&symbolTable,$1,lastCalledMethod,cantParams); cantParams++;}
+			  |    expression {correctParamIC(errorQ,&symbolTable,$1,lastCalledMethod,cantParams); cantParams++;} ',' expression_aux 
 			  ;
               
 typevoid      :    type                            
@@ -505,7 +509,7 @@ primary       :    INTEGER			{$$ = returnValue(lcode3d, Int, $1, $$);}
               |    FLOAT            {$$ = returnValue(lcode3d, Float, $1, $$);}
               |    BOOLEAN          {$$ = returnValue(lcode3d, Bool, $1, $$);}
               |    ID				{$$ = getVariableAttribute(errorQ,&symbolTable,$1);}
-              |    ID '[' term ']'  {$$ = checkArrayPos(errorQ,&symbolTable,$1,$3);}
+              |    ID '[' expression ']'  {$$ = checkArrayPos(errorQ,&symbolTable,$1,$3);}
               |    '(' expression ')'  {$$ = $2;}
               |    method_call      {
 										if (methodReturnType(errorQ,&symbolTable,lastCalledMethod) == RetVoid)

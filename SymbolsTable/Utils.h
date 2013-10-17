@@ -45,7 +45,7 @@ unsigned char correctParamIC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attri
 
 /* Insert an error message if the attribute "attr" isn't a variable of type "type" */
 /* Return 1 if ocurred one error, or 0 if all type is ok*/
-unsigned char controlType(ErrorsQueue *eq, Attribute *attr, PrimitiveType type);
+unsigned char controlType(ErrorsQueue *eq, Attribute *attr, PrimitiveType type, char *operation, int numberOfExpression);
 
 /* Insert an error message and return 1 if attributes "attr1" and "attr2" aren't of the same type and both variables or arrays
    Returns 0 otherwise */

@@ -75,7 +75,7 @@ Attribute* createParameter(Attribute *attr, unsigned int pos, char *id, Primitiv
 			return aux;
 		}
 	}
-	return NULL; /* In case of non-desirable cases, Null is returned. */
+	return NULL; /* In case of non-desirable cases, Null is returned. This case is treated later. */
 }
 
 /* Sets the amount of parameters that will have the method attr */
