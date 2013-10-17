@@ -22,7 +22,7 @@ unsigned char cantParams = 0, returns;		/* Amount of parameters and amount of re
 PrimitiveType vaType;						/* Type of the variable or array */
 ReturnType mType;							/* Return type of the method */
 char *lastDefMethod, *lastCalledMethod = "";/* Name of the last defined method (lastDefMethod) and the last called method (lastCalledMethod) */
-
+Boolean idNotFound;
 /*Variables used to code 3D*/
 
 LCode3D *lcode3d;
@@ -281,7 +281,7 @@ action        :
 					}   
 			  |	   RETURN expression {
 									returns++; 									
-									if (checkReturnExpression(errorQ,&symbolTable,lastDefMethod,$2))
+									if ((idNotFound == False) && (checkReturnExpression(errorQ,&symbolTable,lastDefMethod,$2) == 0))
 									{ 
 										Code3D *loadToReturn = newCode(LOAD_MEM); 
 										setCode2D(loadToReturn, $2, getMethodReturnAttribute(errorQ,&symbolTable,lastDefMethod)); 
@@ -296,7 +296,7 @@ action        :
               ;
               
 asignation    :    location assig_op expression {
-							if (controlAssignation(errorQ,$1,$2,$3))
+							if (controlAssignation(errorQ,$1,$2,$3) == 0)
 							{
 		                        Code3D *add;
 								if (strcmp($2, "+=") == 0){
@@ -442,19 +442,20 @@ location      :    ID {$$ = getVariableAttribute(errorQ, &symbolTable, $1);}
 				/* --------------------------------------------------------------------------------------- */
 				/* --------------------------------------------------------------------------------------- */
 
-method_call   :	   ID '(' ')' {cantParams=0; insertString(paramsStack,intToString(cantParams));
+method_call   :	   ID '(' ')' {cantParams=0; insertString(paramsStack,intToString(cantParams)); /*ver si esta linea debe ir o no*/
 								lastCalledMethod=$1; $$=checkAndGetMethodRetAttribute(errorQ,&symbolTable,$1,0);}
 
-              |    ID '(' {insertString(paramsStack,intToString(cantParams)); cantParams=0;
+              |    ID '(' {if (!searchIdInSymbolsTable(errorQ,&symbolTable,$1)) idNotFound = True; insertString(paramsStack,intToString(cantParams)); cantParams=0;
 							insertString(methodsIDStack,lastCalledMethod); lastCalledMethod = $1;} expression_aux ')' 
-							{$$ = checkAndGetMethodRetAttribute(errorQ,&symbolTable,$1,cantParams); cantParams=atoi(removeLastString(paramsStack));} 
+							{if (idNotFound != True) {$$ = checkAndGetMethodRetAttribute(errorQ,&symbolTable,$1,cantParams); cantParams=atoi(removeLastString(paramsStack));}
+								else $$ = createVariable("",Int); idNotFound = False;} 
 
               |    EXTERNINVK '(' STRING ',' typevoid ')' {if (mType != RetVoid) $$=createVariable("",mType);}
               |    EXTERNINVK '(' STRING ',' typevoid ',' externinvk_arg ')' {if (mType != RetVoid) $$=createVariable("",mType);}
               ;
 
-expression_aux:    expression {correctParamBC(errorQ,&symbolTable,$1,lastCalledMethod,cantParams); cantParams++;}
-			  |    expression {correctParamIC(errorQ,&symbolTable,$1,lastCalledMethod,cantParams); cantParams++;} ',' expression_aux 
+expression_aux:    expression {if (idNotFound != True) correctParamBC(errorQ,&symbolTable,$1,lastCalledMethod,cantParams); cantParams++;}
+			  |    expression {if (idNotFound != True) correctParamIC(errorQ,&symbolTable,$1,lastCalledMethod,cantParams); cantParams++;} ',' expression_aux 
 			  ;
               
 typevoid      :    type                            

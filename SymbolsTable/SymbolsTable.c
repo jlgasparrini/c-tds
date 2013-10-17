@@ -17,16 +17,8 @@ void pushElement(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attribute *at)
 	{  
         if (at!=NULL)
         {
-            char *idAux;
-            if ((*at).type == Variable)
-                idAux = (*at).decl.variable.id;
-            if ((*at).type == Method)
-                idAux = (*at).decl.method.id;
-            if ((*at).type == Array)
-                idAux = (*at).decl.array.id;
-
-            if (searchIdInLevel(aSymbolsTable, idAux) != NULL) 
-                insertError(eq, toString("El identificador \"", idAux, "\" ya se encuentra en uso."));
+            if (searchIdInLevel(aSymbolsTable, getID(at)) != NULL) 
+                insertError(eq, toString("El identificador \"", getID(at), "\" ya se encuentra en uso."));
             else
                 insert((*(*aSymbolsTable).top).list, at); 
         }

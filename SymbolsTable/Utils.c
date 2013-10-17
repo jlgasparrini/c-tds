@@ -106,30 +106,14 @@ Attribute* checkAndGetMethodRetAttribute(ErrorsQueue *eq, SymbolsTable *aSymbols
 			insertError(eq,toString("El identificador \"", id,"\" no corresponde a un metodo."));
 		else
 		{
-			if ((*attr).decl.method.paramSize != paramSize) /* if the method doesn't have the same amount of parameters */
-			{
-				if ((*attr).decl.method.paramSize == 0)
-					insertError(eq, toString("La llamada al metodo \"", id, "\" no debe contener parametros."));
-				else
-					insertError(eq, toString("La llamada al metodo \"", id, "\" no contiene la misma cantidad parametros."));
-				return createVariable("", getAttributeType(attr));
-			}
-			else /* if the method does have the same amount of parameters */
-			{
-			//	if (getAttributeType(attr) == RetVoid)
-			//		insertError(eq,toString("El metodo \"", id,"\" retorna void, no puede obtenerse ningun atributo de retorno."));
-			//	else
-			//	{
-					Attribute *aux = createVariable("", getAttributeType(attr));
-					if (getAttributeType(attr) == Int)
-						setIntVal(aux,getIntVal(attr));
-					if (getAttributeType(attr) == Float)
-						setFloatVal(aux,getFloatVal(attr));
-					if (getAttributeType(attr) == Bool)
-						setBoolVal(aux,getIntVal(attr));
-					return aux;
-			//	}
-			}
+			Attribute *aux = createVariable("", getAttributeType(attr));
+			if (getAttributeType(attr) == Int)
+				setIntVal(aux,getIntVal(attr));
+			if (getAttributeType(attr) == Float)
+				setFloatVal(aux,getFloatVal(attr));
+			if (getAttributeType(attr) == Bool)
+				setBoolVal(aux,getIntVal(attr));
+			return aux;
 		}
 	}
 	return createVariable("",Int); // Returns type Int by default in case of having errors
@@ -252,23 +236,7 @@ unsigned char correctParamIC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attri
             {
 				if (correctParameterType(&(*attr).decl.variable, aux, paramSize) == 0) 
 					return 0;
-				else
-				{
-					char* number = (char*) malloc (digitAmount(paramSize+1)*sizeof(char));
-					sprintf(number,"%d",paramSize+1);
-					char* f = (char*) malloc ((strlen("\". El ")+strlen(number)+strlen("° parametro no es del tipo \"")+strlen(getType((*aux).decl.method.parameters[paramSize].type)+strlen("\".")))*sizeof(char));
-					strcat(f,"\". El ");
-					strcat(f, number);
-					strcat(f,"° parametro no es del tipo \"");
-					strcat(f, getType((*aux).decl.method.parameters[paramSize].type));
-					strcat(f, "\".");
-					insertError(eq,toString("Error en llamada al metodo \"", lastCalledMethod, f));  
-				//	free(number);
-				//	free(f);
-				}
             }
-			else
-				insertError(eq,toString("Error en llamada al metodo \"", lastCalledMethod, "\". Se tiene mayor cantidad de parametros que en su declaracion."));  
         }
 	return 1;
 }
@@ -358,7 +326,7 @@ unsigned char checkReturnExpression(ErrorsQueue *eq, SymbolsTable *aSymbolsTable
 			return 1;
 	//		free(msg);
 		}
-		return 0;
+	return 0;
 }
 
 /* Returns the array at the position specified by attr.decl.variable.value.intValue if attr has "int" type
