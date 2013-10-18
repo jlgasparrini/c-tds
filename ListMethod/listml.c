@@ -27,7 +27,7 @@ MethodL* get_listML(ListML *list, char *id_method) {
     if (found){
 		return getInfo_NodeML(runner);
 	} else {
-		return newMethodL("NULL", "NULL")
+		return newMethodL("NULL", "NULL");
 	}
 }
 

@@ -493,7 +493,7 @@ expression_aux:    expression {
 									correctParamBC(errorQ,&symbolTable,$1,lastCalledMethod,cantParams); 
 									cantParams++;
 									StVariable *param = (StVariable*) malloc (sizeof(StVariable));
-									param = &(searchIdInSymbolsTable(errorQ,&symbolTable, lastCalledMethod)->decl->method->parameters[cantParams]); // obtencion del parametro formal.
+									param = &(searchIdInSymbolsTable(errorQ,&symbolTable, lastCalledMethod)->decl.method.parameters[cantParams]); // obtencion del parametro formal.
 									add_MethodCall(lcode3d, newCode(STORE_MEM_METHOD), ($1), param); 
 								}
 					}
@@ -502,7 +502,7 @@ expression_aux:    expression {
 									correctParamIC(errorQ,&symbolTable,$1,lastCalledMethod,cantParams); 
 									cantParams++;
 									StVariable *param = (StVariable*) malloc (sizeof(StVariable));
-									param = &(searchIdInSymbolsTable(errorQ,&symbolTable, lastCalledMethod)->decl->method->parameters[cantParams]); // obtencion del parametro formal.
+									param = &(searchIdInSymbolsTable(errorQ,&symbolTable, lastCalledMethod)->decl.method.parameters[cantParams]); // obtencion del parametro formal.
 									add_MethodCall(lcode3d, newCode(STORE_MEM_METHOD), ($1), param);
 								} 
 					}',' expression_aux 

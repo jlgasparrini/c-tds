@@ -30,7 +30,7 @@ typedef union {
     bool        boolAttri;
     Attribute   *attri;
     char        *label;
-	StAttribute	*variable;
+	StVariable	*variable;
 } Value;
 
 typedef struct {
@@ -74,7 +74,7 @@ void setFloat(Code3D *code, int param, float floatAttri);
 void setInt(Code3D *code, int param, int intAttri);
 void setLabel(Code3D *code, int param, char *label);
 void setAttribute(Code3D *code, int param, Attribute *attri);
-void setVariable(Code3D *code, int param, StAttribute *variable);
+void setVariable(Code3D *code, int param, StVariable *variable);
 void setNull(Code3D *code, int param);
 
 /** Funciones de Escritura de un Codigo Concreto*/

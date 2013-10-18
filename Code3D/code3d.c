@@ -248,7 +248,7 @@ void setAttribute(Code3D *code, int param, Attribute *attri) {
     }    
 }
 
-void setVariable(Code3D *code, int param, StAttribute *variable){
+void setVariable(Code3D *code, int param, StVariable *variable){
 	    if (param == 1) {
         code->param1->type = CodeVARIABLE;
         code->param1->val = (Value*) malloc(sizeof(Value));
