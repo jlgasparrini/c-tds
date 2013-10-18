@@ -44,6 +44,7 @@
 #define COM_RETURN          32
 #define COM_NEG_INT         33
 #define COM_NEG_FLOAT       34
+#define STORE_MEM_METHOD	35
 
 char* getCodeByID(int ID);
 

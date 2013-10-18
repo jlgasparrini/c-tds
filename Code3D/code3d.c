@@ -1,6 +1,6 @@
 /**********************************************************************
- *Implementacion Codigo de 3 Direcciones                               *
- **********************************************************************/
+*Implementacion Codigo de 3 Direcciones                               *
+**********************************************************************/
 
 #include "code3d.h"
 #include <stdlib.h>
@@ -76,6 +76,16 @@ bool isAttribute(Code3D *code, int param) {
     }    
 }
 
+bool isVariable(Code3D *code, int param){
+    if (param == 1) {
+        return code->param1->type == CodeVARIABLE;
+    } else if (param == 2) {
+        return code->param2->type == CodeVARIABLE;
+    } else if (param == 3) {
+        return code->param3->type == CodeVARIABLE;
+    }   
+}
+
 bool isNull(Code3D *code, int param) {
     if (param == 1) {
         return code->param1->type == CodeNULL;
@@ -103,6 +113,16 @@ Attribute* getAttribute(Code3D *code, int param) {
         return code->param2->val->attri;
     } else if (param == 3) {
         return code->param3->val->attri;
+    }
+}
+
+StVariable* getVariable(Code3D *code, int param){
+    if (param == 1) {
+        return code->param1->val->variable;
+    } else if (param == 2) {
+        return code->param2->val->variable;
+    } else if (param == 3) {
+        return code->param3->val->variable;
     }
 }
 
@@ -226,6 +246,22 @@ void setAttribute(Code3D *code, int param, Attribute *attri) {
         code->param3->val = (Value*) malloc(sizeof(Value));
         code->param3->val->attri = attri;
     }    
+}
+
+void setVariable(Code3D *code, int param, StAttribute *variable){
+	    if (param == 1) {
+        code->param1->type = CodeVARIABLE;
+        code->param1->val = (Value*) malloc(sizeof(Value));
+        code->param1->val->variable = variable;
+    } else if (param == 2) {
+        code->param2->type = CodeVARIABLE;
+        code->param2->val = (Value*) malloc(sizeof(Value));
+        code->param2->val->variable = variable;
+    } else if (param == 3) {
+        code->param3->type = CodeVARIABLE;
+        code->param3->val = (Value*) malloc(sizeof(Value));
+        code->param3->val->variable = variable;
+    } 
 }
 
 void setNull(Code3D *code, int param) {

@@ -16,12 +16,13 @@
 #include <stdbool.h>
 
 
-#define CodeNULL   -1
-#define CodeATTRI   0
-#define CodeLABEL   1
-#define CodeINT     2
-#define CodeFLOAT   3
-#define CodeBOOL    4
+#define CodeNULL    -1
+#define CodeATTRI    0
+#define CodeLABEL    1
+#define CodeINT      2
+#define CodeFLOAT    3
+#define CodeBOOL     4
+#define CodeVARIABLE 5
 
 typedef union {
     int         intAttri;
@@ -29,10 +30,11 @@ typedef union {
     bool        boolAttri;
     Attribute   *attri;
     char        *label;
+	StAttribute	*variable;
 } Value;
 
 typedef struct {
-    int     type; // -1 : void, 0 : Attribute, 1 : label, 2 : Integer, 3 : Float, 4 : Bool
+    int     type; // -1 : null, 0 : Attribute, 1 : label, 2 : Integer, 3 : Float, 4 : Bool, 5: StVariable
     Value   *val; 
 } Param;
 
@@ -56,9 +58,11 @@ bool isFloat(Code3D *code, int param);
 bool isBool(Code3D *code, int param);
 bool isLabel(Code3D *code, int param);
 bool isAttribute(Code3D *code, int param);
+bool isVariable(Code3D *code, int param);
 bool isNull(Code3D *code, int param);
 char* getLabel(Code3D *code, int param);
 Attribute* getAttribute(Code3D *code, int param);
+StVariable* getVariable(Code3D *code, int param);
 int getInt(Code3D *code, int param);
 float getFloat(Code3D *code, int param);
 int getBool(Code3D *code, int param);
@@ -70,6 +74,7 @@ void setFloat(Code3D *code, int param, float floatAttri);
 void setInt(Code3D *code, int param, int intAttri);
 void setLabel(Code3D *code, int param, char *label);
 void setAttribute(Code3D *code, int param, Attribute *attri);
+void setVariable(Code3D *code, int param, StAttribute *variable);
 void setNull(Code3D *code, int param);
 
 /** Funciones de Escritura de un Codigo Concreto*/

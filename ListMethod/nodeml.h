@@ -5,33 +5,33 @@
 *- siguiente    :   un puntero al siguiente Nodo                                                *
 *************************************************************************************************/
 
-#ifndef NODEC3D_H
-#define NODEC3D_H
+#ifndef NODEML_H
+#define NODEML_H
 
-#include "code3d.h"
+#include "methodl.h"
 
-struct NodeC3D {
-    Code3D *info;
-    struct NodeC3D *next;
+struct NodeML {
+    MethodL *info;
+    struct NodeML *next;
 };
 
-typedef struct NodeC3D NodeC3D;
+typedef struct NodeML NodeML;
 
 /*funciones publicas para manipular Nodes*/
 
 /*constructores*/
 
-NodeC3D* newNodeC3D_empty();
-NodeC3D* newNodeC3D_info(Code3D *info);
-NodeC3D* newNodeC3D_info_next(Code3D *info, NodeC3D *next);
+NodeML* newNodeML_empty();
+NodeML* newNodeML_info(MethodL *info);
+NodeML* newNodeML_info_next(MethodL *info, NodeML *next);
 
 /*lectura de informacion*/
 
-Code3D* getInfo_NodeC3D(NodeC3D *node);
-NodeC3D* getNext_NodeC3D(NodeC3D *node);
+MethodL* getInfo_NodeML(NodeML *node);
+NodeML* getNext_NodeML(NodeML *node);
 
 /*escritura de informacion*/
-void setInfo_NodeC3D(NodeC3D *node, Code3D *info);
-void setNext_NodeC3D(NodeC3D *node, NodeC3D *next);
+void setInfo_NodeML(NodeML *node, MethodL *info);
+void setNext_NodeML(NodeML *node, NodeML *next);
 
 #endif

@@ -19,6 +19,9 @@ int add_code(LCode3D *lcode3d, Code3D *code);
 Code3D* get_code(LCode3D *lcode3d, int index);
 int cantCode(LCode3D *lcode3d);
 
-int add_CodeLabel(LCode3D *lcode3d, Code3D *code, char *label);
-int add_CodeLabelCond(LCode3D *lcode3d, Code3D *code, Attribute *attri1, char *label);
+void add_CodeLabel(LCode3D *lcode3d, Code3D *code, char *label);
+void add_CodeLabelCond(LCode3D *lcode3d, Code3D *code, Attribute *attri1, char *label);
+
+void add_Assignation(LCode3D *lcode3d, Code3D *code,  Attribute *attri1,  Attribute *attriRes);
+void add_MethodCall(LCode3D *lcode3d, Code3D *code,  Attribute *attri1,  StVariable *attriRes);
 #endif

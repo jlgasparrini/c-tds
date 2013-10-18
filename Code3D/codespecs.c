@@ -40,6 +40,7 @@ char* getCodeByID(int ID)
         case 32: return "COM_RETURN";
         case 33: return "COM_NEG_INT";
         case 34: return "COM_NEG_FLOAT";
+		case 35: return "STORE_MEM_METHOD";
     }
     return "";
 }
@@ -54,6 +55,7 @@ char* getTypeByID(int type)
         case  2 : return "Integer";
         case  3 : return "Float";
         case  4 : return "Bool" ;
+		case  5 : return "Variable";
     }
     return "";
 }

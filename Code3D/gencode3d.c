@@ -25,12 +25,25 @@ int cantCode(LCode3D *lcode3d) {
     return size_listC3D((*lcode3d).codes);
 }
 
-int add_CodeLabel(LCode3D *lcode3d, Code3D *code, char *label){
+void add_CodeLabel(LCode3D *lcode3d, Code3D *code, char *label){
 	setCodeLabel(code, label);
     add_code(lcode3d, code);
 }
 
-int add_CodeLabelCond(LCode3D *lcode3d, Code3D *code, Attribute *attri1, char *label){
+void add_CodeLabelCond(LCode3D *lcode3d, Code3D *code, Attribute *attri1, char *label){
 	setCodeLabelCond(code, attri1, label);
     add_code(lcode3d, code);
 }
+
+void add_Assignation(LCode3D *lcode3d, Code3D *code,  Attribute *attri1,  Attribute *attriRes){
+	setCode2D(code, attri1, attriRes);
+	add_code(lcode3d, code);
+}
+
+void add_MethodCall(LCode3D *lcode3d, Code3D *code,  Attribute *attri1,  StVariable *attriRes){	
+	setAttribute(code, 1, attri1);
+	setVariable(code, 2, attriRes);
+	setNull(code, 3);
+	add_code(lcode3d, code);
+}
+
