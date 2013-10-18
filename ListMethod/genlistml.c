@@ -29,8 +29,8 @@ int insert_MethodL(ListMLabel *listmlabel, char *id_method, char *label_method){
 	MethodL *new_methodl = newMethodL(id_method, label_method);
     //Aca estaba este mocaso!!!
 	//return add_listML(listmlabel, new_methodl);
-	add_listML(*listmlabel, id_method, *new_methodl);
-    return -1;
+//	add_listML((*listmlabel).labels, new_methodl, size_listML((*listmlabel).labels));
+    return 1;
 }
 
 char* get_Label(ListMLabel *listmlabel, char *id_method) {
