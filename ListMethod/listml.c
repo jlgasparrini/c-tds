@@ -50,7 +50,7 @@ void add_listML(ListML *list, MethodL *elem, int index)
                 runner = getNext_NodeML(runner);
                 i++;
             }
-            setNext_nodeML(runner, newNodeML_info_next(elem, getNext_NodeML(runner)));
+            setNext_NodeML(runner, newNodeML_info_next(elem, getNext_NodeML(runner)));
         }
         (*list).size++;
     }
