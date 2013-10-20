@@ -32,7 +32,7 @@ ListMLabel *listmlabel;
 
 /*Create new Label*/
 char* newLabelName(char* msg) {
-	char *labelName = malloc(sizeof(char)*(20+strlen(msg)));
+	char *labelName = malloc(sizeof(char)*(digitAmount(labelCount)+strlen("%d_label_")+strlen(msg)));
 	sprintf(labelName, labelID, labelCount);
 	strcat(labelName,msg);
    	labelCount++;
@@ -140,7 +140,7 @@ program       :    CLASS ID '{' '}' {
 									listmlabel = initL();
 									lcode3d = initLCode3D();
 					} body {
-								checkMain(errorQ,&symbolTable); 
+			//					checkMain(errorQ,&symbolTable); 
 								popLevel(&symbolTable); 
 								finalizar();
 					} '}' 

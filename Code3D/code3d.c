@@ -307,7 +307,6 @@ void setCode1D(Code3D *code, Attribute *attri1){
 void toString3DC(Code3D *code) {
     // Ver si funciona
     printf("   %s   |   ", getCodeByID(getCommand(code)));
-  //  printf("%s   |    ", getTypeByID(code->param1->type));
     if (isNull(code, 1)){
         printf("    -     |  ");
     }
@@ -330,7 +329,11 @@ void toString3DC(Code3D *code) {
         }
         if (isAttribute(code, 1)){
             printf("(A)");
-            printf("%s |  ", getType(getAttribute(code, 1)->type));
+//            printf("%s |  ", getType(getAttribute(code, 1)->type));
+			if (getID(getAttribute(code,1)) == NULL)
+	            printf("%s |  ", getType(getAttribute(code,1)->type));
+			else				
+	            printf("%s |  ", getID(getAttribute(code,1)));
         }
     }
     if (isNull(code, 2)){
@@ -355,7 +358,11 @@ void toString3DC(Code3D *code) {
         }
         if (isAttribute(code, 2)){
             printf("(A)");
-            printf("%s |  ", getType(getAttribute(code, 2)->type));
+//            printf("%s |  ", getType(getAttribute(code, 2)->type));
+    			if (getID(getAttribute(code,2)) == NULL)
+	            printf("%s |  ", getType(getAttribute(code,2)->type));
+			else				
+	            printf("%s |  ", getID(getAttribute(code,2)));
         }
     }
     if (isNull(code, 3)){
@@ -380,7 +387,11 @@ void toString3DC(Code3D *code) {
         }
         if (isAttribute(code, 3)){
             printf("(A)");
-            printf("%s |  ", getType(getAttribute(code, 3)->type));
+//            printf("%s |  ", getType(getAttribute(code, 3)->type));
+     			if (getID(getAttribute(code,3)) == NULL)
+	            printf("%s |  ", getType(getAttribute(code,3)->type));
+			else				
+	            printf("%s |  ", getID(getAttribute(code,3)));
         }
     }
     printf("\n------------------------------------------------------------\n");
