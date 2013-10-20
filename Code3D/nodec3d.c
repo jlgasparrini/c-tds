@@ -29,7 +29,7 @@ Code3D* getInfo_nodeC3D(NodeC3D *node) {
     return (*node).info;
 }
 
-NodeC3D* getNext_nodeC3D(NodeC3D *node) {
+NodeC3D* getNext_NodeC3D(NodeC3D *node) {
     return (*node).next;
 }
 
