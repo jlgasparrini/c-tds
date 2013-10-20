@@ -9,9 +9,9 @@
 #ifndef LISTC3D_H
 #define LISTC3D_H
 
+#include <stdbool.h>
 #include "nodec3d.h"
 #include "../SymbolsTable/Attribute.h"
-#include <stdbool.h>
 
 
 typedef struct {

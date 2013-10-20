@@ -7,16 +7,6 @@
 #include <string.h>
 #include "Attribute.h"
 
-/* creates a variable attribute containing the information included in the parameters */
-Attribute* createVariable(char *id, PrimitiveType type)
-{
-	Attribute *attr = (Attribute*) malloc (sizeof(Attribute)); 
-	(*attr).type = Variable;
-	(*attr).decl.variable.id = strdup(id);
-	(*attr).decl.variable.type = type;
-	return attr;
-}
-
 /* Creates a StVariable with the respective type and initialized */
 StVariable createStVariable(PrimitiveType type)
 {
@@ -29,6 +19,16 @@ StVariable createStVariable(PrimitiveType type)
 	if (type == Bool)
 		var.value.boolVal = False;
 	return var;
+}
+
+/* creates a variable attribute containing the information included in the parameters */
+Attribute* createVariable(char *id, PrimitiveType type)
+{
+	Attribute *attr = (Attribute*) malloc (sizeof(Attribute)); 
+	(*attr).type = Variable;
+	(*attr).decl.variable = createStVariable(type);
+	(*attr).decl.variable.id = strdup(id);
+	return attr;
 }
 
 /* creates an array attribute containing the information included in the parameters */
@@ -110,7 +110,6 @@ char* getID(Attribute *attr)
 		return (*attr).decl.method.id;
 	if ((*attr).type == Array)
 		return (*attr).decl.array.id;
-
 }
 
 /* Returns the intVal of the attribute */

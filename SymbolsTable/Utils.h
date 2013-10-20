@@ -52,7 +52,7 @@ unsigned char controlType(ErrorsQueue *eq, Attribute *attr, PrimitiveType type, 
 unsigned char controlAssignation(ErrorsQueue *eq, Attribute *attr1, char* op, Attribute *attr2);
 
 /* Insert an error message if the "lastUsedMethod" haven't got "void" return type */
-void checkReturn(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* lastUsedMethod);
+unsigned char checkReturn(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* lastUsedMethod);
 
 /* Insert an error message if the "lastUsedMethod" doesn't return "void" or if it has a different return type that the definition */
 /* Return 0 if ocurred one error, or 1 if all type is ok*/

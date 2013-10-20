@@ -7,7 +7,6 @@
 #define GENLISTML_H
 
 #include "listml.h"
-#include "methodl.h"
 
 typedef struct {
     ListML *labels;

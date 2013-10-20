@@ -7,13 +7,13 @@
 #include <stdio.h>
 #include <string.h>
 
-MethodL* newMethodL(char *id_method, char *label_method);
- {
+MethodL* newMethodL(char *id_method, char *label_method)
+{
     MethodL *new = (MethodL*) malloc(sizeof(MethodL));
-	new->id = malloc(strlen(id_method) + 1);
-    new->label = malloc(strlen(label_method) + 1);
-	strcpy(new->id, id_method);
-	strcpy(new->label, label_method);
+	new->id = strdup(id_method);		// malloc(strlen(id_method) + 1);
+    new->label = strdup(label_method);	// malloc(strlen(label_method) + 1);
+//	strcpy(new->id, id_method);
+//	strcpy(new->label, label_method);
     return new;
 }
 
@@ -26,13 +26,13 @@ char* getLabelMethod(MethodL *methodl) {
 }
 
 void setIdMethod(MethodL *methodl, char *id_method){
-        methodl->id = malloc(strlen(id_method) + 1);
-        strcpy(methodl->id, id_method);    
+    methodl->id = malloc(strlen(id_method) + 1);
+    strcpy(methodl->id, id_method);    
 }
 
 void setLabelMethod(MethodL *methodl, char *label_method){
-        methodl->label = malloc(strlen(label_method) + 1);
-        strcpy(methodl->label, label_method);    
+    methodl->label = malloc(strlen(label_method) + 1);
+    strcpy(methodl->label, label_method);    
 }
 
 void toStringMethodL(MethodL *methodl) {

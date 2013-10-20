@@ -10,12 +10,10 @@
 
 #include "code3d.h"
 
-struct NodeC3D {
+typedef struct NC3D {
     Code3D *info;
-    struct NodeC3D *next;
-};
-
-typedef struct NodeC3D NodeC3D;
+    struct NC3D *next;
+} NodeC3D;
 
 /*funciones publicas para manipular Nodes*/
 

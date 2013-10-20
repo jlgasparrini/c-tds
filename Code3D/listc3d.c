@@ -15,8 +15,7 @@ ListC3D* newListC3D() {
 
 Code3D* get_listC3D(ListC3D *list, int index) {
     NodeC3D *runner = (*list).init;
-    bool validIndex = (index >= 0) && (index < size_listC3D(list));
-    if (validIndex) {
+    if ((index >= 0) && (index < size_listC3D(list))) {
         int i = 0;
         while (i < index) {
             runner = getNext_NodeC3D(runner);
@@ -24,6 +23,7 @@ Code3D* get_listC3D(ListC3D *list, int index) {
         }
         return getInfo_NodeC3D(runner);
     } 
+	return NULL; /* This case was added to ensure that this method always return something */
 }
 
 int size_listC3D(ListC3D *list) {

@@ -35,16 +35,18 @@ int size_listML(ListML *list) {
     return (*list).size;
 }
 
-void add_listML(ListML *list, MethodL *elem, int index) {
-    bool validIndex = (index >= 0) && (index <= size_listML(list));
-    if (validIndex) {
-        if (index == 0) {
-            NodeML *new = newNodeML_info_next(elem, (*list).init);
-            (*list).init = new;
-        } else {
+void add_listML(ListML *list, MethodL *elem, int index) 
+{
+    if ((index >= 0) && (index <= size_listML(list)))
+	{
+        if (index == 0)
+            (*list).init = newNodeML_info_next(elem, (*list).init);        
+		else 
+		{
             int i = 0;
             NodeML *runner = (*list).init;
-            while (i < (index - 1)) {
+            while (i < (index - 1))
+			{
                 runner = getNext_NodeML(runner);
                 i++;
             }

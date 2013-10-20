@@ -2,9 +2,10 @@
 *Implementacion de generador de comandos de 3 direcciones               *
 ************************************************************************/
 
-#include "gencode3d.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include "listc3d.h"
+#include "gencode3d.h"
 
 LCode3D* initLCode3D() {
     LCode3D *new = (LCode3D*) malloc(sizeof(LCode3D));

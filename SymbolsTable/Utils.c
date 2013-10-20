@@ -289,7 +289,7 @@ unsigned char controlAssignation(ErrorsQueue *eq, Attribute *attr1, char* op, At
 }
 
 /* Insert an error message if the "lastUsedMethod" haven't got "void" return type */
-void checkReturn(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* lastUsedMethod)
+unsigned char checkReturn(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* lastUsedMethod)
 {
 	ReturnType rt = methodReturnType(eq, aSymbolsTable, lastUsedMethod);
 	if (rt != RetVoid)
@@ -300,7 +300,9 @@ void checkReturn(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* lastUsedMet
 		strcat(msg, "\".");
 		insertError(eq, toString("El metodo \"", lastUsedMethod, msg));
 //		free(msg);
+		return 1;
 	}
+	return 0;
 }
 
 /* Insert an error message if the "lastUsedMethod" doesn't return "void" or if it has a different return type that the definition */

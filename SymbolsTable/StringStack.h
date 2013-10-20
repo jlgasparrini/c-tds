@@ -26,10 +26,10 @@ typedef struct
 StringStack* initializeSS();
 
 /* Insert an element in the stack "s". */
-void insertString(StringStack *s, char *value);
+void pushString(StringStack *s, char *value);
 
 /* Return and removes the value of the last pushed string in the stack "s". */
-char* removeLastString(StringStack *s);
+char* popString(StringStack *s);
 
 /* Return the top string of the stack "s". */
 char* topString(StringStack *s);

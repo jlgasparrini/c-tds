@@ -2,10 +2,10 @@
 *Implementacion Codigo de 3 Direcciones                               *
 **********************************************************************/
 
-#include "code3d.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "code3d.h"
 
 Code3D* newCode(int comm) {
     Code3D *new = (Code3D*) malloc(sizeof(Code3D));

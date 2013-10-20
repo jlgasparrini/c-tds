@@ -17,7 +17,7 @@ StringStack* initializeSS()
 }
 
 /* Insert an element in the stack "s". */
-void insertString(StringStack *s, char *value)
+void pushString(StringStack *s, char *value)
 {
     SNode *newNode = (SNode*) malloc (sizeof(SNode));
     if (newNode)
@@ -32,7 +32,7 @@ void insertString(StringStack *s, char *value)
 }
 
 /* Return the value of the last pushed string in the stack "s". */
-char* removeLastString(StringStack *s)
+char* popString(StringStack *s)
 {
     if ((*s).size > 0)
     {

@@ -45,9 +45,6 @@ Attribute* searchIdInSymbolsTable(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, 
 /* Searches for the id in the current level of the SymbolsTable. */ 
 Attribute* searchIdInLevel(SymbolsTable *aSymbolsTable, char *id); 
  
-/* Return the last defined method in the current level */
-Attribute* lastDefinedMethod(SymbolsTable *aSymbolsTable);
-
 /* Print the elements the SymbolsTable. */
 void SymbolsTable_print(SymbolsTable *aSymbolsTable);
 

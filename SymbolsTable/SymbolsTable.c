@@ -85,16 +85,6 @@ Attribute* searchIdInLevel(SymbolsTable *aSymbolsTable, char *id)
     Attribute *auxAttr = search(((*auxTop).list), id);
     return auxAttr;
 }
-
-/* Return the last defined method in the current level */
-Attribute* lastDefinedMethod(SymbolsTable *aSymbolsTable)
-{
-	SymbolsTableNode *auxTop = (*aSymbolsTable).top;
-	int i;
-	for (i = (*aSymbolsTable).currentLevel; i > 1; i--)
-		auxTop = (*auxTop).next;
-    return getLastDefinedMethod((*auxTop).list);
-}
  
 /* Print the elements the SymbolsTable. */
 void SymbolsTable_print(SymbolsTable *aSymbolsTable)

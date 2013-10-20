@@ -10,12 +10,10 @@
 
 #include "methodl.h"
 
-struct NodeML {
+typedef struct NML {
     MethodL *info;
-    struct NodeML *next;
-};
-
-typedef struct NodeML NodeML;
+    struct NML *next;
+} NodeML;
 
 /*funciones publicas para manipular Nodes*/
 
