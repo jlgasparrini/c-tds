@@ -160,7 +160,7 @@ char* getType(PrimitiveType type)
 		return "float";
 	if (type == Bool)
 		return "boolean";
-	return "void"; // This is returned when it's not a primitive type
+	return "wrong type"; // This is returned when it's not a primitive type
 }
 
 /* Returns the amount of digits that has the int "value" */
@@ -274,14 +274,36 @@ unsigned char controlType(ErrorsQueue *eq, Attribute *attr, PrimitiveType type, 
 
 /* Insert an error message and return 1 if attributes "attr1" and "attr2" aren't of the same type and both variables or arrays
    Returns 0 otherwise */
-unsigned char controlAssignation(ErrorsQueue *eq, Attribute *attr1, char* op, Attribute *attr2)
+unsigned char controlAssignation(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *attr1, char* op, Attribute *attr2)
 {
 	if ((*attr1).type != Method)
 	{
         if (getAttributeType(attr1) != getAttributeType(attr2))
             insertError(eq, toString("El lado derecho de la asignacion debe ser de tipo \"", getType(getAttributeType(attr1)), "\"."));
 		else
+		{
+            Code3D *add;
+			if (strcmp(op, "+=") == 0)
+			{
+				if ((getAttributeType(attr1) == Int) && (getAttributeType(attr2) == Int))
+					add = newCode(COM_ADD_INT);
+				if ((getAttributeType(attr1) == Float) && (getAttributeType(attr2) == Float))
+					add = newCode(COM_ADD_FLOAT);
+				setCode2D(add, (attr1), (attr2));
+				add_code(lcode3d, add);
+			} 
+			if (strcmp(op, "-=") == 0)
+			{
+				if ((getAttributeType(attr1) == Int) && (getAttributeType(attr2) == Int))
+					add = newCode(COM_MINUS_INT);
+				if ((getAttributeType(attr1) == Float) && (getAttributeType(attr2) == Float))
+					add = newCode(COM_MINUS_FLOAT);																				
+				setCode2D(add, attr1, attr2);
+				add_code(lcode3d, add);
+			}
+
 			return 0;
+		}
 	}
 	else
 		insertError(eq, toString("El identificador izquierdo de la asignacion ", "", " no debe ser un metodo."));
@@ -760,10 +782,11 @@ Attribute* returnValue(LCode3D *lcode3d, PrimitiveType type, char *oper1, Attrib
 		if (strcmp(oper1, "true") == 0)
 			setBool(codeValue, 1, True);		
 	}
+	(*operRes).type = type;
 	setAttribute(codeValue, 2, operRes);
 	setNull(codeValue, 3);
 	add_code(lcode3d, codeValue);	
-	Attribute *aux = createVariable("", type); 
+	Attribute *aux = createVariable("literal", type); 
 	setVariableValue(aux, type, oper1);
 	return aux;
 }
