@@ -277,7 +277,7 @@ action        :
 							{
                                 Label *endOfWhile = pop(labelsWhile); //Label of End of While
 								add_CodeLabel(lcode3d, newCode(GOTOLABEL), peek(labelsWhile)->label); //Go to Label of Init of While
-								push(labelsWhile, endOfWhile->label, NULL);
+								push(labelsWhile, endOfWhile->label);
 							} 
 					}
 			  |	   RETURN {
@@ -324,13 +324,8 @@ conditional   :    IF '(' expression {
 										add_CodeLabelCond(lcode3d, newCode(GOTOLABEL_COND), $3, ifLabel); //Go to Label of If
 										add_CodeLabel(lcode3d, newCode(GOTOLABEL), elseLabel); //Go to Label of Else
                                         add_CodeLabel(lcode3d, newCode(COM_MARK), ifLabel); // Mark to Label of If
-                                        push(labelsCYC, elseLabel, NULL);
-                                        push(labelsCYC, endLabel, NULL);
-//										Attribute *asd = (Attribute*) malloc (sizeof(Attribute));
-//										(*asd).type = Variable;
-//										(*asd).decl.variable.type = Int;
-//                                      push(labelsCYC, elseLabel, asd);
-//                                      push(labelsCYC, endLabel, asd);
+                                        push(labelsCYC, elseLabel);
+                                        push(labelsCYC, endLabel);
 					} ')' block {
 									add_CodeLabel(lcode3d, newCode(GOTOLABEL), peek(labelsCYC)->label); //Go to Label of End
 								}
@@ -346,7 +341,7 @@ optional	  :		{
 			  |	   	ELSE {
                          Label *markEnd = pop(labelsCYC);
 						 add_CodeLabel(lcode3d, newCode(COM_MARK), pop(labelsCYC)->label); // Mark to Label of Else
-                         push(labelsCYC, markEnd->label, NULL);
+                         push(labelsCYC, markEnd->label);
                     } block	{
 						add_CodeLabel(lcode3d, newCode(GOTOLABEL), peek(labelsCYC)->label); // Go to Label of End
 						add_CodeLabel(lcode3d, newCode(COM_MARK), pop(labelsCYC)->label); // Mark to Label of End
@@ -355,12 +350,12 @@ optional	  :		{
 
 iteration     :    WHILE {     
                             char *whileLabel = newLabelName("while"); 
-							push(labelsWhile,whileLabel,NULL);
+							push(labelsWhile,whileLabel);
 							add_CodeLabel(lcode3d, newCode(COM_MARK), whileLabel); // Mark to Label of While
                     } expression {
 								controlType(errorQ,$3,Bool,"while",1);	/* MODIFICADO PORQUE SINO TIRA SEGMENTATION FAULT! */
 								char *endLabel = newLabelName("end_while");/* DEBIDO A QUE NO GENERA EL SIG CODIGO Y EN BLOQUE LO TRATA DE ELIMINAR */
-								push(labelsWhile, endLabel, NULL);
+								push(labelsWhile, endLabel);
 								char *expressionLabel = newLabelName("expr_while");
 								add_CodeLabelCond(lcode3d, newCode(GOTOLABEL_COND), $3, expressionLabel); // Go to Label of Expression
 								add_CodeLabel(lcode3d, newCode(GOTOLABEL), endLabel); // Go to Label of End
@@ -372,7 +367,7 @@ iteration     :    WHILE {
 					}
               |    FOR {     
                         char *forLabel = newLabelName("for"); 
-						push(labelsFor,forLabel,NULL);
+						push(labelsFor,forLabel);
 						add_CodeLabel(lcode3d, newCode(COM_MARK), forLabel); // Mark to Label of For
                     } ID {
 						if (getAttributeType(getVariableAttribute(errorQ,&symbolTable,$3)) != Int)
@@ -382,7 +377,7 @@ iteration     :    WHILE {
 									controlType(errorQ,$6,Int,"for",2); /* MODIFICADO PORQUE SINO TIRA SEGMENTATION FAULT! */
 									controlType(errorQ,$8,Int,"for",3); /* DEBIDO A QUE NO GENERA EL SIG CODIGO Y EN BLOQUE LO TRATA DE ELIMINAR */
 									char *endLabel = newLabelName("end_for");									 
-									push(labelsFor, endLabel, NULL);
+									push(labelsFor, endLabel);
 									char *expressionLabel = newLabelName("expr_for");
 									Attribute *res = returnDistinct(errorQ, lcode3d, getVariableAttribute(errorQ, &symbolTable, $3), $8);
 									add_CodeLabelCond(lcode3d, newCode(GOTOLABEL_COND), res, expressionLabel); // Go to Label of Expression

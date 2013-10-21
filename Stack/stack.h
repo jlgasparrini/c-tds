@@ -16,7 +16,7 @@ typedef struct {
 
 Stack* newStack();
 
-void push(Stack *stack, char *label, Attribute *eval);
+void push(Stack *stack, char *label);
 
 bool isEmpty(Stack *stack);
 

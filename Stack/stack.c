@@ -11,8 +11,8 @@ Stack* newStack() {
     return new;
 }
 
-void push(Stack *stack, char *label, Attribute *eval) {
-    NodeStack *new = newLinkNode_info_next(label, eval, stack->top);
+void push(Stack *stack, char *label) {
+    NodeStack *new = newLinkNode_info_next(label, stack->top);
     stack->top = new;
 }
 

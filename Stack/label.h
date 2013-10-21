@@ -6,11 +6,8 @@
 #ifndef LABEL_H
 #define LABEL_H
 
-#include "../SymbolsTable/Attribute.h"
-
 typedef struct {
     char *label;
-    Attribute *eval;
 } Label;
 
 #endif

@@ -6,10 +6,9 @@
 #include <stdio.h>
 #include "linknode.h"
 
-Label* newLabel(char *label, Attribute *eval) {
+Label* newLabel(char *label) {
     Label *new = (Label*) malloc(sizeof(Label));
     new->label = label;
-    new->eval = eval;
     return new;
 }
 
@@ -20,14 +19,14 @@ NodeStack* newLinkNode_empty() {
     return new;
 }
 
-NodeStack* newLinkNode_info(char *info, Attribute *eval){
+NodeStack* newLinkNode_info(char *info){
     NodeStack *new = newLinkNode_empty();
-    new->info = newLabel(info, eval);
+    new->info = newLabel(info);
     return new;
 }
 
-NodeStack* newLinkNode_info_next(char *info, Attribute *eval, NodeStack *next) {
-    NodeStack *new = newLinkNode_info(info, eval);
+NodeStack* newLinkNode_info_next(char *info, NodeStack *next) {
+    NodeStack *new = newLinkNode_info(info);
     new->next = next;
     return new;
 }
@@ -40,8 +39,8 @@ NodeStack* getNext_linkNode(NodeStack *node) {
     return node->next;
 }
 
-void setInfo_linkNode(NodeStack *node, char *info, Attribute *eval) {
-    node->info = newLabel(info, eval);
+void setInfo_linkNode(NodeStack *node, char *info) {
+    node->info = newLabel(info);
 }
 
 void setNext_linkNode(NodeStack *node, NodeStack *next) {

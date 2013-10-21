@@ -333,10 +333,8 @@ void showCode(Code3D *code, int param)
         if (isAttribute(code, param))
 		{
             printf("(A)");
-//            printf("%s |  ", getType(getAttribute(code, 1)->type));
-//			if (getID(getAttribute(code,param)) == NULL)
 			if (getID(getAttribute(code,param)) == NULL || strcmp(getID(getAttribute(code,param)),"") == 0)
-	            printf("%s |  ", getType(getAttribute(code,param)->type));
+	            printf("%d |  ", getType(getAttribute(code,param)->type));
 			else				
 	            printf("%s |  ", getID(getAttribute(code,param)));
         }
@@ -344,7 +342,6 @@ void showCode(Code3D *code, int param)
 }
 
 void toString3DC(Code3D *code) {
-    // Ver si funciona
     printf("   %s   |   ", getCodeByID(getCommand(code)));
 	if (isNull(code, 3))
 	{
