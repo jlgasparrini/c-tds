@@ -17,7 +17,7 @@ LCode3D* initLCode3D();
 
 int add_code(LCode3D *lcode3d, Code3D *code); 
 Code3D* get_code(LCode3D *lcode3d, int index);
-int cantCode(LCode3D *lcode3d);
+int codeSize(LCode3D *lcode3d);
 
 void add_CodeLabel(LCode3D *lcode3d, Code3D *code, char *label);
 void add_CodeLabelCond(LCode3D *lcode3d, Code3D *code, Attribute *attri1, char *label);

@@ -61,8 +61,7 @@ int yywrap()
   
 main( argc, argv )
     int argc;
-    char **argv;
-    {
+    char **argv; {
         ++argv, --argc;	/* skip over program name */
         if ( argc > 0 )
                 yyin = fopen( argv[0], "r" );
@@ -77,7 +76,7 @@ finalizar() {
         else
         {
             // show the list of code 3D
-            int cantCodes = cantCode(lcode3d);
+            int cantCodes = codeSize(lcode3d);
             int i;
 		 	printf("Lista de codigos de 3 direcciones:\n");
 			printf("---------------------------------------------------------------------------\n");
@@ -129,16 +128,16 @@ program       :    CLASS ID '{' '}' {
               |    CLASS ID '{' {
 									initializeSymbolsTable(&symbolTable); 
 									pushLevel(&symbolTable);
-									errorQ=initializeQueue();
-									paramsStack=initializeSS(); 
-									methodsIDStack=initializeSS();
+									errorQ = initializeQueue();
+									paramsStack = initializeSS(); 
+									methodsIDStack = initializeSS();
 									labelsCYC = newStack();
                                     labelsWhile = newStack();
 									labelsFor = newStack();
 									listmlabel = initL();
 									lcode3d = initLCode3D();
 					} body {
-								checkMain(errorQ,&symbolTable); 
+//								checkMain(errorQ,&symbolTable); 
 								popLevel(&symbolTable); 
 								finalizar();
 					} '}' 
@@ -294,9 +293,8 @@ action        :
 									returns++; 									
 									if ((idNotFound == False) && (checkReturnExpression(errorQ,&symbolTable,lastDefMethod,$2) == 0))
 									{ 
-										add_Assignation(lcode3d, newCode(LOAD_MEM),  ($2),  getMethodReturnAttribute(errorQ,&symbolTable,lastDefMethod));
 										Code3D *ret = newCode(COM_RETURN);
-										setCode1D(ret, getMethodReturnAttribute(errorQ,&symbolTable,lastDefMethod));
+										setCode1D(ret, $2); 
 										add_code(lcode3d, ret);  
 									}                           
 					}
@@ -305,11 +303,7 @@ action        :
               ;
               
 asignation    :    location assig_op expression {
-							if (controlAssignation(errorQ,lcode3d,$1,$2,$3) == 0)
-							{
-								
-								add_Assignation(lcode3d, newCode(STORE_MEM), $3, $1);
-							}
+							controlAssignation(errorQ,lcode3d,$1,$2,$3);
 					}
 			  ;
               
@@ -332,6 +326,11 @@ conditional   :    IF '(' expression {
                                         add_CodeLabel(lcode3d, newCode(COM_MARK), ifLabel); // Mark to Label of If
                                         push(labelsCYC, elseLabel, NULL);
                                         push(labelsCYC, endLabel, NULL);
+//										Attribute *asd = (Attribute*) malloc (sizeof(Attribute));
+//										(*asd).type = Variable;
+//										(*asd).decl.variable.type = Int;
+//                                        push(labelsCYC, elseLabel, asd);
+//                                        push(labelsCYC, endLabel, asd);
 					} ')' block {
 									add_CodeLabel(lcode3d, newCode(GOTOLABEL), peek(labelsCYC)->label); //Go to Label of End
 								}
@@ -385,10 +384,9 @@ iteration     :    WHILE {
 									char *endLabel = newLabelName("end_for");									 
 									push(labelsFor, endLabel, NULL);
 									char *expressionLabel = newLabelName("expr_for");
-									Attribute *res = createVariable("", Bool);
-/*Por que compara ID por distinto*/	returnDistinct(errorQ, lcode3d, getVariableAttribute(errorQ, &symbolTable, $3), $8, res);
-/*con la segunda expresion en vez*/	add_CodeLabelCond(lcode3d, newCode(GOTOLABEL_COND), res, expressionLabel); // Go to Label of Expression
-/*de con la primera?? */			add_CodeLabel(lcode3d, newCode(GOTOLABEL), endLabel); // Go to Label of End
+									Attribute *res = returnDistinct(errorQ, lcode3d, getVariableAttribute(errorQ, &symbolTable, $3), $8);
+									add_CodeLabelCond(lcode3d, newCode(GOTOLABEL_COND), res, expressionLabel); // Go to Label of Expression
+									add_CodeLabel(lcode3d, newCode(GOTOLABEL), endLabel); // Go to Label of End
 									add_CodeLabel(lcode3d, newCode(COM_MARK), expressionLabel); // Mark to Label of Expression           
 					} block {
 							Label *endOfCycle = pop(labelsFor); 							 							
@@ -503,44 +501,44 @@ arg           :    expression
               ;
               
 expression    :    conjunction                  {$$ = $1;}                             
-              |    expression OR conjunction    {$$ = returnOr(errorQ, lcode3d, $1, $3, $$);}
+              |    expression OR conjunction    {$$ = returnOr(errorQ, lcode3d, $1, $3);}
               ;
 
 conjunction   :    inequality                   {$$ = $1;}                                
-              |    conjunction AND inequality   {$$ = returnAnd(errorQ, lcode3d, $1, $3, $$);}
+              |    conjunction AND inequality   {$$ = returnAnd(errorQ, lcode3d, $1, $3);}
               ;
 
 inequality    :    comparison                       {$$ = $1;}                             
-              |    inequality DISTINCT comparison   {$$ = returnDistinct(errorQ, lcode3d, $1, $3, $$);}
+              |    inequality DISTINCT comparison   {$$ = returnDistinct(errorQ, lcode3d, $1, $3);}
               ;
 
 comparison    :    relation                   {$$ = $1;} 
-              |    relation EQUAL relation    {$$ = returnEqual(errorQ, lcode3d, $1, $3, $$);}
+              |    relation EQUAL relation    {$$ = returnEqual(errorQ, lcode3d, $1, $3);}
               ;
 
 relation      :    term                 {$$ = $1;}
-              |    term '<' term        {$$ = returnMinorComparison(errorQ, lcode3d, $1, $3, $$);}
-              |    term '>' term        {$$ = returnMajorComparison(errorQ, lcode3d, $1, $3, $$);}
-              |    term GEQUAL term     {$$ = returnGEqualComparison(errorQ, lcode3d, $1, $3, $$);}
-              |    term LEQUAL term     {$$ = returnLEqualComparison(errorQ, lcode3d, $1, $3, $$);}
+              |    term '<' term        {$$ = returnMinorComparison(errorQ, lcode3d, $1, $3);}
+              |    term '>' term        {$$ = returnMajorComparison(errorQ, lcode3d, $1, $3);}
+              |    term GEQUAL term     {$$ = returnGEqualComparison(errorQ, lcode3d, $1, $3);}
+              |    term LEQUAL term     {$$ = returnLEqualComparison(errorQ, lcode3d, $1, $3);}
               ;
 
 term          :    factor			{$$ = $1;}
-              |    term '+' factor	{$$ = returnAdd(errorQ, lcode3d, $1, $3, $$);}
-              |    term '-' factor	{$$ = returnSub(errorQ, lcode3d, $1, $3, $$);}
-              |    term '%' factor	{$$ = returnMod(errorQ, lcode3d, $1, $3, $$);}
-              |    term '/' factor	{$$ = returnDiv(errorQ, lcode3d, $1, $3, $$);}
-              |    term '*' factor	{$$ = returnMult(errorQ, lcode3d, $1, $3, $$);}
+              |    term '+' factor	{$$ = returnAdd(errorQ, lcode3d, $1, $3);}
+              |    term '-' factor	{$$ = returnSub(errorQ, lcode3d, $1, $3);}
+              |    term '%' factor	{$$ = returnMod(errorQ, lcode3d, $1, $3);}
+              |    term '/' factor	{$$ = returnDiv(errorQ, lcode3d, $1, $3);}
+              |    term '*' factor	{$$ = returnMult(errorQ, lcode3d, $1, $3);}
               ;
 
 factor        :    primary		{$$ = $1;}  
-              |    '!' factor	{$$ = returnNot(errorQ, lcode3d, $2, $$);}
-              |    '-' factor	{$$ = returnNeg(errorQ, lcode3d, $2, $$);}
+              |    '!' factor	{$$ = returnNot(errorQ, lcode3d, $2);}
+              |    '-' factor	{$$ = returnNeg(errorQ, lcode3d, $2);}
               ;
 
-primary       :    INTEGER			{$$ = returnValue(lcode3d, Int, $1, $$);}
-              |    FLOAT            {$$ = returnValue(lcode3d, Float, $1, $$);}
-              |    BOOLEAN          {$$ = returnValue(lcode3d, Bool, $1, $$);}
+primary       :    INTEGER			{$$ = returnValue(lcode3d, Int, $1);}
+              |    FLOAT            {$$ = returnValue(lcode3d, Float, $1);}
+              |    BOOLEAN          {$$ = returnValue(lcode3d, Bool, $1);}
               |    ID				{$$ = getVariableAttribute(errorQ,&symbolTable,$1);}
               |    ID '[' expression ']'  {$$ = checkArrayPos(errorQ,&symbolTable,$1,$3);}
               |    '(' expression ')'  {$$ = $2;}

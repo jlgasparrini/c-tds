@@ -22,11 +22,13 @@ Attribute* getVariableAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, ch
 {
 	Attribute *attr = searchIdInSymbolsTable(eq, aSymbolsTable, id);
 	if(attr != NULL) 
+	{
 		if((*attr).type != Variable)
 			insertError(eq, toString("El identificador \"", id, "\" no corresponde a una variable."));
 		else
 			return attr;
-	return createVariable("",Int); // Returns an attribute with type Int to continue parsing
+	}
+	return createVariable(getVariableName(),Int); // Returns an attribute with type Int to continue parsing
 }
 
 /* Returns an attribute in the position "pos" of the ID "id" and Array structure. Otherwise returns NULL */
@@ -39,11 +41,11 @@ Attribute* getArrayAttribute(ErrorsQueue *eq, Attribute *attr, unsigned int pos)
         if (pos < 0 || pos >= (*attr).decl.array.length)
         {
             insertError(eq, toString("Error. Indice fuera de rango para acceder al arreglo \"", getID(attr), "\".")); 
-            return createVariable("",getAttributeType(attr)); // Returns an attribute with the same type to continue parsing
+            return createVariable(getVariableName(),getAttributeType(attr)); // Returns an attribute with the same type to continue parsing
         }
         else
 		{
-			Attribute *aux = createVariable("", getAttributeType(attr));
+			Attribute *aux = createVariable(getVariableName(), getAttributeType(attr));
 			if (getAttributeType(attr) == Int)
 				setIntVal(aux,getArrayIntVal(attr,pos));
 			if (getAttributeType(attr) == Float)
@@ -53,7 +55,7 @@ Attribute* getArrayAttribute(ErrorsQueue *eq, Attribute *attr, unsigned int pos)
 			return aux;          
 		}
 	}
-	return createVariable("",Int); // Returns an attribute with type Int to continue parsing
+	return createVariable(getVariableName(),Int); // Returns an attribute with type Int to continue parsing
 }
 
 /* Returns the return attribute of the method with id "id" */
@@ -70,7 +72,7 @@ Attribute* getMethodReturnAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable
 				insertError(eq,toString("El metodo \"", id,"\" retorna void, no puede setearse ningun atributo de retorno."));
 			else
 			{
-				Attribute *aux = createVariable("", getAttributeType(attr));
+				Attribute *aux = createVariable(getVariableName(), getAttributeType(attr));
 				if (getAttributeType(attr) == Int)
 					setIntVal(aux,getIntVal(attr));
 				if (getAttributeType(attr) == Float)
@@ -81,7 +83,7 @@ Attribute* getMethodReturnAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable
 			}
 		}
     }
-	return createVariable("",Int); // Returns type Int by default in case of having errors
+	return createVariable(getVariableName(),Int); // Returns type Int by default in case of having errors
 }
 
 /* Sets the return attribute of the method with id "id" */
@@ -119,7 +121,7 @@ Attribute* checkAndGetMethodRetAttribute(ErrorsQueue *eq, SymbolsTable *aSymbols
 			insertError(eq,toString("El identificador \"", id,"\" no corresponde a un metodo."));
 		else
 		{
-			Attribute *aux = createVariable("", getAttributeType(attr));
+			Attribute *aux = createVariable(getVariableName(), getAttributeType(attr));
 			if (getAttributeType(attr) == Int)
 				setIntVal(aux,getIntVal(attr));
 			if (getAttributeType(attr) == Float)
@@ -129,7 +131,7 @@ Attribute* checkAndGetMethodRetAttribute(ErrorsQueue *eq, SymbolsTable *aSymbols
 			return aux;
 		}
 	}
-	return createVariable("",Int); // Returns type Int by default in case of having errors
+	return createVariable(getVariableName(),Int); // Returns type Int by default in case of having errors
 }
 
 /* Returns 0 if the type of the parameter on the position "pos" of the method "attr" is equal to the type of "var"
@@ -296,14 +298,16 @@ unsigned char controlAssignation(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *a
 		else
 		{
             Code3D *add;
+			if (strcmp(op, "=") == 0)
+			{
+				add_Assignation(lcode3d, newCode(STORE_MEM), attr2, attr1);
+			} 
 			if (strcmp(op, "+=") == 0)
 			{
 				if ((getAttributeType(attr1) == Int) && (getAttributeType(attr2) == Int))
 					add = newCode(COM_ADD_INT);
 				if ((getAttributeType(attr1) == Float) && (getAttributeType(attr2) == Float))
 					add = newCode(COM_ADD_FLOAT);
-				setCode2D(add, (attr1), (attr2));
-				add_code(lcode3d, add);
 			} 
 			if (strcmp(op, "-=") == 0)
 			{
@@ -311,10 +315,11 @@ unsigned char controlAssignation(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *a
 					add = newCode(COM_MINUS_INT);
 				if ((getAttributeType(attr1) == Float) && (getAttributeType(attr2) == Float))
 					add = newCode(COM_MINUS_FLOAT);																				
-				setCode2D(add, attr1, attr2);
-				add_code(lcode3d, add);
 			}
-
+			Attribute *res = createVariable(getVariableName(), getAttributeType(attr1));
+			setCode3D(add, attr1, attr2, res);
+			add_code(lcode3d, add);
+			add_Assignation(lcode3d, newCode(STORE_MEM), res, attr1);
 			return 0;
 		}
 	}
@@ -363,6 +368,11 @@ unsigned char checkReturnExpression(ErrorsQueue *eq, SymbolsTable *aSymbolsTable
 			return 1;
 	//		free(msg);
 		}
+		else
+		{
+			// assign the expression in attribute to the method return expression
+			setMethodReturnAttribute(eq,aSymbolsTable, lastUsedMethod, &(*attr).decl.variable);
+		}
 	return 0;
 }
 
@@ -378,7 +388,7 @@ Attribute* checkArrayPos(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id,
 		else
 			insertError(eq, toString("La expresion para acceder a la posicion del arreglo \"", id, "\" debe ser de tipo \"int\".")); 
     }
-    return createVariable("",Int);
+    return createVariable(getVariableName(),Int);
 }
 
 /* Checks if the program have a "main" method and it haven't got parameters */
@@ -396,42 +406,44 @@ void checkMain(ErrorsQueue *eq, SymbolsTable *aSymbolsTable)
 
 /* Return an attribute with the or operation applied to oper1 and oper2. */
 /* Insert a new code3D OR in a list of Codes */
-Attribute* returnOr(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *oper2, Attribute *operRes)
+Attribute* returnOr(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *oper2)
 {
-    if (getAttributeType(oper1) == getAttributeType(oper2) && (getAttributeType(oper2) == Bool)) // TYPE CHECK
+    if (getAttributeType(oper1) == getAttributeType(oper2) && (getAttributeType(oper2) == Bool))
     {
-        Code3D *codeOr = newCode(COM_OR);
-		setCode3D(codeOr, oper1, oper2, operRes);
-		add_code(lcode3d, codeOr); 
-		Attribute *aux = createVariable("", Bool);
+		Attribute *aux = createVariable(getVariableName(), Bool);
 		setBoolVal(aux, getBoolVal(oper1) || getBoolVal(oper2));
-        return aux;
+
+        Code3D *codeOr = newCode(COM_OR);
+		setCode3D(codeOr, oper1, oper2, aux);
+		add_code(lcode3d, codeOr); 
+		return aux;
     }
     else
     {
 		insertError(eq, toString("La expresion logica \"", "OR", "\" no tiene ambos operandos de tipo booleano.")); 
-        return createVariable("", Bool);
+        return createVariable(getVariableName(), Bool);
     }
 }
 
 
 /* Return an attribute with the and operation applied to oper1 and oper2. */
 /* Insert a new code3D And in a list of Codes */
-Attribute* returnAnd(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *oper2, Attribute *operRes)
+Attribute* returnAnd(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *oper2)
 {
     if (getAttributeType(oper1) == getAttributeType(oper2) && (getAttributeType(oper2) == Bool))
     {
-		Code3D *codeAnd = newCode(COM_AND);
-		setCode3D(codeAnd, oper1, oper2, operRes);
-		add_code(lcode3d, codeAnd); 
-        Attribute *aux = createVariable("", Bool);
+		Attribute *aux = createVariable(getVariableName(), Bool);
 		setBoolVal(aux, getBoolVal(oper1) && getBoolVal(oper2));
+
+		Code3D *codeAnd = newCode(COM_AND);
+		setCode3D(codeAnd, oper1, oper2, aux);
+		add_code(lcode3d, codeAnd); 
         return aux;
     }
     else
     {
 		insertError(eq, toString("La expresion logica \"", "AND", "\" no tiene ambos operandos de tipo booleano.")); 
-        return createVariable("", Bool);
+        return createVariable(getVariableName(), Bool);
     }
 
 }
@@ -441,51 +453,53 @@ Attribute* returnAnd(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attrib
 
 /* Return an attribute with the distinct operation applied to oper1 and oper2. */
 /* Insert a new code3D Distinct in a list of Codes */
-Attribute* returnDistinct(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *oper2, Attribute *operRes)
+Attribute* returnDistinct(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *oper2)
 {
     if (getAttributeType(oper1) == getAttributeType(oper2)) 
     {
-        Code3D *codeDist = newCode(COM_DIST);
-		setCode3D(codeDist, oper1, oper2, operRes);
-		add_code(lcode3d, codeDist);
-		Attribute *aux = createVariable("", Bool);
+		Attribute *aux = createVariable(getVariableName(), Bool);
         if (getAttributeType(oper1) == Float)
 			setBoolVal(aux, getFloatVal(oper1) != getFloatVal(oper2));
         if (getAttributeType(oper1) == Int)
 			setBoolVal(aux, getIntVal(oper1) != getIntVal(oper2));
         if (getAttributeType(oper1) == Bool)
 			setBoolVal(aux, getBoolVal(oper1) != getBoolVal(oper2));
-        return aux;
+
+        Code3D *codeDist = newCode(COM_DIST);
+		setCode3D(codeDist, oper1, oper2, aux);
+		add_code(lcode3d, codeDist);
+		return aux;
     }
     else
     {
 		insertError(eq, toString("El operador \"", "!=", "\" no tiene ambos operandos del mismo tipo.")); 
-        return createVariable("", Bool);
+        return createVariable(getVariableName(), Bool);
     }
 }
 
 /* Return an attribute with the equal operation applied to oper1 and oper2. */
 /* Insert a new code3D Equal in a list of Codes */
-Attribute* returnEqual(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *oper2, Attribute *operRes)
+Attribute* returnEqual(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *oper2)
 {
     if (getAttributeType(oper1) == getAttributeType(oper2)) 
     {
-        Code3D *codeEqual = newCode(COM_EQ);
-		setCode3D(codeEqual, oper1, oper2, operRes);
-		add_code(lcode3d, codeEqual); 
-		Attribute *aux = createVariable("", Bool);
+		Attribute *aux = createVariable(getVariableName(), Bool);
         if (getAttributeType(oper1) == Float)
 			setBoolVal(aux, getFloatVal(oper1) == getFloatVal(oper2));
         if (getAttributeType(oper1) == Int)
 			setBoolVal(aux, getIntVal(oper1) == getIntVal(oper2));
         if (getAttributeType(oper1) == Bool)
 			setBoolVal(aux, getBoolVal(oper1) == getBoolVal(oper2));
-        return aux;
+
+        Code3D *codeEqual = newCode(COM_EQ);
+		setCode3D(codeEqual, oper1, oper2, aux);
+		add_code(lcode3d, codeEqual); 
+		return aux;
     }
     else
     {
 		insertError(eq, toString("El operador \"", "==", "\" no tiene ambos operandos del mismo tipo.")); 
-        return createVariable("", Bool);
+        return createVariable(getVariableName(), Bool);
     }
 }
 /* ------------------------------------inequality and comparison no-terminal ended---------------------------------------- */
@@ -494,93 +508,97 @@ Attribute* returnEqual(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attr
 
 /* Return an attribute with the minor comparison operation applied to oper1 and oper2. */
 /* Insert a new code3D MinorComparison in a list of Codes */
-Attribute* returnMinorComparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *oper2, Attribute *operRes)
+Attribute* returnMinorComparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *oper2)
 {
     if ((getAttributeType(oper1) == getAttributeType(oper2)) && (getAttributeType(oper2) != Bool)) 
     {
-		Code3D *codeMinor = newCode(COM_LR);
-		setCode3D(codeMinor, oper1, oper2, operRes);
-		add_code(lcode3d, codeMinor); 
-        Attribute *aux = createVariable("", Bool);
+		Attribute *aux = createVariable(getVariableName(), Bool);
         if (getAttributeType(oper1) == Float)
 			setBoolVal(aux, getFloatVal(oper1) > getFloatVal(oper2));
         if (getAttributeType(oper1) == Int)
 			setBoolVal(aux, getIntVal(oper1) > getIntVal(oper2));
+
+		Code3D *codeMinor = newCode(COM_LR);
+		setCode3D(codeMinor, oper1, oper2, aux);
+		add_code(lcode3d, codeMinor); 
         return aux;
     }
     else
     {
 		insertError(eq, toString("El operador \"", "<", "\" no tiene ambos operandos de tipo correcto o del mismo tipo.")); 
-        return createVariable("", Bool);
+        return createVariable(getVariableName(), Bool);
     }
 }
 
 /* Return an attribute with the major comparison operation applied to oper1 and oper2. */
 /* Insert a new code3D MajorComparison in a list of Codes */
-Attribute* returnMajorComparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *oper2, Attribute *operRes)
+Attribute* returnMajorComparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *oper2)
 {
     if ((getAttributeType(oper1) == getAttributeType(oper2)) && (getAttributeType(oper2) != Bool))
     {
-        Code3D *codeGreat = newCode(COM_GT);
-		setCode3D(codeGreat, oper1, oper2, operRes);
-		add_code(lcode3d, codeGreat); 
-		Attribute *aux = createVariable("", Bool);
+		Attribute *aux = createVariable(getVariableName(), Bool);
         if (getAttributeType(oper1) == Float)
 			setBoolVal(aux, getFloatVal(oper1) < getFloatVal(oper2));
         if (getAttributeType(oper1) == Int)
 			setBoolVal(aux, getIntVal(oper1) < getIntVal(oper2));
-        return aux;
+
+        Code3D *codeGreat = newCode(COM_GT);
+		setCode3D(codeGreat, oper1, oper2, aux);
+		add_code(lcode3d, codeGreat); 
+		return aux;
     }
     else
     {
 		insertError(eq, toString("El operador \"", ">", "\" no tiene ambos operandos de tipo correcto o del mismo tipo.")); 
-        return createVariable("", Bool);
+        return createVariable(getVariableName(), Bool);
     }
 }
 
 /* Return an attribute with the greater or equal comparison operation applied to oper1 and oper2. */
 /* Insert a new code3D GEqualComparison in a list of Codes */
-Attribute* returnGEqualComparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *oper2, Attribute *operRes)
+Attribute* returnGEqualComparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *oper2)
 {
     if ((getAttributeType(oper1) == getAttributeType(oper2)) && (getAttributeType(oper2) != Bool))
     {
-        Code3D *codeGEqual = newCode(COM_GEQ);
-		setCode3D(codeGEqual, oper1, oper2, operRes);
-		add_code(lcode3d, codeGEqual);
-		Attribute *aux = createVariable("", Bool);
+		Attribute *aux = createVariable(getVariableName(), Bool);
         if (getAttributeType(oper1) == Float)
 			setBoolVal(aux, getFloatVal(oper1) >= getFloatVal(oper2));
         if (getAttributeType(oper1) == Int)
 			setBoolVal(aux, getIntVal(oper1) >= getIntVal(oper2));
-        return aux;
+
+        Code3D *codeGEqual = newCode(COM_GEQ);
+		setCode3D(codeGEqual, oper1, oper2, aux);
+		add_code(lcode3d, codeGEqual);
+		return aux;
     }
     else
     {
 		insertError(eq, toString("El operador \"", ">=", "\" no tiene ambos operandos de tipo correcto o del mismo tipo.")); 
-        return createVariable("", Bool);
+        return createVariable(getVariableName(), Bool);
     }
 }
 
 /* Return an attribute with the less or equal comparison operation applied to oper1 and oper2. */
 /* Insert a new code3D LEqualComparison in a list of Codes */
-Attribute* returnLEqualComparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *oper2, Attribute *operRes)
+Attribute* returnLEqualComparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *oper2)
 {
     if ((getAttributeType(oper1) == getAttributeType(oper2)) && (getAttributeType(oper2) != Bool))
     {
-        Code3D *codeLEqual = newCode(COM_LEQ);
-		setCode3D(codeLEqual, oper1, oper2, operRes);
-		add_code(lcode3d, codeLEqual); 
-		Attribute *aux = createVariable("", Bool);
+		Attribute *aux = createVariable(getVariableName(), Bool);
         if (getAttributeType(oper1) == Float)
 			setBoolVal(aux, getFloatVal(oper1) <= getFloatVal(oper2));
         if (getAttributeType(oper1) == Int)
 			setBoolVal(aux, getIntVal(oper1) <= getIntVal(oper2));
-        return aux;
+
+        Code3D *codeLEqual = newCode(COM_LEQ);
+		setCode3D(codeLEqual, oper1, oper2, aux);
+		add_code(lcode3d, codeLEqual); 
+	    return aux;
     }
     else
     {
 		insertError(eq, toString("El operador \"", "<=", "\" no tiene ambos operandos de tipo correcto o del mismo tipo.")); 
-        return createVariable("", Bool);
+        return createVariable(getVariableName(), Bool);
     }
 }
 /* ---------------------------------------relation no-terminal ended---------------------------------------- */
@@ -589,12 +607,12 @@ Attribute* returnLEqualComparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *
 
 /* Return an attribute with the add operation. */
 /* Insert a new code3D Add in a list of Codes */
-Attribute* returnAdd(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *oper2, Attribute *operRes)
+Attribute* returnAdd(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *oper2)
 {
     if ((getAttributeType(oper1) == getAttributeType(oper2)) && (getAttributeType(oper2) != Bool))
     {
         Code3D *codeAdd;
-        Attribute *aux = createVariable("", getAttributeType(oper1));
+        Attribute *aux = createVariable(getVariableName(), getAttributeType(oper1));
         if (getAttributeType(oper1) == Float)
 		{
 			codeAdd = newCode(COM_ADD_FLOAT);
@@ -605,26 +623,26 @@ Attribute* returnAdd(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attrib
 			codeAdd = newCode(COM_ADD_INT);
 			setIntVal(aux,getIntVal(oper1) + getIntVal(oper2));
         }
-		setCode3D(codeAdd, oper1, oper2, operRes);
+		setCode3D(codeAdd, oper1, oper2, aux);
 		add_code(lcode3d, codeAdd);
 		return aux;
     }
     else
     {
 		insertError(eq, toString("El operador \"", "+", "\" no tiene ambos operandos de tipo correcto o del mismo tipo.")); 
-        return createVariable("", Int);
+        return createVariable(getVariableName(), Int);
     }
 }
 
 /* Return an attribute with the sub operation. */
 /* Insert a new code3D Sub in a list of Codes */
-Attribute* returnSub(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *oper2, Attribute *operRes)
+Attribute* returnSub(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *oper2)
 {
     if (getAttributeType(oper1) == getAttributeType(oper2) && (getAttributeType(oper2) != Bool))
     {
         Code3D *codeSub;
         Code3D *codeMod;
-        Attribute *aux = createVariable("", getAttributeType(oper1));
+        Attribute *aux = createVariable(getVariableName(), getAttributeType(oper1));
         if (getAttributeType(oper1) == Float)
         {    
 			codeSub = newCode(COM_MINUS_FLOAT);
@@ -636,46 +654,46 @@ Attribute* returnSub(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attrib
 			codeMod = newCode(COM_MOD_INT);
 			setIntVal(aux,getIntVal(oper1) - getIntVal(oper2));
         }
-		setCode3D(codeSub, oper1, oper2, operRes);
+		setCode3D(codeSub, oper1, oper2, aux);
 		add_code(lcode3d, codeSub); 
 		return aux;
     }
     else
     {
 		insertError(eq, toString("El operador \"", "-", "\" no tiene ambos operandos de tipo correcto o del mismo tipo.")); 
-        return createVariable("", Int);
+        return createVariable(getVariableName(), Int);
     }
 }
 
 /* Return an attribute with the mod operation. */
 /* Insert a new code3D Mod in a list of Codes */
-Attribute* returnMod(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *oper2, Attribute *operRes)
+Attribute* returnMod(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *oper2)
 {
     if (getAttributeType(oper1) == getAttributeType(oper2) && (getAttributeType(oper2) == Int))
     {
-        Code3D *codeMod;
-        Attribute *aux = createVariable("", getAttributeType(oper1));
-		codeMod = newCode(COM_MOD_INT);
+        Attribute *aux = createVariable(getVariableName(), getAttributeType(oper1));
 		setIntVal(aux,getIntVal(oper1) % getIntVal(oper2));
-		setCode3D(codeMod, oper1, oper2, operRes);
+        Code3D *codeMod;
+		codeMod = newCode(COM_MOD_INT);
+		setCode3D(codeMod, oper1, oper2, aux);
 		add_code(lcode3d, codeMod); 
 		return aux;
     }
     else
     {
 		insertError(eq, toString("El operador \"", "%", "\" solo soporta tipo INT y/o no tiene ambos operandos del mismo tipo."));//debe soportar el Float ahora
-        return createVariable("", Int);
+        return createVariable(getVariableName(), Int);
     }
 }
 
 /* Return an attribute with the div operation. */
 /* Insert a new code3D Div in a list of Codes */
-Attribute* returnDiv(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *oper2, Attribute *operRes)
+Attribute* returnDiv(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *oper2)
 {
     if (getAttributeType(oper1) == getAttributeType(oper2) && (getAttributeType(oper2) != Bool))
     {
         Code3D *codeDiv;
-        Attribute *aux = createVariable("", getAttributeType(oper1));
+        Attribute *aux = createVariable(getVariableName(), getAttributeType(oper1));
         if (getAttributeType(oper1) == Float)
         {    
 			codeDiv = newCode(COM_DIV_FLOAT);
@@ -686,25 +704,25 @@ Attribute* returnDiv(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attrib
 			codeDiv = newCode(COM_DIV_INT);
 			setIntVal(aux,getIntVal(oper1) / getIntVal(oper2));
         }
-		setCode3D(codeDiv, oper1, oper2, operRes);
+		setCode3D(codeDiv, oper1, oper2, aux);
 		add_code(lcode3d, codeDiv);
 		return aux;
     }
     else
     {
 		insertError(eq, toString("El operador \"", "/", "\" no tiene ambos operandos de tipo correcto o del mismo tipo.")); 
-        return createVariable("", Int);
+        return createVariable(getVariableName(), Int);
     }
 }
 
 /* Return an attribute with the mult operation. */
 /* Insert a new code3D Mult in a list of Codes */
-Attribute* returnMult(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *oper2, Attribute *operRes)
+Attribute* returnMult(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *oper2)
 {
     if (getAttributeType(oper1) == getAttributeType(oper2) && (getAttributeType(oper2) != Bool))
     {
         Code3D *codeMult;
-        Attribute *aux = createVariable("", getAttributeType(oper1));
+        Attribute *aux = createVariable(getVariableName(), getAttributeType(oper1));
         if (getAttributeType(oper1) == Float)
 		{
 			codeMult = newCode(COM_MULT_FLOAT);
@@ -715,45 +733,45 @@ Attribute* returnMult(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attri
 			codeMult = newCode(COM_MULT_INT);
 			setIntVal(aux,getIntVal(oper1) * getIntVal(oper2));
         }
-		setCode3D(codeMult, oper1, oper2, operRes);
+		setCode3D(codeMult, oper1, oper2, aux);
 		add_code(lcode3d, codeMult);
 		return aux;
     }
     else
     {
 		insertError(eq, toString("El operador \"", "*", "\" no tiene ambos operandos de tipo correcto o del mismo tipo.")); 
-        return createVariable("", Int);
+        return createVariable(getVariableName(), Int);
     }
 }
 
 /* Return an attribute with the not operation applied to oper1. */
 /* Insert a new code3D Not in a list of Codes */
-Attribute* returnNot(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *operRes)
+Attribute* returnNot(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1)
 {
     if (getAttributeType(oper1) == Bool)
     {
-		Code3D *codeNot = newCode(COM_NOT);
-		setCode2D(codeNot, oper1, operRes);
-		add_code(lcode3d, codeNot); 
-		Attribute *aux = createVariable("", Bool);			
+		Attribute *aux = createVariable(getVariableName(), Bool);			
 		setBoolVal(aux, !(getBoolVal(oper1)));
+		Code3D *codeNot = newCode(COM_NOT);
+		setCode2D(codeNot, oper1, aux);
+		add_code(lcode3d, codeNot); 
 		return aux;
     }
     else
     {
 		insertError(eq, toString("El operador \"", "!", "\" no tiene el operando de tipo booleano.")); 
-        return createVariable("", Bool);
+        return createVariable(getVariableName(), Bool);
     }
 }
 
 /* Return an attribute with the neg operation applied to oper1. */
 /* Insert a new code3D Neg in a list of Codes */
-Attribute* returnNeg(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *operRes)
+Attribute* returnNeg(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1)
 {
     if (getAttributeType(oper1) == Int || getAttributeType(oper1) == Float)
     {
         Code3D *codeNeg;
-        Attribute *aux = createVariable("", getAttributeType(oper1));
+        Attribute *aux = createVariable(getVariableName(), getAttributeType(oper1));
         if (getAttributeType(oper1) == Float)
 		{
 			codeNeg = newCode(COM_NEG_FLOAT);
@@ -764,14 +782,14 @@ Attribute* returnNeg(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attrib
 			codeNeg = newCode(COM_NEG_INT);
 			setIntVal(aux, -getIntVal(oper1));
         }
-		setCode2D(codeNeg, oper1, operRes);
+		setCode2D(codeNeg, oper1, aux);
 		add_code(lcode3d, codeNeg);
 		return aux;
     }
     else
     {
 		insertError(eq, toString("El operador \"", "-", "\" no tiene el operando de tipo Int o Float.")); 
-        return createVariable("", Int);
+        return createVariable(getVariableName(), Int);
     }
 }
 
@@ -781,8 +799,11 @@ Attribute* returnNeg(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attrib
 
 /* Return an attribute with the type equal to param type and value equal to  param oper1. */
 /* Insert a new code3D Int or Float or Bool in a list of Codes */
-Attribute* returnValue(LCode3D *lcode3d, PrimitiveType type, char *oper1, Attribute *operRes)
+Attribute* returnValue(LCode3D *lcode3d, PrimitiveType type, char *oper1)
 {
+	Attribute *aux = createVariable(getVariableName(), type); 
+	setVariableValue(aux, type, oper1);
+
 	Code3D *codeValue = newCode(LOAD_CONST);
 	if (type == Int)
 		setInt(codeValue, 1, atoi(oper1));
@@ -795,13 +816,10 @@ Attribute* returnValue(LCode3D *lcode3d, PrimitiveType type, char *oper1, Attrib
 		if (strcmp(oper1, "true") == 0)
 			setBool(codeValue, 1, True);		
 	}
-	(*operRes).type = type;
-	setAttribute(codeValue, 2, operRes);
+
+	setAttribute(codeValue, 2, aux);
 	setNull(codeValue, 3);
 	add_code(lcode3d, codeValue);	
-	
-	Attribute *aux = createVariable(getVariableName(), type); 
-	setVariableValue(aux, type, oper1);
 	return aux;
 }
 

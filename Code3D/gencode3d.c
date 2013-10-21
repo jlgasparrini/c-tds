@@ -22,7 +22,7 @@ Code3D* get_code(LCode3D *lcode3d, int index) {
     return get_listC3D((*lcode3d).codes, index);
 }
 
-int cantCode(LCode3D *lcode3d) {
+int codeSize(LCode3D *lcode3d) {
     return size_listC3D((*lcode3d).codes);
 }
 

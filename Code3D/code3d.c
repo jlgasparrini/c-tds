@@ -341,17 +341,33 @@ void showCode(Code3D *code, int param)
 	            printf("%s |  ", getID(getAttribute(code,param)));
         }
     }
-
-
-
 }
 
 void toString3DC(Code3D *code) {
     // Ver si funciona
     printf("   %s   |   ", getCodeByID(getCommand(code)));
-	showCode(code,1);
-	showCode(code,2);
-	showCode(code,3);
+	if (isNull(code, 3))
+	{
+		if (isNull(code, 2))
+		{
+			showCode(code,1);
+			showCode(code,2);
+		}
+		else
+		{
+			showCode(code,2);
+			showCode(code,1);
+		}
+		showCode(code,3);
+	}
+	else
+	{
+		showCode(code,3);
+		showCode(code,1);
+		showCode(code,2);
+	}
+	// ver como se puede hacer que se muestre primero el resultado!!! ---------------------------------------------------------------------------
+	// el resultado esta en el mayor codigo posible! si el comando es c = a, el codigo mas grande va a ser el 2!!! ------------------------------
     printf("\n------------------------------------------------------------\n");
     }
 
