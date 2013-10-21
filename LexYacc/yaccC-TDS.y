@@ -326,11 +326,6 @@ conditional   :    IF '(' expression {
                                         add_CodeLabel(lcode3d, newCode(COM_MARK), ifLabel); // Mark to Label of If
                                         push(labelsCYC, elseLabel, NULL);
                                         push(labelsCYC, endLabel, NULL);
-//										Attribute *asd = (Attribute*) malloc (sizeof(Attribute));
-//										(*asd).type = Variable;
-//										(*asd).decl.variable.type = Int;
-//                                      push(labelsCYC, elseLabel, asd);
-//                                      push(labelsCYC, endLabel, asd);
 					} ')' block {
 									add_CodeLabel(lcode3d, newCode(GOTOLABEL), peek(labelsCYC)->label); //Go to Label of End
 								}
