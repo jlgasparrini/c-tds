@@ -304,97 +304,55 @@ void setCode1D(Code3D *code, Attribute *attri1){
     setNull(code, 3);
 }
 
+void showCode(Code3D *code, int param)
+{
+	if (isNull(code, param))
+        printf("    -     |  ");
+    else 
+	{
+        if (isInt(code, param))
+		{
+            printf("(I)");
+            printf("%i   |    ", getInt(code, param));
+        }
+        if (isFloat(code, param))
+		{
+            printf("(F)");
+            printf("%f |  ", getFloat(code, param));
+        }
+        if (isBool(code, param))
+		{
+            printf("(B)");
+            printf("%s |  ", getBool(code, param)? "true" : "false");
+        }
+        if (isLabel(code, param))
+		{
+            printf("(L)");
+            printf("%s |  ", getLabel(code, param));
+        }
+        if (isAttribute(code, param))
+		{
+            printf("(A)");
+//            printf("%s |  ", getType(getAttribute(code, 1)->type));
+//			if (getID(getAttribute(code,param)) == NULL)
+			if (getID(getAttribute(code,param)) == NULL || strcmp(getID(getAttribute(code,param)),"") == 0)
+	            printf("%s |  ", getType(getAttribute(code,param)->type));
+			else				
+	            printf("%s |  ", getID(getAttribute(code,param)));
+        }
+    }
+
+
+
+}
+
 void toString3DC(Code3D *code) {
     // Ver si funciona
     printf("   %s   |   ", getCodeByID(getCommand(code)));
-    if (isNull(code, 1)){
-        printf("    -     |  ");
-    }
-    else {
-        if (isInt(code, 1)){
-            printf("(I)");
-            printf("%i   |    ", getInt(code, 1));
-        }
-        if (isFloat(code, 1)){
-            printf("(F)");
-            printf("%f |  ", getFloat(code, 1));
-        }
-        if (isBool(code, 1)){
-            printf("(B)");
-            printf("%s |  ", getBool(code, 1)? "true" : "false");
-        }
-        if (isLabel(code, 1)){
-            printf("(L)");
-            printf("%s |  ", getLabel(code, 1));
-        }
-        if (isAttribute(code, 1)){
-            printf("(A)");
-//            printf("%s |  ", getType(getAttribute(code, 1)->type));
-			if (getID(getAttribute(code,1)) == NULL)
-	            printf("%s |  ", getType(getAttribute(code,1)->type));
-			else				
-	            printf("%s |  ", getID(getAttribute(code,1)));
-        }
-    }
-    if (isNull(code, 2)){
-        printf("    -     |  ");
-    }
-    else {
-        if (isInt(code, 2)){
-            printf("(I)");
-            printf("%i   |    ", getInt(code, 2));
-        }
-        if (isFloat(code, 2)){
-            printf("(F)");
-            printf("%f |  ", getFloat(code, 2));
-        }
-        if (isBool(code, 2)){
-            printf("(B)");
-            printf("%s |  ", getBool(code, 2)? "true" : "false");
-        }
-        if (isLabel(code, 2)){
-            printf("(L)");
-            printf("%s |  ", getLabel(code, 2));
-        }
-        if (isAttribute(code, 2)){
-            printf("(A)");
-//            printf("%s |  ", getType(getAttribute(code, 2)->type));
-    			if (getID(getAttribute(code,2)) == NULL)
-	            printf("%s |  ", getType(getAttribute(code,2)->type));
-			else				
-	            printf("%s |  ", getID(getAttribute(code,2)));
-        }
-    }
-    if (isNull(code, 3)){
-        printf("    -     |  ");
-    }
-    else {
-        if (isInt(code, 3)){
-            printf("(I)");
-            printf("%i   |    ", getInt(code, 3));
-        }
-        if (isFloat(code, 3)){
-            printf("(F)");
-            printf("%f |  ", getFloat(code, 3));
-        }
-        if (isBool(code, 3)){
-            printf("(B)");
-            printf("%s |  ", getBool(code, 3)? "true" : "false");
-        }
-        if (isLabel(code, 3)){
-            printf("(L)");
-            printf("%s |  ", getLabel(code, 3));
-        }
-        if (isAttribute(code, 3)){
-            printf("(A)");
-//            printf("%s |  ", getType(getAttribute(code, 3)->type));
-     			if (getID(getAttribute(code,3)) == NULL)
-	            printf("%s |  ", getType(getAttribute(code,3)->type));
-			else				
-	            printf("%s |  ", getID(getAttribute(code,3)));
-        }
-    }
+	showCode(code,1);
+	showCode(code,2);
+	showCode(code,3);
     printf("\n------------------------------------------------------------\n");
-}
+    }
 
 

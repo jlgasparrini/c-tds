@@ -7,6 +7,16 @@
 unsigned int numberOfVariable = 0;
 char *temp = ".temp";
 
+/* Creates a name for a temporary variable */
+char* getVariableName()
+{
+	char *name = (char*) malloc ((strlen(temp)+digitAmount(numberOfVariable))*sizeof(char)); 
+	strcat(name,temp);	
+	strcat(name,intToString(numberOfVariable));	
+	numberOfVariable++;
+	return name;
+}
+
 /* Returns an attribute of ID "id" and Variable structure. Otherwise returns NULL */
 Attribute* getVariableAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id)
 {
@@ -789,12 +799,8 @@ Attribute* returnValue(LCode3D *lcode3d, PrimitiveType type, char *oper1, Attrib
 	setAttribute(codeValue, 2, operRes);
 	setNull(codeValue, 3);
 	add_code(lcode3d, codeValue);	
-
-	char *variableName = (char*) malloc ((strlen(temp)+digitAmount(numberOfVariable))*sizeof(char)); 
-	strcat(variableName,temp);	
-	strcat(variableName,intToString(numberOfVariable));	
-
-	Attribute *aux = createVariable(variableName, type); 
+	
+	Attribute *aux = createVariable(getVariableName(), type); 
 	setVariableValue(aux, type, oper1);
 	return aux;
 }

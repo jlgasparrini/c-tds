@@ -49,7 +49,7 @@ int yyerror (char *str)
     if (strcmp(str, "syntax error") == 0)
 		printf("%s\n",toString("Error GRAMATICO.","",""));
     else
-		if (strcmp(str, "correcto") != 0)
+		if (strcmp(str, "incorrecto") != 0)
 			printf("%s\n","Error DESCONOCIDO.");
     return 0;
 }
@@ -73,23 +73,21 @@ main( argc, argv )
 
 finalizar() {
         if ((*errorQ).size > 0) 
-            yyerror("correcto");
+            yyerror("incorrecto");
         else
         {
             // show the list of code 3D
-			Code3D *code;
             int cantCodes = cantCode(lcode3d);
             int i;
-            printf("Lista de codigos 3 direcciones\n");
-            printf("---------------------------------------------------------------------------\n");
-            printf("     Operacion     |       res       |       arg1       |       arg2       \n");
-            printf("---------------------------------------------------------------------------\n");
-            for (i = 0; i < cantCodes; i++) {
-                code = get_code(lcode3d, i);
-                toString3DC(code);
-            }
-        }
-        printf("------Se termino de parsear.----------\n");
+		 	printf("Lista de codigos de 3 direcciones:\n");
+			printf("---------------------------------------------------------------------------\n");
+			printf("     Operacion     |       res       |       arg1       |       arg2       \n");
+			printf("---------------------------------------------------------------------------\n");
+	        for (i = 0; i < cantCodes; i++) {
+				toString3DC(get_code(lcode3d, i));
+			}
+		}
+		printf("------Se termino de parsear.----------\n");
 }
 
 out(char *msg) {
@@ -140,7 +138,7 @@ program       :    CLASS ID '{' '}' {
 									listmlabel = initL();
 									lcode3d = initLCode3D();
 					} body {
-			//					checkMain(errorQ,&symbolTable); 
+								checkMain(errorQ,&symbolTable); 
 								popLevel(&symbolTable); 
 								finalizar();
 					} '}' 
@@ -309,14 +307,15 @@ action        :
 asignation    :    location assig_op expression {
 							if (controlAssignation(errorQ,lcode3d,$1,$2,$3) == 0)
 							{
+								
 								add_Assignation(lcode3d, newCode(STORE_MEM), $3, $1);
 							}
 					}
 			  ;
               
 assig_op      :    '=' {$$ = "=";} 
-              |    PLUSEQUAL {$$ = $1;}
-              |    MINUSEQUAL {$$ = $1;}
+              |    PLUSEQUAL {$$ = "+=";}
+              |    MINUSEQUAL {$$ = "-=";}
               ;
 
 /* -------------------- END OF STATEMENTS ------------------------------- */

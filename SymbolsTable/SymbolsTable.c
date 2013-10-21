@@ -22,6 +22,8 @@ void pushElement(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attribute *at)
             else
                 insert((*(*aSymbolsTable).top).list, at); 
         }
+			else
+                insertError(eq, toString("El atributo es NULL.","",""));
 	}
 	else
 		printf("%s\n",toString("SymbolsTable: pushElement Warning: la tabla no tiene ningun nivel.","",""));
