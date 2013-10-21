@@ -302,24 +302,29 @@ unsigned char controlAssignation(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *a
 			{
 				add_Assignation(lcode3d, newCode(STORE_MEM), attr2, attr1);
 			} 
-			if (strcmp(op, "+=") == 0)
+			else
 			{
-				if ((getAttributeType(attr1) == Int) && (getAttributeType(attr2) == Int))
-					add = newCode(COM_ADD_INT);
-				if ((getAttributeType(attr1) == Float) && (getAttributeType(attr2) == Float))
-					add = newCode(COM_ADD_FLOAT);
-			} 
-			if (strcmp(op, "-=") == 0)
-			{
-				if ((getAttributeType(attr1) == Int) && (getAttributeType(attr2) == Int))
-					add = newCode(COM_MINUS_INT);
-				if ((getAttributeType(attr1) == Float) && (getAttributeType(attr2) == Float))
-					add = newCode(COM_MINUS_FLOAT);																				
+				if (strcmp(op, "+=") == 0)
+				{
+					if ((getAttributeType(attr1) == Int) && (getAttributeType(attr2) == Int))
+						add = newCode(COM_ADD_INT);
+					if ((getAttributeType(attr1) == Float) && (getAttributeType(attr2) == Float))
+						add = newCode(COM_ADD_FLOAT);
+				
+				} 
+				if (strcmp(op, "-=") == 0)
+				{
+					if ((getAttributeType(attr1) == Int) && (getAttributeType(attr2) == Int))
+						add = newCode(COM_MINUS_INT);
+					if ((getAttributeType(attr1) == Float) && (getAttributeType(attr2) == Float))
+						add = newCode(COM_MINUS_FLOAT);																				
+
+				}
+				Attribute *res = createVariable(getVariableName(), getAttributeType(attr1));
+				setCode3D(add, attr1, attr2, res);
+				add_code(lcode3d, add);
+				add_Assignation(lcode3d, newCode(STORE_MEM), res, attr1);
 			}
-			Attribute *res = createVariable(getVariableName(), getAttributeType(attr1));
-			setCode3D(add, attr1, attr2, res);
-			add_code(lcode3d, add);
-			add_Assignation(lcode3d, newCode(STORE_MEM), res, attr1);
 			return 0;
 		}
 	}

@@ -366,8 +366,6 @@ void toString3DC(Code3D *code) {
 		showCode(code,1);
 		showCode(code,2);
 	}
-	// ver como se puede hacer que se muestre primero el resultado!!! ---------------------------------------------------------------------------
-	// el resultado esta en el mayor codigo posible! si el comando es c = a, el codigo mas grande va a ser el 2!!! ------------------------------
     printf("\n------------------------------------------------------------\n");
     }
 

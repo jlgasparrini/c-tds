@@ -137,7 +137,7 @@ program       :    CLASS ID '{' '}' {
 									listmlabel = initL();
 									lcode3d = initLCode3D();
 					} body {
-//								checkMain(errorQ,&symbolTable); 
+								checkMain(errorQ,&symbolTable); 
 								popLevel(&symbolTable); 
 								finalizar();
 					} '}' 
@@ -163,7 +163,7 @@ field         :    ID			{pushElement(errorQ, &symbolTable, createVariable($1, va
 									}
 									else
 										pushElement(errorQ, &symbolTable, createArray($1, vaType, atoi($3)));
-									}
+								}
 						']'	
               ;
 
@@ -329,8 +329,8 @@ conditional   :    IF '(' expression {
 //										Attribute *asd = (Attribute*) malloc (sizeof(Attribute));
 //										(*asd).type = Variable;
 //										(*asd).decl.variable.type = Int;
-//                                        push(labelsCYC, elseLabel, asd);
-//                                        push(labelsCYC, endLabel, asd);
+//                                      push(labelsCYC, elseLabel, asd);
+//                                      push(labelsCYC, endLabel, asd);
 					} ')' block {
 									add_CodeLabel(lcode3d, newCode(GOTOLABEL), peek(labelsCYC)->label); //Go to Label of End
 								}
