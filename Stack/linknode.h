@@ -10,12 +10,10 @@
 
 #include "label.h"
 
-struct NodeStack {
+typedef struct NodeStack {
     Label *info;
     struct NodeStack *next;
-};
-
-typedef struct NodeStack NodeStack;
+} NodeStack;
 
 /*funciones publicas para manipular nodos*/
 

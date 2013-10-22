@@ -416,8 +416,6 @@ Attribute* returnOr(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribu
     if (getAttributeType(oper1) == getAttributeType(oper2) && (getAttributeType(oper2) == Bool))
     {
 		Attribute *aux = createVariable(getVariableName(), Bool);
-		setBoolVal(aux, getBoolVal(oper1) || getBoolVal(oper2));
-
         Code3D *codeOr = newCode(COM_OR);
 		setCode3D(codeOr, oper1, oper2, aux);
 		add_code(lcode3d, codeOr); 
@@ -438,8 +436,6 @@ Attribute* returnAnd(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attrib
     if (getAttributeType(oper1) == getAttributeType(oper2) && (getAttributeType(oper2) == Bool))
     {
 		Attribute *aux = createVariable(getVariableName(), Bool);
-		setBoolVal(aux, getBoolVal(oper1) && getBoolVal(oper2));
-
 		Code3D *codeAnd = newCode(COM_AND);
 		setCode3D(codeAnd, oper1, oper2, aux);
 		add_code(lcode3d, codeAnd); 
@@ -450,7 +446,6 @@ Attribute* returnAnd(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attrib
 		insertError(eq, toString("La expresion logica \"", "AND", "\" no tiene ambos operandos de tipo booleano.")); 
         return createVariable(getVariableName(), Bool);
     }
-
 }
 /* ---------------------------------------expression and conjunction no-terminal ended-------------------------------------- */
 
@@ -463,13 +458,6 @@ Attribute* returnDistinct(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, A
     if (getAttributeType(oper1) == getAttributeType(oper2)) 
     {
 		Attribute *aux = createVariable(getVariableName(), Bool);
-        if (getAttributeType(oper1) == Float)
-			setBoolVal(aux, getFloatVal(oper1) != getFloatVal(oper2));
-        if (getAttributeType(oper1) == Int)
-			setBoolVal(aux, getIntVal(oper1) != getIntVal(oper2));
-        if (getAttributeType(oper1) == Bool)
-			setBoolVal(aux, getBoolVal(oper1) != getBoolVal(oper2));
-
         Code3D *codeDist = newCode(COM_DIST);
 		setCode3D(codeDist, oper1, oper2, aux);
 		add_code(lcode3d, codeDist);
@@ -489,13 +477,6 @@ Attribute* returnEqual(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attr
     if (getAttributeType(oper1) == getAttributeType(oper2)) 
     {
 		Attribute *aux = createVariable(getVariableName(), Bool);
-        if (getAttributeType(oper1) == Float)
-			setBoolVal(aux, getFloatVal(oper1) == getFloatVal(oper2));
-        if (getAttributeType(oper1) == Int)
-			setBoolVal(aux, getIntVal(oper1) == getIntVal(oper2));
-        if (getAttributeType(oper1) == Bool)
-			setBoolVal(aux, getBoolVal(oper1) == getBoolVal(oper2));
-
         Code3D *codeEqual = newCode(COM_EQ);
 		setCode3D(codeEqual, oper1, oper2, aux);
 		add_code(lcode3d, codeEqual); 
@@ -518,11 +499,6 @@ Attribute* returnMinorComparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *o
     if ((getAttributeType(oper1) == getAttributeType(oper2)) && (getAttributeType(oper2) != Bool)) 
     {
 		Attribute *aux = createVariable(getVariableName(), Bool);
-        if (getAttributeType(oper1) == Float)
-			setBoolVal(aux, getFloatVal(oper1) > getFloatVal(oper2));
-        if (getAttributeType(oper1) == Int)
-			setBoolVal(aux, getIntVal(oper1) > getIntVal(oper2));
-
 		Code3D *codeMinor = newCode(COM_LR);
 		setCode3D(codeMinor, oper1, oper2, aux);
 		add_code(lcode3d, codeMinor); 
@@ -542,11 +518,6 @@ Attribute* returnMajorComparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *o
     if ((getAttributeType(oper1) == getAttributeType(oper2)) && (getAttributeType(oper2) != Bool))
     {
 		Attribute *aux = createVariable(getVariableName(), Bool);
-        if (getAttributeType(oper1) == Float)
-			setBoolVal(aux, getFloatVal(oper1) < getFloatVal(oper2));
-        if (getAttributeType(oper1) == Int)
-			setBoolVal(aux, getIntVal(oper1) < getIntVal(oper2));
-
         Code3D *codeGreat = newCode(COM_GT);
 		setCode3D(codeGreat, oper1, oper2, aux);
 		add_code(lcode3d, codeGreat); 
@@ -566,11 +537,6 @@ Attribute* returnGEqualComparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *
     if ((getAttributeType(oper1) == getAttributeType(oper2)) && (getAttributeType(oper2) != Bool))
     {
 		Attribute *aux = createVariable(getVariableName(), Bool);
-        if (getAttributeType(oper1) == Float)
-			setBoolVal(aux, getFloatVal(oper1) >= getFloatVal(oper2));
-        if (getAttributeType(oper1) == Int)
-			setBoolVal(aux, getIntVal(oper1) >= getIntVal(oper2));
-
         Code3D *codeGEqual = newCode(COM_GEQ);
 		setCode3D(codeGEqual, oper1, oper2, aux);
 		add_code(lcode3d, codeGEqual);
@@ -590,11 +556,6 @@ Attribute* returnLEqualComparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *
     if ((getAttributeType(oper1) == getAttributeType(oper2)) && (getAttributeType(oper2) != Bool))
     {
 		Attribute *aux = createVariable(getVariableName(), Bool);
-        if (getAttributeType(oper1) == Float)
-			setBoolVal(aux, getFloatVal(oper1) <= getFloatVal(oper2));
-        if (getAttributeType(oper1) == Int)
-			setBoolVal(aux, getIntVal(oper1) <= getIntVal(oper2));
-
         Code3D *codeLEqual = newCode(COM_LEQ);
 		setCode3D(codeLEqual, oper1, oper2, aux);
 		add_code(lcode3d, codeLEqual); 
@@ -619,15 +580,9 @@ Attribute* returnAdd(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attrib
         Code3D *codeAdd;
         Attribute *aux = createVariable(getVariableName(), getAttributeType(oper1));
         if (getAttributeType(oper1) == Float)
-		{
 			codeAdd = newCode(COM_ADD_FLOAT);
-			setFloatVal(aux,getFloatVal(oper1) + getFloatVal(oper2));
-        }
 		if (getAttributeType(oper1) == Int)
-		{
 			codeAdd = newCode(COM_ADD_INT);
-			setIntVal(aux,getIntVal(oper1) + getIntVal(oper2));
-        }
 		setCode3D(codeAdd, oper1, oper2, aux);
 		add_code(lcode3d, codeAdd);
 		return aux;
@@ -646,19 +601,11 @@ Attribute* returnSub(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attrib
     if (getAttributeType(oper1) == getAttributeType(oper2) && (getAttributeType(oper2) != Bool))
     {
         Code3D *codeSub;
-        Code3D *codeMod;
         Attribute *aux = createVariable(getVariableName(), getAttributeType(oper1));
         if (getAttributeType(oper1) == Float)
-        {    
 			codeSub = newCode(COM_MINUS_FLOAT);
-			setFloatVal(aux,getFloatVal(oper1) - getFloatVal(oper2));
-        }
 		if (getAttributeType(oper1) == Int)
-        {
 			codeSub = newCode(COM_MINUS_INT);											
-			codeMod = newCode(COM_MOD_INT);
-			setIntVal(aux,getIntVal(oper1) - getIntVal(oper2));
-        }
 		setCode3D(codeSub, oper1, oper2, aux);
 		add_code(lcode3d, codeSub); 
 		return aux;
@@ -677,7 +624,6 @@ Attribute* returnMod(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attrib
     if (getAttributeType(oper1) == getAttributeType(oper2) && (getAttributeType(oper2) == Int))
     {
         Attribute *aux = createVariable(getVariableName(), getAttributeType(oper1));
-		setIntVal(aux,getIntVal(oper1) % getIntVal(oper2));
         Code3D *codeMod;
 		codeMod = newCode(COM_MOD_INT);
 		setCode3D(codeMod, oper1, oper2, aux);
@@ -686,7 +632,7 @@ Attribute* returnMod(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attrib
     }
     else
     {
-		insertError(eq, toString("El operador \"", "%", "\" solo soporta tipo INT y/o no tiene ambos operandos del mismo tipo."));//debe soportar el Float ahora
+		insertError(eq, toString("El operador \"", "%", "\" solo soporta tipo INT y/o no tiene ambos operandos del mismo tipo."));
         return createVariable(getVariableName(), Int);
     }
 }
@@ -700,15 +646,9 @@ Attribute* returnDiv(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attrib
         Code3D *codeDiv;
         Attribute *aux = createVariable(getVariableName(), getAttributeType(oper1));
         if (getAttributeType(oper1) == Float)
-        {    
 			codeDiv = newCode(COM_DIV_FLOAT);
-			setFloatVal(aux,getFloatVal(oper1) / getFloatVal(oper2));
-        }
 		if (getAttributeType(oper1) == Int)
-		{
 			codeDiv = newCode(COM_DIV_INT);
-			setIntVal(aux,getIntVal(oper1) / getIntVal(oper2));
-        }
 		setCode3D(codeDiv, oper1, oper2, aux);
 		add_code(lcode3d, codeDiv);
 		return aux;
@@ -729,15 +669,9 @@ Attribute* returnMult(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attri
         Code3D *codeMult;
         Attribute *aux = createVariable(getVariableName(), getAttributeType(oper1));
         if (getAttributeType(oper1) == Float)
-		{
 			codeMult = newCode(COM_MULT_FLOAT);
-			setFloatVal(aux,getFloatVal(oper1) * getFloatVal(oper2));
-		}
 		if (getAttributeType(oper1) == Int)
-		{	
 			codeMult = newCode(COM_MULT_INT);
-			setIntVal(aux,getIntVal(oper1) * getIntVal(oper2));
-        }
 		setCode3D(codeMult, oper1, oper2, aux);
 		add_code(lcode3d, codeMult);
 		return aux;
@@ -756,7 +690,6 @@ Attribute* returnNot(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1)
     if (getAttributeType(oper1) == Bool)
     {
 		Attribute *aux = createVariable(getVariableName(), Bool);			
-		setBoolVal(aux, !(getBoolVal(oper1)));
 		Code3D *codeNot = newCode(COM_NOT);
 		setCode2D(codeNot, oper1, aux);
 		add_code(lcode3d, codeNot); 
@@ -778,15 +711,9 @@ Attribute* returnNeg(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1)
         Code3D *codeNeg;
         Attribute *aux = createVariable(getVariableName(), getAttributeType(oper1));
         if (getAttributeType(oper1) == Float)
-		{
 			codeNeg = newCode(COM_NEG_FLOAT);
-			setFloatVal(aux, -getFloatVal(oper1));
-		}
 		if (getAttributeType(oper1) == Int)
-		{	
 			codeNeg = newCode(COM_NEG_INT);
-			setIntVal(aux, -getIntVal(oper1));
-        }
 		setCode2D(codeNeg, oper1, aux);
 		add_code(lcode3d, codeNeg);
 		return aux;
