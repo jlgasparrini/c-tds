@@ -28,7 +28,7 @@ typedef struct
 } SymbolsTable;
 
 /* Initializes the SymbolsTable */
-void initializeSymbolsTable(SymbolsTable *aSymbolsTable);
+SymbolsTable* initializeSymbolsTable();
 
 /* Insert a element in the current level of the SymbolsTable. */
 void pushElement(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attribute *at);

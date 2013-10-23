@@ -34,8 +34,8 @@ typedef union {
 } Value;
 
 typedef struct {
-    int     type; // -1 : null, 0 : Attribute, 1 : label, 2 : Integer, 3 : Float, 4 : Bool, 5: StVariable
-    Value   *val; 
+    int   type; // -1 : null, 0 : Attribute, 1 : label, 2 : Integer, 3 : Float, 4 : Bool, 5: StVariable
+    Value val; 
 } Param;
 
 typedef struct {

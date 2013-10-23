@@ -46,6 +46,7 @@
 #define COM_NEG_FLOAT       34
 #define STORE_MEM_METHOD	35
 
+/* Returns the  */
 char* getCodeByID(int ID);
 
 char* getTypeByID(int type);

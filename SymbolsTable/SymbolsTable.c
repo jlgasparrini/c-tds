@@ -3,11 +3,12 @@
 #include "SymbolsTable.h"
 
 /* Initializes the SymbolsTable */
-void initializeSymbolsTable(SymbolsTable *aSymbolsTable)
+SymbolsTable* initializeSymbolsTable()
 {
-    aSymbolsTable = (SymbolsTable*) malloc(sizeof(SymbolsTable));
+	SymbolsTable *aSymbolsTable = (SymbolsTable*) malloc(sizeof(SymbolsTable));
     (*aSymbolsTable).top = NULL;
 	(*aSymbolsTable).currentLevel = 0;
+	return aSymbolsTable;
 }
 
 /* Insert a element in the current level of the SymbolsTable. */

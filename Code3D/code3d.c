@@ -34,6 +34,7 @@ bool isInt(Code3D *code, int param) {
     } else if (param == 3) {
         return code->param3->type == CodeINT;
     }  
+	return 0;
 }
 
 bool isFloat(Code3D *code, int param) {
@@ -44,6 +45,7 @@ bool isFloat(Code3D *code, int param) {
     } else if (param == 3) {
         return code->param3->type == CodeFLOAT;
     }      
+	return 0;
 }
 
 bool isBool(Code3D *code, int param) {
@@ -54,6 +56,7 @@ bool isBool(Code3D *code, int param) {
     } else if (param == 3) {
         return code->param3->type == CodeBOOL;
     }
+	return 0;
 }
 
 bool isLabel(Code3D *code, int param) {
@@ -64,6 +67,7 @@ bool isLabel(Code3D *code, int param) {
     } else if (param == 3) {
         return code->param3->type == CodeLABEL;
     }
+	return 0;
 }
 
 bool isAttribute(Code3D *code, int param) {
@@ -74,6 +78,7 @@ bool isAttribute(Code3D *code, int param) {
     } else if (param == 3) {
         return code->param3->type == CodeATTRI;
     }    
+	return 0;
 }
 
 bool isVariable(Code3D *code, int param){
@@ -84,6 +89,7 @@ bool isVariable(Code3D *code, int param){
     } else if (param == 3) {
         return code->param3->type == CodeVARIABLE;
     }   
+	return 0;
 }
 
 bool isNull(Code3D *code, int param) {
@@ -93,70 +99,76 @@ bool isNull(Code3D *code, int param) {
         return code->param2->type == CodeNULL;
     } else if (param == 3) {
         return code->param3->type == CodeNULL;
-    }    
+	}
+	return 1;
 }
 
 char* getLabel(Code3D *code, int param) {
     if (param == 1) {
-        return code->param1->val->label;
+        return code->param1->val.label;
     } else if (param == 2) {
-        return code->param2->val->label;
+        return code->param2->val.label;
     } else if (param == 3) {
-        return code->param3->val->label;
+        return code->param3->val.label;
     }    
+	return "";
 }
 
 Attribute* getAttribute(Code3D *code, int param) {
     if (param == 1) {
-        return code->param1->val->attri;
+        return code->param1->val.attri;
     } else if (param == 2) {
-        return code->param2->val->attri;
+        return code->param2->val.attri;
     } else if (param == 3) {
-        return code->param3->val->attri;
+        return code->param3->val.attri;
     }
+	return NULL;
 }
 
 StVariable* getVariable(Code3D *code, int param){
     if (param == 1) {
-        return code->param1->val->variable;
+        return code->param1->val.variable;
     } else if (param == 2) {
-        return code->param2->val->variable;
+        return code->param2->val.variable;
     } else if (param == 3) {
-        return code->param3->val->variable;
+        return code->param3->val.variable;
     }
+	return NULL;
 }
 
 int getInt(Code3D *code, int param) {
     if (param == 1) {
-        return code->param1->val->intAttri;
+        return code->param1->val.intAttri;
     } else if (param == 2) {
-        return code->param2->val->intAttri;
+        return code->param2->val.intAttri;
     } else if (param == 3) {
-        return code->param3->val->intAttri;
+        return code->param3->val.intAttri;
     }    
+	return 0;
 }
 
 float getFloat(Code3D *code, int param) {
     if (param == 1) {
-        return code->param1->val->floatAttri;
+        return code->param1->val.floatAttri;
     } else if (param == 2) {
-        return code->param2->val->floatAttri;
+        return code->param2->val.floatAttri;
     } else if (param == 3) {
-        return code->param3->val->floatAttri;
+        return code->param3->val.floatAttri;
     }    
+	return 0.0;
 }
 
 int getBool(Code3D *code, int param) {
     if (param == 1) {
-        if (code->param1->val->boolAttri) {
+        if (code->param1->val.boolAttri) {
             return 1;
         }
     } else if (param == 2) {
-        if (code->param2->val->boolAttri) {
+        if (code->param2->val.boolAttri) {
             return 1;
         }
     } else if (param == 3) {
-        if (code->param3->val->boolAttri) {
+        if (code->param3->val.boolAttri) {
             return 1;
         }
     }
@@ -167,48 +179,39 @@ int getBool(Code3D *code, int param) {
 void setBool(Code3D *code, int param, bool boolAttri) {
     if (param == 1) {
         code->param1->type = CodeBOOL;
-        code->param1->val = (Value*) malloc(sizeof(Value));
-        code->param1->val->boolAttri = boolAttri;
+        code->param1->val.boolAttri = boolAttri;
     } else if (param == 2) {
         code->param2->type = CodeBOOL;
-        code->param2->val = (Value*) malloc(sizeof(Value));
-        code->param2->val->boolAttri = boolAttri;
+        code->param2->val.boolAttri = boolAttri;
     } else if (param == 3) {
         code->param3->type = CodeBOOL;
-        code->param3->val = (Value*) malloc(sizeof(Value));
-        code->param3->val->boolAttri = boolAttri;
+        code->param3->val.boolAttri = boolAttri;
     }
 }
 
 void setFloat(Code3D *code, int param, float floatAttri) {
     if (param == 1) {
         code->param1->type = CodeFLOAT;
-        code->param1->val = (Value*) malloc(sizeof(Value));
-        code->param1->val->floatAttri = floatAttri;
+        code->param1->val.floatAttri = floatAttri;
     } else if (param == 2) {
         code->param2->type = CodeFLOAT;
-        code->param2->val = (Value*) malloc(sizeof(Value));
-        code->param2->val->floatAttri = floatAttri;
+        code->param2->val.floatAttri = floatAttri;
     } else if (param == 3) {
         code->param3->type = CodeFLOAT;
-        code->param3->val = (Value*) malloc(sizeof(Value));
-        code->param3->val->floatAttri = floatAttri;
+        code->param3->val.floatAttri = floatAttri;
     }    
 }
 
 void setInt(Code3D *code, int param, int intAttri) {
     if (param == 1) {
         code->param1->type = CodeINT;
-        code->param1->val = (Value*) malloc(sizeof(Value));
-        code->param1->val->intAttri = intAttri;
+        code->param1->val.intAttri = intAttri;
     } else if (param == 2) {
         code->param2->type = CodeINT;
-        code->param2->val = (Value*) malloc(sizeof(Value));
-        code->param2->val->intAttri = intAttri;
+        code->param2->val.intAttri = intAttri;
     } else if (param == 3) {
         code->param3->type = CodeINT;
-        code->param3->val = (Value*) malloc(sizeof(Value));
-        code->param3->val->intAttri = intAttri;
+        code->param3->val.intAttri = intAttri;
     }
 }
 
@@ -216,51 +219,48 @@ void setInt(Code3D *code, int param, int intAttri) {
 void setLabel(Code3D *code, int param, char *label) {
     if (param == 1) {
         code->param1->type = CodeLABEL;
-        code->param1->val = (Value*) malloc(sizeof(Value));
-        code->param1->val->label = malloc(strlen(label) + 1);
-        strcpy(code->param1->val->label, label);
+        code->param1->val.label = malloc(strlen(label) + 1);
+        strcpy(code->param1->val.label, label);
     } else if (param == 2) {
         code->param2->type = CodeLABEL;
-        code->param2->val = (Value*) malloc(sizeof(Value));
-        code->param2->val->label = malloc(strlen(label) + 1);
-        strcpy(code->param2->val->label, label);
+        code->param2->val.label = malloc(strlen(label) + 1);
+        strcpy(code->param2->val.label, label);
     } else if (param == 3) {
         code->param3->type = CodeLABEL;
-        code->param3->val = (Value*) malloc(sizeof(Value));
-        code->param3->val->label = malloc(strlen(label) + 1);
-        strcpy(code->param3->val->label, label);
+        code->param3->val.label = malloc(strlen(label) + 1);
+        strcpy(code->param3->val.label, label);
     }    
 }
 
 void setAttribute(Code3D *code, int param, Attribute *attri) {
     if (param == 1) {
         code->param1->type = CodeATTRI;
-        code->param1->val = (Value*) malloc(sizeof(Value));
-        code->param1->val->attri = attri;
+        code->param1->val.attri = (Attribute*) malloc(sizeof(Attribute));
+        code->param1->val.attri = attri;
     } else if (param == 2) {
         code->param2->type = CodeATTRI;
-        code->param2->val = (Value*) malloc(sizeof(Value));
-        code->param2->val->attri = attri;
+        code->param2->val.attri = (Attribute*) malloc(sizeof(Attribute));
+        code->param2->val.attri = attri;
     } else if (param == 3) {
         code->param3->type = CodeATTRI;
-        code->param3->val = (Value*) malloc(sizeof(Value));
-        code->param3->val->attri = attri;
+        code->param3->val.attri = (Attribute*) malloc(sizeof(Attribute));
+        code->param3->val.attri = attri;
     }    
 }
 
 void setVariable(Code3D *code, int param, StVariable *variable){
 	    if (param == 1) {
         code->param1->type = CodeVARIABLE;
-        code->param1->val = (Value*) malloc(sizeof(Value));
-        code->param1->val->variable = variable;
+        code->param1->val.variable = (StVariable*) malloc(sizeof(StVariable));
+        code->param1->val.variable = variable;
     } else if (param == 2) {
         code->param2->type = CodeVARIABLE;
-        code->param2->val = (Value*) malloc(sizeof(Value));
-        code->param2->val->variable = variable;
+        code->param2->val.variable = (StVariable*) malloc(sizeof(StVariable));
+        code->param2->val.variable = variable;
     } else if (param == 3) {
         code->param3->type = CodeVARIABLE;
-        code->param3->val = (Value*) malloc(sizeof(Value));
-        code->param3->val->variable = variable;
+        code->param3->val.variable = (StVariable*) malloc(sizeof(StVariable));
+        code->param3->val.variable = variable;
     } 
 }
 
@@ -311,38 +311,22 @@ void showCode(Code3D *code, int param)
     else 
 	{
         if (isInt(code, param))
-		{
-            printf("(I)");
             printf("%i   |    ", getInt(code, param));
-        }
         if (isFloat(code, param))
-		{
-            printf("(F)");
             printf("%f |  ", getFloat(code, param));
-        }
         if (isBool(code, param))
-		{
-            printf("(B)");
             printf("%s |  ", getBool(code, param)? "true" : "false");
-        }
         if (isLabel(code, param))
-		{
-            printf("(L)");
             printf("%s |  ", getLabel(code, param));
-        }
         if (isAttribute(code, param))
-		{
-            printf("(A)");
-			if (getID(getAttribute(code,param)) == NULL || strcmp(getID(getAttribute(code,param)),"") == 0)
-	            printf("%d |  ", getType(getAttribute(code,param)->type));
-			else				
-	            printf("%s |  ", getID(getAttribute(code,param)));
-        }
+	        printf("%s |  ", getID(getAttribute(code,param)));
     }
 }
 
 void toString3DC(Code3D *code) {
     printf("   %s   |   ", getCodeByID(getCommand(code)));
+
+	/* Shows the Code in the right way */
 	if (isNull(code, 3))
 	{
 		if (isNull(code, 2))
@@ -364,6 +348,4 @@ void toString3DC(Code3D *code) {
 		showCode(code,2);
 	}
     printf("\n------------------------------------------------------------\n");
-    }
-
-
+}

@@ -3,8 +3,7 @@
 
 char* getCodeByID(int ID)
 {
-    switch (ID)
-    {
+    switch (ID) {
         case 0: return "LOAD_CONST";
         case 1: return "LOAD_MEM";
         case 2: return "STORE_CONST";

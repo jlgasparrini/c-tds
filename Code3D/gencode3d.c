@@ -48,3 +48,16 @@ void add_MethodCall(LCode3D *lcode3d, Code3D *code,  Attribute *attri1,  StVaria
 	add_code(lcode3d, code);
 }
 
+/* Prints on the screen the 3d code that contains the list lcode3d */
+void show3DCode(LCode3D *lcode3d)
+{
+	int cantCodes = codeSize(lcode3d);
+    int i;
+ 	printf("Lista de codigos de 3 direcciones:\n");
+	printf("---------------------------------------------------------------------------\n");
+	printf("     Operacion     |       res       |       arg1       |       arg2       \n");
+	printf("---------------------------------------------------------------------------\n");
+    for (i = 0; i < cantCodes; i++)
+		toString3DC(get_code(lcode3d, i));
+
+}
