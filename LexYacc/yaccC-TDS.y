@@ -68,10 +68,10 @@ int main( argc, argv )
     char **argv; {
         ++argv, --argc;	/* skip over program name */
         if ( argc > 0 )
-                yyin = fopen( argv[0], "r" );
+			yyin = fopen( argv[0], "r" );
         else
-                yyin = stdin;
-                yyparse();
+			yyin = stdin;
+			yyparse();
 	return 0;
 }
 
@@ -86,6 +86,7 @@ void finalizar() {
 		printf("-----Corriendo interprete------\n");
 		initInterpreter(listmlabel, lcode3d);
 		if (printFound == 1)
+//			printCorrectOrder(printMsg);
 			printInverseOrder(printMsg);	
 		printf("-----Se acabo de correr el interprete.-----\n");
 	}
@@ -269,13 +270,10 @@ statement     :    conditional
 											char *val;
 											if (getAttributeType($2) == Int)
 											{
-												printf("original: %d\n",getIntVal($2));
-												printf("en string: %s\n",intToString(getIntVal($2)));
 												val = (char*) malloc (strlen(printMessage)+digitAmount(getIntVal($2)+strlen("\n"))*sizeof(char));
 												strcat(val,printMessage);
 												strcat(val,intToString(getIntVal($2)));
 												strcat(val,"\n");
-												printf("%s",val);
 											}
 			
 											if (getAttributeType($2) == Float)
@@ -286,7 +284,6 @@ statement     :    conditional
 												strcat(val,printMessage);
 												strcat(val,numero);
 												strcat(val,"\n");
-												printf("%s",val);
 											}
 			
 											if (getAttributeType($2) == Bool)
@@ -298,7 +295,6 @@ statement     :    conditional
 												if (getBoolVal($2) == False)	
 													strcat(val,"false");
 												strcat(val,"\n");
-												printf("%s",val);
 											}
 											pushString(printMsg,val);
 										}

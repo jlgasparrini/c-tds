@@ -34,4 +34,10 @@ char* popString(StringStack *s);
 /* Return the top string of the stack "s". */
 char* topString(StringStack *s);
 
+/* Prints the stack in the correct order */
+void printCorrectOrder(StringStack *s);
+
+/* Prints the stack in the inverse order */
+void printInverseOrder(StringStack *s);
+
 #endif

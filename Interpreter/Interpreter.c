@@ -27,21 +27,21 @@ void runOperation(int position)
 				break;
 
 		/* STORE_MEM */
-        case 1: if (getAttributeType((*(*code).param2).val.attri) == Int)
+        case 1: if (getAttributeType((*(*code).param1).val.attri) == Int)
 					setIntVal((*(*code).param2).val.attri, getIntVal((*(*code).param1).val.attri));
-				if (getAttributeType((*(*code).param2).val.attri) == Float)
+				if (getAttributeType((*(*code).param1).val.attri) == Float)
 					setFloatVal((*(*code).param2).val.attri, getFloatVal((*(*code).param1).val.attri));
-				if (getAttributeType((*(*code).param2).val.attri) == Bool)
+				if (getAttributeType((*(*code).param1).val.attri) == Bool)
 					setBoolVal((*(*code).param2).val.attri, getBoolVal((*(*code).param1).val.attri));
 				break;
 
 		/* COM_MINUS_INT */
-//		case 4: setIntVal((*(*code).param3).val.attri, (*(*code).param1).val.intAttri - (*(*code).param2).val.intAttri);
+//		case 2: setIntVal((*(*code).param3).val.attri, (*(*code).param1).val.intAttri - (*(*code).param2).val.intAttri);
         case 2: setIntVal((*(*code).param3).val.attri, getIntVal((*(*code).param1).val.attri) - getIntVal((*(*code).param2).val.attri));
 				break;
 
 		/* COM_ADD_INT */
-//		case 5: setIntVal((*(*code).param3).val.attri, (*(*code).param1).val.intAttri + (*(*code).param2).val.intAttri);
+//		case 3: setIntVal((*(*code).param3).val.attri, (*(*code).param1).val.intAttri + (*(*code).param2).val.intAttri);
         case 3: setIntVal((*(*code).param3).val.attri, getIntVal((*(*code).param1).val.attri) + getIntVal((*(*code).param2).val.attri));
 				break;
 
@@ -170,11 +170,11 @@ void runOperation(int position)
 				 break;
 
 		/* COM_NEG_INT */
-        case 24: 
+        case 24: setIntVal((*(*code).param2).val.attri, -getIntVal((*(*code).param1).val.attri));
 				 break;
 
 		/* COM_NEG_FLOAT */
-        case 25: 
+        case 25: setFloatVal((*(*code).param2).val.attri, -getFloatVal((*(*code).param1).val.attri));
 				 break;
 
 		/* STORE_MEM_METHOD */
