@@ -15,7 +15,7 @@ typedef struct {
 
 LCode3D* initLCode3D();
 
-int add_code(LCode3D *lcode3d, Code3D *code); 
+void add_code(LCode3D *lcode3d, Code3D *code); 
 Code3D* get_code(LCode3D *lcode3d, int index);
 int codeSize(LCode3D *lcode3d);
 

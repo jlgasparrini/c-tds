@@ -53,3 +53,17 @@ char* topString(StringStack *s)
         return (*(*s).first).val;
     return "";
 }
+
+/* Prints the stack in the inverse order */
+void printInverseOrder(StringStack *s)
+{
+	int i;
+	StringStack *aux = initializeSS();
+	for (i = 0; i < (*s).size; i++)
+		pushString(aux,popString(s));
+	for (i = 0; i < (*aux).size; i++)
+	{
+		printf("%s",topString(aux));	
+		pushString(s,popString(aux));
+	}
+}

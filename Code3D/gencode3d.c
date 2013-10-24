@@ -13,9 +13,8 @@ LCode3D* initLCode3D() {
     return new;
 }
 
-int add_code(LCode3D *lcode3d, Code3D *code) {
-        add_listC3D((*lcode3d).codes, code, size_listC3D((*lcode3d).codes));
-        return -1;
+void add_code(LCode3D *lcode3d, Code3D *code) {
+	add_listC3D((*lcode3d).codes, code, size_listC3D((*lcode3d).codes));
 }
 
 Code3D* get_code(LCode3D *lcode3d, int index) {
@@ -59,5 +58,4 @@ void show3DCode(LCode3D *lcode3d)
 	printf("---------------------------------------------------------------------------\n");
     for (i = 0; i < cantCodes; i++)
 		toString3DC(get_code(lcode3d, i));
-
 }

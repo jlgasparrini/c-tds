@@ -5,9 +5,10 @@
 #ifndef INTERPRETER_H
 #define INTERPRETER_H
 
-#include "listc3d.h"
+#include "../ListMethod/genlistml.h"
+#include "../Code3D/gencode3d.h"
 
-/* Initialize the interpreter with the code three directions. */
-void runInterpreter(lcode3D *list);
+/* Initializes the interpreter and runs it */
+void initInterpreter(ListMLabel *labelL, LCode3D *codeL);
 
 #endif

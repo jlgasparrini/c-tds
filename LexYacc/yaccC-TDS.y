@@ -39,6 +39,10 @@ char* newLabelName(char* msg) {
    	return labelName;
 }
 
+/* To show after compilation, for interpreter */
+StringStack *printMsg;
+char *printMessage = "Print. El valor es: ";
+unsigned char printFound = 0;
 
 int yydebug = 1;
 
@@ -75,9 +79,16 @@ void finalizar() {
     if ((*errorQ).size > 0) 
         yyerror("incorrecto");
     else
+	{
         // show the list of code 3D
 		show3DCode(lcode3d);
-	printf("------Se termino de parsear.----------\n");
+		printf("------Se termino de parsear.----------\n");
+		printf("-----Corriendo interprete------\n");
+		initInterpreter(listmlabel, lcode3d);
+		if (printFound == 1)
+			printInverseOrder(printMsg);	
+		printf("-----Se acabo de correr el interprete.-----\n");
+	}
 }
 
 void out(char *msg) {
@@ -97,7 +108,7 @@ void out(char *msg) {
 /* %token<stringValue> es solo para tokens */
 %token<stringValue> FLOAT INTEGER BOOLEAN INTW FLOATW BOOLEANW ID PLUSEQUAL MINUSEQUAL
 %token EQUAL DISTINCT GEQUAL LEQUAL OR AND 
-%token BREAK IF CONTINUE ELSE RETURN WHILE CLASS FOR VOID EXTERNINVK STRING 
+%token BREAK IF CONTINUE ELSE RETURN WHILE CLASS FOR VOID EXTERNINVK STRING PRINT
 %nonassoc '<' '>' EQUAL DISTINCT GEQUAL LEQUAL
 %left '+' '-'
 %left '*' '/'
@@ -127,6 +138,7 @@ program       :    CLASS ID '{' '}' {
 									labelsFor = newStack();
 									listmlabel = initL();
 									lcode3d = initLCode3D();
+									printMsg = initializeSS();
 					} body {
 								checkMain(errorQ,symbolsTable); 
 								popLevel(symbolsTable); 
@@ -291,6 +303,7 @@ action        :
 					}
               |    asignation 
               |    method_call                        
+			  |	   print
               ;
               
 asignation    :    location assig_op expression {
@@ -302,6 +315,46 @@ assig_op      :    '=' {$$ = "=";}
               |    PLUSEQUAL {$$ = "+=";}
               |    MINUSEQUAL {$$ = "-=";}
               ;
+
+print		  :	   PRINT expression {
+							printFound = 1;
+							char *val;
+							if (getAttributeType($2) == Int)
+							{
+								printf("original: %d\n",getIntVal($2));
+								printf("en string: %s\n",intToString(getIntVal($2)));
+								val = (char*) malloc (strlen(printMessage)+digitAmount(getIntVal($2)+strlen("\n"))*sizeof(char));
+								strcat(val,printMessage);
+								strcat(val,intToString(getIntVal($2)));
+								strcat(val,"\n");
+								printf("%s",val);
+							}
+
+							if (getAttributeType($2) == Float)
+							{ 
+								val = (char*) malloc ((strlen(printMessage)+50+strlen("\n"))*sizeof(char));
+								char *numero = (char*) malloc (50*sizeof(char));
+								sprintf(numero, "%f", getFloatVal($2)); /* Here the float is transformed into a string */
+								strcat(val,printMessage);
+								strcat(val,numero);
+								strcat(val,"\n");
+								printf("%s",val);
+							}
+
+							if (getAttributeType($2) == Bool)
+							{
+								val = (char*) malloc ((strlen(printMessage)+5+strlen("\n"))*sizeof(char));
+								strcat(val,printMessage);
+								if (getBoolVal($2) == True)	
+									strcat(val,"true");
+								if (getBoolVal($2) == False)	
+									strcat(val,"false");
+								strcat(val,"\n");
+								printf("%s",val);
+							}
+							pushString(printMsg,val);
+						}
+			  ;
 
 /* -------------------- END OF STATEMENTS ------------------------------- */
 

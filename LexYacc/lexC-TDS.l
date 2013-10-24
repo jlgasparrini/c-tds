@@ -59,6 +59,7 @@ externinvk  "externinvk"
 ascii		[-!#-:<-~ ]	
 obracket	"["
 cbracket	"]"
+print		"print"
 
 %%
 
@@ -99,6 +100,7 @@ cbracket	"]"
 {gequal}					   	{columnNumb=columnNumb+strlen(yytext); return(GEQUAL);}
 {or}                            {columnNumb=columnNumb+strlen(yytext); return(OR);}
 {and}                           {columnNumb=columnNumb+strlen(yytext); return(AND);}
+{print}							{columnNumb=columnNumb+strlen(yytext); return(PRINT);}
 {string}                        {columnNumb=columnNumb+strlen(yytext); return(STRING);}
 {externinvk}					{columnNumb=columnNumb+strlen(yytext); return(EXTERNINVK);}
 {true}                          {columnNumb=columnNumb+strlen(yytext); yylval.stringValue = strdup(yytext); return(BOOLEAN);}
