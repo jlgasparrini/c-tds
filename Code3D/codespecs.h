@@ -8,33 +8,34 @@
 
 #include "code3d.h"
 
-#define LOAD_CONST        0 
-#define STORE_MEM         1 
-#define COM_MINUS_INT     2 
-#define COM_ADD_INT       3 
-#define COM_MULT_INT      4 
-#define COM_DIV_INT       5 
-#define COM_MOD_INT       6 
-#define COM_MINUS_FLOAT	  7
-#define COM_ADD_FLOAT     8
-#define COM_MULT_FLOAT    9
-#define COM_DIV_FLOAT    10
-#define COM_EQ           11
-#define COM_DIST         12
-#define COM_GT           13
-#define COM_LR           14
-#define COM_GEQ          15
-#define COM_LEQ          16
-#define COM_OR           17
-#define COM_AND          18
-#define COM_NOT          19
-#define COM_MARK         20
+#define LOAD_CONST       0 
+#define STORE_MEM        1 
+#define MINUS_INT        2 
+#define ADD_INT          3 
+#define MULT_INT         4 
+#define DIV_INT          5 
+#define MOD_INT          6 
+#define MINUS_FLOAT	     7
+#define ADD_FLOAT        8
+#define MULT_FLOAT       9
+#define DIV_FLOAT        10
+#define EQ               11
+#define DIST             12
+#define GT               13
+#define LR               14
+#define GEQ              15
+#define LEQ              16
+#define OR               17
+#define AND              18
+#define NOT              19
+#define MARK             20
 #define GOTOLABEL        21
 #define GOTOLABEL_COND   22
-#define COM_RETURN       23
-#define COM_NEG_INT      24
-#define COM_NEG_FLOAT    25
+#define RETURN           23
+#define NEG_INT          24
+#define NEG_FLOAT        25
 #define STORE_MEM_METHOD 26
+#define PSADINT            27
 
 /* Returns the respective code of an ID */
 char* getCodeByID(int ID);

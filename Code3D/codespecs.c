@@ -6,33 +6,34 @@ char* getCodeByID(int ID)
     switch (ID) {
 		case  0: return "LOAD_CONST";
 		case  1: return "STORE_MEM";
-		case  2: return "COM_MINUS_INT";
-		case  3: return "COM_ADD_INT";
-		case  4: return "COM_MULT_INT";
-		case  5: return "COM_DIV_INT";
-		case  6: return "COM_MOD_INT";
-        case  7: return "COM_MINUS_FLOAT";
-        case  8: return "COM_ADD_FLOAT";
-        case  9: return "COM_MULT_FLOAT";
-        case 10: return "COM_DIV_FLOAT";
-        case 11: return "COM_EQ";
-        case 12: return "COM_DIST";
-        case 13: return "COM_GT";
-        case 14: return "COM_LR";
-        case 15: return "COM_GEQ";
-        case 16: return "COM_LEQ";
-        case 17: return "COM_OR";
-        case 18: return "COM_AND";
-        case 19: return "COM_NOT";
-        case 20: return "COM_MARK";
+		case  2: return "MINUS_INT";
+		case  3: return "ADD_INT";
+		case  4: return "MULT_INT";
+		case  5: return "DIV_INT";
+		case  6: return "MOD_INT";
+        case  7: return "MINUS_FLOAT";
+        case  8: return "ADD_FLOAT";
+        case  9: return "MULT_FLOAT";
+        case 10: return "DIV_FLOAT";
+        case 11: return "EQ";
+        case 12: return "DIST";
+        case 13: return "GT";
+        case 14: return "LR";
+        case 15: return "GEQ";
+        case 16: return "LEQ";
+        case 17: return "OR";
+        case 18: return "AND";
+        case 19: return "NOT";
+        case 20: return "MARK";
         case 21: return "GOTOLABEL";
         case 22: return "GOTOLABEL_COND";
-        case 23: return "COM_RETURN";
-        case 24: return "COM_NEG_INT";
-        case 25: return "COM_NEG_FLOAT";
+        case 23: return "RETURN";
+        case 24: return "NEG_INT";
+        case 25: return "NEG_FLOAT";
 		case 26: return "STORE_MEM_METHOD";
+		case 27: return "PRINT";
     }
-    return "";
+    return "NULL!";
 }
 
 char* getTypeByID(int type)
@@ -47,5 +48,5 @@ char* getTypeByID(int type)
         case  4 : return "Bool" ;
 		case  5 : return "Variable";
     }
-    return "";
+    return "NULL!";
 }

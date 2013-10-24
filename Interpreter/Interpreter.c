@@ -28,59 +28,60 @@ void runOperation(int position)
 
 		/* STORE_MEM */
         case 1: if (getAttributeType((*(*code).param1).val.attri) == Int)
-					setIntVal((*(*code).param2).val.attri, getIntVal((*(*code).param1).val.attri));
+                    setIntVal((*(*code).param2).val.attri, getIntVal((*(*code).param1).val.attri));
 				if (getAttributeType((*(*code).param1).val.attri) == Float)
-					setFloatVal((*(*code).param2).val.attri, getFloatVal((*(*code).param1).val.attri));
+				    setFloatVal((*(*code).param2).val.attri, getFloatVal((*(*code).param1).val.attri));
 				if (getAttributeType((*(*code).param1).val.attri) == Bool)
-					setBoolVal((*(*code).param2).val.attri, getBoolVal((*(*code).param1).val.attri));
+				    setBoolVal((*(*code).param2).val.attri, getBoolVal((*(*code).param1).val.attri));
 				break;
 
-		/* COM_MINUS_INT */
+		/* MINUS_INT */
 //		case 2: setIntVal((*(*code).param3).val.attri, (*(*code).param1).val.intAttri - (*(*code).param2).val.intAttri);
         case 2: setIntVal((*(*code).param3).val.attri, getIntVal((*(*code).param1).val.attri) - getIntVal((*(*code).param2).val.attri));
 				break;
 
-		/* COM_ADD_INT */
+		/* ADD_INT */
 //		case 3: setIntVal((*(*code).param3).val.attri, (*(*code).param1).val.intAttri + (*(*code).param2).val.intAttri);
         case 3: setIntVal((*(*code).param3).val.attri, getIntVal((*(*code).param1).val.attri) + getIntVal((*(*code).param2).val.attri));
 				break;
 
-		/* COM_MULT_INT */
+		/* MULT_INT */
 //		case 4: setIntVal((*(*code).param3).val.attri, (*(*code).param1).val.intAttri * (*(*code).param2).val.intAttri);
         case 4: setIntVal((*(*code).param3).val.attri, getIntVal((*(*code).param1).val.attri) * getIntVal((*(*code).param2).val.attri));
+                printf("dsjadsahdas       %d   \n",((*(*code).param3).val.attri)->decl.variable.value.intVal );
 				break;
 
-		/* COM_DIV_INT */
+		/* DIV_INT */
 //		case 5: setIntVal((*(*code).param3).val.attri, (*(*code).param1).val.intAttri / (*(*code).param2).val.intAttri);
         case 5: setIntVal((*(*code).param3).val.attri, getIntVal((*(*code).param1).val.attri) / getIntVal((*(*code).param2).val.attri));
 				break;
 
-		/* COM_MOD_INT */
+		/* MOD_INT */
 //		case 6: setIntVal((*(*code).param3).val.attri, (*(*code).param1).val.intAttri % (*(*code).param2).val.intAttri);
         case 6: setIntVal((*(*code).param3).val.attri, getIntVal((*(*code).param1).val.attri) % getIntVal((*(*code).param2).val.attri));
 				break;
 
-		/* COM_MINUS_FLOAT */
+		/* MINUS_FLOAT */
 //		case 7: setFloatVal((*(*code).param3).val.attri, (*(*code).param1).val.intAttri - (*(*code).param2).val.intAttri);
         case 7: setFloatVal((*(*code).param3).val.attri, getFloatVal((*(*code).param1).val.attri) - getFloatVal((*(*code).param2).val.attri));
 				break;
 
-		/* COM_ADD_FLOAT */
+		/* ADD_FLOAT */
 //		case 8: setFloatVal((*(*code).param3).val.attri, (*(*code).param1).val.intAttri + (*(*code).param2).val.intAttri);
         case 8: setFloatVal((*(*code).param3).val.attri, getFloatVal((*(*code).param1).val.attri) + getFloatVal((*(*code).param2).val.attri));
 				break;
 
-		/* COM_MULT_FLOAT */
+		/* MULT_FLOAT */
 //		case 9: setFloatVal((*(*code).param3).val.attri, (*(*code).param1).val.intAttri * (*(*code).param2).val.intAttri);
         case 9: setFloatVal((*(*code).param3).val.attri, getFloatVal((*(*code).param1).val.attri) * getFloatVal((*(*code).param2).val.attri));
 				break;
 
-		/* COM_DIV_FLOAT */
+		/* DIV_FLOAT */
 //		case 10: setFloatVal((*(*code).param3).val.attri, (*(*code).param1).val.intAttri / (*(*code).param2).val.intAttri);
         case 10: setFloatVal((*(*code).param3).val.attri, getFloatVal((*(*code).param1).val.attri) / getFloatVal((*(*code).param2).val.attri));
 				break;
 
-        /* COM_EQ */
+        /* EQ */
         case 11:
 				if (getAttributeType((*(*code).param2).val.attri) == Int)
 					setBoolVal((*(*code).param3).val.attri, getIntVal((*(*code).param1).val.attri) == getIntVal((*(*code).param2).val.attri));
@@ -90,7 +91,7 @@ void runOperation(int position)
 					setBoolVal((*(*code).param2).val.attri, getBoolVal((*(*code).param1).val.attri) == getBoolVal((*(*code).param2).val.attri));
 				break;
 
-        /* COM_DIST */
+        /* DIST */
         case 12:
 				if (getAttributeType((*(*code).param2).val.attri) == Int)
 					setBoolVal((*(*code).param3).val.attri, getIntVal((*(*code).param1).val.attri) != getIntVal((*(*code).param2).val.attri));
@@ -100,7 +101,7 @@ void runOperation(int position)
 					setBoolVal((*(*code).param2).val.attri, getBoolVal((*(*code).param1).val.attri) != getBoolVal((*(*code).param2).val.attri));
 				break;
 
-        /* COM_GT */
+        /* GT */
         case 13:
 				if (getAttributeType((*(*code).param2).val.attri) == Int)
 					setBoolVal((*(*code).param3).val.attri, getIntVal((*(*code).param1).val.attri) > getIntVal((*(*code).param2).val.attri));
@@ -110,7 +111,7 @@ void runOperation(int position)
 					setBoolVal((*(*code).param3).val.attri, getBoolVal((*(*code).param1).val.attri) > getBoolVal((*(*code).param2).val.attri));
 				break;
 
-        /* COM_LR */
+        /* LR */
         case 14: 
 				if (getAttributeType((*(*code).param2).val.attri) == Int)
 					setBoolVal((*(*code).param3).val.attri, getIntVal((*(*code).param1).val.attri) < getIntVal((*(*code).param2).val.attri));
@@ -120,7 +121,7 @@ void runOperation(int position)
 					setBoolVal((*(*code).param3).val.attri, getBoolVal((*(*code).param1).val.attri) < getBoolVal((*(*code).param2).val.attri));
 				break;
 
-        /* COM_GEQ */
+        /* GEQ */
         case 15:
 				if (getAttributeType((*(*code).param2).val.attri) == Int)
 					setBoolVal((*(*code).param3).val.attri, getIntVal((*(*code).param1).val.attri) >= getIntVal((*(*code).param2).val.attri));
@@ -130,7 +131,7 @@ void runOperation(int position)
 					setBoolVal((*(*code).param3).val.attri, getBoolVal((*(*code).param1).val.attri) >= getBoolVal((*(*code).param2).val.attri));
 				break;
 
-        /* COM_LEQ */
+        /* LEQ */
         case 16:
 				if (getAttributeType((*(*code).param2).val.attri) == Int)
 					setBoolVal((*(*code).param3).val.attri, getIntVal((*(*code).param1).val.attri) <= getIntVal((*(*code).param2).val.attri));
@@ -139,21 +140,21 @@ void runOperation(int position)
 				if (getAttributeType((*(*code).param2).val.attri) == Bool)
 					setBoolVal((*(*code).param3).val.attri, getBoolVal((*(*code).param1).val.attri) <= getBoolVal((*(*code).param2).val.attri));
 				break;
-		/* COM_OR */
+		/* OR */
 //      case 17: setBoolVal((*(*code).param3).val.attri, (*(*code).param1).val.boolAttri || (*(*code).param2).val.boolAttri);
         case 17: setBoolVal((*(*code).param3).val.attri, getBoolVal((*(*code).param1).val.attri) || getBoolVal((*(*code).param2).val.attri));
 				 break;
 
-		/* COM_AND */
+		/* AND */
 //      case 18: setBoolVal((*(*code).param3).val.attri, (*(*code).param1).val.boolAttri && (*(*code).param2).val.boolAttri);
         case 18: setBoolVal((*(*code).param3).val.attri, getBoolVal((*(*code).param1).val.attri) && getBoolVal((*(*code).param2).val.attri));
 				 break;
 
-		/* COM_NOT */
+		/* NOT */
         case 19: setBoolVal((*(*code).param2).val.attri, !getBoolVal((*(*code).param1).val.attri));
 				 break;
 
-		/* COM_MARK */
+		/* MARK */
         case 20: 
 				 break;
 
@@ -165,21 +166,24 @@ void runOperation(int position)
         case 22: 
 				 break;
 
-		/* COM_RETURN */
+		/* RETURN */
         case 23: 
 				 break;
 
-		/* COM_NEG_INT */
+		/* NEG_INT */
         case 24: setIntVal((*(*code).param2).val.attri, -getIntVal((*(*code).param1).val.attri));
 				 break;
 
-		/* COM_NEG_FLOAT */
+		/* NEG_FLOAT */
         case 25: setFloatVal((*(*code).param2).val.attri, -getFloatVal((*(*code).param1).val.attri));
 				 break;
 
 		/* STORE_MEM_METHOD */
 		case 26: 
 				 break;
+        /* PRINT */
+		case 27: 
+                 break;
     }
   
 }
@@ -202,8 +206,8 @@ int searchByLabel(char* label)
         while (!labelFound && (i < codeSize(codeList)))
         {
             aux = get_code(codeList,i);
-			/* POR QUE EL COMANDO TRAIDO DE AUX DEBE SER IGUAL A COM_MARK??????????????????????????????????????????????????????????????????? */
-            if ((getCommand(aux) == COM_MARK) && (strcmp(auxLabel, getLabel(aux, 1)) == 0))
+			/* POR QUE EL COMANDO TRAIDO DE AUX DEBE SER IGUAL A MARK??????????????????????????????????????????????????????????????????? */
+            if ((getCommand(aux) == MARK) && (strcmp(auxLabel, getLabel(aux, 1)) == 0))
                 labelFound = true;
             i++;
         } 
@@ -221,7 +225,7 @@ void runMain(int pos)
     while (pos < codeSize(codeList) && !returnFound)
     {
         aux = get_code(codeList,pos);
-        if (getCommand(aux) != COM_RETURN) 
+        if (getCommand(aux) != RETURN) 
             runOperation(pos);
         else
             returnFound = true;
