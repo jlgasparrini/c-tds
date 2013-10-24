@@ -11,7 +11,7 @@ ListMLabel *labelList;
 LCode3D *codeList;
 int size;
 
-//Dada la posicion ejecuto esa instruccion!
+// Given the position, I run that operation from the codeList
 void runOperation(int position)
 {
 	Code3D*	code = get_code(codeList,position);
@@ -27,7 +27,8 @@ void runOperation(int position)
 				break;
 
 		/* STORE_MEM */
-        case 1: if (getAttributeType((*(*code).param1).val.attri) == Int)
+        case 1: 
+				if (getAttributeType((*(*code).param1).val.attri) == Int)
 					setIntVal((*(*code).param2).val.attri, getIntVal((*(*code).param1).val.attri));
 				if (getAttributeType((*(*code).param1).val.attri) == Float)
 					setFloatVal((*(*code).param2).val.attri, getFloatVal((*(*code).param1).val.attri));
@@ -180,6 +181,21 @@ void runOperation(int position)
 		/* STORE_MEM_METHOD */
 		case 26: 
 				 break;
+
+		/* PRINT */
+		case 27:
+				if (getAttributeType((*(*code).param1).val.attri) == Int)
+					printf("Print. El valor entero es: %d\n", getIntVal((*(*code).param1).val.attri));
+				if (getAttributeType((*(*code).param1).val.attri) == Float)
+					printf("Print. El valor flotante es: %f\n", getFloatVal((*(*code).param1).val.attri));
+				if (getAttributeType((*(*code).param1).val.attri) == Bool)
+				{
+					if (getBoolVal((*(*code).param1).val.attri) == True)	
+						printf("Print. El valor booleano es: true\n");
+					if (getBoolVal((*(*code).param1).val.attri) == False)	
+						printf("Print. El valor booleano es: false\n");
+				}
+				break;
     }
   
 }

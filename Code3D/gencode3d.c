@@ -40,6 +40,12 @@ void add_Assignation(LCode3D *lcode3d, Code3D *code,  Attribute *attri1,  Attrib
 	add_code(lcode3d, code);
 }
 
+void add_Print(LCode3D *lcode3d, Code3D *code, Attribute *attr)
+{
+	setCode1D(code, attr);
+	add_code(lcode3d, code);
+}
+
 void add_MethodCall(LCode3D *lcode3d, Code3D *code,  Attribute *attri1,  StVariable *attriRes){	
 	setAttribute(code, 1, attri1);
 	setVariable(code, 2, attriRes);
