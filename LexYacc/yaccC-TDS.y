@@ -97,7 +97,7 @@ void out(char *msg) {
 /* %token<stringValue> es solo para tokens */
 %token<stringValue> FLOAT INTEGER BOOLEAN INTW FLOATW BOOLEANW ID PLUSEQUAL MINUSEQUAL
 %token EQUAL DISTINCT GEQUAL LEQUAL OR AND 
-%token BREAK IF CONTINUE ELSE RETURN WHILE CLASS FOR VOID EXTERNINVK STRING 
+%token BREAK IF CONTINUE ELSE RETURN WHILE CLASS FOR VOID EXTERNINVK STRING PRINT
 %nonassoc '<' '>' EQUAL DISTINCT GEQUAL LEQUAL
 %left '+' '-'
 %left '*' '/'
@@ -252,6 +252,7 @@ statement     :    conditional
               |    iteration 
               |    action ';'     
               |    {pushLevel(symbolsTable);} block {popLevel(symbolsTable);}
+              |    PRINT expression
               ;
               
 action        :

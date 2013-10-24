@@ -66,6 +66,7 @@ cbracket	"]"
 [\t]							{columnNumb=columnNumb + 4;}
 \n                              {lineNumb++; columnNumb = 1;}
 "/*"                            {columnNumb = columnNumb + 2; BEGIN(comment);}
+"print"                         {columnNumb=columnNumb+strlen(yytext); return(PRINT);}
 <comment>"*/"	                {columnNumb = columnNumb + 2; BEGIN(INITIAL);}
 <comment>(.|\n)                 {if (strcmp(yytext,"\n") == 0) {lineNumb++; columnNumb=1;} else columnNumb++;}
 "//"(.)*                        
