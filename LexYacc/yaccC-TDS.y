@@ -39,10 +39,6 @@ char* newLabelName(char* msg) {
    	return labelName;
 }
 
-/* To show after compilation, for interpreter */
-StringStack *printMsg;
-char *printMessage = "Print. El valor es: ";
-unsigned char printFound = 0;
 
 int yydebug = 1;
 
@@ -85,9 +81,6 @@ void finalizar() {
 		printf("------Se termino de parsear.----------\n");
 		printf("-----Corriendo interprete------\n");
 		initInterpreter(listmlabel, lcode3d);
-		if (printFound == 1)
-//			printCorrectOrder(printMsg);
-			printInverseOrder(printMsg);	
 		printf("-----Se acabo de correr el interprete.-----\n");
 	}
 }
@@ -139,7 +132,6 @@ program       :    CLASS ID '{' '}' {
 									labelsFor = newStack();
 									listmlabel = initL();
 									lcode3d = initLCode3D();
-									printMsg = initializeSS();
 					} body {
 								checkMain(errorQ,symbolsTable); 
 								popLevel(symbolsTable); 
@@ -265,39 +257,8 @@ statement     :    conditional
               |    iteration 
               |    action ';'     
               |    {pushLevel(symbolsTable);} block {popLevel(symbolsTable);}
-              |    PRINT expression ';' {
-											printFound = 1;
-											char *val;
-											if (getAttributeType($2) == Int)
-											{
-												val = (char*) malloc (strlen(printMessage)+digitAmount(getIntVal($2)+strlen("\n"))*sizeof(char));
-												strcat(val,printMessage);
-												strcat(val,intToString(getIntVal($2)));
-												strcat(val,"\n");
-											}
-			
-											if (getAttributeType($2) == Float)
-											{ 
-												val = (char*) malloc ((strlen(printMessage)+50+strlen("\n"))*sizeof(char));
-												char *numero = (char*) malloc (50*sizeof(char));
-												sprintf(numero, "%f", getFloatVal($2)); /* Here the float is transformed into a string */
-												strcat(val,printMessage);
-												strcat(val,numero);
-												strcat(val,"\n");
-											}
-			
-											if (getAttributeType($2) == Bool)
-											{
-												val = (char*) malloc ((strlen(printMessage)+5+strlen("\n"))*sizeof(char));
-												strcat(val,printMessage);
-												if (getBoolVal($2) == True)	
-													strcat(val,"true");
-												if (getBoolVal($2) == False)	
-													strcat(val,"false");
-												strcat(val,"\n");
-											}
-											pushString(printMsg,val);
-										}
+              |    PRINT expression ';' { add_Print(lcode3d, newCode(PRINT), $2); }
+										
               ;
               
 action        :
@@ -340,10 +301,7 @@ action        :
               ;
               
 asignation    :    location assig_op expression {
-							if (controlAssignation(errorQ,lcode3d,$1,$2,$3) == 0)
-                                $1 = $3;
-                            else
-                                $1 = NULL;
+							controlAssignation(errorQ,lcode3d,$1,$2,$3);
 					}
 			  ;
               

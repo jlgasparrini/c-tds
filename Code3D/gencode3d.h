@@ -23,6 +23,7 @@ void add_CodeLabel(LCode3D *lcode3d, Code3D *code, char *label);
 void add_CodeLabelCond(LCode3D *lcode3d, Code3D *code, Attribute *attri1, char *label);
 
 void add_Assignation(LCode3D *lcode3d, Code3D *code,  Attribute *attri1,  Attribute *attriRes);
+void add_Print(LCode3D *lcode3d, Code3D *code, Attribute *attr);
 void add_MethodCall(LCode3D *lcode3d, Code3D *code,  Attribute *attri1,  StVariable *attriRes);
 
 void show3DCode(LCode3D *lcode3d);
