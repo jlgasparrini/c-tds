@@ -24,9 +24,9 @@ char* getCodeByID(int ID)
         case 17: return "OR";
         case 18: return "AND";
         case 19: return "NOT";
-        case 20: return "MARK";
-        case 21: return "GOTOLABEL";
-        case 22: return "GOTOLABEL_COND";
+        case 20: return "LABEL";
+        case 21: return "GOTO_LABEL";
+        case 22: return "GOTO_LABEL_COND";
         case 23: return "RETURN";
         case 24: return "NEG_INT";
         case 25: return "NEG_FLOAT";

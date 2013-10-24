@@ -175,7 +175,7 @@ method_decl   :     type ID {
 								returns = 0;
 								char *initLabel = newLabelName($2);
 								insert_MethodL(listmlabel, $2, initLabel);
-								add_CodeLabel(lcode3d, newCode(MARK), initLabel); // Mark to Label of Init of Method
+								add_CodeLabel(lcode3d, newCode(LABEL), initLabel); // Mark to Label of Init of Method
 					} param block {
 								popLevel(symbolsTable); 
 								if(returns==0) insertError(errorQ,toString("El metodo \"",$2,"\" debe tener al menos un return."));
@@ -187,7 +187,7 @@ method_decl   :     type ID {
 								returns = 0;
 								char *initLabel = newLabelName($3);
 								insert_MethodL(listmlabel, $3, initLabel);
-								add_CodeLabel(lcode3d, newCode(MARK), initLabel); // Mark to Label of Init of Method
+								add_CodeLabel(lcode3d, newCode(LABEL), initLabel); // Mark to Label of Init of Method
 					} param block {
 								popLevel(symbolsTable); 
 								if(returns==0) insertError(errorQ,toString("El metodo \"",$3,"\" debe tener al menos un return."));
@@ -199,7 +199,7 @@ method_decl   :     type ID {
 								returns = 0;
 								char *initLabel = newLabelName($2);
 								insert_MethodL(listmlabel, $2, initLabel);
-								add_CodeLabel(lcode3d, newCode(MARK), initLabel); // Mark to Label of Init of Method
+								add_CodeLabel(lcode3d, newCode(LABEL), initLabel); // Mark to Label of Init of Method
 					} param block {
 								popLevel(symbolsTable); 
 								if(returns==0) insertError(errorQ,toString("El metodo \"",$2,"\" debe tener al menos un return."));
@@ -211,7 +211,7 @@ method_decl   :     type ID {
 								returns = 0;
 								char *initLabel = newLabelName($3);
 								insert_MethodL(listmlabel, $3, initLabel);
-								add_CodeLabel(lcode3d, newCode(MARK), initLabel); // Mark to Label of Init of Method
+								add_CodeLabel(lcode3d, newCode(LABEL), initLabel); // Mark to Label of Init of Method
 					} param block {
 								popLevel(symbolsTable); 
 								if(returns==0) insertError(errorQ,toString("El metodo \"",$3,"\" debe tener al menos un return."));
@@ -265,7 +265,7 @@ action        :
 							if (isEmpty(labelsWhile) && isEmpty(labelsFor))
 								insertError(errorQ,toString("Error. Solo se puede usar la sentencia \"break\" dentro de un ciclo.","",""));
 							else
-								add_CodeLabel(lcode3d, newCode(GOTOLABEL), peek(labelsWhile)->label); //Go to Label of End of While
+								add_CodeLabel(lcode3d, newCode(GOTO_LABEL), peek(labelsWhile)->label); //Go to Label of End of While
 					}
               |    CONTINUE {
 							if (isEmpty(labelsWhile) && isEmpty(labelsFor))
@@ -273,7 +273,7 @@ action        :
 							else
 							{
                                 Label *endOfWhile = pop(labelsWhile); //Label of End of While
-								add_CodeLabel(lcode3d, newCode(GOTOLABEL), peek(labelsWhile)->label); //Go to Label of Init of While
+								add_CodeLabel(lcode3d, newCode(GOTO_LABEL), peek(labelsWhile)->label); //Go to Label of Init of While
 								push(labelsWhile, endOfWhile->label);
 							} 
 					}
@@ -318,54 +318,54 @@ conditional   :    IF '(' expression {
                                         char *ifLabel = newLabelName("if");
                                         char *elseLabel = newLabelName("else");
                                         char *endLabel = newLabelName("end_if");
-										add_CodeLabelCond(lcode3d, newCode(GOTOLABEL_COND), $3, ifLabel); //Go to Label of If
-										add_CodeLabel(lcode3d, newCode(GOTOLABEL), elseLabel); //Go to Label of Else
-                                        add_CodeLabel(lcode3d, newCode(MARK), ifLabel); // Mark to Label of If
+										add_CodeLabelCond(lcode3d, newCode(GOTO_LABEL_COND), $3, ifLabel); //Go to Label of If
+										add_CodeLabel(lcode3d, newCode(GOTO_LABEL), elseLabel); //Go to Label of Else
+                                        add_CodeLabel(lcode3d, newCode(LABEL), ifLabel); // Mark to Label of If
                                         push(labelsCYC, elseLabel);
                                         push(labelsCYC, endLabel);
 					} ')' block {
-									add_CodeLabel(lcode3d, newCode(GOTOLABEL), peek(labelsCYC)->label); //Go to Label of End
+									add_CodeLabel(lcode3d, newCode(GOTO_LABEL), peek(labelsCYC)->label); //Go to Label of End
 								}
 					 optional
 			  ;
 
 optional	  :		{
                         Label *markEnd = pop(labelsCYC);
-						add_CodeLabel(lcode3d, newCode(MARK), pop(labelsCYC)->label); // Mark to Label of Else. There's always an else label, but in case of an if then statement, it is not used
-						add_CodeLabel(lcode3d, newCode(GOTOLABEL), markEnd->label); // Go to Label of End
-						add_CodeLabel(lcode3d, newCode(MARK), markEnd->label); // Mark to Label of End
+						add_CodeLabel(lcode3d, newCode(LABEL), pop(labelsCYC)->label); // Mark to Label of Else. There's always an else label, but in case of an if then statement, it is not used
+						add_CodeLabel(lcode3d, newCode(GOTO_LABEL), markEnd->label); // Go to Label of End
+						add_CodeLabel(lcode3d, newCode(LABEL), markEnd->label); // Mark to Label of End
 					}
 			  |	   	ELSE {
                          Label *markEnd = pop(labelsCYC);
-						 add_CodeLabel(lcode3d, newCode(MARK), pop(labelsCYC)->label); // Mark to Label of Else
+						 add_CodeLabel(lcode3d, newCode(LABEL), pop(labelsCYC)->label); // Mark to Label of Else
                          push(labelsCYC, markEnd->label);
                     } block	{
-						add_CodeLabel(lcode3d, newCode(GOTOLABEL), peek(labelsCYC)->label); // Go to Label of End
-						add_CodeLabel(lcode3d, newCode(MARK), pop(labelsCYC)->label); // Mark to Label of End
+						add_CodeLabel(lcode3d, newCode(GOTO_LABEL), peek(labelsCYC)->label); // Go to Label of End
+						add_CodeLabel(lcode3d, newCode(LABEL), pop(labelsCYC)->label); // Mark to Label of End
 					} 
 			  ;
 
 iteration     :    WHILE {     
                             char *whileLabel = newLabelName("while"); 
 							push(labelsWhile,whileLabel);
-							add_CodeLabel(lcode3d, newCode(MARK), whileLabel); // Mark to Label of While
+							add_CodeLabel(lcode3d, newCode(LABEL), whileLabel); // Mark to Label of While
                     } expression {
 								controlType(errorQ,$3,Bool,"while",1);	/* MODIFICADO PORQUE SINO TIRA SEGMENTATION FAULT! */
 								char *endLabel = newLabelName("end_while");/* DEBIDO A QUE NO GENERA EL SIG CODIGO Y EN BLOQUE LO TRATA DE ELIMINAR */
 								push(labelsWhile, endLabel);
 								char *expressionLabel = newLabelName("expr_while");
-								add_CodeLabelCond(lcode3d, newCode(GOTOLABEL_COND), $3, expressionLabel); // Go to Label of Expression
-								add_CodeLabel(lcode3d, newCode(GOTOLABEL), endLabel); // Go to Label of End
-								add_CodeLabel(lcode3d, newCode(MARK), expressionLabel); // Mark to Label of Expression           
+								add_CodeLabelCond(lcode3d, newCode(GOTO_LABEL_COND), $3, expressionLabel); // Go to Label of Expression
+								add_CodeLabel(lcode3d, newCode(GOTO_LABEL), endLabel); // Go to Label of End
+								add_CodeLabel(lcode3d, newCode(LABEL), expressionLabel); // Mark to Label of Expression           
 					} block {							
 							Label *endOfCycle = pop(labelsWhile); 														
-							add_CodeLabel(lcode3d, newCode(GOTOLABEL), pop(labelsWhile)->label); // Go to Label of While
-							add_CodeLabel(lcode3d, newCode(MARK), endOfCycle->label); // Mark to Label of End
+							add_CodeLabel(lcode3d, newCode(GOTO_LABEL), pop(labelsWhile)->label); // Go to Label of While
+							add_CodeLabel(lcode3d, newCode(LABEL), endOfCycle->label); // Mark to Label of End
 					}
               |    FOR {     
                         char *forLabel = newLabelName("for"); 
 						push(labelsFor,forLabel);
-						add_CodeLabel(lcode3d, newCode(MARK), forLabel); // Mark to Label of For
+						add_CodeLabel(lcode3d, newCode(LABEL), forLabel); // Mark to Label of For
                     } ID {
 						if (getAttributeType(getVariableAttribute(errorQ,symbolsTable,$3)) != Int)
 							insertError(errorQ,toString("El identificador \"", $3, "\" no pertenece a una variable de tipo \"int\""));
@@ -377,13 +377,13 @@ iteration     :    WHILE {
 									push(labelsFor, endLabel);
 									char *expressionLabel = newLabelName("expr_for");
 									Attribute *res = returnDistinct(errorQ, lcode3d, getVariableAttribute(errorQ, symbolsTable, $3), $8);
-									add_CodeLabelCond(lcode3d, newCode(GOTOLABEL_COND), res, expressionLabel); // Go to Label of Expression
-									add_CodeLabel(lcode3d, newCode(GOTOLABEL), endLabel); // Go to Label of End
-									add_CodeLabel(lcode3d, newCode(MARK), expressionLabel); // Mark to Label of Expression           
+									add_CodeLabelCond(lcode3d, newCode(GOTO_LABEL_COND), res, expressionLabel); // Go to Label of Expression
+									add_CodeLabel(lcode3d, newCode(GOTO_LABEL), endLabel); // Go to Label of End
+									add_CodeLabel(lcode3d, newCode(LABEL), expressionLabel); // Mark to Label of Expression           
 					} block {
 							Label *endOfCycle = pop(labelsFor); 							 							
-							add_CodeLabel(lcode3d, newCode(GOTOLABEL), pop(labelsFor)->label); // Go to Label of For
-							add_CodeLabel(lcode3d, newCode(MARK), endOfCycle->label); // Mark to Label of End
+							add_CodeLabel(lcode3d, newCode(GOTO_LABEL), pop(labelsFor)->label); // Go to Label of For
+							add_CodeLabel(lcode3d, newCode(LABEL), endOfCycle->label); // Mark to Label of End
 					}
               ;                                                               
 
@@ -422,10 +422,10 @@ method_call   :	   ID '(' ')' {
 								pushString(paramsStack,intToString(cantParams)); /*ver si esta linea debe ir o no*/
 								lastCalledMethod=$1; 
 								$$=checkAndGetMethodRetAttribute(errorQ,symbolsTable,$1,0);
-								add_CodeLabel(lcode3d, newCode(GOTOLABEL), get_Label(listmlabel, $1)); //Go to Label of Init of Method
+								add_CodeLabel(lcode3d, newCode(GOTO_LABEL), get_Label(listmlabel, $1)); //Go to Label of Init of Method
 								//char *endLabel = newLabelName("end_m_call");
 								//insert_MethodL(listmlabel, $1, endLabel);
-								//add_CodeLabel(lcode3d, newCode(MARK), endLabel); // Mark to Label of End of Method // ver si es necesario esta marca, si es asi cambiar toda la lista.
+								//add_CodeLabel(lcode3d, newCode(LABEL), endLabel); // Mark to Label of End of Method // ver si es necesario esta marca, si es asi cambiar toda la lista.
 					}
 
               |    ID '(' {if (searchIdInSymbolsTable(errorQ,symbolsTable,$1) == NULL) 
@@ -442,10 +442,10 @@ method_call   :	   ID '(' ')' {
 							{
 								$$ = checkAndGetMethodRetAttribute(errorQ,symbolsTable,$1,cantParams); 
 								cantParams=atoi(popString(paramsStack));
-								add_CodeLabel(lcode3d, newCode(GOTOLABEL), get_Label(listmlabel, $1)); //Go to Label of Init of Method 
+								add_CodeLabel(lcode3d, newCode(GOTO_LABEL), get_Label(listmlabel, $1)); //Go to Label of Init of Method 
 								//char *endLabel = newLabelName("end_m_call");
 								//insert_MethodL(listmlabel, $1, endLabel);
-								//add_CodeLabel(lcode3d, newCode(MARK), endLabel); // Mark to Label of End of Method // ver si es necesario esta marca, si es asi cambiar toda la lista.
+								//add_CodeLabel(lcode3d, newCode(LABEL), endLabel); // Mark to Label of End of Method // ver si es necesario esta marca, si es asi cambiar toda la lista.
 							}
 							else
 							{

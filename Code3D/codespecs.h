@@ -28,9 +28,9 @@
 #define OR               17
 #define AND              18
 #define NOT              19
-#define MARK             20
-#define GOTOLABEL        21
-#define GOTOLABEL_COND   22
+#define LABEL            20
+#define GOTO_LABEL       21
+#define GOTO_LABEL_COND  22
 #define RETURN           23
 #define NEG_INT          24
 #define NEG_FLOAT        25
