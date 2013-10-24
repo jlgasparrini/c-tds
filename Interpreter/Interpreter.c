@@ -27,7 +27,7 @@ void runOperation(int position)
                 setBoolVal((*(*code).param2).val.attri, (*(*code).param1).val.boolAttri);
             break;
 
-            /* STORE_MEM */
+            /* ASSIGNATION */
         case 1: 
             if (getAttributeType((*(*code).param1).val.attri) == Int)
                 setIntVal((*(*code).param2).val.attri, getIntVal((*(*code).param1).val.attri));
@@ -50,7 +50,6 @@ void runOperation(int position)
             /* MULT_INT */
         case 4:
             setIntVal((*(*code).param3).val.attri, getIntVal((*(*code).param1).val.attri) * getIntVal((*(*code).param2).val.attri));
-            printf("dsjadsahdas       %d   \n",((*(*code).param3).val.attri)->decl.variable.value.intVal );
             break;
 
             /* DIV_INT */
@@ -165,9 +164,7 @@ void runOperation(int position)
 
             /* GOTO_LABEL */
         case 21: 
-             
             break;
-
             /* GOTO_LABEL_COND */
         case 22: 
             break;
@@ -177,30 +174,32 @@ void runOperation(int position)
             break;
 
             /* NEG_INT */
-        case 24: setIntVal((*(*code).param2).val.attri, -getIntVal((*(*code).param1).val.attri));
-                 break;
+        case 24:
+            setIntVal((*(*code).param2).val.attri, -getIntVal((*(*code).param1).val.attri));
+            break;
 
-                 /* NEG_FLOAT */
-        case 25: setFloatVal((*(*code).param2).val.attri, -getFloatVal((*(*code).param1).val.attri));
-                 break;
-
-                 /* STORE_MEM_METHOD */
+            /* NEG_FLOAT */
+        case 25: 
+            setFloatVal((*(*code).param2).val.attri, -getFloatVal((*(*code).param1).val.attri));
+            break;
+            /* PARAM_ASSIGN */
         case 26: 
-                 break;
-                 /* PRINT */
+            break;
+
+            /* PRINT */
         case 27:
-                 if (getAttributeType((*(*code).param1).val.attri) == Int)
-                     printf("Print. El valor entero es: %d\n", getIntVal((*(*code).param1).val.attri));
-                 if (getAttributeType((*(*code).param1).val.attri) == Float)
-                     printf("Print. El valor flotante es: %f\n", getFloatVal((*(*code).param1).val.attri));
-                 if (getAttributeType((*(*code).param1).val.attri) == Bool)
-                 {
-                     if (getBoolVal((*(*code).param1).val.attri) == True)	
-                         printf("Print. El valor booleano es: true\n");
-                     if (getBoolVal((*(*code).param1).val.attri) == False)	
-                         printf("Print. El valor booleano es: false\n");
-                 }
-                 break;
+            if (getAttributeType((*(*code).param1).val.attri) == Int)
+                printf("Print. El valor entero es: %d\n", getIntVal((*(*code).param1).val.attri));
+            if (getAttributeType((*(*code).param1).val.attri) == Float)
+                printf("Print. El valor flotante es: %f\n", getFloatVal((*(*code).param1).val.attri));
+            if (getAttributeType((*(*code).param1).val.attri) == Bool)
+            {
+                if (getBoolVal((*(*code).param1).val.attri) == True)	
+                    printf("Print. El valor booleano es: true\n");
+                if (getBoolVal((*(*code).param1).val.attri) == False)	
+                    printf("Print. El valor booleano es: false\n");
+            }
+            break;
     }
 
 }

@@ -313,13 +313,13 @@ void showCode(Code3D *code, int param)
         if (isInt(code, param))
             printf("%i   |    ", getInt(code, param));
         if (isFloat(code, param))
-            printf("%f |  ", getFloat(code, param));
+            printf("%f   |  ", getFloat(code, param));
         if (isBool(code, param))
-            printf("%s |  ", getBool(code, param)? "true" : "false");
+            printf("%s   |  ", getBool(code, param)? "true" : "false");
         if (isLabel(code, param))
-            printf("%s |  ", getLabel(code, param));
+            printf("%s   |  ", getLabel(code, param));
         if (isAttribute(code, param))
-	        printf("%s |  ", getID(getAttribute(code,param)));
+	        printf("%s   |  ", getID(getAttribute(code,param)));
     }
 }
 

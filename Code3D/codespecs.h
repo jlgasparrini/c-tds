@@ -9,7 +9,7 @@
 #include "code3d.h"
 
 #define LOAD_CONST       0 
-#define STORE_MEM        1 
+#define ASSIGNATION      1 
 #define MINUS_INT        2 
 #define ADD_INT          3 
 #define MULT_INT         4 
@@ -34,7 +34,7 @@
 #define RETURN           23
 #define NEG_INT          24
 #define NEG_FLOAT        25
-#define STORE_MEM_METHOD 26
+#define PARAM_ASSIGN     26
 #define PRINT            27
 
 /* Returns the respective code of an ID */
