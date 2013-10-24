@@ -182,12 +182,6 @@ void runOperation(int position)
 		/* STORE_MEM_METHOD */
 		case 26: 
 				 break;
-<<<<<<< HEAD
-        /* PRINT */
-		case 27: 
-                 break;
-=======
-
 		/* PRINT */
 		case 27:
 				if (getAttributeType((*(*code).param1).val.attri) == Int)
@@ -202,7 +196,6 @@ void runOperation(int position)
 						printf("Print. El valor booleano es: false\n");
 				}
 				break;
->>>>>>> d8bfdf2b935af552bd8ee4cb6984bdb9b336654c
     }
   
 }
