@@ -264,6 +264,7 @@ statement     :    conditional
               |    iteration 
               |    action ';'     
               |    {pushLevel(symbolsTable);} block {popLevel(symbolsTable);}
+              |    PRINT expression
               ;
               
 action        :
