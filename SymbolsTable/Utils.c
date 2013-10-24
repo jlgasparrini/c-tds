@@ -299,7 +299,7 @@ unsigned char controlAssignation(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *a
 		{
             Code3D *add;
 			if (strcmp(op, "=") == 0)
-				add_Assignation(lcode3d, newCode(STORE_MEM), attr2, attr1);
+				add_Assignation(lcode3d, newCode(ASSIGNATION), attr2, attr1);
 			else
 			{
 				if (strcmp(op, "+=") == 0)
@@ -319,7 +319,7 @@ unsigned char controlAssignation(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *a
 				Attribute *res = createVariable(getVariableName(), getAttributeType(attr1));
 				setCode3D(add, attr1, attr2, res);
 				add_code(lcode3d, add);
-				add_Assignation(lcode3d, newCode(STORE_MEM), res, attr1);
+				add_Assignation(lcode3d, newCode(ASSIGNATION), res, attr1);
 			}
 			return 0;
 		}

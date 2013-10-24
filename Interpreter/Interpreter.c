@@ -26,7 +26,7 @@ void runOperation(int position)
 					setBoolVal((*(*code).param2).val.attri, (*(*code).param1).val.boolAttri);
 				break;
 
-		/* STORE_MEM */
+		/* ASSIGNATION */
         case 1: 
 				if (getAttributeType((*(*code).param1).val.attri) == Int)
 					setIntVal((*(*code).param2).val.attri, getIntVal((*(*code).param1).val.attri));
@@ -161,6 +161,7 @@ void runOperation(int position)
 
 		/* GOTOLABEL */
         case 21: 
+
 				 break;
 
 		/* GOTOLABEL_COND */
@@ -179,9 +180,10 @@ void runOperation(int position)
         case 25: setFloatVal((*(*code).param2).val.attri, -getFloatVal((*(*code).param1).val.attri));
 				 break;
 
-		/* STORE_MEM_METHOD */
+		/* PARAM_ASSIGN */
 		case 26: 
 				 break;
+
 		/* PRINT */
 		case 27:
 				if (getAttributeType((*(*code).param1).val.attri) == Int)

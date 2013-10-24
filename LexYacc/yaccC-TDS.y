@@ -423,9 +423,11 @@ method_call   :	   ID '(' ')' {
 								lastCalledMethod=$1; 
 								$$=checkAndGetMethodRetAttribute(errorQ,symbolsTable,$1,0);
 								add_CodeLabel(lcode3d, newCode(GOTOLABEL), get_Label(listmlabel, $1)); //Go to Label of Init of Method
-								//char *endLabel = newLabelName("end_m_call");
+
+								/* Is this the way to add the end label of the method, the place where it return when finalizes its call */
+								char *endLabel = newLabelName("end_m_call");
 								//insert_MethodL(listmlabel, $1, endLabel);
-								//add_CodeLabel(lcode3d, newCode(MARK), endLabel); // Mark to Label of End of Method // ver si es necesario esta marca, si es asi cambiar toda la lista.
+								add_CodeLabel(lcode3d, newCode(MARK), endLabel); // Mark to Label of End of Method // ver si es necesario esta marca, si es asi cambiar toda la lista.
 					}
 
               |    ID '(' {if (searchIdInSymbolsTable(errorQ,symbolsTable,$1) == NULL) 
@@ -443,9 +445,11 @@ method_call   :	   ID '(' ')' {
 								$$ = checkAndGetMethodRetAttribute(errorQ,symbolsTable,$1,cantParams); 
 								cantParams=atoi(popString(paramsStack));
 								add_CodeLabel(lcode3d, newCode(GOTOLABEL), get_Label(listmlabel, $1)); //Go to Label of Init of Method 
-								//char *endLabel = newLabelName("end_m_call");
+
+								/* Is this the way to add the end label of the method, the place where it return when finalizes its call */
+								char *endLabel = newLabelName("end_m_call");
 								//insert_MethodL(listmlabel, $1, endLabel);
-								//add_CodeLabel(lcode3d, newCode(MARK), endLabel); // Mark to Label of End of Method // ver si es necesario esta marca, si es asi cambiar toda la lista.
+								add_CodeLabel(lcode3d, newCode(MARK), endLabel); // Mark to Label of End of Method // ver si es necesario esta marca, si es asi cambiar toda la lista.
 							}
 							else
 							{
@@ -464,7 +468,7 @@ expression_aux:    expression {
 									correctParamBC(errorQ,symbolsTable,$1,lastCalledMethod,cantParams); 
 									StVariable *param = (StVariable*) malloc (sizeof(StVariable));
 									param = &((*searchIdInSymbolsTable(errorQ,symbolsTable,lastCalledMethod)).decl.method.parameters[cantParams]); // obtencion del parametro formal.
-									add_MethodCall(lcode3d, newCode(STORE_MEM_METHOD), $1, param); 
+									add_MethodCall(lcode3d, newCode(PARAM_ASSIGN), $1, param); 
 									cantParams++; /* This sentence must be in the last line because parameter's numbers start from 0 */
 								}
 					}
@@ -474,7 +478,7 @@ expression_aux:    expression {
 									correctParamIC(errorQ,symbolsTable,$1,lastCalledMethod,cantParams); 
 									StVariable *param = (StVariable*) malloc (sizeof(StVariable));
 									param = &((*searchIdInSymbolsTable(errorQ,symbolsTable,lastCalledMethod)).decl.method.parameters[cantParams]); // obtencion del parametro formal.
-									add_MethodCall(lcode3d, newCode(STORE_MEM_METHOD), $1, param);
+									add_MethodCall(lcode3d, newCode(PARAM_ASSIGN), $1, param);
 									cantParams++; /* This sentence must be in the last line because parameter's numbers start from 0 */
 								} 
 					} ',' expression_aux 

@@ -5,7 +5,7 @@ char* getCodeByID(int ID)
 {
     switch (ID) {
 		case  0: return "LOAD_CONST";
-		case  1: return "STORE_MEM";
+		case  1: return "ASSIGNATION";
 		case  2: return "MINUS_INT";
 		case  3: return "ADD_INT";
 		case  4: return "MULT_INT";
@@ -30,7 +30,7 @@ char* getCodeByID(int ID)
         case 23: return "RETURN";
         case 24: return "NEG_INT";
         case 25: return "NEG_FLOAT";
-		case 26: return "STORE_MEM_METHOD";
+		case 26: return "PARAM_ASSIGN";
 		case 27: return "PRINT";
     }
     return "NULL!";
