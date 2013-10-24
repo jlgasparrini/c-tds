@@ -98,9 +98,9 @@ print		"print"
 {distinct}					   	{columnNumb=columnNumb+strlen(yytext); return(DISTINCT);} 
 {lequal}                        {columnNumb=columnNumb+strlen(yytext); return(LEQUAL);}
 {gequal}					   	{columnNumb=columnNumb+strlen(yytext); return(GEQUAL);}
-{or}                            {columnNumb=columnNumb+strlen(yytext); return(OR);}
-{and}                           {columnNumb=columnNumb+strlen(yytext); return(AND);}
-{print}							{columnNumb=columnNumb+strlen(yytext); return(PRINT);}
+{or}                            {columnNumb=columnNumb+strlen(yytext); return(ORR);}
+{and}                           {columnNumb=columnNumb+strlen(yytext); return(ANDD);}
+{print}							{columnNumb=columnNumb+strlen(yytext); return(PRINTT);}
 {string}                        {columnNumb=columnNumb+strlen(yytext); return(STRING);}
 {externinvk}					{columnNumb=columnNumb+strlen(yytext); return(EXTERNINVK);}
 {true}                          {columnNumb=columnNumb+strlen(yytext); yylval.stringValue = strdup(yytext); return(BOOLEAN);}
@@ -114,7 +114,7 @@ print		"print"
 {else}                          {columnNumb=columnNumb+strlen(yytext); return(ELSE);}
 {while}                         {columnNumb=columnNumb+strlen(yytext); return(WHILE);}
 {for}                           {columnNumb=columnNumb+strlen(yytext); return(FOR);}
-{return}                        {columnNumb=columnNumb+strlen(yytext); return(RETURN);}
+{return}                        {columnNumb=columnNumb+strlen(yytext); return(RETURNN);}
 {void}                          {columnNumb=columnNumb+strlen(yytext); return(VOID);}
 {letter}({letter}|{digit}|_)*   {columnNumb=columnNumb+strlen(yytext); yylval.stringValue = strdup(yytext); return(ID);}
 .                               {printf( "Error lexico en la linea: %d.%d.   Simbolo invalido: \"%s\"\n",lineNumb,columnNumb,yytext);}

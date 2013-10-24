@@ -35,7 +35,7 @@
 #define NEG_INT          24
 #define NEG_FLOAT        25
 #define STORE_MEM_METHOD 26
-#define PSADINT            27
+#define PRINT            27
 
 /* Returns the respective code of an ID */
 char* getCodeByID(int ID);

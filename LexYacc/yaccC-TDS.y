@@ -101,8 +101,8 @@ void out(char *msg) {
 
 /* %token<stringValue> es solo para tokens */
 %token<stringValue> FLOAT INTEGER BOOLEAN INTW FLOATW BOOLEANW ID PLUSEQUAL MINUSEQUAL
-%token EQUAL DISTINCT GEQUAL LEQUAL OR AND 
-%token BREAK IF CONTINUE ELSE RETURN WHILE CLASS FOR VOID EXTERNINVK STRING PRINT
+%token EQUAL DISTINCT GEQUAL LEQUAL ORR ANDD 
+%token BREAK IF CONTINUE ELSE RETURNN WHILE CLASS FOR VOID EXTERNINVK STRING PRINTT
 %nonassoc '<' '>' EQUAL DISTINCT GEQUAL LEQUAL
 %left '+' '-'
 %left '*' '/'
@@ -257,8 +257,7 @@ statement     :    conditional
               |    iteration 
               |    action ';'     
               |    {pushLevel(symbolsTable);} block {popLevel(symbolsTable);}
-              |    PRINT expression ';' { add_Print(lcode3d, newCode(PRINT), $2); }
-										
+              |    PRINTT expression ';' { add_Print(lcode3d, newCode(PRINT), $2); }
               ;
               
 action        :
@@ -278,7 +277,7 @@ action        :
 								push(labelsWhile, endOfWhile->label);
 							} 
 					}
-			  |	   RETURN {
+			  |	   RETURNN {
 							returns++; 
 							if ((idNotFound == False) && (checkReturn(errorQ,symbolsTable,lastDefMethod) == 0))
 							{
@@ -287,7 +286,7 @@ action        :
 								add_code(lcode3d, ret); ////////////////////////////////////////////////////////////////////////////////////
 							}
 					}   
-			  |	   RETURN expression {
+			  |	   RETURNN expression {
 									returns++; 									
 									if ((idNotFound == False) && (checkReturnExpression(errorQ,symbolsTable,lastDefMethod,$2) == 0))
 									{ 
@@ -494,11 +493,11 @@ arg           :    expression
               ;
               
 expression    :    conjunction                  {$$ = $1;}                             
-              |    expression OR conjunction    {$$ = returnOr(errorQ, lcode3d, $1, $3);}
+              |    expression ORR conjunction    {$$ = returnOr(errorQ, lcode3d, $1, $3);}
               ;
 
 conjunction   :    inequality                   {$$ = $1;}                                
-              |    conjunction AND inequality   {$$ = returnAnd(errorQ, lcode3d, $1, $3);}
+              |    conjunction ANDD inequality   {$$ = returnAnd(errorQ, lcode3d, $1, $3);}
               ;
 
 inequality    :    comparison                       {$$ = $1;}                             
