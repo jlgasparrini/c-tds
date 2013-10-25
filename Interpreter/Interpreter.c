@@ -14,7 +14,11 @@ int size;
 // Given the position, I run that operation from the codeList
 void runOperation(int position)
 {
+//	printf("entre a run operation \n");
     Code3D*	code = get_code(codeList,position);
+//	printf("voy a mostrar el codigo de 3 direcciones: \n");
+//	showCode(code);
+//	printf("\n");
     switch ((*code).command)
     {
         /* LOAD_CONST */
@@ -141,14 +145,13 @@ void runOperation(int position)
             if (getAttributeType((*(*code).param2).val.attri) == Bool)
                 setBoolVal((*(*code).param3).val.attri, getBoolVal((*(*code).param1).val.attri) <= getBoolVal((*(*code).param2).val.attri));
             break;
+
             /* OR */
-            //      case 17: setBoolVal((*(*code).param3).val.attri, (*(*code).param1).val.boolAttri || (*(*code).param2).val.boolAttri);
         case 17:
             setBoolVal((*(*code).param3).val.attri, getBoolVal((*(*code).param1).val.attri) || getBoolVal((*(*code).param2).val.attri));
             break;
 
             /* AND */
-            //      case 18: setBoolVal((*(*code).param3).val.attri, (*(*code).param1).val.boolAttri && (*(*code).param2).val.boolAttri);
         case 18:
             setBoolVal((*(*code).param3).val.attri, getBoolVal((*(*code).param1).val.attri) && getBoolVal((*(*code).param2).val.attri));
             break;
@@ -165,6 +168,7 @@ void runOperation(int position)
             /* GOTO_LABEL */
         case 21: 
             break;
+
             /* GOTO_LABEL_COND */
         case 22: 
             break;
@@ -182,8 +186,10 @@ void runOperation(int position)
         case 25: 
             setFloatVal((*(*code).param2).val.attri, -getFloatVal((*(*code).param1).val.attri));
             break;
+
             /* PARAM_ASSIGN */
         case 26: 
+			(*(*code).param2).val.attri = (*(*code).param1).val.attri;
             break;
 
             /* PRINT */
@@ -208,18 +214,17 @@ void runOperation(int position)
  * Returns the position with the label "label" in the list of code 3D. 
  * If "label" is not found then return -1
  */
-int searchByLabel(char* label)
+int searchByLabel(char* label, int pos)
 {
-    int i = 0;
     char *auxLabel = get_Label(labelList, label);
     if (auxLabel == "NULL")
         printf("ERROR: LABEL no encontrado!    %s  encontrado. \n", auxLabel);
     else
     {
         bool labelFound = false;
-        int i = 0;
+        int i = pos;
         Code3D *aux;
-        while (!labelFound && (i < codeSize(codeList)))
+        while (!labelFound && i < codeSize(codeList))
         {
             aux = get_code(codeList,i);
             if (strcmp(auxLabel, getLabel(aux, 1)) == 0)
@@ -229,7 +234,7 @@ int searchByLabel(char* label)
         if (labelFound)
             return i-1;
     }
-    return -1;
+    return pos;
 }
 
 //ejecuta cada una de las intrucciones del main hasta encontrar el return!
@@ -244,7 +249,7 @@ void runMain(int pos)
             runOperation(pos);
         else
             returnFound = true;
-        pos++;
+		pos++;
     }
 }
 
@@ -254,7 +259,7 @@ void initInterpreter(ListMLabel *labelL, LCode3D *codeL)
     labelList = labelL;
     codeList = codeL;
     size = codeSize(codeL);
-    runMain(searchByLabel("main"));
+    runMain(searchByLabel("main", 0));
 }
 
 
