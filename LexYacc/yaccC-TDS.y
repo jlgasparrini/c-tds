@@ -22,7 +22,7 @@ Boolean idNotFound;
 /* Variables used for 3D code */
 LCode3D *lcode3d;
 char *labelID = "%d_label_";
-int  labelCount = 0;
+int labelCount = 0;
 
 Stack *labelsCYC;
 Stack *labelsWhile;
@@ -177,8 +177,8 @@ method_decl   :     type ID {
 								pushLevel(symbolsTable); 
 								returns = 0;
 								char *initLabel = newLabelName($2);
+								add_CodeLabel(lcode3d, newCode(LABEL), initLabel); // Mark to Label of Init of Method
 								insert_MethodL(listmlabel, $2, initLabel);
-								add_CodeLabel(lcode3d, newCode(LABEL), initLabel); // Mark to char of Init of Method
 					} param block {
 								popLevel(symbolsTable); 
 								if(returns==0) insertError(errorQ,toString("El metodo \"",$2,"\" debe tener al menos un return."));
@@ -189,8 +189,8 @@ method_decl   :     type ID {
 								pushLevel(symbolsTable); 
 								returns = 0;
 								char *initLabel = newLabelName($3);
+								add_CodeLabel(lcode3d, newCode(LABEL), initLabel); // Mark to Label of Init of Method
 								insert_MethodL(listmlabel, $3, initLabel);
-								add_CodeLabel(lcode3d, newCode(LABEL), initLabel); // Mark to char of Init of Method
 					} param block {
 								popLevel(symbolsTable); 
 								if(returns==0) insertError(errorQ,toString("El metodo \"",$3,"\" debe tener al menos un return."));
@@ -201,8 +201,8 @@ method_decl   :     type ID {
 								pushLevel(symbolsTable); 
 								returns = 0;
 								char *initLabel = newLabelName($2);
+								add_CodeLabel(lcode3d, newCode(LABEL), initLabel); // Mark to Label of Init of Method
 								insert_MethodL(listmlabel, $2, initLabel);
-								add_CodeLabel(lcode3d, newCode(LABEL), initLabel); // Mark to char of Init of Method
 					} param block {
 								popLevel(symbolsTable); 
 								if(returns==0) insertError(errorQ,toString("El metodo \"",$2,"\" debe tener al menos un return."));
@@ -213,8 +213,8 @@ method_decl   :     type ID {
 								pushLevel(symbolsTable); 
 								returns = 0;
 								char *initLabel = newLabelName($3);
+								add_CodeLabel(lcode3d, newCode(LABEL), initLabel); // Mark to Label of Init of Method
 								insert_MethodL(listmlabel, $3, initLabel);
-								add_CodeLabel(lcode3d, newCode(LABEL), initLabel); // Mark to char of Init of Method
 					} param block {
 								popLevel(symbolsTable); 
 								if(returns==0) insertError(errorQ,toString("El metodo \"",$3,"\" debe tener al menos un return."));
@@ -284,9 +284,9 @@ action        :
 							returns++; 
 							if ((idNotFound == False) && (checkReturn(errorQ,symbolsTable,lastDefMethod) == 0))
 							{
-								Code3D *ret = newCode(RETURN); ///////////////////////////////////////////////////////////////////////////
-							//	setCode1D(ret, void);  /////////////// VER ESTA LINEA, NO DEBERIA HABER NADA ////////////////////////////////
-								add_code(lcode3d, ret); ////////////////////////////////////////////////////////////////////////////////////
+								Code3D *ret = newCode(RETURN);
+								setCodeLabel(ret, "   -   ");  /* Label "    -    " is added because there's not arguments */
+								add_code(lcode3d, ret);
 							}
 					}   
 			  |	   RETURNN expression {
@@ -435,8 +435,9 @@ method_call   :	   ID '(' ')' {
 
 								/* Is this the way to add the end label of the method, the place where it return when finalizes its call */
 								char *endLabel = newLabelName("end_m_call");
-								//insert_MethodL(listmlabel, $1, endLabel);
-								add_CodeLabel(lcode3d, newCode(LABEL), endLabel); // Mark to char of End of Method // ver si es necesario esta marca, si es asi cambiar toda la lista.
+								add_CodeLabel(lcode3d, newCode(LABEL), endLabel); // Mark to Label of End of Method // ver si es necesario esta marca, si es asi cambiar toda la lista.
+/*DEBERIA INSERTARSE ACA*///	insert_MethodL(listmlabel, $1, endLabel);
+/*EL ENDLABEL???        */		
 					}
 
               |    ID '(' {if (searchIdInSymbolsTable(errorQ,symbolsTable,$1) == NULL) 
@@ -456,9 +457,9 @@ method_call   :	   ID '(' ')' {
 								add_CodeLabel(lcode3d, newCode(GOTO_LABEL), get_Label(listmlabel, $1)); //Go to char of Init of Method 
 
 								/* Is this the way to add the end label of the method, the place where it return when finalizes its call */
-								char *endLabel = newLabelName("end_m_call");
+/*DEBERIA INSERTARSE ACA*/			char *endLabel = newLabelName("end_m_call");
+/*EL ENDLABEL???        */		add_CodeLabel(lcode3d, newCode(LABEL), endLabel); // Mark to Label of End of Method // ver si es necesario esta marca, si es asi cambiar toda la lista.
 								//insert_MethodL(listmlabel, $1, endLabel);
-								add_CodeLabel(lcode3d, newCode(LABEL), endLabel); // Mark to char of End of Method // ver si es necesario esta marca, si es asi cambiar toda la lista.
 							}
 							else
 							{
