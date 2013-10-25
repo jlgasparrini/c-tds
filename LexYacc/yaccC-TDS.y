@@ -422,19 +422,12 @@ method_call   :	   ID '(' ')' {
 								pushString(paramsStack,intToString(cantParams)); /*ver si esta linea debe ir o no*/
 								lastCalledMethod=$1; 
 								$$=checkAndGetMethodRetAttribute(errorQ,symbolsTable,$1,0);
-<<<<<<< HEAD
 								add_CodeLabel(lcode3d, newCode(GOTO_LABEL), get_Label(listmlabel, $1)); //Go to Label of Init of Method
-								//char *endLabel = newLabelName("end_m_call");
-								//insert_MethodL(listmlabel, $1, endLabel);
-								//add_CodeLabel(lcode3d, newCode(LABEL), endLabel); // Mark to Label of End of Method // ver si es necesario esta marca, si es asi cambiar toda la lista.
-=======
-								add_CodeLabel(lcode3d, newCode(GOTOLABEL), get_Label(listmlabel, $1)); //Go to Label of Init of Method
 
 								/* Is this the way to add the end label of the method, the place where it return when finalizes its call */
 								char *endLabel = newLabelName("end_m_call");
 								//insert_MethodL(listmlabel, $1, endLabel);
-								add_CodeLabel(lcode3d, newCode(MARK), endLabel); // Mark to Label of End of Method // ver si es necesario esta marca, si es asi cambiar toda la lista.
->>>>>>> 2e46b1cd5c77e9ca7f47814cad2fc2b22cfd8074
+								add_CodeLabel(lcode3d, newCode(LABEL), endLabel); // Mark to Label of End of Method // ver si es necesario esta marca, si es asi cambiar toda la lista.
 					}
 
               |    ID '(' {if (searchIdInSymbolsTable(errorQ,symbolsTable,$1) == NULL) 
@@ -451,19 +444,12 @@ method_call   :	   ID '(' ')' {
 							{
 								$$ = checkAndGetMethodRetAttribute(errorQ,symbolsTable,$1,cantParams); 
 								cantParams=atoi(popString(paramsStack));
-<<<<<<< HEAD
 								add_CodeLabel(lcode3d, newCode(GOTO_LABEL), get_Label(listmlabel, $1)); //Go to Label of Init of Method 
-								//char *endLabel = newLabelName("end_m_call");
-								//insert_MethodL(listmlabel, $1, endLabel);
-								//add_CodeLabel(lcode3d, newCode(LABEL), endLabel); // Mark to Label of End of Method // ver si es necesario esta marca, si es asi cambiar toda la lista.
-=======
-								add_CodeLabel(lcode3d, newCode(GOTOLABEL), get_Label(listmlabel, $1)); //Go to Label of Init of Method 
 
 								/* Is this the way to add the end label of the method, the place where it return when finalizes its call */
 								char *endLabel = newLabelName("end_m_call");
 								//insert_MethodL(listmlabel, $1, endLabel);
-								add_CodeLabel(lcode3d, newCode(MARK), endLabel); // Mark to Label of End of Method // ver si es necesario esta marca, si es asi cambiar toda la lista.
->>>>>>> 2e46b1cd5c77e9ca7f47814cad2fc2b22cfd8074
+								add_CodeLabel(lcode3d, newCode(LABEL), endLabel); // Mark to Label of End of Method // ver si es necesario esta marca, si es asi cambiar toda la lista.
 							}
 							else
 							{
@@ -538,7 +524,7 @@ term          :    factor			{$$ = $1;}
               |    term '-' factor	{$$ = returnSub(errorQ, lcode3d, $1, $3);}
               |    term '%' factor	{$$ = returnMod(errorQ, lcode3d, $1, $3);}
               |    term '/' factor	{$$ = returnDiv(errorQ, lcode3d, $1, $3);}
-              |    term '*' factor	{$$ = returnMult(errorQ, lcode3d, $1, $3);printf(" | | | | |  | |      %d   \n", (*$1).decl.variable.value.intVal); }
+              |    term '*' factor	{$$ = returnMult(errorQ, lcode3d, $1, $3);}
               ;
 
 factor        :    primary		{$$ = $1;}  
