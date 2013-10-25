@@ -8,10 +8,8 @@
 #ifndef LINKNODE_H
 #define LINKNODE_H
 
-#include "label.h"
-
 typedef struct NodeStack {
-    Label *info;
+    char *info;
     struct NodeStack *next;
 } NodeStack;
 
@@ -25,7 +23,7 @@ NodeStack* newLinkNode_info_next(char *info, NodeStack *next);
 
 /*lectura de informacion*/
 
-Label* getInfo_linkNode(NodeStack *node);
+char* getInfo_linkNode(NodeStack *node);
 NodeStack* getNext_linkNode(NodeStack *node);
 
 /*escritura de informacion*/

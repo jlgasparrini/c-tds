@@ -70,3 +70,21 @@ void delete_listC3D(ListC3D *list, int index) {
         (*list).size--;
     }
 }
+
+//Toma una posicion y comienza a buscar el label pasado por parametro dentro del codigo intermedio!
+int searchByLabel(ListC3D *list, char* label, int position)
+{
+    printf("  dadsa d das ds adas \n");
+    NodeC3D *runner = (*list).init;
+    printf("  dadsa d das ds adas \n");
+    printf(" ds  dsa ads adsdas sd das %s  ==  %s  \n", getLabel(runner->info, 1),label);
+    int i = 0;
+    bool found = false;
+    while (i < size_listC3D(list)) 
+    {
+        runner = (NodeC3D*) getNext_NodeC3D(runner);
+        if (strcmp(getLabel(runner->info, 1), label) == 0)
+            return i;
+        i++;
+    }
+}

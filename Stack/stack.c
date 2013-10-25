@@ -5,28 +5,33 @@
 #include "stack.h"
 #include <stdlib.h>
 
-Stack* newStack() {
+Stack* newStack() 
+{
     Stack *new = (Stack*) malloc(sizeof(Stack));
     new->top = NULL;
     return new;
 }
 
-void push(Stack *stack, char *label) {
+void push(Stack *stack, char *label) 
+{
     NodeStack *new = newLinkNode_info_next(label, stack->top);
     stack->top = new;
 }
 
-bool isEmpty(Stack *stack) {
+bool isEmpty(Stack *stack) 
+{
     return stack->top == NULL;
 }
 
-Label* pop(Stack *stack) {
-    Label *ret = getInfo_linkNode(stack->top);
+char* pop(Stack *stack) 
+{
+    char *ret = getInfo_linkNode(stack->top);
     stack->top = getNext_linkNode(stack->top);
     return ret;
 }
 
-Label* peek(Stack *stack) {
-    Label *ret = getInfo_linkNode(stack->top);
+char* peek(Stack *stack) 
+{
+    char *ret = getInfo_linkNode(stack->top);
     return ret;
 }

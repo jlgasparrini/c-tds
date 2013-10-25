@@ -7,7 +7,6 @@
 #define STACK_H
 
 #include "linknode.h"
-#include "label.h"
 #include <stdbool.h>
 
 typedef struct {
@@ -20,8 +19,8 @@ void push(Stack *stack, char *label);
 
 bool isEmpty(Stack *stack);
 
-Label* pop(Stack *stack);
+char* pop(Stack *stack);
 
-Label* peek(Stack *stack);
+char* peek(Stack *stack);
 
 #endif

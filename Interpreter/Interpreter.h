@@ -9,6 +9,6 @@
 #include "../Code3D/gencode3d.h"
 
 /* Initializes the interpreter and runs it */
-void initInterpreter(ListMLabel *labelL, LCode3D *codeL);
+void initInterpreter(ListMLabel *labelL, LCode3D *codeL, Stack *stack);
 
 #endif

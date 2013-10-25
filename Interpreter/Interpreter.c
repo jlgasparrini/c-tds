@@ -5,19 +5,22 @@
 #include <stdio.h>
 #include <string.h>
 #include "../Code3D/codespecs.h"
+#include "../Stack/stack.h"
 #include "Interpreter.h"
 
 ListMLabel *labelList;
 LCode3D *codeList;
+Stack *stackIfs;
 int size;
 
 // Given the position, I run that operation from the codeList
-void runOperation(int position)
+// also this function return the next position of operation to execute!
+int runOperation(int position)
 {
     Code3D*	code = get_code(codeList,position);
     switch ((*code).command)
     {
-        /* LOAD_CONST */
+            /* LOAD_CONST */
         case 0:
             if (getAttributeType((*(*code).param2).val.attri) == Int)
                 setIntVal((*(*code).param2).val.attri, (*(*code).param1).val.intAttri);
@@ -25,7 +28,7 @@ void runOperation(int position)
                 setFloatVal((*(*code).param2).val.attri, (*(*code).param1).val.floatAttri);
             if (getAttributeType((*(*code).param2).val.attri) == Bool)
                 setBoolVal((*(*code).param2).val.attri, (*(*code).param1).val.boolAttri);
-            break;
+            return position+1;
 
             /* ASSIGNATION */
         case 1: 
@@ -35,52 +38,52 @@ void runOperation(int position)
                 setFloatVal((*(*code).param2).val.attri, getFloatVal((*(*code).param1).val.attri));
             if (getAttributeType((*(*code).param1).val.attri) == Bool)
                 setBoolVal((*(*code).param2).val.attri, getBoolVal((*(*code).param1).val.attri));
-            break;
+            return position+1;
 
             /* MINUS_INT */
         case 2:
             setIntVal((*(*code).param3).val.attri, getIntVal((*(*code).param1).val.attri) - getIntVal((*(*code).param2).val.attri));
-            break;
+            return position+1;
 
             /* ADD_INT */
         case 3:
             setIntVal((*(*code).param3).val.attri, getIntVal((*(*code).param1).val.attri) + getIntVal((*(*code).param2).val.attri));
-            break;
+            return position+1;
 
             /* MULT_INT */
         case 4:
             setIntVal((*(*code).param3).val.attri, getIntVal((*(*code).param1).val.attri) * getIntVal((*(*code).param2).val.attri));
-            break;
+            return position+1;
 
             /* DIV_INT */
         case 5:
             setIntVal((*(*code).param3).val.attri, getIntVal((*(*code).param1).val.attri) / getIntVal((*(*code).param2).val.attri));
-            break;
+            return position+1;
 
             /* MOD_INT */
         case 6:
             setIntVal((*(*code).param3).val.attri, getIntVal((*(*code).param1).val.attri) % getIntVal((*(*code).param2).val.attri));
-            break;
+            return position+1;
 
             /* MINUS_FLOAT */
         case 7:
             setFloatVal((*(*code).param3).val.attri, getFloatVal((*(*code).param1).val.attri) - getFloatVal((*(*code).param2).val.attri));
-            break;
+            return position+1;
 
             /* ADD_FLOAT */
         case 8:
             setFloatVal((*(*code).param3).val.attri, getFloatVal((*(*code).param1).val.attri) + getFloatVal((*(*code).param2).val.attri));
-            break;
+            return position+1;
 
             /* MULT_FLOAT */
         case 9:
             setFloatVal((*(*code).param3).val.attri, getFloatVal((*(*code).param1).val.attri) * getFloatVal((*(*code).param2).val.attri));
-            break;
+            return position+1;
 
             /* DIV_FLOAT */
         case 10:
             setFloatVal((*(*code).param3).val.attri, getFloatVal((*(*code).param1).val.attri) / getFloatVal((*(*code).param2).val.attri));
-            break;
+            return position+1;
 
             /* EQ */
         case 11:
@@ -90,7 +93,7 @@ void runOperation(int position)
                 setBoolVal((*(*code).param3).val.attri, getFloatVal((*(*code).param1).val.attri) == getFloatVal((*(*code).param2).val.attri));
             if (getAttributeType((*(*code).param2).val.attri) == Bool)
                 setBoolVal((*(*code).param2).val.attri, getBoolVal((*(*code).param1).val.attri) == getBoolVal((*(*code).param2).val.attri));
-            break;
+            return position+1;
 
             /* DIST */
         case 12:
@@ -100,7 +103,7 @@ void runOperation(int position)
                 setBoolVal((*(*code).param3).val.attri, getFloatVal((*(*code).param1).val.attri) != getFloatVal((*(*code).param2).val.attri));
             if (getAttributeType((*(*code).param2).val.attri) == Bool)
                 setBoolVal((*(*code).param2).val.attri, getBoolVal((*(*code).param1).val.attri) != getBoolVal((*(*code).param2).val.attri));
-            break;
+            return position+1;
 
             /* GT */
         case 13:
@@ -110,7 +113,7 @@ void runOperation(int position)
                 setBoolVal((*(*code).param3).val.attri, getFloatVal((*(*code).param1).val.attri) > getFloatVal((*(*code).param2).val.attri));
             if (getAttributeType((*(*code).param3).val.attri) == Bool)
                 setBoolVal((*(*code).param3).val.attri, getBoolVal((*(*code).param1).val.attri) > getBoolVal((*(*code).param2).val.attri));
-            break;
+            return position+1;
 
             /* LR */
         case 14: 
@@ -120,7 +123,7 @@ void runOperation(int position)
                 setBoolVal((*(*code).param3).val.attri, getFloatVal((*(*code).param1).val.attri) < getFloatVal((*(*code).param2).val.attri));
             if (getAttributeType((*(*code).param2).val.attri) == Bool)
                 setBoolVal((*(*code).param3).val.attri, getBoolVal((*(*code).param1).val.attri) < getBoolVal((*(*code).param2).val.attri));
-            break;
+            return position+1;
 
             /* GEQ */
         case 15:
@@ -130,7 +133,7 @@ void runOperation(int position)
                 setBoolVal((*(*code).param3).val.attri, getFloatVal((*(*code).param1).val.attri) >= getFloatVal((*(*code).param2).val.attri));
             if (getAttributeType((*(*code).param2).val.attri) == Bool)
                 setBoolVal((*(*code).param3).val.attri, getBoolVal((*(*code).param1).val.attri) >= getBoolVal((*(*code).param2).val.attri));
-            break;
+            return position+1;
 
             /* LEQ */
         case 16:
@@ -140,51 +143,52 @@ void runOperation(int position)
                 setBoolVal((*(*code).param3).val.attri, getFloatVal((*(*code).param1).val.attri) <= getFloatVal((*(*code).param2).val.attri));
             if (getAttributeType((*(*code).param2).val.attri) == Bool)
                 setBoolVal((*(*code).param3).val.attri, getBoolVal((*(*code).param1).val.attri) <= getBoolVal((*(*code).param2).val.attri));
-            break;
+            return position+1;
             /* OR */
-            //      case 17: setBoolVal((*(*code).param3).val.attri, (*(*code).param1).val.boolAttri || (*(*code).param2).val.boolAttri);
         case 17:
             setBoolVal((*(*code).param3).val.attri, getBoolVal((*(*code).param1).val.attri) || getBoolVal((*(*code).param2).val.attri));
-            break;
+            return position+1;
 
             /* AND */
-            //      case 18: setBoolVal((*(*code).param3).val.attri, (*(*code).param1).val.boolAttri && (*(*code).param2).val.boolAttri);
         case 18:
             setBoolVal((*(*code).param3).val.attri, getBoolVal((*(*code).param1).val.attri) && getBoolVal((*(*code).param2).val.attri));
-            break;
+            return position+1;
 
             /* NOT */
         case 19: 
             setBoolVal((*(*code).param2).val.attri, !getBoolVal((*(*code).param1).val.attri));
-            break;
+            return position+1;
 
             /* LABEL */
         case 20: 
-            break;
+            return position+1;
 
             /* GOTO_LABEL */
         case 21: 
-            break;
+            return searchByLabel((*(*code).param1).val.label, position) + 1;
+            
             /* GOTO_LABEL_COND */
         case 22: 
-            break;
+            return searchByLabel(pop(stackIfs), position);
+            //return position + 1;
 
             /* RETURN */
         case 23: 
-            break;
+            return position + 1;
 
             /* NEG_INT */
         case 24:
             setIntVal((*(*code).param2).val.attri, -getIntVal((*(*code).param1).val.attri));
-            break;
+            return position + 1;
 
             /* NEG_FLOAT */
         case 25: 
             setFloatVal((*(*code).param2).val.attri, -getFloatVal((*(*code).param1).val.attri));
-            break;
+            return position + 1;
+            
             /* PARAM_ASSIGN */
         case 26: 
-            break;
+            return position + 1;
 
             /* PRINT */
         case 27:
@@ -199,7 +203,7 @@ void runOperation(int position)
                 if (getBoolVal((*(*code).param1).val.attri) == False)	
                     printf("Print. El valor booleano es: false\n");
             }
-            break;
+            return position+1;
     }
 
 }
@@ -208,16 +212,16 @@ void runOperation(int position)
  * Returns the position with the label "label" in the list of code 3D. 
  * If "label" is not found then return -1
  */
-int searchByLabel(char* label)
+// Esto solamente sirve para los metodos!!! -.-
+int searchByMethodLabel(char* label, int pos)
 {
-    int i = 0;
+    int i = pos;
     char *auxLabel = get_Label(labelList, label);
     if (auxLabel == "NULL")
         printf("ERROR: LABEL no encontrado!    %s  encontrado. \n", auxLabel);
     else
     {
         bool labelFound = false;
-        int i = 0;
         Code3D *aux;
         while (!labelFound && (i < codeSize(codeList)))
         {
@@ -232,7 +236,7 @@ int searchByLabel(char* label)
     return -1;
 }
 
-//ejecuta cada una de las intrucciones del main hasta encontrar el return!
+//ejecuta cada una de las intrucciones del main hasta encontrar el return! toma la posicion en donde se encuentra el el label main.
 void runMain(int pos)
 {
     bool returnFound = false;
@@ -241,20 +245,20 @@ void runMain(int pos)
     {
         aux = get_code(codeList,pos);
         if (getCommand(aux) != RETURN) 
-            runOperation(pos);
+            pos = runOperation(pos);
         else
             returnFound = true;
-        pos++;
+        //pos++; Ahora la proxima instruccion a ejecutar la devolverá runOperation!
     }
 }
 
 /* Initializes the interpreter and run */
-void initInterpreter(ListMLabel *labelL, LCode3D *codeL)
+//Toma el codigo 3D, la lista de metodos y la pila de IF's!!
+void initInterpreter(ListMLabel *labelL, LCode3D *codeL, Stack *stack)
 {
     labelList = labelL;
     codeList = codeL;
+    stackIfs = stack;
     size = codeSize(codeL);
-    runMain(searchByLabel("main"));
+    runMain(searchByMethodLabel("main", 0));
 }
-
-
