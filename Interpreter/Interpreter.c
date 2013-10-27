@@ -19,9 +19,11 @@ int runOperation(int position)
 {
 //	printf("entre a run operation \n");
     Code3D*	code = get_code(codeList,position);
+    char* operation;
 //	printf("voy a mostrar el codigo de 3 direcciones: \n");
 //	showCode(code);
 //	printf("\n");
+//printf("corri operation %d en la posicion %d\n", code->command, position);
     switch ((*code).command)
     {
             /* LOAD_CONST */
@@ -171,12 +173,16 @@ int runOperation(int position)
 
             /* GOTO_LABEL */
         case 21: 
-            //return searchByLabel((*(*code).param1).val.label, position) + 1;
+	    return searchByLabel((*codeList).codes, getLabel(code, 1), position) + 1;
             break;
 
             /* GOTO_LABEL_COND */
-        case 22: 
-            //return searchByLabel(pop(stackIfs), position);
+        case 22:
+	    operation = pop(stackIfs);
+		//printf("voy a saltar a: %s \n", operation);
+		//printf("en la posicion: %d \n", searchByLabel((*codeList).codes, operation, position));
+            if ((*(*(*code).param1).val.attri).decl.variable.value.boolVal == False)
+                return searchByLabel((*codeList).codes, operation, position) + 1; 
             return position + 1;
 
             /* RETURN */
@@ -195,7 +201,7 @@ int runOperation(int position)
             
             /* PARAM_ASSIGN */
         case 26: 
-			(*(*code).param2).val.attri = (*(*code).param1).val.attri;
+	    (*(*code).param2).val.attri = (*(*code).param1).val.attri;
             return position + 1;
             break;
 

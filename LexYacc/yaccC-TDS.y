@@ -317,41 +317,30 @@ assig_op      :    '=' {$$ = "=";}
 /* -------------------- CONDITIONALS AND CICLES ------------------------------ */
 
 conditional   :    IF '(' expression { 
-										controlType(errorQ,$3,Bool,"if",1);
-                                        char *endLabel = newLabelName("end_if");
-                                        //add_CodeLabel(lcode3d, newCode(LABEL), endLabel); // Mark to char of If
-                                        push(labelsCYC, endLabel);
-                                        char *elseLabel = newLabelName("else");
+					controlType(errorQ,$3,Bool,"if",1);
                                         char *ifLabel = newLabelName("if");
-										add_CodeLabelCond(lcode3d, newCode(GOTO_LABEL_COND), $3, ifLabel); //Go to char of If
-                                        //add_CodeLabel(lcode3d, newCode(LABEL), ifLabel); // Mark to char of If
-                                        add_CodeLabel(lcode3d, newCode(LABEL), elseLabel); // Mark to char of Else. There's always an else label, but in case of an if then statement, it is not used
-                                        //add_CodeLabel(lcode3d, newCode(GOTO_LABEL), markEnd); // Go to char of End
+                                        char *elseLabel = newLabelName("else");
+					char *endLabel = newLabelName("end_if");
+					add_CodeLabelCond(lcode3d, newCode(GOTO_LABEL_COND), $3, ifLabel); //Go to char of If
+                                        push(labelsCYC, endLabel);
                                         push(labelsCYC, elseLabel);
-					} ')' block {
-									//add_CodeLabel(lcode3d, newCode(GOTO_LABEL), peek(labelsCYC)); //Go to char of End
-								}
-                                        
-					 optional {
-                              }
+				} ')' 
+					block optional {
+							add_CodeLabel(lcode3d, newCode(LABEL), peek(labelsCYC)); // Mark to char of End
+				}
 			  ;
 
 optional	  :		{
-                        char *markEnd = pop(labelsCYC);
-						//add_CodeLabel(lcode3d, newCode(LABEL), elseLabel); // Mark to char of Else. There's always an else label, but in case of an if then statement, it is not used
-						//add_CodeLabel(lcode3d, newCode(GOTO_LABEL), markEnd); // Go to char of End
-						//add_CodeLabel(lcode3d, newCode(LABEL), markEnd); // Mark to char of End
-					}
-			  |	   	ELSE {
-                        char *elseLabel = newLabelName("else");
-                        add_CodeLabel(lcode3d, newCode(LABEL), elseLabel); //Go to char of Else
-                         //Label *markEnd = pop(labelsCYC);
-						 //add_CodeLabel(lcode3d, newCode(LABEL), pop(labelsCYC)); // Mark to char of Else
-                         push(labelsCYC, elseLabel);
-                    } block	{
-						//add_CodeLabel(lcode3d, newCode(GOTO_LABEL), peek(labelsCYC)); // Go to char of End
-						//|add_CodeLabel(lcode3d, newCode(LABEL), pop(labelsCYC)); // Mark to char of End
-					} 
+				pop(labelsCYC);
+			}
+		  |	   	ELSE {
+			char* elseLabel = pop(labelsCYC);
+			char* endLabel = pop(labelsCYC);
+			add_CodeLabel(lcode3d, newCode(GOTO_LABEL), endLabel); //Go to char of Else
+			add_CodeLabel(lcode3d, newCode(LABEL), elseLabel); // Mark to char of Else
+			push(labelsCYC, elseLabel);
+			push(labelsCYC, endLabel);
+                    } block	
 			  ;
 
 iteration     :    WHILE {     

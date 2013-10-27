@@ -1,8 +1,7 @@
 /********************************************************
 *Implementacion de pila de cadenas de caracteres        *
 *********************************************************/
-
-#include "stack.h"
+    #include "stack.h"
 #include <stdlib.h>
 
 Stack* newStack() 
@@ -14,6 +13,7 @@ Stack* newStack()
 
 void push(Stack *stack, char *label) 
 {
+    //printf(" apileeee %s \n", label);
     NodeStack *new = newLinkNode_info_next(label, stack->top);
     stack->top = new;
 }
@@ -26,6 +26,7 @@ bool isEmpty(Stack *stack)
 char* pop(Stack *stack) 
 {
     char *ret = getInfo_linkNode(stack->top);
+    //printf(" desapileee %s \n", ret);
     stack->top = getNext_linkNode(stack->top);
     return ret;
 }
