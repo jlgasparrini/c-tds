@@ -47,7 +47,8 @@ Attribute* getArrayAttribute(ErrorsQueue *eq, Attribute *attr, unsigned int pos)
 		{
 			Attribute *aux = createVariable(getVariableName(), getAttributeType(attr));
 			if (getAttributeType(attr) == Int)
-				setIntVal(aux,getArrayIntVal(attr,pos));
+				(*aux).decl.variable = &(*aux).decl.array.arrayValues[pos];
+				//setIntVal(aux,getArrayIntVal(attr,pos));
 			if (getAttributeType(attr) == Float)
 				setFloatVal(aux,getArrayFloatVal(attr,pos));
 			if (getAttributeType(attr) == Bool)
@@ -159,7 +160,7 @@ ReturnType methodReturnType(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* 
 ReturnType getAttributeType(Attribute *attr)
 {
     if((*attr).type == Variable)
-		return (*attr).decl.variable.type;
+		return (*(*attr).decl.variable).type;
     if((*attr).type == Array)
 		return (*attr).decl.array.type;
     if((*attr).type == Method)
@@ -210,7 +211,7 @@ unsigned char correctParamBC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attri
 		{
 			if (paramSize+1 == (*aux).decl.method.paramSize) 
 			{
-				if (correctParameterType(&(*attr).decl.variable, aux, paramSize) == 0) 
+				if (correctParameterType((*attr).decl.variable, aux, paramSize) == 0) 
 					return 0;
 				else
 				{
@@ -249,7 +250,7 @@ unsigned char correctParamIC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attri
         {
 			if (paramSize < (*aux).decl.method.paramSize) 
             {
-				if (correctParameterType(&(*attr).decl.variable, aux, paramSize) == 0) 
+				if (correctParameterType((*attr).decl.variable, aux, paramSize) == 0) 
 					return 0;
             }
         }
@@ -372,7 +373,7 @@ unsigned char checkReturnExpression(ErrorsQueue *eq, SymbolsTable *aSymbolsTable
 		else
 		{
 			// assign the expression in attribute to the method return expression
-			setMethodReturnAttribute(eq,aSymbolsTable, lastUsedMethod, &(*attr).decl.variable);
+			setMethodReturnAttribute(eq,aSymbolsTable, lastUsedMethod, (*attr).decl.variable);
 		}
 	return 0;
 }

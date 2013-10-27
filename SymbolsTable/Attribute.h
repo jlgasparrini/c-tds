@@ -39,7 +39,7 @@ typedef struct              /* A method has: 				       							*/
 
 typedef union               /* A declaration is: 											*/
 {			
-    StVariable variable;	/* A variable    												*/
+    StVariable *variable;	/* A variable    												*/
     StMethod method;		/* A method 													*/
     StArray array;          /* An array                                                     */
 } Declaration;

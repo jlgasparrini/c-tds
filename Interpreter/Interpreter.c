@@ -11,7 +11,6 @@
 ListMLabel *labelList;
 LCode3D *codeList;
 Stack *stackIfs;
-int size;
 
 // Given the position, I run that operation from the codeList
 // also this function return the next position of operation to execute!
@@ -235,8 +234,17 @@ int searchByMethodLabel(char* label, int pos)
         while (!labelFound && i < codeSize(codeList))
         {
             aux = get_code(codeList,i);
-            if (strcmp(auxLabel, getLabel(aux, 1)) == 0)
-                labelFound = true;
+		//	printf("busca el label: %s\n", auxLabel);
+		//	printf("por comparar..\n");
+		//	showCode(aux);
+		//	printf("\n");
+		//	printf("esto tiene el label: %s\n", getLabel(aux, 1));
+			if (isLabel(aux,1))
+			{
+	            if (strcmp(auxLabel, getLabel(aux, 1)) == 0)
+		            labelFound = true;
+		//	printf("termino de comparar\n");
+			}
             i++;
         } 
         if (labelFound)
@@ -246,7 +254,7 @@ int searchByMethodLabel(char* label, int pos)
 }
 
 //ejecuta cada una de las intrucciones del main hasta encontrar el return! toma la posicion en donde se encuentra el el label main.
-void runMain(int pos)
+void runMethod(int pos)
 {
     bool returnFound = false;
     Code3D *aux;
@@ -268,6 +276,5 @@ void initInterpreter(ListMLabel *labelL, LCode3D *codeL, Stack *stack)
     labelList = labelL;
     codeList = codeL;
     stackIfs = stack;
-    size = codeSize(codeL);
-    runMain(searchByMethodLabel("main", 0));
+    runMethod(searchByMethodLabel("main", 0));
 }
