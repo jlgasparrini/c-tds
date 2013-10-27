@@ -27,6 +27,7 @@ int labelCount = 0;
 Stack *labelsCYC;
 Stack *labelsWhile;
 Stack *labelsFor;
+Stack *ifsStack;//Utilizada para los saltos en el interprete!
 ListMLabel *listmlabel;
 
 /*Create new Label*/
@@ -82,7 +83,7 @@ void finalizar()
 		show3DCode(lcode3d);
 		printf("------Se termino de parsear.----------\n");
 		printf("-----Corriendo interprete------\n");
-		initInterpreter(listmlabel, lcode3d, labelsCYC);
+		initInterpreter(listmlabel, lcode3d, ifsStack);
 		printf("-----Se acabo de correr el interprete.-----\n");
 	}
 }
@@ -132,6 +133,7 @@ program       :    CLASS ID '{' '}' {
 									methodsIDStack = initializeSS();
 									labelsCYC = newStack();
                                     labelsWhile = newStack();
+									ifsStack = newStack();
 									labelsFor = newStack();
 									listmlabel = initL();
 									lcode3d = initLCode3D();
@@ -319,28 +321,29 @@ assig_op      :    '=' {$$ = "=";}
 conditional   :    IF '(' expression { 
 					controlType(errorQ,$3,Bool,"if",1);
                                         char *ifLabel = newLabelName("if");
+					add_CodeLabelCond(lcode3d, newCode(GOTO_LABEL_COND), $3, ifLabel); //Go to char of If
                                         char *elseLabel = newLabelName("else");
 					char *endLabel = newLabelName("end_if");
-					add_CodeLabelCond(lcode3d, newCode(GOTO_LABEL_COND), $3, ifLabel); //Go to char of If
                                         push(labelsCYC, endLabel);
                                         push(labelsCYC, elseLabel);
 				} ')' 
-					block optional {
-							add_CodeLabel(lcode3d, newCode(LABEL), peek(labelsCYC)); // Mark to char of End
-				}
+					block optional 
 			  ;
 
 optional	  :		{
 				pop(labelsCYC);
+				add_CodeLabel(lcode3d, newCode(LABEL), peek(labelsCYC)); // Mark to char of End
+				push(ifsStack, peek(labelsCYC));
 			}
 		  |	   	ELSE {
-			char* elseLabel = pop(labelsCYC);
-			char* endLabel = pop(labelsCYC);
-			add_CodeLabel(lcode3d, newCode(GOTO_LABEL), endLabel); //Go to char of Else
-			add_CodeLabel(lcode3d, newCode(LABEL), elseLabel); // Mark to char of Else
-			push(labelsCYC, elseLabel);
-			push(labelsCYC, endLabel);
-                    } block	
+					char* elseLabel = pop(labelsCYC);
+					add_CodeLabel(lcode3d, newCode(GOTO_LABEL), peek(labelsCYC)); //Go to char of Else
+					add_CodeLabel(lcode3d, newCode(LABEL), elseLabel); // Mark to char of Else
+                    } block{	
+				char* aux = pop(labelsCYC);
+				add_CodeLabel(lcode3d, newCode(LABEL), aux); // Mark to char of End
+				push(ifsStack, aux);
+			}
 			  ;
 
 iteration     :    WHILE {     
