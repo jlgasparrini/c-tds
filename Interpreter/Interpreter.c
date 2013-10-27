@@ -180,7 +180,7 @@ int runOperation(int position)
 	    operation = pop(stackIfs);
 		//printf("voy a saltar a: %s \n", operation);
 		//printf("en la posicion: %d \n", searchByLabel((*codeList).codes, operation, position));
-            if ((*(*(*code).param1).val.attri).decl.variable.value.boolVal == False)
+            if (getBoolVal((*(*code).param1).val.attri) == False)
                 return searchByLabel((*codeList).codes, operation, position) + 1; 
             return position + 1;
 
