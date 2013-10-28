@@ -78,10 +78,8 @@ int searchByLabel(ListC3D *list, char* label)
     int i = 0;
     while (i <= size_listC3D(list)) 
     {
-        //printf("buscando %s en la posicion %d\n", label, i);
         runner = (NodeC3D*) getNext_NodeC3D(runner);
         if (strcmp(getCodeByID(getCommand(runner->info)),"LABEL") == 0 && strcmp(getLabel((*runner).info, 1), label) == 0){
-            //printf("encontre %s en la posicion %d\n", label, i);
             return i+1;}
         i++;
     }

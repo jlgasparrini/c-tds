@@ -172,7 +172,7 @@ int runOperation(int position)
             /* GOTO_LABEL */
         case 21: 
             //printf("Voy a saltar a %s en la posicion %d\n", getLabel(code, 1),searchByLabel((*codeList).codes, getLabel(code, 1)) + 1);
-	    return searchByLabel((*codeList).codes, getLabel(code, 1)) + 1;
+	    return searchByLabel((*codeList).codes, getLabel(code, 1));
             break;
 
             /* GOTO_LABEL_COND */
@@ -246,16 +246,10 @@ int searchByMethodLabel(char* label, int pos)
         while (!labelFound && i < codeSize(codeList))
         {
             aux = get_code(codeList,i);
-		//	printf("busca el label: %s\n", auxLabel);
-		//	printf("por comparar..\n");
-		//	showCode(aux);
-		//	printf("\n");
-		//	printf("esto tiene el label: %s\n", getLabel(aux, 1));
 			if (isLabel(aux,1))
 			{
 	            if (strcmp(auxLabel, getLabel(aux, 1)) == 0)
 		            labelFound = true;
-		//	printf("termino de comparar\n");
 			}
             i++;
         } 
