@@ -16,12 +16,8 @@ Stack *stackIfs;
 // also this function return the next position of operation to execute!
 int runOperation(int position)
 {
-//	printf("entre a run operation \n");
     Code3D*	code = get_code(codeList,position);
     char* operation;
-//	printf("voy a mostrar el codigo de 3 direcciones: \n");
-//	showCode(code);
-//	printf("\n");
 //printf("corri operation %d en la posicion %d\n", code->command, position);
     switch ((*code).command)
     {

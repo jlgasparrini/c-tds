@@ -266,8 +266,6 @@ unsigned char controlAssignation(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *a
 {
 	if ((*attr1).type != Method)
 	{
-		printf("attr2 es de tipo: %d\n", getAttributeType(attr2));
-		printf("attr1 es de tipo: %d\n", getAttributeType(attr1));
         if (getAttributeType(attr1) != getAttributeType(attr2))
             insertError(eq, toString("El lado derecho de la asignacion debe ser de tipo \"", getType(getAttributeType(attr1)), "\"."));
 		else
