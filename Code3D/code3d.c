@@ -154,17 +154,6 @@ char* getLabel(Code3D *code, int param) {
 	return "";
 }
 
-char* cutLabel(char* label)
-{
-    char token[2] = "_";
-    char* newLabel = "NULL";
-    while ((label = strtok(NULL, token)) != NULL)
-    {
-        newLabel = label;
-    }
-    return newLabel;
-}
-
 Attribute* getAttribute(Code3D *code, int param) {
     if (param == 1)
         return code->param1->val.attri;
@@ -354,11 +343,11 @@ void setCodeLabel(Code3D *code, char *label)
     setNull(code, 3);
 }
 
-void setCodeLabelCond(Code3D *code, Attribute *attri1, char *label)
+void setCodeLabelCond(Code3D *code, Attribute *attri1, char *label, char *jumpTo)
 {
     setAttribute(code, 1, attri1);
     setLabel(code, 2, label);
-    setNull(code, 3);
+    setLabel(code, 3, jumpTo);
 }
 
 void setCode3D(Code3D *code, Attribute *attri1, Attribute *attri2, Attribute *attriRes)

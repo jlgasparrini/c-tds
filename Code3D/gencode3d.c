@@ -36,9 +36,9 @@ void add_CodeLabel(LCode3D *lcode3d, Code3D *code, char *label)
     add_code(lcode3d, code);
 }
 
-void add_CodeLabelCond(LCode3D *lcode3d, Code3D *code, Attribute *attri1, char *label)
+void add_CodeLabelCond(LCode3D *lcode3d, Code3D *code, Attribute *attri1, char *label, char *jumpTo)
 {
-	setCodeLabelCond(code, attri1, label);
+	setCodeLabelCond(code, attri1, label, jumpTo);
     add_code(lcode3d, code);
 }
 
@@ -68,6 +68,11 @@ void add_MethodCall(LCode3D *lcode3d, Code3D *code,  Attribute *attri1,  StVaria
 	setVariable(code, 2, attriRes);
 	setNull(code, 3);
 	add_code(lcode3d, code);
+}
+
+void delete_code(LCode3D *lcode3d, int index)
+{
+	delete_listC3D((*lcode3d).codes, index);
 }
 
 /* Prints on the screen the 3d code that contains the list lcode3d */

@@ -454,7 +454,7 @@ Attribute* returnDistinct(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, A
     if (getAttributeType(oper1) == getAttributeType(oper2)) 
     {
 		Attribute *aux = createVariable(getVariableName(), Bool);
-        Code3D *codeDist = newCode(DIST);
+		Code3D *codeDist = newCode(DIST);
 		setCode3D(codeDist, oper1, oper2, aux);
 		add_code(lcode3d, codeDist);
 		return aux;

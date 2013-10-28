@@ -72,27 +72,19 @@ void delete_listC3D(ListC3D *list, int index) {
 }
 
 //Toma una posicion y comienza a buscar el label pasado por parametro dentro del codigo intermedio!
-int searchByLabel(ListC3D *list, char* label, int position)
+int searchByLabel(ListC3D *list, char* label)
 {
     NodeC3D *runner = (*list).init;
     int i = 0;
-    bool found = false;
-    while (i < position) 
-    {
-        i++;
-        runner = (NodeC3D*) getNext_NodeC3D(runner);
-    }
     while (i <= size_listC3D(list)) 
     {
-//	if (isLabel((*runner).info, 1))
-//		printf("label en la posittion %d, %s\n", i, getLabel(runner->info, 1));
-//	else
-//		printf("no hay label en la position %d\n", i);
+        //printf("buscando %s en la posicion %d\n", label, i);
         runner = (NodeC3D*) getNext_NodeC3D(runner);
-        if (isLabel((*runner).info, 1) && strcmp(getLabel((*runner).info, 1), label) == 0){
-	//printf("lo encontre en la: %d           %s == %s\n", i+1, getLabel((*runner).info, 1), label);
+        if (isLabel((*runner).info, 1)) printf("son iguales %s == %s ?? en la posicion %d    comando : %s \n", getLabel(runner->info, 1), label, i, (char*)getCodeByID(getCommand(runner->info)));
+        if (strcmp(getCodeByID(getCommand(runner->info)),"LABEL") == 0 && strcmp(getLabel((*runner).info, 1), label) == 0){
+            //printf("encontre %s en la posicion %d\n", label, i);
             return i+1;}
         i++;
     }
-    return position;
+    return -1;
 }

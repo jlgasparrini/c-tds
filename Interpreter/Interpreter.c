@@ -10,7 +10,7 @@
 
 ListMLabel *labelList;
 LCode3D *codeList;
-Stack *stackIfs;
+Stack *returnStack;
 int size;
 
 // Given the position, I run that operation from the codeList
@@ -19,11 +19,10 @@ int runOperation(int position)
 {
 //	printf("entre a run operation \n");
     Code3D*	code = get_code(codeList,position);
-    char* operation;
 //	printf("voy a mostrar el codigo de 3 direcciones: \n");
 //	showCode(code);
 //	printf("\n");
-//printf("corri operation %d en la posicion %d\n", code->command, position);
+    printf("Corro la operacion de la posicion %d\n", position);
     switch ((*code).command)
     {
             /* LOAD_CONST */
@@ -109,6 +108,7 @@ int runOperation(int position)
                 setBoolVal((*(*code).param3).val.attri, getFloatVal((*(*code).param1).val.attri) != getFloatVal((*(*code).param2).val.attri));
             if (getAttributeType((*(*code).param2).val.attri) == Bool)
                 setBoolVal((*(*code).param2).val.attri, getBoolVal((*(*code).param1).val.attri) != getBoolVal((*(*code).param2).val.attri));
+            //printf("code con %d\n", code->param1->val.attri->decl.variable.value.boolVal);
             return position+1;
 
             /* GT */
@@ -173,21 +173,21 @@ int runOperation(int position)
 
             /* GOTO_LABEL */
         case 21: 
-	    return searchByLabel((*codeList).codes, getLabel(code, 1), position) + 1;
+            //printf("Voy a saltar a %s en la posicion %d\n", getLabel(code, 1),searchByLabel((*codeList).codes, getLabel(code, 1)) + 1);
+	    return searchByLabel((*codeList).codes, getLabel(code, 1)) + 1;
             break;
 
             /* GOTO_LABEL_COND */
         case 22:
-	    operation = pop(stackIfs);
-		//printf("voy a saltar a: %s \n", operation);
-		//printf("en la posicion: %d \n", searchByLabel((*codeList).codes, operation, position));
+            //printf("Voy a saltar a %d\n", searchByLabel((*codeList).codes,getLabel(code, 2)) + 1);
+            //printf("%s tiene %d\n", code->param1->val.attri->decl.variable.id, code->param1->val.attri->decl.variable.value.intVal);
             if ((*(*(*code).param1).val.attri).decl.variable.value.boolVal == False)
-                return searchByLabel((*codeList).codes, operation, position) + 1; 
+                return searchByLabel((*codeList).codes,getLabel(code, 2)); 
             return position + 1;
 
             /* RETURN */
         case 23: 
-            return position + 1;
+            return position;
 
             /* NEG_INT */
         case 24:
@@ -273,7 +273,7 @@ void initInterpreter(ListMLabel *labelL, LCode3D *codeL, Stack *stack)
 {
     labelList = labelL;
     codeList = codeL;
-    stackIfs = stack;
+    returnStack = stack;
     size = codeSize(codeL);
     runMain(searchByMethodLabel("main", 0));
 }
