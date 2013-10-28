@@ -27,143 +27,143 @@ int runOperation(int position)
     {
             /* LOAD_CONST */
         case 0:
-            if (getAttributeType((*(*code).param2).val.attri) == Int)
-                setIntVal((*(*code).param2).val.attri, (*(*code).param1).val.intAttri);
-            if (getAttributeType((*(*code).param2).val.attri) == Float)
-                setFloatVal((*(*code).param2).val.attri, (*(*code).param1).val.floatAttri);
-            if (getAttributeType((*(*code).param2).val.attri) == Bool)
-                setBoolVal((*(*code).param2).val.attri, (*(*code).param1).val.boolAttri);
+            if (getAttributeType(getAttribute(code,2)) == Int)
+                setIntVal(getAttribute(code,2), (*(*code).param1).val.intAttri);
+            if (getAttributeType(getAttribute(code,2)) == Float)
+                setFloatVal(getAttribute(code,2), (*(*code).param1).val.floatAttri);
+            if (getAttributeType(getAttribute(code,2)) == Bool)
+                setBoolVal(getAttribute(code,2), (*(*code).param1).val.boolAttri);
             return position+1;
 
             /* ASSIGNATION */
         case 1: 
-            if (getAttributeType((*(*code).param1).val.attri) == Int)
-                setIntVal((*(*code).param2).val.attri, getIntVal((*(*code).param1).val.attri));
-            if (getAttributeType((*(*code).param1).val.attri) == Float)
-                setFloatVal((*(*code).param2).val.attri, getFloatVal((*(*code).param1).val.attri));
-            if (getAttributeType((*(*code).param1).val.attri) == Bool)
-                setBoolVal((*(*code).param2).val.attri, getBoolVal((*(*code).param1).val.attri));
+            if (getAttributeType(getAttribute(code,1)) == Int)
+                setIntVal(getAttribute(code,2), getIntVal(getAttribute(code,1)));
+            if (getAttributeType(getAttribute(code,1)) == Float)
+                setFloatVal(getAttribute(code,2), getFloatVal(getAttribute(code,1)));
+            if (getAttributeType(getAttribute(code,1)) == Bool)
+                setBoolVal(getAttribute(code,2), getBoolVal(getAttribute(code,1)));
             return position+1;
 
             /* MINUS_INT */
         case 2:
-            setIntVal((*(*code).param3).val.attri, getIntVal((*(*code).param1).val.attri) - getIntVal((*(*code).param2).val.attri));
+            setIntVal(getAttribute(code,3), getIntVal(getAttribute(code,1)) - getIntVal(getAttribute(code,2)));
             return position+1;
 
             /* ADD_INT */
         case 3:
-            setIntVal((*(*code).param3).val.attri, getIntVal((*(*code).param1).val.attri) + getIntVal((*(*code).param2).val.attri));
+            setIntVal(getAttribute(code,3), getIntVal(getAttribute(code,1)) + getIntVal(getAttribute(code,2)));
             return position+1;
 
             /* MULT_INT */
         case 4:
-            setIntVal((*(*code).param3).val.attri, getIntVal((*(*code).param1).val.attri) * getIntVal((*(*code).param2).val.attri));
+            setIntVal(getAttribute(code,3), getIntVal(getAttribute(code,1)) * getIntVal(getAttribute(code,2)));
             return position+1;
 
             /* DIV_INT */
         case 5:
-            setIntVal((*(*code).param3).val.attri, getIntVal((*(*code).param1).val.attri) / getIntVal((*(*code).param2).val.attri));
+            setIntVal(getAttribute(code,3), getIntVal(getAttribute(code,1)) / getIntVal(getAttribute(code,2)));
             return position+1;
 
             /* MOD_INT */
         case 6:
-            setIntVal((*(*code).param3).val.attri, getIntVal((*(*code).param1).val.attri) % getIntVal((*(*code).param2).val.attri));
+            setIntVal(getAttribute(code,3), getIntVal(getAttribute(code,1)) % getIntVal(getAttribute(code,2)));
             return position+1;
 
             /* MINUS_FLOAT */
         case 7:
-            setFloatVal((*(*code).param3).val.attri, getFloatVal((*(*code).param1).val.attri) - getFloatVal((*(*code).param2).val.attri));
+            setFloatVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) - getFloatVal(getAttribute(code,2)));
             return position+1;
 
             /* ADD_FLOAT */
         case 8:
-            setFloatVal((*(*code).param3).val.attri, getFloatVal((*(*code).param1).val.attri) + getFloatVal((*(*code).param2).val.attri));
+            setFloatVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) + getFloatVal(getAttribute(code,2)));
             return position+1;
 
             /* MULT_FLOAT */
         case 9:
-            setFloatVal((*(*code).param3).val.attri, getFloatVal((*(*code).param1).val.attri) * getFloatVal((*(*code).param2).val.attri));
+            setFloatVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) * getFloatVal(getAttribute(code,2)));
             return position+1;
 
             /* DIV_FLOAT */
         case 10:
-            setFloatVal((*(*code).param3).val.attri, getFloatVal((*(*code).param1).val.attri) / getFloatVal((*(*code).param2).val.attri));
+            setFloatVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) / getFloatVal(getAttribute(code,2)));
             return position+1;
 
             /* EQ */
         case 11:
-            if (getAttributeType((*(*code).param2).val.attri) == Int)
-                setBoolVal((*(*code).param3).val.attri, getIntVal((*(*code).param1).val.attri) == getIntVal((*(*code).param2).val.attri));
-            if (getAttributeType((*(*code).param2).val.attri) == Float)
-                setBoolVal((*(*code).param3).val.attri, getFloatVal((*(*code).param1).val.attri) == getFloatVal((*(*code).param2).val.attri));
-            if (getAttributeType((*(*code).param2).val.attri) == Bool)
-                setBoolVal((*(*code).param2).val.attri, getBoolVal((*(*code).param1).val.attri) == getBoolVal((*(*code).param2).val.attri));
+            if (getAttributeType(getAttribute(code,2)) == Int)
+                setBoolVal(getAttribute(code,3), getIntVal(getAttribute(code,1)) == getIntVal(getAttribute(code,2)));
+            if (getAttributeType(getAttribute(code,2)) == Float)
+                setBoolVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) == getFloatVal(getAttribute(code,2)));
+            if (getAttributeType(getAttribute(code,2)) == Bool)
+                setBoolVal(getAttribute(code,2), getBoolVal(getAttribute(code,1)) == getBoolVal(getAttribute(code,2)));
             return position+1;
 
             /* DIST */
         case 12:
-            if (getAttributeType((*(*code).param2).val.attri) == Int)
-                setBoolVal((*(*code).param3).val.attri, getIntVal((*(*code).param1).val.attri) != getIntVal((*(*code).param2).val.attri));
-            if (getAttributeType((*(*code).param2).val.attri) == Float)
-                setBoolVal((*(*code).param3).val.attri, getFloatVal((*(*code).param1).val.attri) != getFloatVal((*(*code).param2).val.attri));
-            if (getAttributeType((*(*code).param2).val.attri) == Bool)
-                setBoolVal((*(*code).param2).val.attri, getBoolVal((*(*code).param1).val.attri) != getBoolVal((*(*code).param2).val.attri));
+            if (getAttributeType(getAttribute(code,2)) == Int)
+                setBoolVal(getAttribute(code,3), getIntVal(getAttribute(code,1)) != getIntVal(getAttribute(code,2)));
+            if (getAttributeType(getAttribute(code,2)) == Float)
+                setBoolVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) != getFloatVal(getAttribute(code,2)));
+            if (getAttributeType(getAttribute(code,2)) == Bool)
+                setBoolVal(getAttribute(code,2), getBoolVal(getAttribute(code,1)) != getBoolVal(getAttribute(code,2)));
             return position+1;
 
             /* GT */
         case 13:
-            if (getAttributeType((*(*code).param2).val.attri) == Int)
-                setBoolVal((*(*code).param3).val.attri, getIntVal((*(*code).param1).val.attri) > getIntVal((*(*code).param2).val.attri));
-            if (getAttributeType((*(*code).param3).val.attri) == Float)
-                setBoolVal((*(*code).param3).val.attri, getFloatVal((*(*code).param1).val.attri) > getFloatVal((*(*code).param2).val.attri));
-            if (getAttributeType((*(*code).param3).val.attri) == Bool)
-                setBoolVal((*(*code).param3).val.attri, getBoolVal((*(*code).param1).val.attri) > getBoolVal((*(*code).param2).val.attri));
+            if (getAttributeType(getAttribute(code,2)) == Int)
+                setBoolVal(getAttribute(code,3), getIntVal(getAttribute(code,1)) > getIntVal(getAttribute(code,2)));
+            if (getAttributeType(getAttribute(code,3)) == Float)
+                setBoolVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) > getFloatVal(getAttribute(code,2)));
+            if (getAttributeType(getAttribute(code,3)) == Bool)
+                setBoolVal(getAttribute(code,3), getBoolVal(getAttribute(code,1)) > getBoolVal(getAttribute(code,2)));
             return position+1;
 
             /* LR */
         case 14: 
-            if (getAttributeType((*(*code).param2).val.attri) == Int)
-                setBoolVal((*(*code).param3).val.attri, getIntVal((*(*code).param1).val.attri) < getIntVal((*(*code).param2).val.attri));
-            if (getAttributeType((*(*code).param2).val.attri) == Float)
-                setBoolVal((*(*code).param3).val.attri, getFloatVal((*(*code).param1).val.attri) < getFloatVal((*(*code).param2).val.attri));
-            if (getAttributeType((*(*code).param2).val.attri) == Bool)
-                setBoolVal((*(*code).param3).val.attri, getBoolVal((*(*code).param1).val.attri) < getBoolVal((*(*code).param2).val.attri));
+            if (getAttributeType(getAttribute(code,2)) == Int)
+                setBoolVal(getAttribute(code,3), getIntVal(getAttribute(code,1)) < getIntVal(getAttribute(code,2)));
+            if (getAttributeType(getAttribute(code,2)) == Float)
+                setBoolVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) < getFloatVal(getAttribute(code,2)));
+            if (getAttributeType(getAttribute(code,2)) == Bool)
+                setBoolVal(getAttribute(code,3), getBoolVal(getAttribute(code,1)) < getBoolVal(getAttribute(code,2)));
             return position+1;
 
             /* GEQ */
         case 15:
-            if (getAttributeType((*(*code).param2).val.attri) == Int)
-                setBoolVal((*(*code).param3).val.attri, getIntVal((*(*code).param1).val.attri) >= getIntVal((*(*code).param2).val.attri));
-            if (getAttributeType((*(*code).param2).val.attri) == Float)
-                setBoolVal((*(*code).param3).val.attri, getFloatVal((*(*code).param1).val.attri) >= getFloatVal((*(*code).param2).val.attri));
-            if (getAttributeType((*(*code).param2).val.attri) == Bool)
-                setBoolVal((*(*code).param3).val.attri, getBoolVal((*(*code).param1).val.attri) >= getBoolVal((*(*code).param2).val.attri));
+            if (getAttributeType(getAttribute(code,2)) == Int)
+                setBoolVal(getAttribute(code,3), getIntVal(getAttribute(code,1)) >= getIntVal(getAttribute(code,2)));
+            if (getAttributeType(getAttribute(code,2)) == Float)
+                setBoolVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) >= getFloatVal(getAttribute(code,2)));
+            if (getAttributeType(getAttribute(code,2)) == Bool)
+                setBoolVal(getAttribute(code,3), getBoolVal(getAttribute(code,1)) >= getBoolVal(getAttribute(code,2)));
             return position+1;
 
             /* LEQ */
         case 16:
-            if (getAttributeType((*(*code).param2).val.attri) == Int)
-                setBoolVal((*(*code).param3).val.attri, getIntVal((*(*code).param1).val.attri) <= getIntVal((*(*code).param2).val.attri));
-            if (getAttributeType((*(*code).param2).val.attri) == Float)
-                setBoolVal((*(*code).param3).val.attri, getFloatVal((*(*code).param1).val.attri) <= getFloatVal((*(*code).param2).val.attri));
-            if (getAttributeType((*(*code).param2).val.attri) == Bool)
-                setBoolVal((*(*code).param3).val.attri, getBoolVal((*(*code).param1).val.attri) <= getBoolVal((*(*code).param2).val.attri));
+            if (getAttributeType(getAttribute(code,2)) == Int)
+                setBoolVal(getAttribute(code,3), getIntVal(getAttribute(code,1)) <= getIntVal(getAttribute(code,2)));
+            if (getAttributeType(getAttribute(code,2)) == Float)
+                setBoolVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) <= getFloatVal(getAttribute(code,2)));
+            if (getAttributeType(getAttribute(code,2)) == Bool)
+                setBoolVal(getAttribute(code,3), getBoolVal(getAttribute(code,1)) <= getBoolVal(getAttribute(code,2)));
             return position+1;
             break;
 
             /* OR */
         case 17:
-            setBoolVal((*(*code).param3).val.attri, getBoolVal((*(*code).param1).val.attri) || getBoolVal((*(*code).param2).val.attri));
+            setBoolVal(getAttribute(code,3), getBoolVal(getAttribute(code,1)) || getBoolVal(getAttribute(code,2)));
             return position+1;
 
             /* AND */
         case 18:
-            setBoolVal((*(*code).param3).val.attri, getBoolVal((*(*code).param1).val.attri) && getBoolVal((*(*code).param2).val.attri));
+            setBoolVal(getAttribute(code,3), getBoolVal(getAttribute(code,1)) && getBoolVal(getAttribute(code,2)));
             return position+1;
 
             /* NOT */
         case 19: 
-            setBoolVal((*(*code).param2).val.attri, !getBoolVal((*(*code).param1).val.attri));
+            setBoolVal(getAttribute(code,2), !getBoolVal(getAttribute(code,1)));
             return position+1;
 
             /* LABEL */
@@ -180,7 +180,7 @@ int runOperation(int position)
 	    operation = pop(stackIfs);
 		//printf("voy a saltar a: %s \n", operation);
 		//printf("en la posicion: %d \n", searchByLabel((*codeList).codes, operation, position));
-            if (getBoolVal((*(*code).param1).val.attri) == False)
+            if (getBoolVal(getAttribute(code,1)) == False)
                 return searchByLabel((*codeList).codes, operation, position) + 1; 
             return position + 1;
 
@@ -190,33 +190,40 @@ int runOperation(int position)
 
             /* NEG_INT */
         case 24:
-            setIntVal((*(*code).param2).val.attri, -getIntVal((*(*code).param1).val.attri));
+            setIntVal(getAttribute(code,2), -getIntVal(getAttribute(code,1)));
             return position + 1;
 
             /* NEG_FLOAT */
         case 25: 
-            setFloatVal((*(*code).param2).val.attri, -getFloatVal((*(*code).param1).val.attri));
+            setFloatVal(getAttribute(code,2), -getFloatVal(getAttribute(code,1)));
             return position + 1;
             
             /* PARAM_ASSIGN */
         case 26: 
-	    (*(*code).param2).val.attri = (*(*code).param1).val.attri;
+		    (*(*code).param2).val.attri = getAttribute(code,1);
             return position + 1;
-            break;
 
             /* PRINT */
         case 27:
-            if (getAttributeType((*(*code).param1).val.attri) == Int)
-                printf("Print. El valor entero es: %d\n", getIntVal((*(*code).param1).val.attri));
-            if (getAttributeType((*(*code).param1).val.attri) == Float)
-                printf("Print. El valor flotante es: %f\n", getFloatVal((*(*code).param1).val.attri));
-            if (getAttributeType((*(*code).param1).val.attri) == Bool)
+            if (getAttributeType(getAttribute(code,1)) == Int)
+                printf("Print. El valor entero es: %d\n", getIntVal(getAttribute(code,1)));
+            if (getAttributeType(getAttribute(code,1)) == Float)
+                printf("Print. El valor flotante es: %f\n", getFloatVal(getAttribute(code,1)));
+            if (getAttributeType(getAttribute(code,1)) == Bool)
             {
-                if (getBoolVal((*(*code).param1).val.attri) == True)	
+                if (getBoolVal(getAttribute(code,1)) == True)	
                     printf("Print. El valor booleano es: true\n");
-                if (getBoolVal((*(*code).param1).val.attri) == False)	
-                    printf("Print. El valor booleano es: false\n");
+                if (getBoolVal(getAttribute(code,1)) == False)	printf("Print. El valor booleano es: false\n");
             }
+            return position+1;
+
+			/* LOAD_ARRAY */
+		case 28: 
+			/* parameter 1 of 3d code is the position of the array
+			   parameter 2 is the array from which the number will be getted from.
+			   parameter 3 is the resulting attribute. 
+			    */
+			(*getAttribute(code,3)).decl.variable = &(*getAttribute(code,2)).decl.array.arrayValues[getIntVal(getAttribute(code,1))];
             return position+1;
     }
 

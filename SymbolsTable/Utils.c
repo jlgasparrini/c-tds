@@ -31,34 +31,6 @@ Attribute* getVariableAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, ch
 	return createVariable(getVariableName(),Int); // Returns an attribute with type Int to continue parsing
 }
 
-/* Returns an attribute in the position "pos" of the ID "id" and Array structure. Otherwise returns NULL */
-Attribute* getArrayAttribute(ErrorsQueue *eq, Attribute *attr, unsigned int pos)
-{
-    if((*attr).type != Array)
-		insertError(eq, toString("El identificador \"", getID(attr), "\" no corresponde a un arreglo."));
-    else    
-	{
-        if (pos < 0 || pos >= (*attr).decl.array.length)
-        {
-            insertError(eq, toString("Error. Indice fuera de rango para acceder al arreglo \"", getID(attr), "\".")); 
-            return createVariable(getVariableName(),getAttributeType(attr)); // Returns an attribute with the same type to continue parsing
-        }
-        else
-		{
-			Attribute *aux = createVariable(getVariableName(), getAttributeType(attr));
-			if (getAttributeType(attr) == Int)
-				(*aux).decl.variable = &(*aux).decl.array.arrayValues[pos];
-				//setIntVal(aux,getArrayIntVal(attr,pos));
-			if (getAttributeType(attr) == Float)
-				setFloatVal(aux,getArrayFloatVal(attr,pos));
-			if (getAttributeType(attr) == Bool)
-				setBoolVal(aux,getArrayBoolVal(attr,pos));
-			return aux;          
-		}
-	}
-	return createVariable(getVariableName(),Int); // Returns an attribute with type Int to continue parsing
-}
-
 /* Returns the return attribute of the method with id "id" */
 Attribute* getMethodReturnAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id)
 { 
@@ -294,6 +266,8 @@ unsigned char controlAssignation(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *a
 {
 	if ((*attr1).type != Method)
 	{
+		printf("attr2 es de tipo: %d\n", getAttributeType(attr2));
+		printf("attr1 es de tipo: %d\n", getAttributeType(attr1));
         if (getAttributeType(attr1) != getAttributeType(attr2))
             insertError(eq, toString("El lado derecho de la asignacion debe ser de tipo \"", getType(getAttributeType(attr1)), "\"."));
 		else
@@ -380,15 +354,28 @@ unsigned char checkReturnExpression(ErrorsQueue *eq, SymbolsTable *aSymbolsTable
 
 /* Returns the array at the position specified by attr.decl.variable.value.intValue if attr has "int" type
 	Otherwise insert an error message because the attribute haven't got "int" type and create a default variable of "int" type */
-Attribute* checkArrayPos(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id, Attribute* attr)
+Attribute* checkArrayPos(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, LCode3D *lcode3d, char* id, Attribute* attr)
 {
     Attribute *aux = searchIdInSymbolsTable(eq,aSymbolsTable,id);
     if (aux != NULL)
     {
-        if (getAttributeType(attr) == Int)
-	        return getArrayAttribute(eq,aux,getIntVal(attr));
+		if((*aux).type != Array)
+			insertError(eq, toString("El identificador \"", id, "\" no corresponde a un arreglo."));
 		else
-			insertError(eq, toString("La expresion para acceder a la posicion del arreglo \"", id, "\" debe ser de tipo \"int\".")); 
+		{
+	        if (getAttributeType(attr) == Int)
+			{
+				Attribute *variable = createVariable(getVariableName(), getAttributeType(aux));
+		    	Code3D *codeArrayValue = newCode(LOAD_ARRAY);
+				setAttribute(codeArrayValue, 1, attr);
+				setAttribute(codeArrayValue, 2, aux);
+				setAttribute(codeArrayValue, 3, variable);
+				add_code(lcode3d, codeArrayValue);	
+				return variable;          
+			}
+			else
+				insertError(eq, toString("La expresion para acceder a la posicion del arreglo \"", id, "\" debe ser de tipo \"int\".")); 
+		}
     }
     return createVariable(getVariableName(),Int);
 }
