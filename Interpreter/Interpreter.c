@@ -171,14 +171,11 @@ int runOperation(int position)
 
             /* GOTO_LABEL */
         case 21: 
-            //printf("Voy a saltar a %s en la posicion %d\n", getLabel(code, 1),searchByLabel((*codeList).codes, getLabel(code, 1)) + 1);
 	    return searchByLabel((*codeList).codes, getLabel(code, 1));
             break;
 
             /* GOTO_LABEL_COND */
         case 22:
-            //printf("Voy a saltar a %d\n", searchByLabel((*codeList).codes,getLabel(code, 2)) + 1);
-            //printf("%s tiene %d\n", code->param1->val.attri->decl.variable.id, code->param1->val.attri->decl.variable.value.intVal);
             if (getBoolVal((*(*code).param1).val.attri) == False)
                 return searchByLabel((*codeList).codes,getLabel(code, 2)); 
             return position + 1;
