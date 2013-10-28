@@ -347,42 +347,36 @@ optional	  :		{
 			}
 			  ;
 
-iteration     :    WHILE {     
-                            char *whileLabel = newLabelName("while"); 
-							push(labelsWhile,whileLabel);
-							add_CodeLabel(lcode3d, newCode(LABEL), whileLabel); // Mark to char of While
-                    } expression {
-								controlType(errorQ,$3,Bool,"while",1);	/* MODIFICADO PORQUE SINO TIRA SEGMENTATION FAULT! */
-								char *endLabel = newLabelName("end_while");/* DEBIDO A QUE NO GENERA EL SIG CODIGO Y EN BLOQUE LO TRATA DE ELIMINAR */
-								push(labelsWhile, endLabel);
-								char *expressionLabel = newLabelName("expr_while");
-								add_CodeLabel(lcode3d, newCode(GOTO_LABEL), endLabel); // Go to char of End
-								add_CodeLabel(lcode3d, newCode(LABEL), expressionLabel); // Mark to char of Expression           
+iteration     :    WHILE {
+                                char *whileLabel = newLabelName("while"); 
+                                add_CodeLabel(lcode3d, newCode(LABEL), whileLabel); // Mark to char of While
+                                push(labelsWhile, whileLabel);
+                    } 
+                   expression { 
+                                char *endWhile = newLabelName("end_while");
+                                char *whileLabel = pop(labelsWhile);
+                                push(labelsWhile, endWhile); push(labelsWhile, whileLabel); push(labelsWhile, intToString(codeSize(lcode3d)));
+								controlType(errorQ,$3,Bool,"while",1);
+                                add_CodeLabelCond(lcode3d, newCode(GOTO_LABEL_COND), $3, endWhile); // Go to char of Expression
 					} block {							
-							char *endOfCycle = pop(labelsWhile); 														
-							add_CodeLabel(lcode3d, newCode(GOTO_LABEL), pop(labelsWhile)); // Go to char of While
-							add_CodeLabel(lcode3d, newCode(LABEL), endOfCycle); // Mark to char of End
+                            add_code(lcode3d, get_code(lcode3d, atoi(pop(labelsWhile))+1));
+							add_CodeLabel(lcode3d, newCode(GOTO_LABEL), pop(labelsWhile)); // Go to char of For
+							add_CodeLabel(lcode3d, newCode(LABEL), pop(labelsWhile)); // Go to char of For
 					}
               |    FOR {} ID {
 						if (getAttributeType(getVariableAttribute(errorQ,symbolsTable,$3)) != Int)
 							insertError(errorQ,toString("El identificador \"", $3, "\" no pertenece a una variable de tipo \"int\""));
 					} '=' expression ',' expression {
-									controlType(errorQ,$6,Int,"for",2); 
-									controlType(errorQ,$8,Int,"for",3); 
-									char *forLabel = newLabelName("for"); 
-                                    char *endLabel = newLabelName("end_for");
-									push(labelsFor,endLabel);
-									push(labelsFor,forLabel);
-                                    int pos = codeSize(lcode3d);
-                                    push(labelsFor, intToString(pos));
+									controlType(errorQ,$6,Int,"for",2); controlType(errorQ,$8,Int,"for",3); 
+									char *forLabel = newLabelName("for"); char *endLabel = newLabelName("end_for");
+									push(labelsFor,endLabel); push(labelsFor,forLabel); push(labelsFor, intToString(codeSize(lcode3d)));
                                     add_Assignation(lcode3d, newCode(ASSIGNATION), $6, getVariableAttribute(errorQ, symbolsTable, $3));
 									Attribute *res = returnDistinct(errorQ, lcode3d, getVariableAttribute(errorQ, symbolsTable, $3), $8);
                                     add_CodeLabel(lcode3d, newCode(LABEL), forLabel);
 									add_CodeLabelCond(lcode3d, newCode(GOTO_LABEL_COND), res, endLabel); // Go to char of Expression
 					} block {
 							controlAssignation(errorQ,lcode3d,getVariableAttribute(errorQ, symbolsTable, $3),"+=",returnValue(lcode3d, Int, "1"));
-                            Code3D *code = get_code(lcode3d, atoi(pop(labelsFor))+1);
-                            add_code(lcode3d, code);
+                            add_code(lcode3d, get_code(lcode3d, atoi(pop(labelsFor))+1));
 							add_CodeLabel(lcode3d, newCode(GOTO_LABEL), pop(labelsFor)); // Go to char of For
 							add_CodeLabel(lcode3d, newCode(LABEL), pop(labelsFor)); // Go to char of For
 					}
