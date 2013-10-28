@@ -332,7 +332,7 @@ conditional   :    IF '(' expression {
 			  ;
 
 optional	  :		{
-				pop(labelsCYC);
+				add_CodeLabel(lcode3d, newCode(LABEL), pop(labelsCYC)); // Mark to char of End
 				add_CodeLabel(lcode3d, newCode(LABEL), peek(labelsCYC)); // Mark to char of End
 				push(returnStack, peek(labelsCYC));
 			}
