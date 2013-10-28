@@ -287,16 +287,16 @@ action        :
 							if ((idNotFound == False) && (checkReturn(errorQ,symbolsTable,lastDefMethod) == 0))
 							{
 								Code3D *ret = newCode(RETURN);
-								setCodeLabel(ret, "   -   ");  /* Label "    -    " is added because there's not arguments */
+								setCodeLabel(ret, "   -   ");  /* Label "    -    " is added because there are no arguments */
 								add_code(lcode3d, ret);
 							}
 					}   
 			  |	   RETURNN expression {
 									returns++; 									
-									if ((idNotFound == False) && (checkReturnExpression(errorQ,symbolsTable,lastDefMethod,$2) == 0))
+									if (idNotFound == False && checkReturnExpression(errorQ,symbolsTable,lastDefMethod,$2) == 0)
 									{ 
-										Code3D *ret = newCode(RETURN);
-										setCode1D(ret, $2); 
+										Code3D *ret = newCode(RETURN_EXPR);
+										setCode2D(ret, $2, searchIdInSymbolsTable(errorQ,symbolsTable,lastDefMethod)); 
 										add_code(lcode3d, ret);  
 									}                           
 					}
@@ -417,8 +417,7 @@ method_call   :	   ID '(' ')' {
 								pushString(paramsStack,intToString(cantParams)); /*ver si esta linea debe ir o no*/
 								lastCalledMethod=$1; 
 								$$=checkAndGetMethodRetAttribute(errorQ,symbolsTable,$1,0);
-								add_CodeLabel(lcode3d, newCode(GOTO_LABEL), get_Label(listmlabel, $1)); //Go to char of Init of Method
-
+								add_CodeLabel(lcode3d, newCode(GOTO_METHOD), get_Label(listmlabel, $1)); //Go to char of Init of Method
 								/* Is this the way to add the end label of the method, the place where it return when finalizes its call */
 								char *endLabel = newLabelName("end_m_call");
 								add_CodeLabel(lcode3d, newCode(LABEL), endLabel); // Mark to Label of End of Method // ver si es necesario esta marca, si es asi cambiar toda la lista.
@@ -440,7 +439,7 @@ method_call   :	   ID '(' ')' {
 							{
 								$$ = checkAndGetMethodRetAttribute(errorQ,symbolsTable,$1,cantParams); 
 								cantParams=atoi(popString(paramsStack));
-								add_CodeLabel(lcode3d, newCode(GOTO_LABEL), get_Label(listmlabel, $1)); //Go to char of Init of Method 
+								add_CodeLabel(lcode3d, newCode(GOTO_METHOD), get_Label(listmlabel, $1)); //Go to char of Init of Method 
 
 								/* Is this the way to add the end label of the method, the place where it return when finalizes its call */
 /*DEBERIA INSERTARSE ACA*/			char *endLabel = newLabelName("end_m_call");

@@ -11,6 +11,7 @@
 ListMLabel *labelList;
 LCode3D *codeList;
 Stack *returnStack;
+StringStack *methodsCallStack;
 int size;
 
 // Given the position, I run that operation from the codeList
@@ -224,6 +225,22 @@ int runOperation(int position)
 			    */
 			(*getAttribute(code,3)).decl.variable = &(*getAttribute(code,2)).decl.array.arrayValues[getIntVal(getAttribute(code,1))];
             return position+1;
+
+            /* RETURN_EXPR */
+        case 29: 
+            if (getAttributeType(getAttribute(code,2)) == Int)
+                setIntVal(getAttribute(code,2), getIntVal(getAttribute(code,1)));
+            if (getAttributeType(getAttribute(code,2)) == Float)
+                setFloatVal(getAttribute(code,2), getFloatVal(getAttribute(code,1)));
+            if (getAttributeType(getAttribute(code,2)) == Bool)
+                setBoolVal(getAttribute(code,2), getBoolVal(getAttribute(code,1)));
+            return atoi(popString(methodsCallStack));
+
+			/* GOTO_METHOD */
+		case 30: 
+			/* Save on the stack the place where treatment must continue after the method call */
+			pushString(methodsCallStack, intToString(position+1));
+			return searchByLabel(getLabel(code,1) , 0);
     }
 
 }
@@ -273,6 +290,7 @@ void runMethod(int pos)
             returnFound = true;
         //pos++; Ahora la proxima instruccion a ejecutar la devolverá runOperation!
     }
+	runOperation(pos);
 }
 
 /* Initializes the interpreter and run */
@@ -282,6 +300,7 @@ void initInterpreter(ListMLabel *labelL, LCode3D *codeL, Stack *stack)
     labelList = labelL;
     codeList = codeL;
     returnStack = stack;
+	methodsCallStack = initializeSS();
     size = codeSize(codeL);
     runMethod(searchByMethodLabel("main", 0));
 }
