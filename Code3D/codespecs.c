@@ -32,6 +32,7 @@ char* getCodeByID(int ID)
         case 25: return "NEG_FLOAT";
 		case 26: return "PARAM_ASSIGN";
 		case 27: return "PRINT";
+		case 28: return "LOAD_ARRAY";
     }
     return "NULL!";
 }

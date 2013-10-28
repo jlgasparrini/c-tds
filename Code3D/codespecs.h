@@ -36,6 +36,7 @@
 #define NEG_FLOAT        25
 #define PARAM_ASSIGN     26
 #define PRINT            27
+#define LOAD_ARRAY       28
 
 /* Returns the respective code of an ID */
 char* getCodeByID(int ID);

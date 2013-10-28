@@ -26,8 +26,9 @@ Attribute* createVariable(char *id, PrimitiveType type)
 {
 	Attribute *attr = (Attribute*) malloc (sizeof(Attribute)); 
 	(*attr).type = Variable;
-	(*attr).decl.variable = createStVariable(type);
-	(*attr).decl.variable.id = strdup(id);
+	(*attr).decl.variable = (StVariable*) malloc (sizeof(StVariable));
+	*(*attr).decl.variable = createStVariable(type);
+	(*(*attr).decl.variable).id = strdup(id);
 	return attr;
 }
 
@@ -71,7 +72,7 @@ Attribute* createParameter(Attribute *attr, unsigned int pos, char *id, Primitiv
 		{
 			(*attr).decl.method.parameters = aux;
 			Attribute *aux = createVariable(id, type);
-			(*attr).decl.method.parameters[pos] = (*aux).decl.variable;
+			(*attr).decl.method.parameters[pos] = (*(*aux).decl.variable);
 			return aux;
 		}
 	}
@@ -105,7 +106,7 @@ void setVariableValue(Attribute *attr, PrimitiveType type, char *value)
 char* getID(Attribute *attr)
 {
 	if ((*attr).type == Variable)
-		return (*attr).decl.variable.id;
+		return (*(*attr).decl.variable).id;
 	if ((*attr).type == Method)
 		return (*attr).decl.method.id;
 	if ((*attr).type == Array)
@@ -116,7 +117,7 @@ char* getID(Attribute *attr)
 int getIntVal(Attribute *attr)
 {
 	if ((*attr).type == Variable)
-		return (*attr).decl.variable.value.intVal;
+		return (*(*attr).decl.variable).value.intVal;
 	if ((*attr).type == Method)
 		return (*attr).decl.method.returnValue.intVal;
 }
@@ -125,7 +126,7 @@ int getIntVal(Attribute *attr)
 float getFloatVal(Attribute *attr)
 {
 	if ((*attr).type == Variable)
-		return (*attr).decl.variable.value.floatVal;
+		return (*(*attr).decl.variable).value.floatVal;
 	if ((*attr).type == Method)
 		return (*attr).decl.method.returnValue.floatVal;
 }
@@ -134,7 +135,7 @@ float getFloatVal(Attribute *attr)
 Boolean getBoolVal(Attribute *attr)
 {
 	if ((*attr).type == Variable)
-		return (*attr).decl.variable.value.boolVal;
+		return (*(*attr).decl.variable).value.boolVal;
 	if ((*attr).type == Method)
 		return (*attr).decl.method.returnValue.boolVal;
 }
@@ -161,7 +162,7 @@ Boolean getArrayBoolVal(Attribute *attr, unsigned int pos)
 void setIntVal(Attribute *attr, int value)
 {
 	if ((*attr).type == Variable)
-		(*attr).decl.variable.value.intVal = value;
+		(*(*attr).decl.variable).value.intVal = value;
 	if ((*attr).type == Method)
 		(*attr).decl.method.returnValue.intVal = value;
 }
@@ -170,7 +171,7 @@ void setIntVal(Attribute *attr, int value)
 void setFloatVal(Attribute *attr, float value)
 {
 	if ((*attr).type == Variable)
-		(*attr).decl.variable.value.floatVal = value;
+		(*(*attr).decl.variable).value.floatVal = value;
 	if ((*attr).type == Method)
 		(*attr).decl.method.returnValue.floatVal = value;
 }
@@ -179,7 +180,7 @@ void setFloatVal(Attribute *attr, float value)
 void setBoolVal(Attribute *attr, Boolean value)
 {
 	if ((*attr).type == Variable)
-		(*attr).decl.variable.value.boolVal = value;
+		(*(*attr).decl.variable).value.boolVal = value;
 	if ((*attr).type == Method)
 		(*attr).decl.method.returnValue.boolVal = value;
 }

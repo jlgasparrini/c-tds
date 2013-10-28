@@ -27,120 +27,78 @@ int getCommand(Code3D *code)
 
 bool isInt(Code3D *code, int param) 
 {
-    if (param == 1) 
-    {
+    if (param == 1)
         return code->param1->type == CodeINT;
-    }
-    else if (param == 2) 
-    {
+    if (param == 2) 
         return code->param2->type == CodeINT;
-    }
-    else if (param == 3) 
-    {
+    if (param == 3) 
         return code->param3->type == CodeINT;
-    }  
-    return 0;
+	return 0;
 }
 
 bool isFloat(Code3D *code, int param) 
 {
     if (param == 1) 
-    {
         return code->param1->type == CodeFLOAT;
-    }
-    else if (param == 2) 
-    {
+    if (param == 2) 
         return code->param2->type == CodeFLOAT;
-    } 
-    else if (param == 3) 
-    {
+    if (param == 3) 
         return code->param3->type == CodeFLOAT;
-    }      
     return 0;
 }
 
 bool isBool(Code3D *code, int param) 
 {
     if (param == 1) 
-    {
         return code->param1->type == CodeBOOL;
-    }
-    else if (param == 2) 
-    {
+    if (param == 2) 
         return code->param2->type == CodeBOOL;
-    }
-    else if (param == 3) 
-    {
+    if (param == 3) 
         return code->param3->type == CodeBOOL;
-    }
     return 0;
 }
 
 bool isLabel(Code3D *code, int param) 
 {
     if (param == 1) 
-    {
         return code->param1->type == CodeLABEL;
-    }
-    else if (param == 2) 
-    {
+    if (param == 2) 
         return code->param2->type == CodeLABEL;
-    } 
-    else if (param == 3) 
-    {
+    if (param == 3) 
         return code->param3->type == CodeLABEL;
-    }
     return 0;
 }
 
 bool isAttribute(Code3D *code, int param) 
 {
     if (param == 1) 
-    {
         return code->param1->type == CodeATTRI;
-    }
-    else if (param == 2) 
-    {
+    if (param == 2) 
         return code->param2->type == CodeATTRI;
-    }
-    else if (param == 3) 
-    {
+    if (param == 3) 
         return code->param3->type == CodeATTRI;
-    }    
     return 0;
 }
 
 bool isVariable(Code3D *code, int param)
 {
     if (param == 1) 
-    {
         return code->param1->type == CodeVARIABLE;
-    } 
-    else if (param == 2) 
-    {
+    if (param == 2) 
         return code->param2->type == CodeVARIABLE;
-    } 
-    else if (param == 3) 
-    {
+    if (param == 3) 
         return code->param3->type == CodeVARIABLE;
-    }   
     return 0;
 }
 
 bool isNull(Code3D *code, int param) 
 {
     if (param == 1) 
-    {
         return code->param1->type == CodeNULL;
-    } 
-    else if (param == 2) 
-    {
+    if (param == 2) 
         return code->param2->type == CodeNULL;
-    } 
-    else if (param == 3) 
-    {
+    if (param == 3) 
         return code->param3->type == CodeNULL;
-    }
     return 1;
 }
 

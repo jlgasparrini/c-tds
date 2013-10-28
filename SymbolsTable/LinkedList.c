@@ -45,7 +45,7 @@ Attribute* search(LinkedList *l, char *id)
     for (i = 0; i < (*l).size; i++)
     {
         if ((*(*auxNode).data).type == Variable)
-            if (strcmp((*(*auxNode).data).decl.variable.id, id) == 0)
+            if (strcmp((*(*(*auxNode).data).decl.variable).id, id) == 0)
                 return (*auxNode).data;
         if ((*(*auxNode).data).type == Method)
             if (strcmp((*(*auxNode).data).decl.method.id, id) == 0)
@@ -94,12 +94,12 @@ void deleteAll(LinkedList *l)
 void showVariableAttribute(Attribute *attr)
 {
 	printf(" type:.decl.variable:\n");
-    if ((*attr).decl.variable.type == Int)
-        printf("    int %s = %d;\n", (*attr).decl.variable.id, (*attr).decl.variable.value.intVal);
-    if ((*attr).decl.variable.type == Float)
-        printf("    float %s = %f;\n", (*attr).decl.variable.id, (*attr).decl.variable.value.floatVal);
-    if ((*attr).decl.variable.type == Bool)
-        printf("    boolean %s = %d;\n", (*attr).decl.variable.id, (*attr).decl.variable.value.boolVal);
+    if ((*(*attr).decl.variable).type == Int)
+        printf("    int %s = %d;\n", (*(*attr).decl.variable).id, (*(*attr).decl.variable).value.intVal);
+    if ((*(*attr).decl.variable).type == Float)
+        printf("    float %s = %f;\n", (*(*attr).decl.variable).id, (*(*attr).decl.variable).value.floatVal);
+    if ((*(*attr).decl.variable).type == Bool)
+        printf("    boolean %s = %d;\n", (*(*attr).decl.variable).id, (*(*attr).decl.variable).value.boolVal);
 }
 
 /* Prints the method info that contains attr */
@@ -122,9 +122,9 @@ void showArrayAttribute(Attribute *attr)
 	printf("    type:.decl.array\n");
 	if ((*attr).decl.array.type == Int)
 	    printf("    int %s [%d];\n", (*attr).decl.array.id, (*attr).decl.array.length);
-	if ((*attr).decl.variable.type == Float)
+	if ((*(*attr).decl.variable).type == Float)
 	    printf("    float %s [%d];\n", (*attr).decl.array.id, (*attr).decl.array.length);
-	if ((*attr).decl.variable.type == Bool)
+	if ((*(*attr).decl.variable).type == Bool)
 	    printf("    boolean %s [%d];\n", (*attr).decl.array.id, (*attr).decl.array.length);
 }
 

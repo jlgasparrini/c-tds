@@ -387,7 +387,7 @@ iteration     :    WHILE {
 /* -------------------- EXPRESSIONS ------------------------------- */
 
 location      :    ID {$$ = getVariableAttribute(errorQ, symbolsTable, $1);}
-              |    ID '[' expression ']' { $$ = checkArrayPos(errorQ,symbolsTable,$1,$3);}
+              |    ID '[' expression ']' { $$ = checkArrayPos(errorQ,symbolsTable,lcode3d,$1,$3);}
 			  ;
 				/* --------------------------------------------------------------------------------------- */
 				/* --------------------------------------------------------------------------------------- */
@@ -532,7 +532,7 @@ primary       :    INTEGER			{$$ = returnValue(lcode3d, Int, $1);}
               |    FLOAT            {$$ = returnValue(lcode3d, Float, $1);}
               |    BOOLEAN          {$$ = returnValue(lcode3d, Bool, $1);}
               |    ID				{$$ = getVariableAttribute(errorQ,symbolsTable,$1);}
-              |    ID '[' expression ']'  {$$ = checkArrayPos(errorQ,symbolsTable,$1,$3);}
+              |    ID '[' expression ']'  {$$ = checkArrayPos(errorQ,symbolsTable,lcode3d,$1,$3);}
               |    '(' expression ')'  {$$ = $2;}
               |    method_call      {
 										if (methodReturnType(errorQ,symbolsTable,lastCalledMethod) == RetVoid)
