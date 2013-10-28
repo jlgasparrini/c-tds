@@ -165,9 +165,10 @@ unsigned int digitAmount(int value)
 
 /* Returns the string representation of the int "value" */
 char* intToString(int value)
-{ char *aux = (char*) malloc (digitAmount(value)*sizeof(char)); 
-   sprintf(aux,"%d",value);
-   return aux;
+{
+	char *aux = (char*) malloc (digitAmount(value)*sizeof(char)); 
+	sprintf(aux,"%d",value);
+	return aux;
 }
 
 /* Returns 0 if the type parameter in "paramSize" position of the method's parameters is equal to the type of "var" 

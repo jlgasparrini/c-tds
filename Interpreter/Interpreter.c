@@ -5,14 +5,13 @@
 #include <stdio.h>
 #include <string.h>
 #include "../Code3D/codespecs.h"
-#include "../Stack/stack.h"
+#include "../SymbolsTable/StringStack.h"
+#include "../SymbolsTable/Utils.h"
 #include "Interpreter.h"
 
 ListMLabel *labelList;
 LCode3D *codeList;
-Stack *returnStack;
 StringStack *methodsCallStack;
-int size;
 
 // Given the position, I run that operation from the codeList
 // also this function return the next position of operation to execute!
@@ -172,8 +171,7 @@ int runOperation(int position)
 
             /* GOTO_LABEL */
         case 21: 
-	    return searchByLabel((*codeList).codes, getLabel(code, 1));
-            break;
+		    return searchByLabel((*codeList).codes, getLabel(code, 1));
 
             /* GOTO_LABEL_COND */
         case 22:
@@ -183,7 +181,7 @@ int runOperation(int position)
 
             /* RETURN */
         case 23: 
-            return position;
+            return atoi(popString(methodsCallStack));
 
             /* NEG_INT */
         case 24:
@@ -197,7 +195,12 @@ int runOperation(int position)
             
             /* PARAM_ASSIGN */
         case 26: 
-		    (*(*code).param2).val.attri = getAttribute(code,1);
+			if (getAttributeType(getAttribute(code,1)) == Int)
+				(*getVariable(code,2)).value.intVal = getIntVal(getAttribute(code,1));
+            if (getAttributeType(getAttribute(code,1)) == Float)
+				(*getVariable(code,2)).value.floatVal = getFloatVal(getAttribute(code,1));
+            if (getAttributeType(getAttribute(code,1)) == Bool)
+				(*getVariable(code,2)).value.boolVal = getBoolVal(getAttribute(code,1));
             return position + 1;
 
             /* PRINT */
@@ -210,7 +213,8 @@ int runOperation(int position)
             {
                 if (getBoolVal(getAttribute(code,1)) == True)	
                     printf("Print. El valor booleano es: true\n");
-                if (getBoolVal(getAttribute(code,1)) == False)	printf("Print. El valor booleano es: false\n");
+                if (getBoolVal(getAttribute(code,1)) == False)
+					printf("Print. El valor booleano es: false\n");
             }
             return position+1;
 
@@ -236,8 +240,11 @@ int runOperation(int position)
 			/* GOTO_METHOD */
 		case 30: 
 			/* Save on the stack the place where treatment must continue after the method call */
+//			printf("entre a goto_method!!\n");
+//			printf("mi siguiente posicion a tratar antes de saltar: %d \n", position+1);
+//			printf("voy a saltar a: %d \n", searchByLabel((*codeList).codes, getLabel(code,1)));
 			pushString(methodsCallStack, intToString(position+1));
-			return searchByLabel(getLabel(code,1) , 0);
+			return searchByLabel((*codeList).codes, getLabel(code,1));
     }
 
 }
@@ -274,30 +281,28 @@ int searchByMethodLabel(char* label, int pos)
 }
 
 //ejecuta cada una de las intrucciones del main hasta encontrar el return! toma la posicion en donde se encuentra el el label main.
-void runMethod(int pos)
+void runMain(int pos)
 {
     bool returnFound = false;
     Code3D *aux;
     while (pos < codeSize(codeList) && !returnFound)
     {
         aux = get_code(codeList,pos);
-        if (getCommand(aux) != RETURN) 
+        if (getCommand(aux) != RETURN && getCommand(aux) != RETURN_EXPR) 
             pos = runOperation(pos);
         else
             returnFound = true;
-        //pos++; Ahora la proxima instruccion a ejecutar la devolverá runOperation!
     }
+	printf("encontre algun return\n"); /* --------------------------------------------- */
 	runOperation(pos);
 }
 
 /* Initializes the interpreter and run */
 //Toma el codigo 3D, la lista de metodos y la pila de IF's!!
-void initInterpreter(ListMLabel *labelL, LCode3D *codeL, Stack *stack)
+void initInterpreter(ListMLabel *labelL, LCode3D *codeL)
 {
     labelList = labelL;
     codeList = codeL;
-    returnStack = stack;
 	methodsCallStack = initializeSS();
-    size = codeSize(codeL);
-    runMethod(searchByMethodLabel("main", 0));
+    runMain(searchByMethodLabel("main", 0));
 }
