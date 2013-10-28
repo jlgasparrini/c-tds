@@ -36,9 +36,9 @@ void add_CodeLabel(LCode3D *lcode3d, Code3D *code, char *label)
     add_code(lcode3d, code);
 }
 
-void add_CodeLabelCond(LCode3D *lcode3d, Code3D *code, Attribute *attri1, char *label, char *jumpTo)
+void add_CodeLabelCond(LCode3D *lcode3d, Code3D *code, Attribute *attri1, char *labelToJump)
 {
-	setCodeLabelCond(code, attri1, label, jumpTo);
+	setCodeLabelCond(code, attri1, labelToJump);
     add_code(lcode3d, code);
 }
 

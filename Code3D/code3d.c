@@ -343,11 +343,11 @@ void setCodeLabel(Code3D *code, char *label)
     setNull(code, 3);
 }
 
-void setCodeLabelCond(Code3D *code, Attribute *attri1, char *label, char *jumpTo)
+void setCodeLabelCond(Code3D *code, Attribute *attri1, char *labelJumpTo)
 {
     setAttribute(code, 1, attri1);
-    setLabel(code, 2, label);
-    setLabel(code, 3, jumpTo);
+    setLabel(code, 2, labelJumpTo);
+    setNull(code, 3);
 }
 
 void setCode3D(Code3D *code, Attribute *attri1, Attribute *attri2, Attribute *attriRes)

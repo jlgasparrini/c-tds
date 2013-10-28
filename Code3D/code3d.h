@@ -80,7 +80,7 @@ void setNull(Code3D *code, int param);
 /** Funciones de Escritura de un Codigo Concreto*/
 
 void setCodeLabel(Code3D *code, char *label);
-void setCodeLabelCond(Code3D *code, Attribute *attri1, char *label, char *jumpTo);
+void setCodeLabelCond(Code3D *code, Attribute *attri1, char *labelJumpTo);
 void setCode3D(Code3D *code, Attribute *attri1, Attribute *attri2, Attribute *attriRes);
 void setCode2D(Code3D *code, Attribute *attri1, Attribute *attriRes);
 void setCode1D(Code3D *code, Attribute *attri1);

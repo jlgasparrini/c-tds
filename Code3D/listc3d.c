@@ -80,11 +80,11 @@ int searchByLabel(ListC3D *list, char* label)
     {
         //printf("buscando %s en la posicion %d\n", label, i);
         runner = (NodeC3D*) getNext_NodeC3D(runner);
-        if (isLabel((*runner).info, 1)) printf("son iguales %s == %s ?? en la posicion %d    comando : %s \n", getLabel(runner->info, 1), label, i, (char*)getCodeByID(getCommand(runner->info)));
         if (strcmp(getCodeByID(getCommand(runner->info)),"LABEL") == 0 && strcmp(getLabel((*runner).info, 1), label) == 0){
             //printf("encontre %s en la posicion %d\n", label, i);
             return i+1;}
         i++;
     }
+    printf("Va a largar segmentation fault!!!!! FUCK -.- no se encontro %s\n", label);
     return -1;
 }

@@ -323,7 +323,8 @@ conditional   :    IF '(' expression {
                     char *ifLabel = newLabelName("if");
                     char *elseLabel = newLabelName("else");
 					char *endLabel = newLabelName("end_if");
-					add_CodeLabelCond(lcode3d, newCode(GOTO_LABEL_COND), $3, elseLabel, ifLabel); 
+                    add_CodeLabel(lcode3d, newCode(LABEL), ifLabel);
+					add_CodeLabelCond(lcode3d, newCode(GOTO_LABEL_COND), $3, elseLabel); 
                     push(labelsCYC, endLabel);
                     push(labelsCYC, elseLabel);
 				} ')' 
@@ -355,7 +356,6 @@ iteration     :    WHILE {
 								char *endLabel = newLabelName("end_while");/* DEBIDO A QUE NO GENERA EL SIG CODIGO Y EN BLOQUE LO TRATA DE ELIMINAR */
 								push(labelsWhile, endLabel);
 								char *expressionLabel = newLabelName("expr_while");
-								//add_CodeLabelCond(lcode3d, newCode(GOTO_LABEL_COND), $3, expressionLabel);
 								add_CodeLabel(lcode3d, newCode(GOTO_LABEL), endLabel); // Go to char of End
 								add_CodeLabel(lcode3d, newCode(LABEL), expressionLabel); // Mark to char of Expression           
 					} block {							
@@ -377,7 +377,8 @@ iteration     :    WHILE {
                                     push(labelsFor, intToString(pos));
                                     add_Assignation(lcode3d, newCode(ASSIGNATION), $6, getVariableAttribute(errorQ, symbolsTable, $3));
 									Attribute *res = returnDistinct(errorQ, lcode3d, getVariableAttribute(errorQ, symbolsTable, $3), $8);
-									add_CodeLabelCond(lcode3d, newCode(GOTO_LABEL_COND), res, endLabel, forLabel); // Go to char of Expression
+                                    add_CodeLabel(lcode3d, newCode(LABEL), forLabel);
+									add_CodeLabelCond(lcode3d, newCode(GOTO_LABEL_COND), res, endLabel); // Go to char of Expression
 					} block {
 							controlAssignation(errorQ,lcode3d,getVariableAttribute(errorQ, symbolsTable, $3),"+=",returnValue(lcode3d, Int, "1"));
                             Code3D *code = get_code(lcode3d, atoi(pop(labelsFor))+1);

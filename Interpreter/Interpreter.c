@@ -22,7 +22,7 @@ int runOperation(int position)
 //	printf("voy a mostrar el codigo de 3 direcciones: \n");
 //	showCode(code);
 //	printf("\n");
-    printf("Corro la operacion de la posicion %d\n", position);
+    //printf("Corro la operacion de la posicion %d\n", position);
     switch ((*code).command)
     {
             /* LOAD_CONST */
