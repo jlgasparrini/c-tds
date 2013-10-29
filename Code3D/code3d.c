@@ -248,19 +248,16 @@ void setAttribute(Code3D *code, int param, Attribute *attri)
     if (param == 1) 
     {
         code->param1->type = CodeATTRI;
-        code->param1->val.attri = (Attribute*) malloc(sizeof(Attribute));
         code->param1->val.attri = attri;
     } 
     else if (param == 2) 
     {
         code->param2->type = CodeATTRI;
-        code->param2->val.attri = (Attribute*) malloc(sizeof(Attribute));
         code->param2->val.attri = attri;
     }
     else if (param == 3) 
     {
         code->param3->type = CodeATTRI;
-        code->param3->val.attri = (Attribute*) malloc(sizeof(Attribute));
         code->param3->val.attri = attri;
     }    
 }
@@ -268,19 +265,16 @@ void setAttribute(Code3D *code, int param, Attribute *attri)
 void setVariable(Code3D *code, int param, StVariable *variable){
 	if (param == 1) {
         code->param1->type = CodeVARIABLE;
-        code->param1->val.variable = (StVariable*) malloc(sizeof(StVariable));
         code->param1->val.variable = variable;
     } 
     else if (param == 2) 
     {
         code->param2->type = CodeVARIABLE;
-        code->param2->val.variable = (StVariable*) malloc(sizeof(StVariable));
         code->param2->val.variable = variable;
     } 
     else if (param == 3) 
     {
         code->param3->type = CodeVARIABLE;
-        code->param3->val.variable = (StVariable*) malloc(sizeof(StVariable));
         code->param3->val.variable = variable;
     } 
 }
