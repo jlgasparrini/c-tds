@@ -76,13 +76,12 @@ int searchByLabel(ListC3D *list, char* label)
 {
     NodeC3D *runner = (*list).init;
     int i = 0;
-    while (i <= size_listC3D(list)) 
+    while (i < size_listC3D(list)) 
     {
+        if (strcmp(getCodeByID(getCommand(runner->info)),"LABEL") == 0 && strcmp(getLabel((*runner).info, 1), label) == 0)
+            return i;
         runner = (NodeC3D*) getNext_NodeC3D(runner);
-        if (strcmp(getCodeByID(getCommand(runner->info)),"LABEL") == 0 && strcmp(getLabel((*runner).info, 1), label) == 0){
-            return i+1;}
         i++;
     }
-    printf("Va a largar segmentation fault!!!!! FUCK -.- no se encontro %s\n", label);
     return -1;
 }
