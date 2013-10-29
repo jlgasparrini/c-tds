@@ -195,8 +195,10 @@ int runOperation(int position)
                 setIntVal(getAttribute(code,2), getIntVal(getAttribute(code,1)));
             }
             if (getAttributeType(getAttribute(code,1)) == Float)
+                setFloatVal(getAttribute(code,2), getFloatVal(getAttribute(code,1)));
 				//(*getAttribute(code,2)).value.floatVal = getFloatVal(getAttribute(code,1));
             if (getAttributeType(getAttribute(code,1)) == Bool)
+                setBoolVal(getAttribute(code,2), getBoolVal(getAttribute(code,1)));
 				//(*getAttribute(code,2)).value.boolVal = getBoolVal(getAttribute(code,1));
             return position + 1;
 
@@ -226,6 +228,7 @@ int runOperation(int position)
 
             /* RETURN_EXPR */
         case 29: 
+			/* Link the expression obtained with the return value of the method */
             if (getAttributeType(getAttribute(code,2)) == Int)
                 setIntVal(getAttribute(code,2), getIntVal(getAttribute(code,1)));
             if (getAttributeType(getAttribute(code,2)) == Float)

@@ -438,7 +438,7 @@ method_call   :	   ID '(' ')' {
 							}
 							else
 							{
-								$$ = createVariable("",Int); 
+								$$ = createVariable((char*) getVariableName(),Int); 
 								idNotFound = False;
 							}
 					} 
@@ -528,7 +528,16 @@ primary       :    INTEGER			{$$ = returnValue(lcode3d, Int, $1);}
 										{	insertError(errorQ,toString("El metodo \"",lastCalledMethod,"\" no puede ser usado en una expresion ya que retorna void."));
 											$$ = createVariable("",Int); /* creamos variables int por defecto ------------------------------- */
 										}
-										else $$ = $1;
+										else
+										{	
+											Attribute *ret = createVariable((char*) getVariableName(),getAttributeType($1));
+											Code3D *codeValue = newCode(ASSIGNATION);
+											setAttribute(codeValue, 1, $1);
+											setAttribute(codeValue, 2, ret);
+											setNull(codeValue, 3);
+											add_code(lcode3d, codeValue);	
+											$$ = ret;
+										}
 										lastCalledMethod=popString(methodsIDStack);
 									}
               ;

@@ -98,7 +98,7 @@ Attribute* checkAndGetMethodRetAttribute(ErrorsQueue *eq, SymbolsTable *aSymbols
 				insertError(eq,toString("El metodo \"", id,"\" no contiene la cantidad correspondiente de parametros."));
 			else
 			{
-				Attribute *aux = createVariable(getVariableName(), getAttributeType(attr));
+				Attribute *aux = createVariable(getID(attr), getAttributeType(attr));
 				if (getAttributeType(attr) == Int)
 					setIntVal(aux,getIntVal(attr));
 				if (getAttributeType(attr) == Float)
