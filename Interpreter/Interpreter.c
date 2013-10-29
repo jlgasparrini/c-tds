@@ -177,7 +177,7 @@ int runOperation(int position)
 
             /* RETURN */
         case 23: 
-            return atoi(popString(methodsCallStack)) + 1;
+            return atoi(popString(methodsCallStack));
 
             /* NEG_INT */
         case 24:
@@ -195,9 +195,9 @@ int runOperation(int position)
                 setIntVal(getAttribute(code,2), getIntVal(getAttribute(code,1)));
             }
             if (getAttributeType(getAttribute(code,1)) == Float)
-				//(*getAttribute(code,2)).value.floatVal = getFloatVal(getAttribute(code,1));
+                setFloatVal(getAttribute(code,2), getFloatVal(getAttribute(code,1)));
             if (getAttributeType(getAttribute(code,1)) == Bool)
-				//(*getAttribute(code,2)).value.boolVal = getBoolVal(getAttribute(code,1));
+                setBoolVal(getAttribute(code,2), getBoolVal(getAttribute(code,1)));
             return position + 1;
 
             /* PRINT */

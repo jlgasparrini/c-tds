@@ -24,7 +24,7 @@ void add_CodeLabelCond(LCode3D *lcode3d, Code3D *code, Attribute *attri1, char *
 
 void add_Assignation(LCode3D *lcode3d, Code3D *code,  Attribute *attri1,  Attribute *attriRes);
 void add_Print(LCode3D *lcode3d, Code3D *code, Attribute *attr);
-void add_MethodCall(LCode3D *lcode3d, Code3D *code,  Attribute *attri1,  Attribute *attriRes);
+void add_MethodCall(LCode3D *lcode3d, Code3D *code,  Attribute *attri1, Attribute *attriRes);
 void delete_code(LCode3D *lcode3d, int index);
 
 void show3DCode(LCode3D *lcode3d);
