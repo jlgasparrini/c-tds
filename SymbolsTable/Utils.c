@@ -85,7 +85,7 @@ void setMethodReturnAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char
 }
 
 /* Returns the respective variable attribute that the method return. "paramSize" is for checking if the amount of parameters is right */
-Attribute* checkAndGetMethodRetAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char *id, unsigned char paramSize)
+Attribute* checkAndGetMethodRetAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, LCode3D *lcode3d, char *id, unsigned char paramSize)
 {
 	Attribute *attr = searchIdInSymbolsTable(eq, aSymbolsTable, id);
 	if (attr != NULL)
@@ -98,13 +98,12 @@ Attribute* checkAndGetMethodRetAttribute(ErrorsQueue *eq, SymbolsTable *aSymbols
 				insertError(eq,toString("El metodo \"", id,"\" no contiene la cantidad correspondiente de parametros."));
 			else
 			{
-				Attribute *aux = createVariable(getID(attr), getAttributeType(attr));
-				if (getAttributeType(attr) == Int)
-					setIntVal(aux,getIntVal(attr));
-				if (getAttributeType(attr) == Float)
-					setFloatVal(aux,getFloatVal(attr));
-				if (getAttributeType(attr) == Bool)
-					setBoolVal(aux,getIntVal(attr));
+				Attribute *aux = createVariable(getVariableName(), getAttributeType(attr));
+				Code3D *codeValue = newCode(ASSIGNATION);
+				setAttribute(codeValue, 1, attr);
+				setAttribute(codeValue, 2, aux);
+				setNull(codeValue, 3);
+				add_code(lcode3d, codeValue);	
 				return aux;
 			}
 		}
