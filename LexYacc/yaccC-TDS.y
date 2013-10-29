@@ -451,8 +451,7 @@ expression_aux:    expression {
 								if (idNotFound != True)
 								{
 									correctParamBC(errorQ,symbolsTable,$1,lastCalledMethod,cantParams); 
-									StVariable *param = (StVariable*) malloc (sizeof(StVariable));
-									param = &((*searchIdInSymbolsTable(errorQ,symbolsTable,lastCalledMethod)).decl.method.parameters[cantParams]); // obtencion del parametro formal.
+									StVariable *param = &((*searchIdInSymbolsTable(errorQ,symbolsTable,lastCalledMethod)).decl.method.parameters[cantParams]); // obtencion del parametro formal.
 									add_MethodCall(lcode3d, newCode(PARAM_ASSIGN), $1, param); 
 									cantParams++; /* This sentence must be in the last line because parameter's numbers start from 0 */
 								}
@@ -461,8 +460,7 @@ expression_aux:    expression {
 								if (idNotFound != True)
 								{
 									correctParamIC(errorQ,symbolsTable,$1,lastCalledMethod,cantParams); 
-									StVariable *param = (StVariable*) malloc (sizeof(StVariable));
-									param = &((*searchIdInSymbolsTable(errorQ,symbolsTable,lastCalledMethod)).decl.method.parameters[cantParams]); // obtencion del parametro formal.
+									StVariable *param = &((*searchIdInSymbolsTable(errorQ,symbolsTable,lastCalledMethod)).decl.method.parameters[cantParams]); // obtencion del parametro formal.
 									add_MethodCall(lcode3d, newCode(PARAM_ASSIGN), $1, param);
 									cantParams++; /* This sentence must be in the last line because parameter's numbers start from 0 */
 								} 

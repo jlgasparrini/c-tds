@@ -88,20 +88,25 @@ void setMethodReturnAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char
 Attribute* checkAndGetMethodRetAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char *id, unsigned char paramSize)
 {
 	Attribute *attr = searchIdInSymbolsTable(eq, aSymbolsTable, id);
-	if(attr != NULL)
+	if (attr != NULL)
 	{
-		if((*attr).type != Method)
+		if ((*attr).type != Method)
 			insertError(eq,toString("El identificador \"", id,"\" no corresponde a un metodo."));
 		else
 		{
-			Attribute *aux = createVariable(getVariableName(), getAttributeType(attr));
-			if (getAttributeType(attr) == Int)
-				setIntVal(aux,getIntVal(attr));
-			if (getAttributeType(attr) == Float)
-				setFloatVal(aux,getFloatVal(attr));
-			if (getAttributeType(attr) == Bool)
-				setBoolVal(aux,getIntVal(attr));
-			return aux;
+			if ((*attr).decl.method.paramSize != paramSize)
+				insertError(eq,toString("El metodo \"", id,"\" no contiene la cantidad correspondiente de parametros."));
+			else
+			{
+				Attribute *aux = createVariable(getVariableName(), getAttributeType(attr));
+				if (getAttributeType(attr) == Int)
+					setIntVal(aux,getIntVal(attr));
+				if (getAttributeType(attr) == Float)
+					setFloatVal(aux,getFloatVal(attr));
+				if (getAttributeType(attr) == Bool)
+					setBoolVal(aux,getIntVal(attr));
+				return aux;
+			}
 		}
 	}
 	return createVariable(getVariableName(),Int); // Returns type Int by default in case of having errors

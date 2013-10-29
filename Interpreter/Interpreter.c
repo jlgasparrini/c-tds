@@ -32,7 +32,7 @@ int runOperation(int position)
                 setFloatVal(getAttribute(code,2), (*(*code).param1).val.floatAttri);
             if (getAttributeType(getAttribute(code,2)) == Bool)
                 setBoolVal(getAttribute(code,2), (*(*code).param1).val.boolAttri);
-            return position+1;
+            return position + 1;
 
             /* ASSIGNATION */
         case 1: 
@@ -42,52 +42,52 @@ int runOperation(int position)
                 setFloatVal(getAttribute(code,2), getFloatVal(getAttribute(code,1)));
             if (getAttributeType(getAttribute(code,1)) == Bool)
                 setBoolVal(getAttribute(code,2), getBoolVal(getAttribute(code,1)));
-            return position+1;
+            return position + 1;
 
             /* MINUS_INT */
         case 2:
             setIntVal(getAttribute(code,3), getIntVal(getAttribute(code,1)) - getIntVal(getAttribute(code,2)));
-            return position+1;
+            return position + 1;
 
             /* ADD_INT */
         case 3:
             setIntVal(getAttribute(code,3), getIntVal(getAttribute(code,1)) + getIntVal(getAttribute(code,2)));
-            return position+1;
+            return position + 1;
 
             /* MULT_INT */
         case 4:
             setIntVal(getAttribute(code,3), getIntVal(getAttribute(code,1)) * getIntVal(getAttribute(code,2)));
-            return position+1;
+            return position + 1;
 
             /* DIV_INT */
         case 5:
             setIntVal(getAttribute(code,3), getIntVal(getAttribute(code,1)) / getIntVal(getAttribute(code,2)));
-            return position+1;
+            return position + 1;
 
             /* MOD_INT */
         case 6:
             setIntVal(getAttribute(code,3), getIntVal(getAttribute(code,1)) % getIntVal(getAttribute(code,2)));
-            return position+1;
+            return position + 1;
 
             /* MINUS_FLOAT */
         case 7:
             setFloatVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) - getFloatVal(getAttribute(code,2)));
-            return position+1;
+            return position + 1;
 
             /* ADD_FLOAT */
         case 8:
             setFloatVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) + getFloatVal(getAttribute(code,2)));
-            return position+1;
+            return position + 1;
 
             /* MULT_FLOAT */
         case 9:
             setFloatVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) * getFloatVal(getAttribute(code,2)));
-            return position+1;
+            return position + 1;
 
             /* DIV_FLOAT */
         case 10:
             setFloatVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) / getFloatVal(getAttribute(code,2)));
-            return position+1;
+            return position + 1;
 
             /* EQ */
         case 11:
@@ -97,7 +97,7 @@ int runOperation(int position)
                 setBoolVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) == getFloatVal(getAttribute(code,2)));
             if (getAttributeType(getAttribute(code,2)) == Bool)
                 setBoolVal(getAttribute(code,2), getBoolVal(getAttribute(code,1)) == getBoolVal(getAttribute(code,2)));
-            return position+1;
+            return position + 1;
 
             /* DIST */
         case 12:
@@ -107,7 +107,7 @@ int runOperation(int position)
                 setBoolVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) != getFloatVal(getAttribute(code,2)));
             if (getAttributeType(getAttribute(code,2)) == Bool)
                 setBoolVal(getAttribute(code,2), getBoolVal(getAttribute(code,1)) != getBoolVal(getAttribute(code,2)));
-            return position+1;
+            return position + 1;
 
             /* GT */
         case 13:
@@ -117,7 +117,7 @@ int runOperation(int position)
                 setBoolVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) > getFloatVal(getAttribute(code,2)));
             if (getAttributeType(getAttribute(code,3)) == Bool)
                 setBoolVal(getAttribute(code,3), getBoolVal(getAttribute(code,1)) > getBoolVal(getAttribute(code,2)));
-            return position+1;
+            return position + 1;
 
             /* LR */
         case 14: 
@@ -127,7 +127,7 @@ int runOperation(int position)
                 setBoolVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) < getFloatVal(getAttribute(code,2)));
             if (getAttributeType(getAttribute(code,2)) == Bool)
                 setBoolVal(getAttribute(code,3), getBoolVal(getAttribute(code,1)) < getBoolVal(getAttribute(code,2)));
-            return position+1;
+            return position + 1;
 
             /* GEQ */
         case 15:
@@ -137,7 +137,7 @@ int runOperation(int position)
                 setBoolVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) >= getFloatVal(getAttribute(code,2)));
             if (getAttributeType(getAttribute(code,2)) == Bool)
                 setBoolVal(getAttribute(code,3), getBoolVal(getAttribute(code,1)) >= getBoolVal(getAttribute(code,2)));
-            return position+1;
+            return position + 1;
 
             /* LEQ */
         case 16:
@@ -147,27 +147,27 @@ int runOperation(int position)
                 setBoolVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) <= getFloatVal(getAttribute(code,2)));
             if (getAttributeType(getAttribute(code,2)) == Bool)
                 setBoolVal(getAttribute(code,3), getBoolVal(getAttribute(code,1)) <= getBoolVal(getAttribute(code,2)));
-            return position+1;
+            return position + 1;
             break;
 
             /* OR */
         case 17:
             setBoolVal(getAttribute(code,3), getBoolVal(getAttribute(code,1)) || getBoolVal(getAttribute(code,2)));
-            return position+1;
+            return position + 1;
 
             /* AND */
         case 18:
             setBoolVal(getAttribute(code,3), getBoolVal(getAttribute(code,1)) && getBoolVal(getAttribute(code,2)));
-            return position+1;
+            return position + 1;
 
             /* NOT */
         case 19: 
             setBoolVal(getAttribute(code,2), !getBoolVal(getAttribute(code,1)));
-            return position+1;
+            return position + 1;
 
             /* LABEL */
         case 20: 
-            return position+1;
+            return position + 1;
 
             /* GOTO_LABEL */
         case 21: 
@@ -195,12 +195,14 @@ int runOperation(int position)
             
             /* PARAM_ASSIGN */
         case 26: 
+			printf("se llamo a param_assign!!!\n");
 			if (getAttributeType(getAttribute(code,1)) == Int)
 				(*getVariable(code,2)).value.intVal = getIntVal(getAttribute(code,1));
             if (getAttributeType(getAttribute(code,1)) == Float)
 				(*getVariable(code,2)).value.floatVal = getFloatVal(getAttribute(code,1));
             if (getAttributeType(getAttribute(code,1)) == Bool)
 				(*getVariable(code,2)).value.boolVal = getBoolVal(getAttribute(code,1));
+			printf("salio de param_assign!!!\n");
             return position + 1;
 
             /* PRINT */
@@ -216,7 +218,7 @@ int runOperation(int position)
                 if (getBoolVal(getAttribute(code,1)) == False)
 					printf("Print. El valor booleano es: false\n");
             }
-            return position+1;
+            return position + 1;
 
 			/* LOAD_ARRAY */
 		case 28: 
@@ -225,7 +227,7 @@ int runOperation(int position)
 			   parameter 3 is the resulting attribute. 
 			    */
 			(*getAttribute(code,3)).decl.variable = &(*getAttribute(code,2)).decl.array.arrayValues[getIntVal(getAttribute(code,1))];
-            return position+1;
+            return position + 1;
 
             /* RETURN_EXPR */
         case 29: 
@@ -240,7 +242,7 @@ int runOperation(int position)
 			/* GOTO_METHOD */
 		case 30: 
 			/* Save on the stack the place where treatment must continue after the method call */
-			pushString(methodsCallStack, intToString(position+1));
+			pushString(methodsCallStack, intToString(position + 1));
 			return searchByLabel((*codeList).codes, getLabel(code,1));
     }
 
@@ -250,8 +252,7 @@ int runOperation(int position)
  * Returns the position with the label "label" in the list of code 3D. 
  * If "label" is not found then return -1
  */
-// Esto solamente sirve para los metodos!!! -.-
-int searchByMethodLabel(char* label, int pos)
+int searchByMethodLabel(char* label)
 {
     char *auxLabel = get_Label(labelList, label);
     if (auxLabel == "NULL")
@@ -259,7 +260,7 @@ int searchByMethodLabel(char* label, int pos)
     else
     {
         bool labelFound = false;
-        int i = pos;
+        int i = 0;
         Code3D *aux;
         while (!labelFound && i < codeSize(codeList))
         {
@@ -274,22 +275,14 @@ int searchByMethodLabel(char* label, int pos)
         if (labelFound)
             return i-1;
     }
-    return pos;
+    return -1;
 }
 
 //ejecuta cada una de las intrucciones del main hasta encontrar el return! toma la posicion en donde se encuentra el el label main.
 void runMain(int pos)
 {
-    bool returnFound = false;
-    Code3D *aux;
-    while (pos < codeSize(codeList) && !returnFound)
-    {
-        aux = get_code(codeList,pos);
-        if (getCommand(aux) != RETURN && getCommand(aux) != RETURN_EXPR) 
-            pos = runOperation(pos);
-        else
-            returnFound = true;
-    }
+    while (pos < codeSize(codeList))
+		pos = runOperation(pos);
 }
 
 /* Initializes the interpreter and run */
@@ -299,5 +292,6 @@ void initInterpreter(ListMLabel *labelL, LCode3D *codeL)
     labelList = labelL;
     codeList = codeL;
 	methodsCallStack = initializeSS();
-    runMain(searchByMethodLabel("main", 0));
+	pushString(methodsCallStack, intToString(codeSize(codeL)));
+    runMain(searchByMethodLabel("main"));
 }
