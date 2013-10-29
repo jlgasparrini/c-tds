@@ -56,7 +56,6 @@ void add_Print(LCode3D *lcode3d, Code3D *code, Attribute *attr)
 
 void add_MethodCall(LCode3D *lcode3d, Code3D *code,  Attribute *attri1,  StVariable *attriRes)
 {	/* Uses a copy of attr1 because the parameter passing must be by value */
-	//Attribute *aux = createVariable(getID(attri1), getAttributeType(attri1));
 	setAttribute(code, 1, attri1);
 	setVariable(code, 2, attriRes);
 	setNull(code, 3);

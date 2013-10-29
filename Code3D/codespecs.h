@@ -37,6 +37,8 @@
 #define PARAM_ASSIGN     26
 #define PRINT            27
 #define LOAD_ARRAY       28
+#define RETURN_EXPR      29
+#define GOTO_METHOD      30
 
 /* Returns the respective code of an ID */
 char* getCodeByID(int ID);

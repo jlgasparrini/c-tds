@@ -33,6 +33,8 @@ char* getCodeByID(int ID)
 		case 26: return "PARAM_ASSIGN";
 		case 27: return "PRINT";
 		case 28: return "LOAD_ARRAY";
+		case 29: return "RETURN_EXPR";
+		case 30: return "GOTO_METHOD";
     }
     return "NULL!";
 }

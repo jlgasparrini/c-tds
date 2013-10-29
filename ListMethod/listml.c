@@ -18,17 +18,14 @@ MethodL* get_listML(ListML *list, char *id_method) {
     bool found = false;
     int i;
     for (i = 0; i < size_listML(list) && !found; i++) {
-		if (strcmp(runner->info->id, id_method)== 0){
+		if (strcmp(runner->info->id, id_method) == 0)
 			found = true;
-		}else {
+		else
 			runner = getNext_NodeML(runner);
-		}
     }
-    if (found){
+    if (found)
 		return getInfo_NodeML(runner);
-	} else {
-		return newMethodL("NULL", "NULL");
-	}
+	return newMethodL("NULL", "NULL");
 }
 
 int size_listML(ListML *list) {
