@@ -33,7 +33,7 @@ typedef struct              /* A method has: 				       							*/
 	char *id;				/* The "id" of the method										*/
 	ReturnType type; 		/* A "return type" (int, float, boolean, void) 				    */
 	unsigned int paramSize; /* An int value indicating the number of parameters			    */
-	StVariable *parameters; /* An array with the parameters, in case of having them			*/
+	StVariable **parameters; /* An array with the parameters, in case of having them			*/
 	VarValue returnValue;   /* The return value of the current method						*/
 } StMethod;
 

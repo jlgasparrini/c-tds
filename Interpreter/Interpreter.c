@@ -177,7 +177,7 @@ int runOperation(int position)
 
             /* RETURN */
         case 23: 
-            return atoi(popString(methodsCallStack)) + 1;
+            return atoi(popString(methodsCallStack));
 
             /* NEG_INT */
         case 24:

@@ -116,7 +116,7 @@ Attribute* checkAndGetMethodRetAttribute(ErrorsQueue *eq, SymbolsTable *aSymbols
 	Returns 1 otherwise */
 unsigned char correctParameterType(StVariable *var, Attribute *attr, unsigned char pos)
 {
-	if ((*var).type == (*attr).decl.method.parameters[pos].type)
+	if ((*var).type == (*attr).decl.method.parameters[pos]->type)
 		return 0;
 	return 1;
 }
@@ -195,11 +195,11 @@ unsigned char correctParamBC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attri
 				{
 					char* number = (char*) malloc (digitAmount(paramSize+1)*sizeof(char));
 					sprintf(number,"%d",paramSize+1);
-					char* f = (char*) malloc ((strlen("\". El ")+strlen(number)+strlen("° parametro no es del tipo \"")+strlen(getType((*aux).decl.method.parameters[paramSize].type)+strlen("\".")))*sizeof(char));
+					char* f = (char*) malloc ((strlen("\". El ")+strlen(number)+strlen("° parametro no es del tipo \"")+strlen(getType((*aux).decl.method.parameters[paramSize]->type)+strlen("\".")))*sizeof(char));
 					strcat(f,"\". El ");
 					strcat(f, number);
 					strcat(f,"° parametro no es del tipo \"");
-					strcat(f, getType((*aux).decl.method.parameters[paramSize].type));
+					strcat(f, getType((*aux).decl.method.parameters[paramSize]->type));
 					strcat(f, "\".");
 					insertError(eq,toString("Error en llamada al metodo \"", lastCalledMethod, f));  
 				//	free(number);
