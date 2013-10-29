@@ -240,9 +240,6 @@ int runOperation(int position)
 			/* GOTO_METHOD */
 		case 30: 
 			/* Save on the stack the place where treatment must continue after the method call */
-//			printf("entre a goto_method!!\n");
-//			printf("mi siguiente posicion a tratar antes de saltar: %d \n", position+1);
-//			printf("voy a saltar a: %d \n", searchByLabel((*codeList).codes, getLabel(code,1)));
 			pushString(methodsCallStack, intToString(position+1));
 			return searchByLabel((*codeList).codes, getLabel(code,1));
     }
@@ -293,8 +290,6 @@ void runMain(int pos)
         else
             returnFound = true;
     }
-	printf("encontre algun return\n"); /* --------------------------------------------- */
-	runOperation(pos);
 }
 
 /* Initializes the interpreter and run */
