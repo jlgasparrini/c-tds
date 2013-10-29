@@ -4,7 +4,6 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
-#include "../Code3D/codespecs.h"
 #include "../SymbolsTable/StringStack.h"
 #include "../SymbolsTable/Utils.h"
 #include "Interpreter.h"
@@ -13,8 +12,11 @@ ListMLabel *labelList;
 LCode3D *codeList;
 StringStack *methodsCallStack;
 
-// Given the position, I write that operation from the codeList
-// also this function return the next position of operation to generate!
+/*
+ * param position: position in the 3D list of the 3 directions code that must be interpreted.
+ * Interprets the 3 direccions code
+ * Returns the position of the next 3 direction code to be interpreted.
+ */
 int runOperation(int position)
 {
     Code3D*	code = get_code(codeList,position);
@@ -191,9 +193,8 @@ int runOperation(int position)
             
             /* PARAM_ASSIGN */
         case 26: 
-			if (getAttributeType(getAttribute(code,1)) == Int){
+			if (getAttributeType(getAttribute(code,1)) == Int)
                 setIntVal(getAttribute(code,2), getIntVal(getAttribute(code,1)));
-            }
             if (getAttributeType(getAttribute(code,1)) == Float)
                 setFloatVal(getAttribute(code,2), getFloatVal(getAttribute(code,1)));
             if (getAttributeType(getAttribute(code,1)) == Bool)
@@ -226,6 +227,7 @@ int runOperation(int position)
 
             /* RETURN_EXPR */
         case 29: 
+			/* Link the expression obtained with the return value of the method */
             if (getAttributeType(getAttribute(code,2)) == Int)
                 setIntVal(getAttribute(code,2), getIntVal(getAttribute(code,1)));
             if (getAttributeType(getAttribute(code,2)) == Float)
@@ -244,8 +246,9 @@ int runOperation(int position)
 }
 
 /* 
+ * param label: name of the method that must be found.
  * Returns the position with the label "label" in the list of code 3D. 
- * If "label" is not found then return -1
+ * If "label" is not found then return -1.
  */
 int searchByMethodLabel(char* label)
 {
@@ -273,15 +276,21 @@ int searchByMethodLabel(char* label)
     return -1;
 }
 
-//ejecuta cada una de las intrucciones del main hasta encontrar el return! toma la posicion en donde se encuentra el el label main.
+/*
+ * param pos: position in the list of 3 directions code of the label "main".
+ * Executes the method "main".
+ */ 
 void runMain(int pos)
 {
     while (pos < codeSize(codeList))
 		pos = runOperation(pos);
 }
 
-/* Initializes the interpreter and run */
-//Toma el codigo 3D, la lista de metodos y la pila de IF's!!
+/* 
+ * param labelL: list with the labels of methods found on the parsing stage.
+ * param codeL: list with the 3 directions code.
+ * Initializes the interpreter and runs it.
+ */
 void initInterpreter(ListMLabel *labelL, LCode3D *codeL)
 {
     labelList = labelL;

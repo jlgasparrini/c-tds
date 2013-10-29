@@ -389,56 +389,34 @@ iteration     :    WHILE {
 location      :    ID {$$ = getVariableAttribute(errorQ, symbolsTable, $1);}
               |    ID '[' expression ']' { $$ = checkArrayPos(errorQ,symbolsTable,lcode3d,$1,$3);}
 			  ;
-				/* --------------------------------------------------------------------------------------- */
-				/* --------------------------------------------------------------------------------------- */
-				/* --------------- ^ --------------------------------------------------------------------- */
-				/* --------------- | --------------------------------------------------------------------- */
-				/* --------------- | --------------------------------------------------------------------- */
-				/* --------------- | --------------------------------------------------------------------- */
-				/* --------------- | --------------------------------------------------------------------- */
-				/* --------------------------------------------------------------------------------------- */
-				/* ---- Verificar que aca se podria guardar la ultima posicion de arreglo a setear,
-						definiendo una nueva variable "lastUsedArrayPosition" y desde el asignation
-						usar algun metodo setArrayPos() para setear el valor en la posicion 
-						correspondiente del arreglo ------------------------------------------------------ */
-				/* --------------------------------------------------------------------------------------- */
-                        /* if (getAttributeType($3) == Int) lastUsedArrayPosition = atoi($3); */
-				/* --------------------------------------------------------------------------------------- */
-				/* --------------------------------------------------------------------------------------- */
-				/* --------------------------------------------------------------------------------------- */
-				/* --------------------------------------------------------------------------------------- */
-				/* --------------------------------------------------------------------------------------- */
-				/* --------------------------------------------------------------------------------------- */
-				/* --------------------------------------------------------------------------------------- */
-				/* --------------------------------------------------------------------------------------- */
 
 method_call   :	   ID '(' ')' {
 								cantParams=0; 
 								pushString(paramsStack,intToString(cantParams)); /*ver si esta linea debe ir o no*/
 								lastCalledMethod=$1; 
-								$$=checkAndGetMethodRetAttribute(errorQ,symbolsTable,$1,0);
 								add_CodeLabel(lcode3d, newCode(GOTO_METHOD), get_Label(listmlabel, $1)); //Go to char of Init of Method
+								$$ = checkAndGetMethodRetAttribute(errorQ,symbolsTable,lcode3d,$1,0);
 					}
 
               |    ID '(' {if (searchIdInSymbolsTable(errorQ,symbolsTable,$1) == NULL) 
 								idNotFound = True; 
 							else
 							{
-								pushString(paramsStack,intToString(cantParams)); /* Este caso fue modificado para que contuviera todas */
-								cantParams=0;									 /* ya que contenia solamente a "idNotFound = True" y en caso */
-								pushString(methodsIDStack,lastCalledMethod);	 /* de error no deberian actualizarse ninguna de las variables */
+								pushString(paramsStack,intToString(cantParams));
+								cantParams=0;								
+								pushString(methodsIDStack,lastCalledMethod);
 								lastCalledMethod = $1;
 							}
 					} expression_aux ')' {
 							if (idNotFound != True)
 							{
-								$$ = checkAndGetMethodRetAttribute(errorQ,symbolsTable,$1,cantParams); 
-								cantParams=atoi(popString(paramsStack));
 								add_CodeLabel(lcode3d, newCode(GOTO_METHOD), get_Label(listmlabel, $1)); //Go to char of Init of Method 
+								$$ = checkAndGetMethodRetAttribute(errorQ,symbolsTable,lcode3d,$1,cantParams); 
+								cantParams=atoi(popString(paramsStack));
 							}
 							else
 							{
-								$$ = createVariable("",Int); 
+								$$ = createVariable((char*) getVariableName(),Int); 
 								idNotFound = False;
 							}
 					} 
@@ -481,12 +459,12 @@ arg           :    expression
               |    STRING                     
               ;
               
-expression    :    conjunction                  {$$ = $1;}                             
-              |    expression ORR conjunction    {$$ = returnOr(errorQ, lcode3d, $1, $3);}
+expression    :    conjunction					{$$ = $1;}                             
+              |    expression ORR conjunction	{$$ = returnOr(errorQ, lcode3d, $1, $3);}
               ;
 
 conjunction   :    inequality                   {$$ = $1;}                                
-              |    conjunction ANDD inequality   {$$ = returnAnd(errorQ, lcode3d, $1, $3);}
+              |    conjunction ANDD inequality	{$$ = returnAnd(errorQ, lcode3d, $1, $3);}
               ;
 
 inequality    :    comparison                       {$$ = $1;}                             
