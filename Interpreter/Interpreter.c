@@ -13,8 +13,8 @@ LCode3D *codeList;
 Stack *returnStack;
 int size;
 
-// Given the position, I run that operation from the codeList
-// also this function return the next position of operation to execute!
+// Given the position, I write that operation from the codeList
+// also this function return the next position of operation to generate!
 int runOperation(int position)
 {
     Code3D*	code = get_code(codeList,position);
