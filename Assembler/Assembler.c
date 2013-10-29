@@ -1,0 +1,305 @@
+
+/*
+ * The assembly generator.
+ */
+#include <stdbool.h>
+#include <stdio.h>
+#include <string.h>
+#include "../Code3D/codespecs.h"
+#include "../Stack/stack.h"
+#include "Assembler.h"
+
+FILE *archivo;
+ListMLabel *labelList;
+LCode3D *codeList;
+Stack *returnStack;
+int size;
+
+// Given the position, I run that operation from the codeList
+// also this function return the next position of operation to execute!
+int generateOperation(int position)
+{
+    Code3D*	code = get_code(codeList,position);
+//	printf("voy a mostrar el codigo de 3 direcciones: \n");
+//	showCode(code);
+//	printf("\n");
+    //printf("Corro la operacion de la posicion %d\n", position);
+    switch ((*code).command)
+    {
+            /* LOAD_CONST */
+        case 0:
+            if (getAttributeType(getAttribute(code,2)) == Int)
+                setIntVal(getAttribute(code,2), (*(*code).param1).val.intAttri);
+            if (getAttributeType(getAttribute(code,2)) == Float)
+                setFloatVal(getAttribute(code,2), (*(*code).param1).val.floatAttri);
+            if (getAttributeType(getAttribute(code,2)) == Bool)
+                setBoolVal(getAttribute(code,2), (*(*code).param1).val.boolAttri);
+            return position+1;
+
+            /* ASSIGNATION */
+        case 1: 
+            if (getAttributeType(getAttribute(code,1)) == Int)
+                setIntVal(getAttribute(code,2), getIntVal(getAttribute(code,1)));
+            if (getAttributeType(getAttribute(code,1)) == Float)
+                setFloatVal(getAttribute(code,2), getFloatVal(getAttribute(code,1)));
+            if (getAttributeType(getAttribute(code,1)) == Bool)
+                setBoolVal(getAttribute(code,2), getBoolVal(getAttribute(code,1)));
+            return position+1;
+
+            /* MINUS_INT */
+        case 2:
+            setIntVal(getAttribute(code,3), getIntVal(getAttribute(code,1)) - getIntVal(getAttribute(code,2)));
+            return position+1;
+
+            /* ADD_INT */
+        case 3:
+            setIntVal(getAttribute(code,3), getIntVal(getAttribute(code,1)) + getIntVal(getAttribute(code,2)));
+            return position+1;
+
+            /* MULT_INT */
+        case 4:
+            setIntVal(getAttribute(code,3), getIntVal(getAttribute(code,1)) * getIntVal(getAttribute(code,2)));
+            return position+1;
+
+            /* DIV_INT */
+        case 5:
+            setIntVal(getAttribute(code,3), getIntVal(getAttribute(code,1)) / getIntVal(getAttribute(code,2)));
+            return position+1;
+
+            /* MOD_INT */
+        case 6:
+            setIntVal(getAttribute(code,3), getIntVal(getAttribute(code,1)) % getIntVal(getAttribute(code,2)));
+            return position+1;
+
+            /* MINUS_FLOAT */
+        case 7:
+            setFloatVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) - getFloatVal(getAttribute(code,2)));
+            return position+1;
+
+            /* ADD_FLOAT */
+        case 8:
+            setFloatVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) + getFloatVal(getAttribute(code,2)));
+            return position+1;
+
+            /* MULT_FLOAT */
+        case 9:
+            setFloatVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) * getFloatVal(getAttribute(code,2)));
+            return position+1;
+
+            /* DIV_FLOAT */
+        case 10:
+            setFloatVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) / getFloatVal(getAttribute(code,2)));
+            return position+1;
+
+            /* EQ */
+        case 11:
+            if (getAttributeType(getAttribute(code,2)) == Int)
+                setBoolVal(getAttribute(code,3), getIntVal(getAttribute(code,1)) == getIntVal(getAttribute(code,2)));
+            if (getAttributeType(getAttribute(code,2)) == Float)
+                setBoolVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) == getFloatVal(getAttribute(code,2)));
+            if (getAttributeType(getAttribute(code,2)) == Bool)
+                setBoolVal(getAttribute(code,2), getBoolVal(getAttribute(code,1)) == getBoolVal(getAttribute(code,2)));
+            return position+1;
+
+            /* DIST */
+        case 12:
+            if (getAttributeType(getAttribute(code,2)) == Int)
+                setBoolVal(getAttribute(code,3), getIntVal(getAttribute(code,1)) != getIntVal(getAttribute(code,2)));
+            if (getAttributeType(getAttribute(code,2)) == Float)
+                setBoolVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) != getFloatVal(getAttribute(code,2)));
+            if (getAttributeType(getAttribute(code,2)) == Bool)
+                setBoolVal(getAttribute(code,2), getBoolVal(getAttribute(code,1)) != getBoolVal(getAttribute(code,2)));
+            return position+1;
+
+            /* GT */
+        case 13:
+            if (getAttributeType(getAttribute(code,2)) == Int)
+                setBoolVal(getAttribute(code,3), getIntVal(getAttribute(code,1)) > getIntVal(getAttribute(code,2)));
+            if (getAttributeType(getAttribute(code,3)) == Float)
+                setBoolVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) > getFloatVal(getAttribute(code,2)));
+            if (getAttributeType(getAttribute(code,3)) == Bool)
+                setBoolVal(getAttribute(code,3), getBoolVal(getAttribute(code,1)) > getBoolVal(getAttribute(code,2)));
+            return position+1;
+
+            /* LR */
+        case 14: 
+            if (getAttributeType(getAttribute(code,2)) == Int)
+                setBoolVal(getAttribute(code,3), getIntVal(getAttribute(code,1)) < getIntVal(getAttribute(code,2)));
+            if (getAttributeType(getAttribute(code,2)) == Float)
+                setBoolVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) < getFloatVal(getAttribute(code,2)));
+            if (getAttributeType(getAttribute(code,2)) == Bool)
+                setBoolVal(getAttribute(code,3), getBoolVal(getAttribute(code,1)) < getBoolVal(getAttribute(code,2)));
+            return position+1;
+
+            /* GEQ */
+        case 15:
+            if (getAttributeType(getAttribute(code,2)) == Int)
+                setBoolVal(getAttribute(code,3), getIntVal(getAttribute(code,1)) >= getIntVal(getAttribute(code,2)));
+            if (getAttributeType(getAttribute(code,2)) == Float)
+                setBoolVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) >= getFloatVal(getAttribute(code,2)));
+            if (getAttributeType(getAttribute(code,2)) == Bool)
+                setBoolVal(getAttribute(code,3), getBoolVal(getAttribute(code,1)) >= getBoolVal(getAttribute(code,2)));
+            return position+1;
+
+            /* LEQ */
+        case 16:
+            if (getAttributeType(getAttribute(code,2)) == Int)
+                setBoolVal(getAttribute(code,3), getIntVal(getAttribute(code,1)) <= getIntVal(getAttribute(code,2)));
+            if (getAttributeType(getAttribute(code,2)) == Float)
+                setBoolVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) <= getFloatVal(getAttribute(code,2)));
+            if (getAttributeType(getAttribute(code,2)) == Bool)
+                setBoolVal(getAttribute(code,3), getBoolVal(getAttribute(code,1)) <= getBoolVal(getAttribute(code,2)));
+            return position+1;
+            break;
+
+            /* OR */
+        case 17:
+            setBoolVal(getAttribute(code,3), getBoolVal(getAttribute(code,1)) || getBoolVal(getAttribute(code,2)));
+            return position+1;
+
+            /* AND */
+        case 18:
+            setBoolVal(getAttribute(code,3), getBoolVal(getAttribute(code,1)) && getBoolVal(getAttribute(code,2)));
+            return position+1;
+
+            /* NOT */
+        case 19: 
+            setBoolVal(getAttribute(code,2), !getBoolVal(getAttribute(code,1)));
+            return position+1;
+
+            /* LABEL */
+        case 20: 
+            return position+1;
+
+            /* GOTO_LABEL */
+        case 21: 
+	    return searchByLabel((*codeList).codes, getLabel(code, 1));
+            break;
+
+            /* GOTO_LABEL_COND */
+        case 22:
+            if (getBoolVal((*(*code).param1).val.attri) == False)
+                return searchByLabel((*codeList).codes,getLabel(code, 2)); 
+            return position + 1;
+
+            /* RETURN */
+        case 23: 
+            return position;
+
+            /* NEG_INT */
+        case 24:
+            setIntVal(getAttribute(code,2), -getIntVal(getAttribute(code,1)));
+            return position + 1;
+
+            /* NEG_FLOAT */
+        case 25: 
+            setFloatVal(getAttribute(code,2), -getFloatVal(getAttribute(code,1)));
+            return position + 1;
+            
+            /* PARAM_ASSIGN */
+        case 26: 
+		    (*(*code).param2).val.attri = getAttribute(code,1);
+            return position + 1;
+
+            /* PRINT */
+        case 27:
+            if (getAttributeType(getAttribute(code,1)) == Int)
+                printf("Print. El valor entero es: %d\n", getIntVal(getAttribute(code,1)));
+            if (getAttributeType(getAttribute(code,1)) == Float)
+                printf("Print. El valor flotante es: %f\n", getFloatVal(getAttribute(code,1)));
+            if (getAttributeType(getAttribute(code,1)) == Bool)
+            {
+                if (getBoolVal(getAttribute(code,1)) == True)	
+                    printf("Print. El valor booleano es: true\n");
+                if (getBoolVal(getAttribute(code,1)) == False)	printf("Print. El valor booleano es: false\n");
+            }
+            return position+1;
+
+			/* LOAD_ARRAY */
+		case 28: 
+			/* parameter 1 of 3d code is the position of the array
+			   parameter 2 is the array from which the number will be getted from.
+			   parameter 3 is the resulting attribute. 
+			    */
+			(*getAttribute(code,3)).decl.variable = &(*getAttribute(code,2)).decl.array.arrayValues[getIntVal(getAttribute(code,1))];
+            return position+1;
+    }
+
+}
+
+/* 
+ * Returns the position with the label "label" in the list of code 3D. 
+ * If "label" is not found then return -1
+ */
+// Esto solamente sirve para los metodos!!! -.-
+int jumpByMethodLabel(char* label, int pos)
+{
+    char *auxLabel = get_Label(labelList, label);
+    if (auxLabel == "NULL")
+        printf("ERROR: LABEL no encontrado!    %s  encontrado. \n", auxLabel);
+    else
+    {
+        bool labelFound = false;
+        int i = pos;
+        Code3D *aux;
+        while (!labelFound && i < codeSize(codeList))
+        {
+            aux = get_code(codeList,i);
+			if (isLabel(aux,1))
+			{
+	            if (strcmp(auxLabel, getLabel(aux, 1)) == 0)
+		            labelFound = true;
+			}
+            i++;
+        } 
+        if (labelFound)
+            return i-1;
+    }
+    return pos;
+}
+
+//ejecuta cada una de las intrucciones del main hasta encontrar el return! toma la posicion en donde se encuentra el el label main.
+void generateMethod(int pos)
+{
+    bool returnFound = false;
+    Code3D *aux;
+    while (pos < codeSize(codeList) && !returnFound)
+    {
+        aux = get_code(codeList,pos);
+        if (getCommand(aux) != RETURN) 
+            pos = runOperation(pos);
+        else
+            returnFound = true;
+    }
+}
+
+/* Initializes the interpreter and run */
+//Toma el codigo 3D, la lista de metodos y la pila de IF's!!
+void initAssembler(ListMLabel *labelL, LCode3D *codeL, Stack *stack, char* fileName)
+{
+    //Initialize file.
+    char *result = malloc(strlen(filename)+1);
+    char *extension = strdup(".asm");
+    strcpy(result, fileName);
+    strcat(result, extension);
+    archivo = fopen(result,"w");
+    writeCodeInFile(".file", fileName, "");
+
+    labelList = labelL;
+    codeList = codeL;
+    returnStack = stack;
+    size = codeSize(codeL);
+    //runMethod(searchByMethodLabel("main", 0));
+}
+
+//Este podria tomar por separado las operaciones a meter en el archivo.
+void writeCodeInFile(char* operation, char* code1, char* code2)
+{
+    char* backSlashN = strdup("\n");
+    char *result = malloc(strlen(operation)+strlen(code1)+strlen(code2)+strlen(backSlashN)+1);
+    strcpy(result, operation);
+    strcat(result, code1);
+    strcat(result, code2);
+    strcat(result, backSlashN);
+    fprintf(archivo, result);
+}
