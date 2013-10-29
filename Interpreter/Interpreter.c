@@ -18,10 +18,6 @@ StringStack *methodsCallStack;
 int runOperation(int position)
 {
     Code3D*	code = get_code(codeList,position);
-//	printf("voy a mostrar el codigo de 3 direcciones: \n");
-//	showCode(code);
-//	printf("\n");
-    printf("Corro la operacion de la posicion %d\n", position);
     switch ((*code).command)
     {
             /* LOAD_CONST */
@@ -195,14 +191,12 @@ int runOperation(int position)
             
             /* PARAM_ASSIGN */
         case 26: 
-			printf("se llamo a param_assign!!!\n");
 			if (getAttributeType(getAttribute(code,1)) == Int)
 				(*getVariable(code,2)).value.intVal = getIntVal(getAttribute(code,1));
             if (getAttributeType(getAttribute(code,1)) == Float)
 				(*getVariable(code,2)).value.floatVal = getFloatVal(getAttribute(code,1));
             if (getAttributeType(getAttribute(code,1)) == Bool)
 				(*getVariable(code,2)).value.boolVal = getBoolVal(getAttribute(code,1));
-			printf("salio de param_assign!!!\n");
             return position + 1;
 
             /* PRINT */
