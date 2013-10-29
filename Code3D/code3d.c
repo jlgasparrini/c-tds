@@ -330,7 +330,7 @@ void showCode(Code3D *code, int param)
     else 
     {
         if (isInt(code, param))
-            printf("%i   |    ", getInt(code, param));
+            printf(" %i   |    ", getInt(code, param));
         if (isFloat(code, param))
             printf("%f   |  ", getFloat(code, param));
         if (isBool(code, param))
