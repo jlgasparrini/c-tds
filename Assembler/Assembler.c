@@ -20,209 +20,124 @@ int size;
 int generateOperation(int position)
 {
     Code3D*	code = get_code(codeList,position);
-//	printf("voy a mostrar el codigo de 3 direcciones: \n");
-//	showCode(code);
-//	printf("\n");
-    //printf("Corro la operacion de la posicion %d\n", position);
     switch ((*code).command)
     {
             /* LOAD_CONST */
         case 0:
-            if (getAttributeType(getAttribute(code,2)) == Int)
-                setIntVal(getAttribute(code,2), (*(*code).param1).val.intAttri);
-            if (getAttributeType(getAttribute(code,2)) == Float)
-                setFloatVal(getAttribute(code,2), (*(*code).param1).val.floatAttri);
-            if (getAttributeType(getAttribute(code,2)) == Bool)
-                setBoolVal(getAttribute(code,2), (*(*code).param1).val.boolAttri);
-            return position+1;
+            break;
 
             /* ASSIGNATION */
         case 1: 
-            if (getAttributeType(getAttribute(code,1)) == Int)
-                setIntVal(getAttribute(code,2), getIntVal(getAttribute(code,1)));
-            if (getAttributeType(getAttribute(code,1)) == Float)
-                setFloatVal(getAttribute(code,2), getFloatVal(getAttribute(code,1)));
-            if (getAttributeType(getAttribute(code,1)) == Bool)
-                setBoolVal(getAttribute(code,2), getBoolVal(getAttribute(code,1)));
-            return position+1;
+            break;
 
             /* MINUS_INT */
         case 2:
-            setIntVal(getAttribute(code,3), getIntVal(getAttribute(code,1)) - getIntVal(getAttribute(code,2)));
-            return position+1;
+            break;
 
             /* ADD_INT */
         case 3:
-            setIntVal(getAttribute(code,3), getIntVal(getAttribute(code,1)) + getIntVal(getAttribute(code,2)));
-            return position+1;
+            break;
 
             /* MULT_INT */
         case 4:
-            setIntVal(getAttribute(code,3), getIntVal(getAttribute(code,1)) * getIntVal(getAttribute(code,2)));
-            return position+1;
+            break;
 
             /* DIV_INT */
         case 5:
-            setIntVal(getAttribute(code,3), getIntVal(getAttribute(code,1)) / getIntVal(getAttribute(code,2)));
-            return position+1;
+            break;
 
             /* MOD_INT */
         case 6:
-            setIntVal(getAttribute(code,3), getIntVal(getAttribute(code,1)) % getIntVal(getAttribute(code,2)));
-            return position+1;
+            break;
 
             /* MINUS_FLOAT */
         case 7:
-            setFloatVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) - getFloatVal(getAttribute(code,2)));
-            return position+1;
+            break;
 
             /* ADD_FLOAT */
         case 8:
-            setFloatVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) + getFloatVal(getAttribute(code,2)));
-            return position+1;
+            break;
 
             /* MULT_FLOAT */
         case 9:
-            setFloatVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) * getFloatVal(getAttribute(code,2)));
-            return position+1;
+            break;
 
             /* DIV_FLOAT */
         case 10:
-            setFloatVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) / getFloatVal(getAttribute(code,2)));
-            return position+1;
+            break;
 
             /* EQ */
         case 11:
-            if (getAttributeType(getAttribute(code,2)) == Int)
-                setBoolVal(getAttribute(code,3), getIntVal(getAttribute(code,1)) == getIntVal(getAttribute(code,2)));
-            if (getAttributeType(getAttribute(code,2)) == Float)
-                setBoolVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) == getFloatVal(getAttribute(code,2)));
-            if (getAttributeType(getAttribute(code,2)) == Bool)
-                setBoolVal(getAttribute(code,2), getBoolVal(getAttribute(code,1)) == getBoolVal(getAttribute(code,2)));
-            return position+1;
+            break;
 
             /* DIST */
         case 12:
-            if (getAttributeType(getAttribute(code,2)) == Int)
-                setBoolVal(getAttribute(code,3), getIntVal(getAttribute(code,1)) != getIntVal(getAttribute(code,2)));
-            if (getAttributeType(getAttribute(code,2)) == Float)
-                setBoolVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) != getFloatVal(getAttribute(code,2)));
-            if (getAttributeType(getAttribute(code,2)) == Bool)
-                setBoolVal(getAttribute(code,2), getBoolVal(getAttribute(code,1)) != getBoolVal(getAttribute(code,2)));
-            return position+1;
+            break;
 
             /* GT */
         case 13:
-            if (getAttributeType(getAttribute(code,2)) == Int)
-                setBoolVal(getAttribute(code,3), getIntVal(getAttribute(code,1)) > getIntVal(getAttribute(code,2)));
-            if (getAttributeType(getAttribute(code,3)) == Float)
-                setBoolVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) > getFloatVal(getAttribute(code,2)));
-            if (getAttributeType(getAttribute(code,3)) == Bool)
-                setBoolVal(getAttribute(code,3), getBoolVal(getAttribute(code,1)) > getBoolVal(getAttribute(code,2)));
-            return position+1;
+            break;
 
             /* LR */
         case 14: 
-            if (getAttributeType(getAttribute(code,2)) == Int)
-                setBoolVal(getAttribute(code,3), getIntVal(getAttribute(code,1)) < getIntVal(getAttribute(code,2)));
-            if (getAttributeType(getAttribute(code,2)) == Float)
-                setBoolVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) < getFloatVal(getAttribute(code,2)));
-            if (getAttributeType(getAttribute(code,2)) == Bool)
-                setBoolVal(getAttribute(code,3), getBoolVal(getAttribute(code,1)) < getBoolVal(getAttribute(code,2)));
-            return position+1;
+            break;
 
             /* GEQ */
         case 15:
-            if (getAttributeType(getAttribute(code,2)) == Int)
-                setBoolVal(getAttribute(code,3), getIntVal(getAttribute(code,1)) >= getIntVal(getAttribute(code,2)));
-            if (getAttributeType(getAttribute(code,2)) == Float)
-                setBoolVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) >= getFloatVal(getAttribute(code,2)));
-            if (getAttributeType(getAttribute(code,2)) == Bool)
-                setBoolVal(getAttribute(code,3), getBoolVal(getAttribute(code,1)) >= getBoolVal(getAttribute(code,2)));
-            return position+1;
+            break;
 
             /* LEQ */
         case 16:
-            if (getAttributeType(getAttribute(code,2)) == Int)
-                setBoolVal(getAttribute(code,3), getIntVal(getAttribute(code,1)) <= getIntVal(getAttribute(code,2)));
-            if (getAttributeType(getAttribute(code,2)) == Float)
-                setBoolVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) <= getFloatVal(getAttribute(code,2)));
-            if (getAttributeType(getAttribute(code,2)) == Bool)
-                setBoolVal(getAttribute(code,3), getBoolVal(getAttribute(code,1)) <= getBoolVal(getAttribute(code,2)));
-            return position+1;
             break;
 
             /* OR */
         case 17:
-            setBoolVal(getAttribute(code,3), getBoolVal(getAttribute(code,1)) || getBoolVal(getAttribute(code,2)));
-            return position+1;
+            break;
 
             /* AND */
         case 18:
-            setBoolVal(getAttribute(code,3), getBoolVal(getAttribute(code,1)) && getBoolVal(getAttribute(code,2)));
-            return position+1;
+            break;
 
             /* NOT */
         case 19: 
-            setBoolVal(getAttribute(code,2), !getBoolVal(getAttribute(code,1)));
-            return position+1;
+            break;
 
             /* LABEL */
         case 20: 
-            return position+1;
+
+            break;
 
             /* GOTO_LABEL */
         case 21: 
-	    return searchByLabel((*codeList).codes, getLabel(code, 1));
             break;
 
             /* GOTO_LABEL_COND */
         case 22:
-            if (getBoolVal((*(*code).param1).val.attri) == False)
-                return searchByLabel((*codeList).codes,getLabel(code, 2)); 
-            return position + 1;
+            break;
 
             /* RETURN */
         case 23: 
-            return position;
+            break;
 
             /* NEG_INT */
         case 24:
-            setIntVal(getAttribute(code,2), -getIntVal(getAttribute(code,1)));
-            return position + 1;
+            break;
 
             /* NEG_FLOAT */
         case 25: 
-            setFloatVal(getAttribute(code,2), -getFloatVal(getAttribute(code,1)));
-            return position + 1;
+            break;
             
             /* PARAM_ASSIGN */
         case 26: 
-		    (*(*code).param2).val.attri = getAttribute(code,1);
-            return position + 1;
+            break;
 
             /* PRINT */
         case 27:
-            if (getAttributeType(getAttribute(code,1)) == Int)
-                printf("Print. El valor entero es: %d\n", getIntVal(getAttribute(code,1)));
-            if (getAttributeType(getAttribute(code,1)) == Float)
-                printf("Print. El valor flotante es: %f\n", getFloatVal(getAttribute(code,1)));
-            if (getAttributeType(getAttribute(code,1)) == Bool)
-            {
-                if (getBoolVal(getAttribute(code,1)) == True)	
-                    printf("Print. El valor booleano es: true\n");
-                if (getBoolVal(getAttribute(code,1)) == False)	printf("Print. El valor booleano es: false\n");
-            }
-            return position+1;
+            break;
 
 			/* LOAD_ARRAY */
 		case 28: 
-			/* parameter 1 of 3d code is the position of the array
-			   parameter 2 is the array from which the number will be getted from.
-			   parameter 3 is the resulting attribute. 
-			    */
-			(*getAttribute(code,3)).decl.variable = &(*getAttribute(code,2)).decl.array.arrayValues[getIntVal(getAttribute(code,1))];
-            return position+1;
+            break;
     }
 
 }
@@ -278,11 +193,8 @@ void generateMethod(int pos)
 void initAssembler(ListMLabel *labelL, LCode3D *codeL, Stack *stack, char* fileName)
 {
     //Initialize file.
-    char *result = malloc(strlen(filename)+1);
-    char *extension = strdup(".asm");
-    strcpy(result, fileName);
-    strcat(result, extension);
-    archivo = fopen(result,"w");
+    char *fileName = concat(fileName, ".asm");
+    archivo = fopen(fileName,"w");
     writeCodeInFile(".file", fileName, "");
 
     labelList = labelL;
@@ -296,10 +208,26 @@ void initAssembler(ListMLabel *labelL, LCode3D *codeL, Stack *stack, char* fileN
 void writeCodeInFile(char* operation, char* code1, char* code2)
 {
     char* backSlashN = strdup("\n");
-    char *result = malloc(strlen(operation)+strlen(code1)+strlen(code2)+strlen(backSlashN)+1);
+    char* blank = strdup(" ");
+    char *result = malloc(strlen(operation)+strlen(code1)+strlen(code2)+4);
     strcpy(result, operation);
+    strcat(result, blank);
     strcat(result, code1);
+    strcat(result, blank);
     strcat(result, code2);
     strcat(result, backSlashN);
     fprintf(archivo, result);
+}
+
+void writeBlank()
+{
+    fprintf(archivo, "\n");
+}
+
+char* concat(char* str1, char* str2)
+{
+    char* result = malloc(strlen(str1)+strlen(str2)+1);
+    strcpy(result, str1);
+    strcat(result, str2);
+    return result;
 }
