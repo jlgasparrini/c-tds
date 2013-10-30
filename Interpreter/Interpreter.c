@@ -11,6 +11,7 @@
 ListMLabel *labelList;
 LCode3D *codeList;
 StringStack *methodsCallStack;
+int algo = 0;
 
 /*
  * param position: position in the 3D list of the 3 directions code that must be interpreted.
@@ -84,7 +85,7 @@ int runOperation(int position)
 
             /* DIV_FLOAT */
         case 10:
-            setFloatVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) / getFloatVal(getAttribute(code,2)));
+            setFloatVal(getAttribute(code,3), ((float) getFloatVal(getAttribute(code,1))) / (float) getFloatVal(getAttribute(code,2)));
             return position + 1;
 
             /* EQ */

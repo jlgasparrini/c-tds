@@ -20,7 +20,7 @@ float potencia(float x, int n){
 		prod = prod * x;
 		i = i + 1;
 	}
-	if !(!neg){
+	if (!(!neg)){
 		return 1.0/prod;
         }
 	else{
@@ -34,7 +34,9 @@ void main(){
      float a;
      a = 8.0;
      f = potencia(a, 2);
-     externinvk("printf", void , "%f", f);
+     print a;
+     print 2;
+     print f;
      return;
 }
 

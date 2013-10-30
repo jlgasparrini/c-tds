@@ -80,11 +80,11 @@ void finalizar()
     else
 	{
         // show the list of code 3D
-		show3DCode(lcode3d);
+		// show3DCode(lcode3d); // uncommenting this line will show the 3 directions code of the parsed code
 		printf("------Se termino de parsear.----------\n");
-		printf("-----Corriendo interprete------\n");
+		//printf("-----Corriendo interprete------\n");
 		initInterpreter(listmlabel, lcode3d, returnStack);
-		printf("-----Se acabo de correr el interprete.-----\n");
+		//printf("-----Se acabo de correr el interprete.-----\n");
 	}
 }
 
@@ -363,19 +363,18 @@ iteration     :    WHILE {
 							add_CodeLabel(lcode3d, newCode(GOTO_LABEL), pop(labelsWhile)); // Go to char of For
 							add_CodeLabel(lcode3d, newCode(LABEL), pop(labelsWhile)); // Go to char of For
 					}
-              |    FOR {} ID {
-						if (getAttributeType(getVariableAttribute(errorQ,symbolsTable,$3)) != Int)
-							insertError(errorQ,toString("El identificador \"", $3, "\" no pertenece a una variable de tipo \"int\""));
+              |    FOR ID {
+						if (getAttributeType(getVariableAttribute(errorQ,symbolsTable,$2)) != Int)
+							insertError(errorQ,toString("El identificador \"", $2, "\" no pertenece a una variable de tipo \"int\""));
 					} '=' expression ',' expression {
-									controlType(errorQ,$6,Int,"for",2); controlType(errorQ,$8,Int,"for",3); 
+									controlType(errorQ,$5,Int,"for",2); controlType(errorQ,$7,Int,"for",3); 
 									char *forLabel = newLabelName("for"); char *endLabel = newLabelName("end_for");
 									push(labelsFor,endLabel); push(labelsFor,forLabel); push(labelsFor, intToString(codeSize(lcode3d)));
-                                    add_Assignation(lcode3d, newCode(ASSIGNATION), $6, getVariableAttribute(errorQ, symbolsTable, $3));
-									Attribute *res = returnDistinct(errorQ, lcode3d, getVariableAttribute(errorQ, symbolsTable, $3), $8);
+                                    add_Assignation(lcode3d, newCode(ASSIGNATION), $5, getVariableAttribute(errorQ, symbolsTable, $2));
+									Attribute *res = returnDistinct(errorQ, lcode3d, getVariableAttribute(errorQ, symbolsTable, $2), $7);
                                     add_CodeLabel(lcode3d, newCode(LABEL), forLabel);
 									add_CodeLabelCond(lcode3d, newCode(GOTO_LABEL_COND), res, endLabel); // Go to char of Expression
 					} block {
-							controlAssignation(errorQ,lcode3d,getVariableAttribute(errorQ, symbolsTable, $3),"+=",returnValue(lcode3d, Int, "1"));
                             add_code(lcode3d, get_code(lcode3d, atoi(pop(labelsFor))+1));
 							add_CodeLabel(lcode3d, newCode(GOTO_LABEL), pop(labelsFor)); // Go to char of For
 							add_CodeLabel(lcode3d, newCode(LABEL), pop(labelsFor)); // Go to char of For
@@ -421,10 +420,14 @@ method_call   :	   ID '(' ')' {
 							}
 					} 
 
-              |    EXTERNINVK '(' STRING ',' typevoid ')' {if (mType != RetVoid) $$=createVariable("",mType);
-                                                            add_CodeLabel(lcode3d, newCode(LABEL), newLabelName("extern_invk")); }
-              |    EXTERNINVK '(' STRING ',' typevoid ',' externinvk_arg ')' {if (mType != RetVoid) $$=createVariable("",mType);
-                                                            add_CodeLabel(lcode3d, newCode(LABEL), newLabelName("extern_invk")); }
+              |    EXTERNINVK '(' STRING ',' typevoid ')' {/*if (mType != RetVoid) $$=createVariable("",mType);*/
+                                                            /*add_CodeLabel(lcode3d, newCode(LABEL), newLabelName("extern_invk"));*/
+															$$=createVariable((char*) getVariableName(),Int);
+														}
+              |    EXTERNINVK '(' STRING ',' typevoid ',' externinvk_arg ')' {/*if (mType != RetVoid) $$=createVariable("",mType);*/
+                                                            /*add_CodeLabel(lcode3d, newCode(LABEL), newLabelName("extern_invk"));*/
+															$$=createVariable((char*) getVariableName(),Int);
+															}
               ;
 
 expression_aux:    expression {
