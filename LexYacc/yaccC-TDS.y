@@ -6,9 +6,7 @@
 #  include  "../SymbolsTable/StringStack.h"
 #  include  "../SymbolsTable/Utils.h"
 #  include	"../Stack/stack.h"
-#  include  "../ListMethod/genlistml.h"
-
-
+#  include  "../ListMethod/genlistml.h" 
 extern FILE *yyin;
 ErrorsQueue *errorQ;						/* Errors Queue definition */
 SymbolsTable *symbolsTable;					/* <----Symbols Table Definition----- */
@@ -80,7 +78,7 @@ void finalizar()
     else
 	{
         // show the list of code 3D
-		// show3DCode(lcode3d); // uncommenting this line will show the 3 directions code of the parsed code
+		//show3DCode(lcode3d); // uncommenting this line will show the 3 directions code of the parsed code
 		printf("------Se termino de parsear.----------\n");
 		//printf("-----Corriendo interprete------\n");
 		initInterpreter(listmlabel, lcode3d, returnStack);
@@ -332,9 +330,8 @@ conditional   :    IF '(' expression {
 			  ;
 
 optional	  :		{
-				pop(labelsCYC);
-				add_CodeLabel(lcode3d, newCode(LABEL), peek(labelsCYC)); // Mark to char of End
-				push(returnStack, peek(labelsCYC));
+				add_CodeLabel(lcode3d, newCode(LABEL), pop(labelsCYC)); // Mark to char of End
+				push(returnStack, pop(labelsCYC));
 			}
 		  |	   	ELSE {
 					char* elseLabel = pop(labelsCYC);

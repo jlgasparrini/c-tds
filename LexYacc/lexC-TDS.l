@@ -73,7 +73,7 @@ print		"print"
 {plus}                          {columnNumb++; return('+');}
 {minus}                         {columnNumb++; return('-');}
 {mult}                          {columnNumb++; return('*');}
-{div}                           {columnNumb++; return('*');}
+{div}                           {columnNumb++; return('/');}
 {mod}                           {columnNumb++; return('%');}
 {admClose}                      {columnNumb++; return('!');}
 {questClose}                    {columnNumb++; return('?');}

@@ -21,6 +21,7 @@ Saca el promedio entre las dos notas mas altas.
 
 int main(){ 
     externinvk("printf", float ,"%f resultado : ", promedio( 3.3, 0.66 , 10.0) );
+    print promedio(3.3, 0.66, 10.0);
     return 1;
 }
 
