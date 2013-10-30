@@ -78,7 +78,7 @@ void finalizar()
     else
 	{
         // show the list of code 3D
-		show3DCode(lcode3d); // uncommenting this line will show the 3 directions code of the parsed code
+		// show3DCode(lcode3d); // uncommenting this line will show the 3 directions code of the parsed code
 		printf("------Se termino de parsear.----------\n");
 		//printf("-----Corriendo interprete------\n");
 		initInterpreter(listmlabel, lcode3d, returnStack);

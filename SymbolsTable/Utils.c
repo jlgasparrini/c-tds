@@ -486,7 +486,7 @@ Attribute* returnMinorComparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *o
     if ((getAttributeType(oper1) == getAttributeType(oper2)) && (getAttributeType(oper2) != Bool)) 
     {
 		Attribute *aux = createVariable(getVariableName(), Bool);
-		Code3D *codeMinor = newCode(LR);
+		Code3D *codeMinor = newCode(LOWER);
 		setCode3D(codeMinor, oper1, oper2, aux);
 		add_code(lcode3d, codeMinor); 
         return aux;
@@ -505,7 +505,7 @@ Attribute* returnMajorComparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *o
     if ((getAttributeType(oper1) == getAttributeType(oper2)) && (getAttributeType(oper2) != Bool))
     {
 		Attribute *aux = createVariable(getVariableName(), Bool);
-        Code3D *codeGreat = newCode(GT);
+        Code3D *codeGreat = newCode(GREATER);
 		setCode3D(codeGreat, oper1, oper2, aux);
 		add_code(lcode3d, codeGreat); 
 		return aux;
