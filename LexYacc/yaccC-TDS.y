@@ -28,6 +28,9 @@ Stack *labelsFor;
 Stack *returnStack;//Utilizada para los saltos en el interprete!
 ListMLabel *listmlabel;
 
+//Assembly
+char* fileName;
+
 /*Create new Label*/
 char* newLabelName(char* msg) 
 {
@@ -81,7 +84,7 @@ void finalizar()
 		show3DCode(lcode3d); // uncommenting this line will show the 3 directions code of the parsed code
 		printf("------Se termino de parsear.----------\n");
 		//printf("-----Corriendo interprete------\n");
-		initInterpreter(listmlabel, lcode3d, returnStack);
+		initAssembler(listmlabel, lcode3d, returnStack, fileName);
 		//printf("-----Se acabo de correr el interprete.-----\n");
 	}
 }
@@ -122,6 +125,7 @@ program       :    CLASS ID '{' '}' {
 									errorQ=initializeQueue(); 
 									lcode3d = initLCode3D();
 									finalizar();
+                                    fileName = $2;
 					} 
               |    CLASS ID '{' {
 									symbolsTable = initializeSymbolsTable(); 
@@ -135,6 +139,7 @@ program       :    CLASS ID '{' '}' {
 									labelsFor = newStack();
 									listmlabel = initL();
 									lcode3d = initLCode3D();
+                                    fileName = $2;
 					} body {
 								checkMain(errorQ,symbolsTable); 
 								popLevel(symbolsTable); 

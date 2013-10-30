@@ -13,7 +13,7 @@ echo
 echo   Compilando c....
 cd ..
 #gcc -Wall -o c-tds LexYacc/lex.yy.c LexYacc/y.tab.c SymbolsTable/SymbolsTable.c SymbolsTable/LinkedList.c SymbolsTable/Utils.c SymbolsTable/Attribute.c ErrorsQueue/ErrorsQueue.c SymbolsTable/StringStack.c Code3D/nodec3d.c Code3D/code3d.c Code3D/codespecs.c Code3D/gencode3d.c Code3D/listc3d.c Stack/stack.c Stack/linknode.c ListMethod/genlistml.c ListMethod/listml.c ListMethod/nodeml.c ListMethod/methodl.c
-gcc -o c-tds LexYacc/lex.yy.c LexYacc/y.tab.c SymbolsTable/SymbolsTable.c SymbolsTable/LinkedList.c SymbolsTable/Utils.c SymbolsTable/Attribute.c ErrorsQueue/ErrorsQueue.c SymbolsTable/StringStack.c Code3D/nodec3d.c Code3D/code3d.c Code3D/codespecs.c Code3D/gencode3d.c Code3D/listc3d.c Stack/stack.c Stack/linknode.c ListMethod/genlistml.c ListMethod/listml.c ListMethod/nodeml.c ListMethod/methodl.c Interpreter/Interpreter.c
+gcc -o c-tds LexYacc/lex.yy.c LexYacc/y.tab.c SymbolsTable/SymbolsTable.c SymbolsTable/LinkedList.c SymbolsTable/Utils.c SymbolsTable/Attribute.c ErrorsQueue/ErrorsQueue.c SymbolsTable/StringStack.c Code3D/nodec3d.c Code3D/code3d.c Code3D/codespecs.c Code3D/gencode3d.c Code3D/listc3d.c Stack/stack.c Stack/linknode.c ListMethod/genlistml.c ListMethod/listml.c ListMethod/nodeml.c ListMethod/methodl.c Assembler/Assembler.c
 echo 
 echo   Fin de compilacion.          #Presione ENTER para terminar.
 rm LexYacc/lex.yy.c

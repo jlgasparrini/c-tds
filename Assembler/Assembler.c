@@ -201,7 +201,6 @@ void initAssembler(ListMLabel *labelL, LCode3D *codeL, Stack *stack, char* fileN
     codeList = codeL;
     returnStack = stack;
     size = codeSize(codeL);
-    //runMethod(searchByMethodLabel("main", 0));
 }
 
 //Este podria tomar por separado las operaciones a meter en el archivo.
