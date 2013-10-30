@@ -422,9 +422,9 @@ method_call   :	   ID '(' ')' {
 					} 
 
               |    EXTERNINVK '(' STRING ',' typevoid ')' {if (mType != RetVoid) $$=createVariable("",mType);
-                                                            insertError(errorQ,"ERROR: El interprete no permite invocaciones externas"); }
+                                                            add_CodeLabel(lcode3d, newCode(LABEL), newLabelName("extern_invk")); }
               |    EXTERNINVK '(' STRING ',' typevoid ',' externinvk_arg ')' {if (mType != RetVoid) $$=createVariable("",mType);
-                                                            insertError(errorQ,"ERROR: El interprete no permite invocaciones externas"); }
+                                                            add_CodeLabel(lcode3d, newCode(LABEL), newLabelName("extern_invk")); }
               ;
 
 expression_aux:    expression {

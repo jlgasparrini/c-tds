@@ -56,10 +56,7 @@ void add_Print(LCode3D *lcode3d, Code3D *code, Attribute *attr)
 
 void add_MethodCall(LCode3D *lcode3d, Code3D *code,  Attribute *attri1,  Attribute *attriRes)
 {	/* Uses a copy of attr1 because the parameter passing must be by value */
-    //printf("PARAM ASSIGNATION: %s %s label\n", attriRes->id,attri1->decl.variable->id);
-	setAttribute(code, 1, attri1);
-	setAttribute(code, 2, attriRes);
-	setNull(code, 3);
+    setCode2D(code, attri1, attriRes);
 	add_code(lcode3d, code);
 }
 

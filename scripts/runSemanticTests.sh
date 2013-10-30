@@ -17,11 +17,10 @@ echo "**                                                                        
 echo "*********************************************************************************** "
 echo "     " 
 echo "     " 
-
-comp="c-tds"
+comp="../c-tds"
 
 echo "///////////////////////// TESTS CORRECTOS ////////////////////////////////////////" 
-files=`ls tests/semanticos/test_correctos/*.c-tds`
+files=`ls ../tests/semanticos/test_correctos/*.c-tds`
 
 
 for file in $files ; do 
