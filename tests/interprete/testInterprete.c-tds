@@ -1,0 +1,15 @@
+class test {
+    float ARRAY[10];    
+
+    int inc(int j)
+    {   
+        return j + 1;
+    }   
+
+    void main() 
+    {   
+	//Llamo a la funcion incrementar.
+        print inc(3);
+        return; 
+    }   
+}

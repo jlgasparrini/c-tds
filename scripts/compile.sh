@@ -3,6 +3,7 @@
 # Script for compile all project.
 
 echo   Compilando lexer....
+cd ..
 cd LexYacc
 lex lexC-TDS.l
 echo

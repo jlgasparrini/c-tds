@@ -421,8 +421,10 @@ method_call   :	   ID '(' ')' {
 							}
 					} 
 
-              |    EXTERNINVK '(' STRING ',' typevoid ')' {if (mType != RetVoid) $$=createVariable("",mType);}
-              |    EXTERNINVK '(' STRING ',' typevoid ',' externinvk_arg ')' {if (mType != RetVoid) $$=createVariable("",mType);}
+              |    EXTERNINVK '(' STRING ',' typevoid ')' {if (mType != RetVoid) $$=createVariable("",mType);
+                                                            insertError(errorQ,"ERROR: El interprete no permite invocaciones externas"); }
+              |    EXTERNINVK '(' STRING ',' typevoid ',' externinvk_arg ')' {if (mType != RetVoid) $$=createVariable("",mType);
+                                                            insertError(errorQ,"ERROR: El interprete no permite invocaciones externas"); }
               ;
 
 expression_aux:    expression {

@@ -19,7 +19,7 @@ echo "     "
 
 
 comp="c-tds"
-files=`ls tests/*.c-tds`
+files=`ls tests/oldTests/*.c-tds`
 
 for file in $files ; do 
 	echo "---------------- Test $file ... -------------------" 
