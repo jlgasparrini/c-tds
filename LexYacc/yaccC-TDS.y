@@ -78,7 +78,7 @@ void finalizar()
     else
 	{
         // show the list of code 3D
-		//show3DCode(lcode3d); // uncommenting this line will show the 3 directions code of the parsed code
+		show3DCode(lcode3d); // uncommenting this line will show the 3 directions code of the parsed code
 		printf("------Se termino de parsear.----------\n");
 		//printf("-----Corriendo interprete------\n");
 		initInterpreter(listmlabel, lcode3d, returnStack);
@@ -267,17 +267,22 @@ action        :
               |    BREAK {
 							if (isEmpty(labelsWhile) && isEmpty(labelsFor))
 								insertError(errorQ,toString("Error. Solo se puede usar la sentencia \"break\" dentro de un ciclo.","",""));
-							else
+							else{
+                                char* aux = pop(labelsWhile);
+                                char* aux2 = pop(labelsWhile);
 								add_CodeLabel(lcode3d, newCode(GOTO_LABEL), peek(labelsWhile)); //Go to char of End of While
+                                push(labelsWhile, aux2);
+                                push(labelsWhile, aux);
+                                }
 					}
               |    CONTINUE {
 							if (isEmpty(labelsWhile) && isEmpty(labelsFor))
                                 insertError(errorQ,toString("Error. Solo se puede usar la sentencia \"continue\" dentro de un ciclo.","",""));
 							else
 							{
-                                char *endOfWhile = pop(labelsWhile); //Label of End of While
+                                char *posLabel = pop(labelsWhile); //Label of End of While
 								add_CodeLabel(lcode3d, newCode(GOTO_LABEL), peek(labelsWhile)); //Go to char of Init of While
-								push(labelsWhile, endOfWhile);
+								push(labelsWhile, posLabel);
 							} 
 					}
 			  |	   RETURNN {
@@ -356,7 +361,7 @@ iteration     :    WHILE {
 								controlType(errorQ,$3,Bool,"while",1);
                                 add_CodeLabelCond(lcode3d, newCode(GOTO_LABEL_COND), $3, endWhile); // Go to char of Expression
 					} block {							
-                            add_code(lcode3d, get_code(lcode3d, atoi(pop(labelsWhile))+1));
+                            add_code(lcode3d, get_code(lcode3d, atoi(pop(labelsWhile))));
 							add_CodeLabel(lcode3d, newCode(GOTO_LABEL), pop(labelsWhile)); // Go to char of For
 							add_CodeLabel(lcode3d, newCode(LABEL), pop(labelsWhile)); // Go to char of For
 					}
