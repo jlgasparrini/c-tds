@@ -4,13 +4,17 @@ int breaks(int g){
       int  i;
       i = 0;
 
-      while(i < 10){
-	i = i + 1;
-	if(g < 0){
-	     break;
+      while(i < 3){
+        i = i + 1;
+        print i;
+        if(g > 0){
+            print 88;
+            break;
         }
-	else{
-	   continue;
+        else{
+            print 77;
+            continue;
+            print 999;
         }
       }
 
