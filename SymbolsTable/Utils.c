@@ -651,7 +651,6 @@ Attribute* returnDiv(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attrib
 /* Insert a new code3D Mult in a list of Codes */
 Attribute* returnMult(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *oper2)
 {
-    printf("NO DEBI DE HABER ENTRADO POR ACA!!");
     if (getAttributeType(oper1) == getAttributeType(oper2) && (getAttributeType(oper2) != Bool))
     {
         Code3D *codeMult;
