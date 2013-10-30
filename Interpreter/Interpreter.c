@@ -108,17 +108,17 @@ int runOperation(int position)
                 setBoolVal(getAttribute(code,2), getBoolVal(getAttribute(code,1)) != getBoolVal(getAttribute(code,2)));
             return position + 1;
 
-            /* GT */
+            /* GREATER */
         case 13:
             if (getAttributeType(getAttribute(code,2)) == Int)
-                setBoolVal(getAttribute(code,3), getIntVal(getAttribute(code,1)) < getIntVal(getAttribute(code,2)));
+                setBoolVal(getAttribute(code,3), getIntVal(getAttribute(code,1)) > getIntVal(getAttribute(code,2)));
             if (getAttributeType(getAttribute(code,3)) == Float)
-                setBoolVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) < getFloatVal(getAttribute(code,2)));
+                setBoolVal(getAttribute(code,3), getFloatVal(getAttribute(code,1)) > getFloatVal(getAttribute(code,2)));
             if (getAttributeType(getAttribute(code,3)) == Bool)
-                setBoolVal(getAttribute(code,3), getBoolVal(getAttribute(code,1)) < getBoolVal(getAttribute(code,2)));
+                setBoolVal(getAttribute(code,3), getBoolVal(getAttribute(code,1)) > getBoolVal(getAttribute(code,2)));
             return position + 1;
 
-            /* LR */
+            /* LOWER */
         case 14: 
             if (getAttributeType(getAttribute(code,2)) == Int)
                 setBoolVal(getAttribute(code,3), getIntVal(getAttribute(code,1)) < getIntVal(getAttribute(code,2)));
