@@ -21,8 +21,8 @@
 #define DIV_FLOAT        10
 #define EQ               11
 #define DIST             12
-#define GT               13
-#define LR               14
+#define GREATER          13
+#define LOWER            14
 #define GEQ              15
 #define LEQ              16
 #define OR               17

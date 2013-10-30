@@ -80,17 +80,6 @@ bool isAttribute(Code3D *code, int param)
     return 0;
 }
 
-bool isVariable(Code3D *code, int param)
-{
-    if (param == 1) 
-        return code->param1->type == CodeVARIABLE;
-    if (param == 2) 
-        return code->param2->type == CodeVARIABLE;
-    if (param == 3) 
-        return code->param3->type == CodeVARIABLE;
-    return 0;
-}
-
 bool isNull(Code3D *code, int param) 
 {
     if (param == 1) 
@@ -119,16 +108,6 @@ Attribute* getAttribute(Code3D *code, int param) {
         return code->param2->val.attri;
     if (param == 3)
         return code->param3->val.attri;
-	return NULL;
-}
-
-StVariable* getVariable(Code3D *code, int param){
-    if (param == 1)
-        return code->param1->val.variable;
-    if (param == 2)
-        return code->param2->val.variable;
-    if (param == 3)
-        return code->param3->val.variable;
 	return NULL;
 }
 
@@ -260,23 +239,6 @@ void setAttribute(Code3D *code, int param, Attribute *attri)
         code->param3->type = CodeATTRI;
         code->param3->val.attri = attri;
     }    
-}
-
-void setVariable(Code3D *code, int param, StVariable *variable){
-	if (param == 1) {
-        code->param1->type = CodeVARIABLE;
-        code->param1->val.variable = variable;
-    } 
-    else if (param == 2) 
-    {
-        code->param2->type = CodeVARIABLE;
-        code->param2->val.variable = variable;
-    } 
-    else if (param == 3) 
-    {
-        code->param3->type = CodeVARIABLE;
-        code->param3->val.variable = variable;
-    } 
 }
 
 void setNull(Code3D *code, int param) {

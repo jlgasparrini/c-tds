@@ -346,19 +346,21 @@ optional	  :		{
 
 iteration     :    WHILE {
                                 char *whileLabel = newLabelName("while"); 
-                                add_CodeLabel(lcode3d, newCode(LABEL), whileLabel); // Mark to char of While
+                                add_CodeLabel(lcode3d, newCode(LABEL), whileLabel); // label of While
                                 push(labelsWhile, whileLabel);
                     } 
                    expression { 
                                 char *endWhile = newLabelName("end_while");
                                 char *whileLabel = pop(labelsWhile);
-                                push(labelsWhile, endWhile); push(labelsWhile, whileLabel); push(labelsWhile, intToString(codeSize(lcode3d)));
+                                push(labelsWhile, endWhile);
+								push(labelsWhile, whileLabel); 
+								push(labelsWhile, intToString(codeSize(lcode3d)));
 								controlType(errorQ,$3,Bool,"while",1);
-                                add_CodeLabelCond(lcode3d, newCode(GOTO_LABEL_COND), $3, endWhile); // Go to char of Expression
+                                add_CodeLabelCond(lcode3d, newCode(GOTO_LABEL_COND), $3, endWhile); // Go to label of Expression
 					} block {							
                             add_code(lcode3d, get_code(lcode3d, atoi(pop(labelsWhile))+1));
-							add_CodeLabel(lcode3d, newCode(GOTO_LABEL), pop(labelsWhile)); // Go to char of For
-							add_CodeLabel(lcode3d, newCode(LABEL), pop(labelsWhile)); // Go to char of For
+							add_CodeLabel(lcode3d, newCode(GOTO_LABEL), pop(labelsWhile)); // Go to label of while
+							add_CodeLabel(lcode3d, newCode(LABEL), pop(labelsWhile)); // label_end of while
 					}
               |    FOR ID {
 						if (getAttributeType(getVariableAttribute(errorQ,symbolsTable,$2)) != Int)
@@ -370,11 +372,11 @@ iteration     :    WHILE {
                                     add_Assignation(lcode3d, newCode(ASSIGNATION), $5, getVariableAttribute(errorQ, symbolsTable, $2));
 									Attribute *res = returnDistinct(errorQ, lcode3d, getVariableAttribute(errorQ, symbolsTable, $2), $7);
                                     add_CodeLabel(lcode3d, newCode(LABEL), forLabel);
-									add_CodeLabelCond(lcode3d, newCode(GOTO_LABEL_COND), res, endLabel); // Go to char of Expression
+									add_CodeLabelCond(lcode3d, newCode(GOTO_LABEL_COND), res, endLabel); // Go to label of Expression
 					} block {
                             add_code(lcode3d, get_code(lcode3d, atoi(pop(labelsFor))+1));
-							add_CodeLabel(lcode3d, newCode(GOTO_LABEL), pop(labelsFor)); // Go to char of For
-							add_CodeLabel(lcode3d, newCode(LABEL), pop(labelsFor)); // Go to char of For
+							add_CodeLabel(lcode3d, newCode(GOTO_LABEL), pop(labelsFor)); // Go to label of For
+							add_CodeLabel(lcode3d, newCode(LABEL), pop(labelsFor)); // label_end of For
 					}
               ;                                                               
 
