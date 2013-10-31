@@ -10,6 +10,6 @@
 #include "../Code3D/gencode3d.h"
 
 /* Initializes the interpreter and runs it */
-void initAssembler(ListMLabel *labelL, LCode3D *codeL, Stack *stack);
+void initAssembler(ListMLabel *labelL, LCode3D *codeL, Stack *stack, char* fileName);
 
 #endif

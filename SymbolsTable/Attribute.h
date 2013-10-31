@@ -18,6 +18,7 @@ typedef struct              /* A variable has:											    */
 	char *id;				/* The "id" of the variable 								    */
 	PrimitiveType type;		/* A "type" (int, float, boolean) (the word, name of the type)  */
 	VarValue value;			/* A "value" (int, float, true, false) (variable's value') 	    */
+    int offset;
 } StVariable;
 
 typedef struct              /* An array has                                                 */
