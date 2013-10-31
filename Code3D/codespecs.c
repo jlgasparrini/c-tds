@@ -1,6 +1,7 @@
 
 #include "codespecs.h"
 
+/**Metodo que retorna el string correspondiente a su respectivo comando*/
 char* getCodeByID(int ID)
 {
     switch (ID) {
@@ -39,6 +40,7 @@ char* getCodeByID(int ID)
     return "NULL!";
 }
 
+/**Metodo que retorna el string correspondiente a su respectivo tipo*/
 char* getTypeByID(int type)
 {
     switch (type)

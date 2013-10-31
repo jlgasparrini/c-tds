@@ -13,6 +13,7 @@ char* newchar(char *label)
     return new;
 }
 
+/**Constructor de un Nodo de la Pila vacio*/
 NodeStack* newLinkNode_empty() 
 {
     NodeStack *new = (NodeStack*) malloc(sizeof(NodeStack));
@@ -21,6 +22,7 @@ NodeStack* newLinkNode_empty()
     return new;
 }
 
+/**Constructor de un Nodo de la Pila con el campo info*/
 NodeStack* newLinkNode_info(char *info)
 {
     NodeStack *new = newLinkNode_empty();
@@ -28,6 +30,7 @@ NodeStack* newLinkNode_info(char *info)
     return new;
 }
 
+/**Constructor de un Nodo de la Pila con los campos info y next*/
 NodeStack* newLinkNode_info_next(char *info, NodeStack *next) 
 {
     NodeStack *new = newLinkNode_info(info);
@@ -35,21 +38,25 @@ NodeStack* newLinkNode_info_next(char *info, NodeStack *next)
     return new;
 }
 
+/**Metodo que retorna el campo info de un nodo dado*/
 char* getInfo_linkNode(NodeStack *node) 
 {
     return node->info;
 }
 
+/**Metodo que retorna el campo next de un nodo dado*/
 NodeStack* getNext_linkNode(NodeStack *node) 
 {
     return node->next;
 }
 
+/**Metodo que setea el campo info de un nodo dado*/
 void setInfo_linkNode(NodeStack *node, char *info) 
 {
     node->info = newchar(info);
 }
 
+/**Metodo que setea el campo next de un nodo dado*/
 void setNext_linkNode(NodeStack *node, NodeStack *next) 
 {
     node->next = next;

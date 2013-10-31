@@ -40,10 +40,10 @@
 #define RETURN_EXPR      29
 #define GOTO_METHOD      30
 
-/* Returns the respective code of an ID */
+/**Returns the respective code of an ID */
 char* getCodeByID(int ID);
 
-/* Returns the respective type of attribute according to the type */
+/**Returns the respective type of attribute according to the type */
 char* getTypeByID(int type);
 
 #endif

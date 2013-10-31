@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include "listc3d.h"
 
+/**Constructor de una Lista*/
 ListC3D* newListC3D() {
     ListC3D *new = (ListC3D*) malloc(sizeof(ListC3D));
     (*new).init = NULL;
@@ -13,6 +14,7 @@ ListC3D* newListC3D() {
     return new;
 }
 
+/**Metodo que retorna un Codigo 3D dependiendo de una posicion*/
 Code3D* get_listC3D(ListC3D *list, int index) {
     NodeC3D *runner = (*list).init;
     if ((index >= 0) && (index < size_listC3D(list))) {
@@ -26,10 +28,12 @@ Code3D* get_listC3D(ListC3D *list, int index) {
 	return NULL; /* This case was added to ensure that this method always return something */
 }
 
+/**Metodo que retorna el tamaño de la lista*/
 int size_listC3D(ListC3D *list) {
     return (*list).size;
 }
 
+/**Metodo para que agrega un Codigo 3D en una posicion en la lista*/
 void add_listC3D(ListC3D *list, Code3D *elem, int index) {
     bool validIndex = (index >= 0) && (index <= size_listC3D(list));
     if (validIndex) {
@@ -49,6 +53,7 @@ void add_listC3D(ListC3D *list, Code3D *elem, int index) {
     }
 }
 
+/**Metodo que borre un Codigo 3D en una posicion especifica*/
 void delete_listC3D(ListC3D *list, int index) {
     if ((index >= 0) && (index < size_listC3D(list)))
 	{
@@ -71,7 +76,7 @@ void delete_listC3D(ListC3D *list, int index) {
     }
 }
 
-//Toma una posicion y comienza a buscar el label pasado por parametro dentro del codigo intermedio!
+/**Metodo que retorna la posicion de un label especifico, buscandolo en la lista*/
 int searchByLabel(ListC3D *list, char* label)
 {
     NodeC3D *runner = (*list).init;

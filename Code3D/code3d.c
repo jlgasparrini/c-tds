@@ -7,6 +7,7 @@
 #include <string.h>
 #include "code3d.h"
 
+/**Constructor de Codigo 3D*/
 Code3D* newCode(int comm) 
 {
     Code3D *new = (Code3D*) malloc(sizeof(Code3D));
@@ -20,11 +21,13 @@ Code3D* newCode(int comm)
     return new;
 }
 
+/**Metodo para obtener el comando del Codigo 3D*/
 int getCommand(Code3D *code) 
 {
     return code->command;    
 }
 
+/**Metodo para saber si un parametro de un Codigo 3D es Integer*/
 bool isInt(Code3D *code, int param) 
 {
     if (param == 1)
@@ -36,6 +39,7 @@ bool isInt(Code3D *code, int param)
 	return 0;
 }
 
+/**Metodo para saber si un parametro de un Codigo 3D es Float*/
 bool isFloat(Code3D *code, int param) 
 {
     if (param == 1) 
@@ -47,6 +51,7 @@ bool isFloat(Code3D *code, int param)
     return 0;
 }
 
+/**Metodo para saber si un parametro de un Codigo 3D es Booleano*/
 bool isBool(Code3D *code, int param) 
 {
     if (param == 1) 
@@ -58,6 +63,7 @@ bool isBool(Code3D *code, int param)
     return 0;
 }
 
+/**Metodo para saber si un parametro de un Codigo 3D es un Label*/
 bool isLabel(Code3D *code, int param) 
 {
     if (param == 1) 
@@ -69,6 +75,7 @@ bool isLabel(Code3D *code, int param)
     return 0;
 }
 
+/**Metodo para saber si un parametro de un Codigo 3D es un Attribute*/
 bool isAttribute(Code3D *code, int param) 
 {
     if (param == 1) 
@@ -80,6 +87,7 @@ bool isAttribute(Code3D *code, int param)
     return 0;
 }
 
+/**Metodo para saber si un parametro de un Codigo 3D es Null*/
 bool isNull(Code3D *code, int param) 
 {
     if (param == 1) 
@@ -91,6 +99,7 @@ bool isNull(Code3D *code, int param)
     return 1;
 }
 
+/**Metodo para obtener el parametro Label de un Codigo 3D*/
 char* getLabel(Code3D *code, int param) {
     if (param == 1)
         return code->param1->val.label;
@@ -101,6 +110,7 @@ char* getLabel(Code3D *code, int param) {
 	return "";
 }
 
+/**Metodo para obtener el parametro Attribute de un Codigo 3D*/
 Attribute* getAttribute(Code3D *code, int param) {
     if (param == 1)
         return code->param1->val.attri;
@@ -111,6 +121,7 @@ Attribute* getAttribute(Code3D *code, int param) {
 	return NULL;
 }
 
+/**Metodo para obtener el parametro Integer de un Codigo 3D*/
 int getInt(Code3D *code, int param) {
     if (param == 1)
         return code->param1->val.intAttri;
@@ -121,6 +132,7 @@ int getInt(Code3D *code, int param) {
 	return 0;
 }
 
+/**Metodo para obtener el parametro Float de un Codigo 3D*/
 float getFloat(Code3D *code, int param) {
     if (param == 1)
         return code->param1->val.floatAttri;
@@ -131,6 +143,7 @@ float getFloat(Code3D *code, int param) {
 	return 0.0;
 }
 
+/**Metodo para obtener el parametro Booleano de un Codigo 3D*/
 int getBool(Code3D *code, int param) {
     if (param == 1)
         if (code->param1->val.boolAttri)
@@ -144,7 +157,7 @@ int getBool(Code3D *code, int param) {
     return 0;
 }
 
-
+/**Metodo para setear el parametro con un Bool de un Codigo 3D*/
 void setBool(Code3D *code, int param, bool boolAttri) 
 {
     if (param == 1) 
@@ -164,6 +177,7 @@ void setBool(Code3D *code, int param, bool boolAttri)
     }
 }
 
+/**Metodo para setear el parametro con un Float de un Codigo 3D*/
 void setFloat(Code3D *code, int param, float floatAttri) 
 {
     if (param == 1) 
@@ -183,6 +197,7 @@ void setFloat(Code3D *code, int param, float floatAttri)
     }    
 }
 
+/**Metodo para setear el parametro con un Integer de un Codigo 3D*/
 void setInt(Code3D *code, int param, int intAttri) 
 {
     if (param == 1) 
@@ -202,7 +217,7 @@ void setInt(Code3D *code, int param, int intAttri)
     }
 }
 
-
+/**Metodo para setear el parametro con un Label de un Codigo 3D*/
 void setLabel(Code3D *code, int param, char *label) 
 {
     if (param == 1)
@@ -222,6 +237,7 @@ void setLabel(Code3D *code, int param, char *label)
 	}    
 }
 
+/**Metodo para setear el parametro con un Attribute de un Codigo 3D*/
 void setAttribute(Code3D *code, int param, Attribute *attri) 
 {
     if (param == 1) 
@@ -241,6 +257,7 @@ void setAttribute(Code3D *code, int param, Attribute *attri)
     }    
 }
 
+/**Metodo para setear el parametro en Null de un Codigo 3D*/
 void setNull(Code3D *code, int param) {
     if (param == 1) 
         code->param1->type = CodeNULL;
@@ -250,6 +267,7 @@ void setNull(Code3D *code, int param) {
         code->param3->type = CodeNULL;
 }
 
+/**Metodo para setear los parametros de un Label en el Codigo 3D*/
 void setCodeLabel(Code3D *code, char *label)
 {
     setLabel(code, 1, label);
@@ -257,6 +275,7 @@ void setCodeLabel(Code3D *code, char *label)
     setNull(code, 3);
 }
 
+/**Metodo para setear los parametros de un Label Condicional en el Codigo 3D*/
 void setCodeLabelCond(Code3D *code, Attribute *attri1, char *labelJumpTo)
 {
     setAttribute(code, 1, attri1);
@@ -264,6 +283,7 @@ void setCodeLabelCond(Code3D *code, Attribute *attri1, char *labelJumpTo)
     setNull(code, 3);
 }
 
+/**Metodo para setear los parametros de un Comando con 3 Attribute en el Codigo 3D*/
 void setCode3D(Code3D *code, Attribute *attri1, Attribute *attri2, Attribute *attriRes)
 {
     setAttribute(code, 1, attri1);
@@ -271,6 +291,7 @@ void setCode3D(Code3D *code, Attribute *attri1, Attribute *attri2, Attribute *at
     setAttribute(code, 3, attriRes);
 }
 
+/**Metodo para setear los parametros de un Comando con 2 Attribute en el Codigo 3D*/
 void setCode2D(Code3D *code, Attribute *attri1, Attribute *attriRes)
 {
     setAttribute(code, 1, attri1);
@@ -278,6 +299,7 @@ void setCode2D(Code3D *code, Attribute *attri1, Attribute *attriRes)
     setNull(code, 3);
 }
 
+/**Metodo para setear los parametros de un Comando con 1 Attribute en el Codigo 3D*/
 void setCode1D(Code3D *code, Attribute *attri1)
 {
     setAttribute(code, 1, attri1);
@@ -285,6 +307,7 @@ void setCode1D(Code3D *code, Attribute *attri1)
     setNull(code, 3);
 }
 
+/**Muestra un parametro de un Codigo 3D*/
 void showCode(Code3D *code, int param)
 {
     if (isNull(code, param))
@@ -304,10 +327,11 @@ void showCode(Code3D *code, int param)
     }
 }
 
+/**Muestra el Codigo 3D*/
 void toString3DC(Code3D *code) 
 {
     printf("   %s   |   ", (char*)getCodeByID(getCommand(code)));
-	/* Shows the Code in the right way */
+	/**Shows the Code in the right way */
 	if (isNull(code, 3))
 	{
 		if (isNull(code, 2))
