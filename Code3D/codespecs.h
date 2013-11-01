@@ -19,12 +19,12 @@
 #define ADD_FLOAT        8
 #define MULT_FLOAT       9
 #define DIV_FLOAT        10
-#define EQ               11
-#define DIST             12
-#define GREATER          13
-#define LOWER            14
-#define GEQ              15
-#define LEQ              16
+#define EQ_INT	         11
+#define DIST_INT         12
+#define GREATER_INT      13
+#define LOWER_INT        14
+#define GEQ_INT          15
+#define LEQ_INT          16
 #define OR               17
 #define AND              18
 #define NOT              19
@@ -39,6 +39,12 @@
 #define LOAD_ARRAY       28
 #define RETURN_EXPR      29
 #define GOTO_METHOD      30
+#define EQ_FLOAT         31
+#define DIST_FLOAT       32
+#define GREATER_FLOAT    33
+#define LOWER_FLOAT      34
+#define GEQ_FLOAT        35
+#define LEQ_FLOAT        36
 
 /**Returns the respective code of an ID */
 char* getCodeByID(int ID);

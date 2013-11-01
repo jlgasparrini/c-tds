@@ -16,12 +16,12 @@ char* getCodeByID(int ID)
         case  8: return "ADD_FLOAT";
         case  9: return "MULT_FLOAT";
         case 10: return "DIV_FLOAT";
-        case 11: return "EQ";
-        case 12: return "DIST";
-        case 13: return "GT";
-        case 14: return "LR";
-        case 15: return "GEQ";
-        case 16: return "LEQ";
+        case 11: return "EQ_INT";
+        case 12: return "DIST_INT";
+        case 13: return "GT_INT";
+        case 14: return "LR_INT";
+        case 15: return "GEQ_INT";
+        case 16: return "LEQ_INT";
         case 17: return "OR";
         case 18: return "AND";
         case 19: return "NOT";
@@ -36,6 +36,12 @@ char* getCodeByID(int ID)
 		case 28: return "LOAD_ARRAY";
 		case 29: return "RETURN_EXPR";
 		case 30: return "GOTO_METHOD";
+		case 31: return "EQ_FLOAT";         
+		case 32: return "DIST_FLOAT";       
+		case 33: return "GREATER_FLOAT";    
+		case 34: return "LOWER_FLOAT";      
+		case 35: return "GEQ_FLOAT";        
+		case 36: return "LEQ_FLOAT";        
     }
     return "NULL!";
 }

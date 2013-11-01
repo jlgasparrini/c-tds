@@ -144,7 +144,7 @@ float getFloat(Code3D *code, int param) {
 }
 
 /**Metodo para obtener el parametro Booleano de un Codigo 3D*/
-int getBool(Code3D *code, int param) {
+bool getBool(Code3D *code, int param) {
     if (param == 1)
         if (code->param1->val.boolAttri)
             return 1;

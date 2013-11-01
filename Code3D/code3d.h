@@ -61,7 +61,7 @@ char* getLabel(Code3D *code, int param);
 Attribute* getAttribute(Code3D *code, int param);
 int getInt(Code3D *code, int param);
 float getFloat(Code3D *code, int param);
-int getBool(Code3D *code, int param);
+bool getBool(Code3D *code, int param);
 
 /**Funciones de Escritura de un Codigo*/
 

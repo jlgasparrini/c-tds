@@ -26,6 +26,7 @@ int generateOperation(int position)
     {
             /* LOAD_CONST */
         case 0:
+			load_Const_Translate(archivo, code);
             break;
 
             /* ASSIGNATION */
@@ -38,10 +39,12 @@ int generateOperation(int position)
 
             /* ADD_INT */
         case 3:
+			add_Int_Translate(archivo, code);
             break;
 
             /* MULT_INT */
         case 4:
+			mult_Int_Translate(archivo, code);
             break;
 
             /* DIV_INT */
@@ -68,27 +71,29 @@ int generateOperation(int position)
         case 10:
             break;
 
-            /* EQ */
+            /* EQ_INT */
         case 11:
             break;
 
-            /* DIST */
+            /* DIST_INT */
         case 12:
             break;
 
-            /* GT */
+            /* GREATER_INT */
         case 13:
+			greater_IntTranslate(archivo, code);
             break;
 
-            /* LR */
+            /* LOWER_INT */
         case 14: 
             break;
 
-            /* GEQ */
+            /* GEQ_INT */
         case 15:
+			greater_Eq_IntTranslate(archivo, code);
             break;
 
-            /* LEQ */
+            /* LEQ_INT */
         case 16:
             break;
 
@@ -123,6 +128,7 @@ int generateOperation(int position)
 
             /* NEG_INT */
         case 24:
+			neg_Int_Translate(archivo, code);
             break;
 
             /* NEG_FLOAT */
@@ -136,9 +142,43 @@ int generateOperation(int position)
             /* PRINT */
         case 27:
             break;
-
+			
 			/* LOAD_ARRAY */
 		case 28: 
+            break;
+			
+		    /* RETURN_EXPR */
+        case 29:
+            break;
+
+			/* GOTO_METHOD */
+		case 30: 
+            break;
+			
+		    /* EQ_FLOAT */
+        case 31:
+            break;
+
+            /* DIST_FLOAT */
+        case 32:
+            break;
+
+            /* GREATER_FLOAT */
+        case 33:
+			greater_FloatTranslate(archivo, code);
+            break;
+
+            /* LOWER_FLOAT */
+        case 34: 
+            break;
+
+            /* GEQ_FLOAT */
+        case 35:
+			greater_Eq_FloatTranslate(archivo, code);
+            break;
+
+            /* LEQ_FLOAT */
+        case 36:
             break;
     }
 
