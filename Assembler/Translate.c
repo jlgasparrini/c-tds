@@ -32,21 +32,21 @@ void writeBlank(FILE* file)
 /**Metodo para la obtencion del valor de una constante*/  
 char* value(Code3D* code)
 {
-	char result = (char*) malloc(sizeof(char)); /* CHECK OUT THIS CASE BECAUSE sizeof(char) ONLY STORES MEMORY FOR ONLY ONE CHARACTER! */
-	if (isInt(code, 1))							/* IF THE NUMBER HAS MORE THAN ONE DIGIT (CHARACTER) IT WILL BROKE! */
-			result = getInt(code, 1);
+	char *result = (char*) malloc(sizeof(char));/* CHECK OUT THIS CASE BECAUSE sizeof(char) ONLY STORES MEMORY FOR ONLY ONE CHARACTER! */
+	if (isInt(code, 1))/* IF THE NUMBER HAS MORE THAN ONE DIGIT (CHARACTER) IT WILL BROKE! */
+			result = (char*) getInt(code, 1);
 	if (isFloat(code, 1))
-			result = getFloat(code, 1);
+            sprintf(result, "%f", getFloat(code, 1));
 	if (isBool(code, 1))
-			result = getBool(codeValue, 1);	
+			result = (char*) getBool(code, 1);	
 	return concat("$", result);		
 }
 
 /**Metodo para la obtencion del offset de una variable*/
 char* offset(Code3D* code, int param)
 {
-	char result = (char*) malloc(sizeof(char));
-	result = getOffset(code, param);
+	char *result = (char*) malloc(sizeof(char));
+	//result = getOffSet(code, param);   NO EXISTE getOffSet
 	return concat (result, "(%rbp)");
 }
 

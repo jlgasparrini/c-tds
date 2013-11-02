@@ -6,10 +6,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "../Code3D/codespecs.h"
-#include "../Stack/stack.h"
 #include "Assembler.h"
 #include "Translate.h"
+#include "../Code3D/codespecs.h"
 
 FILE *file;
 ListMLabel *labelList;
@@ -196,13 +195,13 @@ int generateOperation(int position)
 
 /* Initializes the interpreter and run */
 //Toma el codigo 3D, la lista de metodos y la pila de IF's!!
-void initAssembler(ListMLabel *labelL, LCode3D *codeL, Stack *stack, char* file)
+void initAssembler(ListMLabel *labelL, LCode3D *codeL, Stack *stack, char* nameOfFile)
 {
     //Initialize file.
-    char *fileName = concat(file, ".asm");
+    char *fileName = concat(nameOfFile, ".s");
     file = fopen(fileName,"w");
     writeCodeInFile(file, "\t.file", fileName, "");
-
+    writeCodeInFile(file, "\t.global", " main", "");
     labelList = labelL;
     codeList = codeL;
     returnStack = stack;
