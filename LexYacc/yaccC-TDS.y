@@ -79,13 +79,13 @@ void finalizar()
     if ((*errorQ).size > 0) 
         yyerror("incorrecto");
     else
-	{
+    {
         // show the list of code 3D
-		// show3DCode(lcode3d); // uncommenting this line will show the 3 directions code of the parsed code
+		show3DCode(lcode3d); // uncommenting this line will show the 3 directions code of the parsed code
 		printf("------Se termino de parsear.----------\n");
-		//printf("-----Corriendo interprete------\n");
+		printf("-----Generando codigo assembler------\n");
 		initAssembler(listmlabel, lcode3d, returnStack, fileName);
-		//printf("-----Se acabo de correr el interprete.-----\n");
+		printf("-----Codigo Generado-----\n");
 	}
 }
 

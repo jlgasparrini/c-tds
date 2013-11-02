@@ -148,7 +148,7 @@ int generateOperation(int position)
 
             /* PRINT */
         case 27:
-	    printOperation(file, code)
+            printOperation(file, code);
             break;
 			
 			/* LOAD_ARRAY */
@@ -200,10 +200,18 @@ void initAssembler(ListMLabel *labelL, LCode3D *codeL, Stack *stack, char* nameO
     //Initialize file.
     char *fileName = concat(nameOfFile, ".s");
     file = fopen(fileName,"w");
-    writeCodeInFile(file, "\t.file", fileName, "");
+    writeCodeInFile(file, "\t.file", concat(concat("\"", concat(nameOfFile, ".s")), "\""), "");
     writeCodeInFile(file, "\t.global", " main", "");
+    writeCodeInFile(file, ".LC0:", "", "");
+    writeCodeInFile(file, "\t.string", "\"Print. El valor entero es: %d\"", "");
     labelList = labelL;
     codeList = codeL;
     returnStack = stack;
     size = codeSize(codeL);
+    int i = 0;
+    while (i < size - 1)
+    {       
+        generateOperation(i);
+        i++;
+    }
 }
