@@ -64,11 +64,35 @@ void translateGotoLabel(FILE* archivo, Code3D* code)
 	writeCodeInFile(archivo, "jmp", getLabel(code,1), "");
 }
 
+/* Puts in the file the translation of the GOTO_LABEL_CONDITION action */
+void translateGotoLabelCondition(FILE* archivo, Code3D* code)
+{
+	writeCodeInFile(archivo, "mov", offset(code,1), "%rax");
+	writeCodeInFile(archivo, "cmp", "$0", "%rax");
+	writeCodeInFile(archivo, "je", getLabel(code,2), "");
+}
+
 /* Puts in the file the translation of the ASSIGNATION action */
 void translateAssignation(FILE* archivo, Code3D* code)
 {
 	writeCodeInFile(archivo, "mov", offset(code,1), "%rax");
 	writeCodeInFile(archivo, "mov", "%rax", offset(code,2));
+}
+
+/* Puts in the file the translation of the RETURN action */
+void translateReturn(FILE* archivo, Code3D* code)
+{
+	writeCodeInFile(archivo, "mov", "$0", "%rax");
+	writeCodeInFile(archivo, "leave", "", "");
+	writeCodeInFile(archivo, "ret", "", "");
+}
+
+/* Puts in the file the translation of the RETURN_EXPR action */
+void translateReturnExpression(FILE* archivo, Code3D* code)
+{
+	writeCodeInFile(archivo, "mov", offset(code,1), "%rax");
+	writeCodeInFile(archivo, "leave", "", "");
+	writeCodeInFile(archivo, "ret", "", "");
 }
 
 /********************************************************************************************/

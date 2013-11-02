@@ -126,10 +126,12 @@ int generateOperation(int position)
 
             /* GOTO_LABEL_COND */
         case 22:
+			translateGotoLabelCondition(file, code);
             break;
 
             /* RETURN */
         case 23: 
+			translateReturn(file, code);
             break;
 
             /* NEG_INT */
@@ -155,6 +157,7 @@ int generateOperation(int position)
 			
 		    /* RETURN_EXPR */
         case 29:
+			translateReturnExpression(file, code);
             break;
 
 			/* GOTO_METHOD */
