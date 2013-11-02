@@ -202,4 +202,6 @@ void greater_Eq_FloatTranslate(FILE* archivo, Code3D* code)
 	//ToDo
 }
 
-
+void printOperation(FILE *file, Code3D *code)
+{
+    isInt(code, 1)

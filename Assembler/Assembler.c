@@ -149,6 +149,7 @@ int generateOperation(int position)
 
             /* PRINT */
         case 27:
+	    printOperation(file, code)
             break;
 			
 			/* LOAD_ARRAY */

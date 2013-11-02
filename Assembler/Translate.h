@@ -42,5 +42,6 @@ void translateLesserOrEqualInt(FILE* archivo, Code3D* code);
 void greater_FloatTranslate(FILE* archivo, Code3D* code);
 void greater_Eq_FloatTranslate(FILE* archivo, Code3D* code);
 
-
+/******************************** PRINT OPERATION *******************************************/
+void printOperation(FILE *file, Code3D *code);
 #endif
