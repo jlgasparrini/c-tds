@@ -2,8 +2,7 @@
 
 //Retorna la contatenacion de dos cadenas.
 char* concat(char* str1, char* str2)
-{
-    char* result = malloc(strlen(str1)+strlen(str2)+1);
+{ char* result = malloc(strlen(str1)+strlen(str2)+1);
     strcpy(result, str1);
     strcat(result, str2);
     return result;
@@ -30,11 +29,11 @@ void writeBlank(FILE* file)
 }
 
 /*-----------------------------------------------------------------------*/
-/**Metodo para la obtencion del valor de una constante*/
+/**Metodo para la obtencion del valor de una constante*/  
 char* value(Code3D* code)
 {
-	char *result = (char*) malloc(sizeof(char));
-	if (isInt(code, 1))
+	char *result = (char*) malloc(sizeof(char));/* CHECK OUT THIS CASE BECAUSE sizeof(char) ONLY STORES MEMORY FOR ONLY ONE CHARACTER! */
+	if (isInt(code, 1))/* IF THE NUMBER HAS MORE THAN ONE DIGIT (CHARACTER) IT WILL BROKE! */
 			result = (char*) getInt(code, 1);
 	if (isFloat(code, 1))
             sprintf(result, "%f", getFloat(code, 1));
@@ -54,15 +53,54 @@ char* offset(Code3D* code, int param)
 
 /*-----------------------------------------------------------------------*/
 /**"LOAD_CONST %s %s\n" */
-
 void load_Const_Translate(FILE* archivo, Code3D* code)
 {
 	writeCodeInFile(archivo, "   movl", value(code), offset(code, 2));
 }
 
+/* Puts in the file the translation of the GOTO_LABEL action */
+void translateGotoLabel(FILE* archivo, Code3D* code)
+{
+	writeCodeInFile(archivo, "jmp", getLabel(code,1), "");
+}
+
+/* Puts in the file the translation of the GOTO_LABEL_CONDITION action */
+void translateGotoLabelCondition(FILE* archivo, Code3D* code)
+{
+	writeCodeInFile(archivo, "mov", offset(code,1), "%rax");
+	writeCodeInFile(archivo, "cmp", "$0", "%rax");
+	writeCodeInFile(archivo, "je", getLabel(code,2), "");
+}
+
+/* Puts in the file the translation of the ASSIGNATION action */
+void translateAssignation(FILE* archivo, Code3D* code)
+{
+	writeCodeInFile(archivo, "mov", offset(code,1), "%rax");
+	writeCodeInFile(archivo, "mov", "%rax", offset(code,2));
+}
+
+/* Puts in the file the translation of the RETURN action */
+void translateReturn(FILE* archivo, Code3D* code)
+{
+	writeCodeInFile(archivo, "mov", "$0", "%rax");
+	writeCodeInFile(archivo, "leave", "", "");
+	writeCodeInFile(archivo, "ret", "", "");
+}
+
+/* Puts in the file the translation of the RETURN_EXPR action */
+void translateReturnExpression(FILE* archivo, Code3D* code)
+{
+	writeCodeInFile(archivo, "mov", offset(code,1), "%rax");
+	writeCodeInFile(archivo, "leave", "", "");
+	writeCodeInFile(archivo, "ret", "", "");
+}
+
+/********************************************************************************************/
+/********************************* INT OPERATIONS TREATEMENT ********************************/
+/********************************************************************************************/
+
 /*-----------------------------------------------------------------------*/
 /**"NEG_INT %s %s\n" */
-
 void neg_Int_Translate(FILE* archivo, Code3D* code)
 {
 	writeCodeInFile(archivo, "   movl", offset(code, 1), "%eax");
@@ -72,7 +110,6 @@ void neg_Int_Translate(FILE* archivo, Code3D* code)
 
 /*-----------------------------------------------------------------------*/
 /**"ADD_INT %s %s %s\n" */
-
 void add_Int_Translate(FILE* archivo, Code3D* code)
 {
 	writeCodeInFile(archivo, "   movl", offset(code, 1), "%eax");
@@ -82,7 +119,6 @@ void add_Int_Translate(FILE* archivo, Code3D* code)
 
 /*-----------------------------------------------------------------------*/
 /**"MULT_INT %s %s %s\n" */
-
 void mult_Int_Translate(FILE* archivo, Code3D* code)
 {
 	writeCodeInFile(archivo, "   movl", offset(code, 1), "%eax");
@@ -92,7 +128,6 @@ void mult_Int_Translate(FILE* archivo, Code3D* code)
 
 /*-----------------------------------------------------------------------*/
 /**"GREATER_INT %s %s %s\n" */
-
 void greater_IntTranslate(FILE* archivo, Code3D* code)
 {
 	writeCodeInFile(archivo, "   movl", offset(code, 2), "%eax");
@@ -103,17 +138,8 @@ void greater_IntTranslate(FILE* archivo, Code3D* code)
 }
 
 /*-----------------------------------------------------------------------*/
-/**"GREATER_FLOAT %s %s %s\n" */
-
-void greater_FloatTranslate(FILE *archivo, Code3D *code)
-{
-	//ToDo
-}
-
-/*-----------------------------------------------------------------------*/
 /**"GREATER_ EQ_INT %s %s %s\n" */
-
-void greater_Eq_IntTranslate(FILE *archivo, Code3D *code)
+void greater_Eq_IntTranslate(FILE* archivo, Code3D* code)
 {
 	writeCodeInFile(archivo, "   movl", offset(code, 2), "%eax");
 	writeCodeInFile(archivo, "   cmpl", offset(code, 1) ,"%eax");
@@ -122,10 +148,58 @@ void greater_Eq_IntTranslate(FILE *archivo, Code3D *code)
 	writeCodeInFile(archivo, "   movl", "%eax", offset(code, 3));
 }
 
-/*-----------------------------------------------------------------------*/
-/**"GREATER_ EQ_FLOAT %s %s %s\n" */
+/* Puts in the file the translation of the MINUS_INT action */
+void translateMinusInt(FILE* archivo, Code3D* code)
+{
+	writeCodeInFile(archivo, "mov", offset(code,1), "%rax");
+	writeCodeInFile(archivo, "mov", offset(code,2), "%r10");
+	writeCodeInFile(archivo, "sub", "%rax", "%r10");
+	writeCodeInFile(archivo, "mov", "%r10", offset(code,3));
+}
 
-void greater_Eq_FloatTranslate(FILE *archivo, Code3D *code)
+/* Puts in the file the translation of the MOD_INT action */
+void translateModInt(FILE* archivo, Code3D* code)
+{
+	/* it divides"rdx:rax" by "divisor". Stores quotient in rax and remainder in rdx */
+	writeCodeInFile(archivo, "mov", "$0", "%rdx");
+	writeCodeInFile(archivo, "mov", "$0", "%rax");
+	writeCodeInFile(archivo, "mov", offset(code,1) ,"%rax");
+	writeCodeInFile(archivo, "idiv", offset(code,2), "");
+	writeCodeInFile(archivo, "mov", "%rdx", offset(code,3));
+}
+
+/* Puts in the file the translation of the LESSER_INT action */
+void translateLesserInt(FILE* archivo, Code3D* code)
+{
+	writeCodeInFile(archivo, "mov", offset(code,2), "%rax");
+	writeCodeInFile(archivo, "cmp", offset(code,1) ,"%rax");
+	writeCodeInFile(archivo, "cmovl", "%rax", offset(code,3));
+}
+
+/* Puts in the file the translation of the LESSER_EQ_INT action */
+void translateLesserOrEqualInt(FILE* archivo, Code3D* code)
+{
+	writeCodeInFile(archivo, "mov", offset(code,2), "%rax");
+	writeCodeInFile(archivo, "cmp", offset(code,1) ,"%rax");
+	writeCodeInFile(archivo, "cmovle", "%rax", offset(code,3));
+}
+
+/********************************************************************************************/
+/********************************* FLOAT OPERATIONS TREATEMENT ******************************/
+/********************************************************************************************/
+
+/*-----------------------------------------------------------------------*/
+/**"GREATER_FLOAT %s %s %s\n" */
+void greater_FloatTranslate(FILE* archivo, Code3D* code)
 {
 	//ToDo
 }
+
+/*-----------------------------------------------------------------------*/
+/**"GREATER_ EQ_FLOAT %s %s %s\n" */
+void greater_Eq_FloatTranslate(FILE* archivo, Code3D* code)
+{
+	//ToDo
+}
+
+

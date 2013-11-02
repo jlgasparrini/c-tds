@@ -17,12 +17,30 @@ char* offset(Code3D* code, int param);
 
 /**Metodos de traduccion*/
 void load_Const_Translate(FILE* archivo, Code3D* code);
+void translateGotoLabel(FILE* archivo, Code3D* code);
+void translateGotoLabelCondition(FILE* archivo, Code3D* code);
+void translateAssignation(FILE* archivo, Code3D* code);
+void translateReturn(FILE* archivo, Code3D* code);
+void translateReturnExpression(FILE* archivo, Code3D* code);
+
+/********************************************************************************************/
+/********************************* INT OPERATIONS TREATEMENT ********************************/
+/********************************************************************************************/
 void neg_Int_Translate(FILE* archivo, Code3D* code);
 void add_Int_Translate(FILE* archivo, Code3D* code);
 void mult_Int_Translate(FILE* archivo, Code3D* code);
 void greater_IntTranslate(FILE* archivo, Code3D* code);
-void greater_FloatTranslate(FILE* archivo, Code3D* code);
 void greater_Eq_IntTranslate(FILE* archivo, Code3D* code);
+void translateMinusInt(FILE* archivo, Code3D* code);
+void translateModInt(FILE* archivo, Code3D* code);
+void translateLesserInt(FILE* archivo, Code3D* code);
+void translateLesserOrEqualInt(FILE* archivo, Code3D* code);
+
+/********************************************************************************************/
+/********************************* FLOAT OPERATIONS TREATEMENT ******************************/
+/********************************************************************************************/
+void greater_FloatTranslate(FILE* archivo, Code3D* code);
 void greater_Eq_FloatTranslate(FILE* archivo, Code3D* code);
+
 
 #endif
