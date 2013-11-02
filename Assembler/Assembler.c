@@ -191,7 +191,7 @@ void initAssembler(ListMLabel *labelL, LCode3D *codeL, Stack *stack, char* file)
     char *fileName = concat(file, ".asm");
     archivo = fopen(fileName,"w");
     writeCodeInFile(archivo, "\t.file", fileName, "");
-
+    writeCodeInFile(archivo, "\t.global", " main", "");
     labelList = labelL;
     codeList = codeL;
     returnStack = stack;
