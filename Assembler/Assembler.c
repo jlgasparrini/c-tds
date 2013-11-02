@@ -50,6 +50,7 @@ int generateOperation(int position)
 
             /* DIV_INT */
         case 5:
+			translateDivInt(file, code);
             break;
 
             /* MOD_INT */
@@ -75,10 +76,12 @@ int generateOperation(int position)
 
             /* EQ_INT */
         case 11:
+			translateEqualInt(file, code);
             break;
 
             /* DIST_INT */
         case 12:
+			translateDistinctInt(file, code);
             break;
 
             /* GREATER_INT */

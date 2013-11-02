@@ -181,6 +181,17 @@ void translateModInt(FILE* archivo, Code3D* code)
 	writeCodeInFile(archivo, "\tmov", "%rdx", offset(code,3));
 }
 
+/* Puts in the file the translation of the DIV_INT action */
+void translateDivInt(FILE* archivo, Code3D* code)
+{
+	/* it divides"rdx:rax" by "divisor". Stores quotient in rax and remainder in rdx */
+	writeCodeInFile(archivo, "\tmov", "$0", "%rdx");
+	writeCodeInFile(archivo, "\tmov", "$0", "%rax");
+	writeCodeInFile(archivo, "\tmov", offset(code,1) ,"%rax");
+	writeCodeInFile(archivo, "\tidiv", offset(code,2), "");
+	writeCodeInFile(archivo, "\tmov", "%rax", offset(code,3));
+}
+
 /* Puts in the file the translation of the LESSER_INT action */
 void translateLesserInt(FILE* archivo, Code3D* code)
 {
@@ -195,6 +206,22 @@ void translateLesserOrEqualInt(FILE* archivo, Code3D* code)
 	writeCodeInFile(archivo, "\tmov", offset(code,2), "%rax");
 	writeCodeInFile(archivo, "\tcmp", offset(code,1) ,"%rax");
 	writeCodeInFile(archivo, "\tcmovle", "%rax", offset(code,3));
+}
+
+/* Puts in the file the translation of the EQ_INT action */
+void translateEqualInt(FILE* archivo, Code3D* code)
+{
+	writeCodeInFile(archivo, "\tmov", offset(code,2), "%rax");
+	writeCodeInFile(archivo, "\tcmp", offset(code,1) ,"%rax");
+	writeCodeInFile(archivo, "\tcmove", "%rax", offset(code,3));
+}
+
+/* Puts in the file the translation of the DIST_INT action */
+void translateDistinctInt(FILE* archivo, Code3D* code)
+{
+	writeCodeInFile(archivo, "\tmov", offset(code,2), "%rax");
+	writeCodeInFile(archivo, "\tcmp", offset(code,1) ,"%rax");
+	writeCodeInFile(archivo, "\tcmovne", "%rax", offset(code,3));
 }
 
 /********************************************************************************************/

@@ -33,8 +33,11 @@ void greater_IntTranslate(FILE* archivo, Code3D* code);
 void greater_Eq_IntTranslate(FILE* archivo, Code3D* code);
 void translateMinusInt(FILE* archivo, Code3D* code);
 void translateModInt(FILE* archivo, Code3D* code);
+void translateDivInt(FILE* archivo, Code3D* code);
 void translateLesserInt(FILE* archivo, Code3D* code);
 void translateLesserOrEqualInt(FILE* archivo, Code3D* code);
+void translateEqualInt(FILE* archivo, Code3D* code);
+void translateDistinctInt(FILE* archivo, Code3D* code);
 
 /********************************************************************************************/
 /********************************* FLOAT OPERATIONS TREATEMENT ******************************/
