@@ -22,6 +22,9 @@ void translateGotoLabelCondition(FILE* archivo, Code3D* code);
 void translateAssignation(FILE* archivo, Code3D* code);
 void translateReturn(FILE* archivo, Code3D* code);
 void translateReturnExpression(FILE* archivo, Code3D* code);
+void translateOr(FILE* archivo, Code3D* code);
+void translateAnd(FILE* archivo, Code3D* code);
+void translateNot(FILE* archivo, Code3D* code);
 
 /********************************************************************************************/
 /********************************* INT OPERATIONS TREATEMENT ********************************/

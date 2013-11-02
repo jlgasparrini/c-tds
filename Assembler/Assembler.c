@@ -106,14 +106,17 @@ int generateOperation(int position)
 
             /* OR */
         case 17:
+			translateOr(file, code);
             break;
 
             /* AND */
         case 18:
+			translateAnd(file, code);
             break;
 
             /* NOT */
         case 19: 
+			translateNot(file, code);
             break;
 
             /* LABEL */

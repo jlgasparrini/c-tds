@@ -108,6 +108,30 @@ void translateReturnExpression(FILE* archivo, Code3D* code)
 	writeCodeInFile(archivo, "\tret", "", "");
 }
 
+/* Puts in the file the translation of the MINUS_INT action */
+void translateOr(FILE* archivo, Code3D* code)
+{
+	writeCodeInFile(archivo, "\tmov", offset(code,1), "%rax");
+	writeCodeInFile(archivo, "\tor", offset(code,2), "%rax");
+	writeCodeInFile(archivo, "\tmov", "%rax", offset(code,3));
+}
+
+/* Puts in the file the translation of the MINUS_INT action */
+void translateAnd(FILE* archivo, Code3D* code)
+{
+	writeCodeInFile(archivo, "\tmov", offset(code,1), "%rax");
+	writeCodeInFile(archivo, "\tand", offset(code,2), "%rax");
+	writeCodeInFile(archivo, "\tmov", "%rax", offset(code,3));
+}
+
+/* Puts in the file the translation of the MINUS_INT action */
+void translateNot(FILE* archivo, Code3D* code)
+{
+	writeCodeInFile(archivo, "\tmov", offset(code,1), "%rax");
+	writeCodeInFile(archivo, "\tnot", "%rax", "");
+	writeCodeInFile(archivo, "\tmov", "%rax", offset(code,2));
+}
+
 /********************************************************************************************/
 /********************************* INT OPERATIONS TREATEMENT ********************************/
 /********************************************************************************************/
