@@ -33,21 +33,21 @@ void writeBlank(FILE* file)
 /**Metodo para la obtencion del valor de una constante*/
 char* value(Code3D* code)
 {
-	char result = (char*) malloc(sizeof(char));
+	char *result = (char*) malloc(sizeof(char));
 	if (isInt(code, 1))
-			result = getInt(code, 1);
+			result = (char*) getInt(code, 1);
 	if (isFloat(code, 1))
-			result = getFloat(code, 1);
+            sprintf(result, "%f", getFloat(code, 1));
 	if (isBool(code, 1))
-			result = getBool(codeValue, 1);	
+			result = (char*) getBool(code, 1);	
 	return concat("$", result);		
 }
 
 /**Metodo para la obtencion del offset de una variable*/
 char* offset(Code3D* code, int param)
 {
-	char result = (char*) malloc(sizeof(char));
-	result = getOffset(code, param);
+	char *result = (char*) malloc(sizeof(char));
+	//result = getOffSet(code, param);   NO EXISTE getOffSet
 	return concat (result, "(%rbp)");
 }
 
@@ -105,7 +105,7 @@ void greater_IntTranslate(FILE* archivo, Code3D* code)
 /*-----------------------------------------------------------------------*/
 /**"GREATER_FLOAT %s %s %s\n" */
 
-void greater_FloatTranslate(FILE* archivo, Code3D* code)
+void greater_FloatTranslate(FILE *archivo, Code3D *code)
 {
 	//ToDo
 }
@@ -113,7 +113,7 @@ void greater_FloatTranslate(FILE* archivo, Code3D* code)
 /*-----------------------------------------------------------------------*/
 /**"GREATER_ EQ_INT %s %s %s\n" */
 
-void greater_Eq_IntTranslate(FILE* archivo, Code3D* code)
+void greater_Eq_IntTranslate(FILE *archivo, Code3D *code)
 {
 	writeCodeInFile(archivo, "   movl", offset(code, 2), "%eax");
 	writeCodeInFile(archivo, "   cmpl", offset(code, 1) ,"%eax");
@@ -125,7 +125,7 @@ void greater_Eq_IntTranslate(FILE* archivo, Code3D* code)
 /*-----------------------------------------------------------------------*/
 /**"GREATER_ EQ_FLOAT %s %s %s\n" */
 
-void greater_Eq_FloatTranslate(FILE* archivo, Code3D* code)
+void greater_Eq_FloatTranslate(FILE *archivo, Code3D *code)
 {
 	//ToDo
 }

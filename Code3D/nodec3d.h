@@ -25,7 +25,7 @@ NodeC3D* newNodeC3D_info_next(Code3D *info, NodeC3D *next);
 
 /*lectura de informacion*/
 
-Code3D* getInfo_nodeC3D(NodeC3D *node)
+Code3D* getInfo_nodeC3D(NodeC3D *node);
 NodeC3D* getNext_NodeC3D(NodeC3D *node);
 
 /*escritura de informacion*/

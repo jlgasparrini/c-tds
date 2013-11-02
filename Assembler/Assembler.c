@@ -6,10 +6,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "../Code3D/codespecs.h"
-#include "../Stack/stack.h"
 #include "Assembler.h"
 #include "Translate.h"
+#include "../Code3D/codespecs.h"
 
 FILE *archivo;
 ListMLabel *labelList;
