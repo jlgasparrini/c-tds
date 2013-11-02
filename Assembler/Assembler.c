@@ -11,7 +11,7 @@
 #include "Assembler.h"
 #include "Translate.h"
 
-FILE *archivo;
+FILE *file;
 ListMLabel *labelList;
 LCode3D *codeList;
 Stack *returnStack;
@@ -26,25 +26,27 @@ int generateOperation(int position)
     {
             /* LOAD_CONST */
         case 0:
-			load_Const_Translate(archivo, code);
+			load_Const_Translate(file, code);
             break;
 
             /* ASSIGNATION */
         case 1: 
+			translateAssignation(file, code);
             break;
 
             /* MINUS_INT */
         case 2:
+			translateMinusInt(file, code);
             break;
 
             /* ADD_INT */
         case 3:
-			add_Int_Translate(archivo, code);
+			add_Int_Translate(file, code);
             break;
 
             /* MULT_INT */
         case 4:
-			mult_Int_Translate(archivo, code);
+			mult_Int_Translate(file, code);
             break;
 
             /* DIV_INT */
@@ -53,6 +55,7 @@ int generateOperation(int position)
 
             /* MOD_INT */
         case 6:
+			translateModInt(file, code);
             break;
 
             /* MINUS_FLOAT */
@@ -81,20 +84,22 @@ int generateOperation(int position)
 
             /* GREATER_INT */
         case 13:
-			greater_IntTranslate(archivo, code);
+			greater_IntTranslate(file, code);
             break;
 
-            /* LOWER_INT */
+            /* LESSER_INT */
         case 14: 
+			translateLesserInt(file, code);
             break;
 
             /* GEQ_INT */
         case 15:
-			greater_Eq_IntTranslate(archivo, code);
+			greater_Eq_IntTranslate(file, code);
             break;
 
-            /* LEQ_INT */
+			/* LESSER_EQ_INT */
         case 16:
+			translateLesserOrEqualInt(file, code);
             break;
 
             /* OR */
@@ -116,6 +121,7 @@ int generateOperation(int position)
 
             /* GOTO_LABEL */
         case 21: 
+			translateGotoLabel(file, code);
             break;
 
             /* GOTO_LABEL_COND */
@@ -128,7 +134,7 @@ int generateOperation(int position)
 
             /* NEG_INT */
         case 24:
-			neg_Int_Translate(archivo, code);
+			neg_Int_Translate(file, code);
             break;
 
             /* NEG_FLOAT */
@@ -165,16 +171,16 @@ int generateOperation(int position)
 
             /* GREATER_FLOAT */
         case 33:
-			greater_FloatTranslate(archivo, code);
+			greater_FloatTranslate(file, code);
             break;
 
-            /* LOWER_FLOAT */
+            /* LESSER_FLOAT */
         case 34: 
             break;
 
             /* GEQ_FLOAT */
         case 35:
-			greater_Eq_FloatTranslate(archivo, code);
+			greater_Eq_FloatTranslate(file, code);
             break;
 
             /* LEQ_FLOAT */
@@ -190,8 +196,8 @@ void initAssembler(ListMLabel *labelL, LCode3D *codeL, Stack *stack, char* file)
 {
     //Initialize file.
     char *fileName = concat(file, ".asm");
-    archivo = fopen(fileName,"w");
-    writeCodeInFile(archivo, "\t.file", fileName, "");
+    file = fopen(fileName,"w");
+    writeCodeInFile(file, "\t.file", fileName, "");
 
     labelList = labelL;
     codeList = codeL;
