@@ -115,7 +115,7 @@ int generateOperation(int position)
 
             /* LABEL */
         case 20: 
-
+            writeLabel(file, code);
             break;
 
             /* GOTO_LABEL */
@@ -201,9 +201,13 @@ void initAssembler(ListMLabel *labelL, LCode3D *codeL, Stack *stack, char* nameO
     char *fileName = concat(nameOfFile, ".s");
     file = fopen(fileName,"w");
     writeCodeInFile(file, "\t.file", concat(concat("\"", concat(nameOfFile, ".s")), "\""), "");
-    writeCodeInFile(file, "\t.global", " main", "");
-    writeCodeInFile(file, ".LC0:", "", "");
-    writeCodeInFile(file, "\t.string", "\"Print. El valor entero es: %d\"", "");
+    writeCodeInFile(file, "\t.global", "main", "");
+    writeCodeInFile(file, ".INT:", "", "");
+    writeCodeInFile(file, "\t.string", "\"Print. El valor entero es: %d \\n\"", "");
+    writeCodeInFile(file, ".FLOAT:", "", "");
+    writeCodeInFile(file, "\t.string", "\"Print. El valor flotante es: %d \\n\"", "");
+    writeCodeInFile(file, ".BOOL:", "", "");
+    writeCodeInFile(file, "\t.string", "\"Print. El valor booleano es: %d \\n\"", "");
     labelList = labelL;
     codeList = codeL;
     returnStack = stack;

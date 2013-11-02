@@ -60,7 +60,7 @@ char* offset(Code3D* code, int param)
 {
 	char *result = (char*) malloc(sizeof(char));
 	//result = getOffSet(code, param);   NO EXISTE getOffSet
-	return concat (result, "(%rbp)");
+	return concat (result, ", (%rbp)");
 }
 
 
@@ -217,18 +217,17 @@ void greater_Eq_FloatTranslate(FILE* archivo, Code3D* code)
 
 void printOperation(FILE *file, Code3D *code)
 {
-    printf("LLegue hasta aca!!!\n");
-    char* auxLabel = createNewLabel(".LC");
     char* aux;
     sprintf(aux, "%d", getIntVal(getAttribute(code, 1)));
-    writeCodeInFile(file, auxLabel, "", "");
-    writeCodeInFile(file, "\t.string", "\"Print. El valor entero es: %d\"", "");
     writeCodeInFile(file, "\tpushq", "%rbp", "");
-    printf("LLegue hasta aca!!!\n");
     writeCodeInFile(file, "\tmovl", concat(concat("$", aux), ", "), "%esi");
-    printf("LLegue hasta aca!!!\n");
-    writeCodeInFile(file, "\tmovl", concat(concat("$", auxLabel), ", "), "%edi");
-    printf("LLegue hasta aca!!!\n");
+    writeCodeInFile(file, "\tmovl", concat(concat("$", ".INT"), ", "), "%edi");
     writeCodeInFile(file, "\tcall", "printf", "");
     writeCodeInFile(file, "\tpopq", "%rbp", "");
+    writeCodeInFile(file, "\tret", "", "");
+}
+            
+void writeLabel(FILE *file, Code3D *code)
+{
+    writeCodeInFile(file, concat(getLabel(code, 1), ":"), "", "");
 }
