@@ -164,7 +164,7 @@ Boolean getArrayBoolVal(Attribute *attr, unsigned int pos)
 }
 
 /* Returns the offset of the attribute */
-int getOffsetVal(Attribute *attr    )
+int getOffsetVal(Attribute *attr)
 {
 	return (*(*attr).decl.variable).offset;
 }
