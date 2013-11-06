@@ -11,7 +11,6 @@
 ListMLabel *labelList;
 LCode3D *codeList;
 StringStack *methodsCallStack;
-int algo = 0;
 
 /*
  * param position: position in the 3D list of the 3 directions code that must be interpreted.

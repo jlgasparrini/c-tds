@@ -30,8 +30,7 @@ int generateOperation(int position)
 
             /* ASSIGNATION */
         case 1: 
-			translateAssignation(file, code);
-            break;
+			translateAssignation(file, code); break;
 
             /* MINUS_INT */
         case 2:
@@ -221,14 +220,14 @@ void initAssembler(ListMLabel *labelL, LCode3D *codeL, Stack *stack, char* nameO
     //Initialize file.
     char *fileName = concat(nameOfFile, ".s");
     file = fopen(fileName,"w");
-    writeCodeInFile(file, "\t.file", concat(concat("\"", concat(nameOfFile, ".s")), "\""), "");
-    writeCodeInFile(file, "\t.global", "main", "");
-    writeCodeInFile(file, ".INT:", "", "");
-    writeCodeInFile(file, "\t.string", "\"Print. El valor entero es: %d \\n\"", "");
-    writeCodeInFile(file, ".FLOAT:", "", "");
-    writeCodeInFile(file, "\t.string", "\"Print. El valor flotante es: %d \\n\"", "");
-    writeCodeInFile(file, ".BOOL:", "", "");
-    writeCodeInFile(file, "\t.string", "\"Print. El valor booleano es: %d \\n\"", "");
+    writeCodeInFile(file, translate(".file", concat(concat("\"", concat(nameOfFile, ".s")), "\""), ""));
+    writeCodeInFile(file, translate(".global", "main", ""));
+    writeCodeInFile(file, ".INT:");
+    writeCodeInFile(file, translate(".string", "\"Print. El valor entero es: %d \\n\"", ""));
+    writeCodeInFile(file, ".FLOAT:");
+    writeCodeInFile(file, translate(".string", "\"Print. El valor flotante es: %d \\n\"", ""));
+    writeCodeInFile(file, ".BOOL:");
+    writeCodeInFile(file, translate(".string", "\"Print. El valor booleano es: %d \\n\"", ""));
     labelList = labelL;
     codeList = codeL;
     returnStack = stack;

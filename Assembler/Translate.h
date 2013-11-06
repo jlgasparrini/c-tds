@@ -8,7 +8,8 @@
 
 /* Writing methods */
 char* concat(char* str1, char* str2);
-void writeCodeInFile(FILE* file, char* operation, char* code1, char* code2);
+void writeCodeInFile(FILE* file, char* code);
+char* translate(char* operation, char* code1, char* code2);
 void writeBlank(FILE* file);
 
 /* Getters methods */
