@@ -272,6 +272,56 @@ void greater_Eq_FloatTranslate(FILE* archivo, Code3D* code)
 	writeCodeInFile(archivo, "\tmovb", "%al", offset(code, 3));
 }
 
+/* Puts in the file the translation of the LESSER_EQ_FLOAT action */
+void translateLesserOrEqualFloat(File *file, Code3D* code)
+{
+	writeCodeInFile(archivo, "\tmovss", offset(code, 2), "%xmm0");
+	writeCodeInFile(archivo, "\tucomiss", offset(code, 1) ,"%xmm0");
+	writeCodeInFile(archivo, "\tsetbe", "%al", "");
+	writeCodeInFile(archivo, "\tmovb", "%al", offset(code, 3));
+}
+
+/* Puts in the file the translation of the LESSER_FLOAT action */
+void translateLesserFloat(File *file, Code3D* code)
+{
+	writeCodeInFile(archivo, "\tmovss", offset(code, 2), "%xmm0");
+	writeCodeInFile(archivo, "\tucomiss", offset(code, 1) ,"%xmm0");
+	writeCodeInFile(archivo, "\tsetb", "%al", "");
+	writeCodeInFile(archivo, "\tmovb", "%al", offset(code, 3));
+}
+
+/* Puts in the file the translation of the DIV_FLOAT action */
+void translateDivFloat(FILE* archivo, Code3D* code)
+{
+	writeCodeInFile(archivo, "\tmovss", offset(code,2) ,"%xmm0");
+	writeCodeInFile(archivo, "\tdivss", offset(code,1), "%xmm0");
+	writeCodeInFile(archivo, "\tmovss", "%xmm0", offset(code,3));
+}
+
+/* Puts in the file the translation of the MULT_FLOAT action */
+void translateMultFloat(FILE* archivo, Code3D* code)
+{
+	writeCodeInFile(archivo, "\tmovss", offset(code,2) ,"%xmm0");
+	writeCodeInFile(archivo, "\tmulss", offset(code,1), "%xmm0");
+	writeCodeInFile(archivo, "\tmovss", "%xmm0", offset(code,3));
+}
+
+/* Puts in the file the translation of the ADD_FLOAT action */
+void translateAddFloat(FILE* archivo, Code3D* code)
+{
+	writeCodeInFile(archivo, "\tmovss", offset(code,2) ,"%xmm0");
+	writeCodeInFile(archivo, "\taddss", offset(code,1), "%xmm0");
+	writeCodeInFile(archivo, "\tmovss", "%xmm0", offset(code,3));
+}
+
+/* Puts in the file the translation of the MINUS_FLOAT action */
+void translateMinusFloat(FILE* archivo, Code3D* code)
+{
+	writeCodeInFile(archivo, "\tmovss", offset(code,2) ,"%xmm0");
+	writeCodeInFile(archivo, "\tsubss", offset(code,1), "%xmm0");
+	writeCodeInFile(archivo, "\tmovss", "%xmm0", offset(code,3));
+}
+
 void printOperation(FILE *file, Code3D *code)
 {
     char* aux;

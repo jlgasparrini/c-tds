@@ -60,18 +60,22 @@ int generateOperation(int position)
 
             /* MINUS_FLOAT */
         case 7:
+            translateMinusFloat(file, code);
             break;
 
             /* ADD_FLOAT */
         case 8:
+            translateAddFloat(file, code);
             break;
 
             /* MULT_FLOAT */
         case 9:
+            translateMultFloat(file, code);
             break;
 
             /* DIV_FLOAT */
         case 10:
+            translateDivFloat(file, code);
             break;
 
             /* EQ_INT */
@@ -185,6 +189,7 @@ int generateOperation(int position)
 
             /* LESSER_FLOAT */
         case 34: 
+            translateLesserFloat(file, code);
             break;
 
             /* GEQ_FLOAT */
@@ -192,8 +197,9 @@ int generateOperation(int position)
 			greater_Eq_FloatTranslate(file, code);
             break;
 
-            /* LEQ_FLOAT */
+            /* LESSER_EQ_FLOAT */
         case 36:
+			translateLesserOrEqualFloat(file, code);
             break;
     }
 
