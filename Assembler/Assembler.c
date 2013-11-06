@@ -154,7 +154,9 @@ int generateOperation(int position)
             break;
             
             /* PARAM_ASSIGN */
+            /* --------------------------------------- MUST BE IMPLEMENTED --------------------------------------- */
         case 26: 
+            translateParamAssign(file, code);
             break;
 
             /* PRINT */
@@ -163,7 +165,9 @@ int generateOperation(int position)
             break;
 			
 			/* LOAD_ARRAY */
+            /* --------------------------------------- MUST BE IMPLEMENTED --------------------------------------- */
 		case 28: 
+            translateLoadArray(file, code);
             break;
 			
 		    /* RETURN_EXPR */
@@ -172,7 +176,9 @@ int generateOperation(int position)
             break;
 
 			/* GOTO_METHOD */
+            /* --------------------------------------- MUST BE IMPLEMENTED --------------------------------------- */
 		case 30: 
+			translateGotoMethod(file, code);
             break;
 			
 		    /* EQ_FLOAT */

@@ -132,6 +132,51 @@ void translateNot(FILE* file, Code3D* code)
 	writeCodeInFile(file, "\tmov", "%rax", offset(code,2));
 }
 
+/* Puts in the file the translation of the PRINT action */
+void printOperation(FILE *file, Code3D *code)
+{
+    char* aux;
+    sprintf(aux, "%d", getIntVal(getAttribute(code, 1)));
+    writeCodeInFile(file, "\tpushq", "%rbp", "");
+    writeCodeInFile(file, "\tmovl", concat(concat("$", aux), ", "), "%esi");
+    writeCodeInFile(file, "\tmovl", concat(concat("$", ".INT"), ", "), "%edi");
+    writeCodeInFile(file, "\tcall", "printf", "");
+    writeCodeInFile(file, "\tpopq", "%rbp", "");
+    writeCodeInFile(file, "\tret", "", "");
+}
+            
+/* Puts in the file the translation of the LABEL action */
+void writeLabel(FILE *file, Code3D *code)
+{
+    writeCodeInFile(file, concat(getLabel(code, 1), ":"), "", "");
+}
+
+/* Puts in the file the translation of the PARAM_ASSIGN action */
+void translateParamAssign(FILE *file, Code3D *code)
+{
+    /* --------------------------------------- MUST BE IMPLEMENTED --------------------------------------- */
+    /* --------------------------------------- MUST BE IMPLEMENTED --------------------------------------- */
+    /* --------------------------------------- MUST BE IMPLEMENTED --------------------------------------- */
+}
+
+/* Puts in the file the translation of the LOAD_ARRAY action */
+void translateLoadArray(FILE *file, Code3D *code)
+{
+    /* --------------------------------------- MUST BE IMPLEMENTED --------------------------------------- */
+    /* --------------------------------------- MUST BE IMPLEMENTED --------------------------------------- */
+    /* --------------------------------------- MUST BE IMPLEMENTED --------------------------------------- */
+}
+
+/* Puts in the file the translation of the GOTO_METHOD action */
+void translateGotoMethod(FILE *file, Code3D *code)
+{
+    /* --------------------------------------- MUST BE IMPLEMENTED --------------------------------------- */
+    /* --------------------------------------- MUST BE IMPLEMENTED --------------------------------------- */
+    /* --------------------------------------- MUST BE IMPLEMENTED --------------------------------------- */
+}
+
+
+
 /********************************************************************************************/
 /********************************* INT OPERATIONS TREATEMENT ********************************/
 /********************************************************************************************/
@@ -364,19 +409,3 @@ void translateMinusFloat(FILE* file, Code3D* code)
 	writeCodeInFile(file, "\tmovss", "%xmm0", offset(code,3));
 }
 
-void printOperation(FILE *file, Code3D *code)
-{
-    char* aux;
-    sprintf(aux, "%d", getIntVal(getAttribute(code, 1)));
-    writeCodeInFile(file, "\tpushq", "%rbp", "");
-    writeCodeInFile(file, "\tmovl", concat(concat("$", aux), ", "), "%esi");
-    writeCodeInFile(file, "\tmovl", concat(concat("$", ".INT"), ", "), "%edi");
-    writeCodeInFile(file, "\tcall", "printf", "");
-    writeCodeInFile(file, "\tpopq", "%rbp", "");
-    writeCodeInFile(file, "\tret", "", "");
-}
-            
-void writeLabel(FILE *file, Code3D *code)
-{
-    writeCodeInFile(file, concat(getLabel(code, 1), ":"), "", "");
-}
