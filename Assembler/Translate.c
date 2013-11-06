@@ -21,7 +21,7 @@ char* concat(char *s1, char *s2)
     return result;
 }
 
-//Este podria tomar por separado las operaciones a meter en el archivo.
+//Este podria tomar por separado las operaciones a meter en el file.
 void writeCodeInFile(FILE* file, char* operation, char* code1, char* code2)
 {
     char* backSlashN = strdup("\n");
@@ -66,70 +66,70 @@ char* offset(Code3D* code, int param)
 
 /*-----------------------------------------------------------------------*/
 /**"LOAD_CONST %s %s\n" */
-void load_Const_Translate(FILE* archivo, Code3D* code)
+void load_Const_Translate(FILE* file, Code3D* code)
 {
-	writeCodeInFile(archivo, "\tmovl", value(code), offset(code, 2));
+	writeCodeInFile(file, "\tmovl", value(code), offset(code, 2));
 }
 
 /* Puts in the file the translation of the GOTO_LABEL action */
-void translateGotoLabel(FILE* archivo, Code3D* code)
+void translateGotoLabel(FILE* file, Code3D* code)
 {
-	writeCodeInFile(archivo, "\tjmp", getLabel(code,1), "");
+	writeCodeInFile(file, "\tjmp", getLabel(code,1), "");
 }
 
 /* Puts in the file the translation of the GOTO_LABEL_CONDITION action */
-void translateGotoLabelCondition(FILE* archivo, Code3D* code)
+void translateGotoLabelCondition(FILE* file, Code3D* code)
 {
-	writeCodeInFile(archivo, "\tmov", offset(code,1), "%rax");
-	writeCodeInFile(archivo, "\tcmp", "$0", "%rax");
-	writeCodeInFile(archivo, "\tje", getLabel(code,2), "");
+	writeCodeInFile(file, "\tmov", offset(code,1), "%rax");
+	writeCodeInFile(file, "\tcmp", "$0", "%rax");
+	writeCodeInFile(file, "\tje", getLabel(code,2), "");
 }
 
 /* Puts in the file the translation of the ASSIGNATION action */
-void translateAssignation(FILE* archivo, Code3D* code)
+void translateAssignation(FILE* file, Code3D* code)
 {
-	writeCodeInFile(archivo, "\tmov", offset(code,1), "%rax");
-	writeCodeInFile(archivo, "\tmov", "%rax", offset(code,2));
+	writeCodeInFile(file, "\tmov", offset(code,1), "%rax");
+	writeCodeInFile(file, "\tmov", "%rax", offset(code,2));
 }
 
 /* Puts in the file the translation of the RETURN action */
-void translateReturn(FILE* archivo, Code3D* code)
+void translateReturn(FILE* file, Code3D* code)
 {
-	writeCodeInFile(archivo, "\tmov", "$0", "%rax");
-	writeCodeInFile(archivo, "\tleave", "", "");
-	writeCodeInFile(archivo, "\tret", "", "");
+	writeCodeInFile(file, "\tmov", "$0", "%rax");
+	writeCodeInFile(file, "\tleave", "", "");
+	writeCodeInFile(file, "\tret", "", "");
 }
 
 /* Puts in the file the translation of the RETURN_EXPR action */
-void translateReturnExpression(FILE* archivo, Code3D* code)
+void translateReturnExpression(FILE* file, Code3D* code)
 {
-	writeCodeInFile(archivo, "\tmov", offset(code,1), "%rax");
-	writeCodeInFile(archivo, "\tleave", "", "");
-	writeCodeInFile(archivo, "\tret", "", "");
+	writeCodeInFile(file, "\tmov", offset(code,1), "%rax");
+	writeCodeInFile(file, "\tleave", "", "");
+	writeCodeInFile(file, "\tret", "", "");
 }
 
 /* Puts in the file the translation of the MINUS_INT action */
-void translateOr(FILE* archivo, Code3D* code)
+void translateOr(FILE* file, Code3D* code)
 {
-	writeCodeInFile(archivo, "\tmov", offset(code,1), "%rax");
-	writeCodeInFile(archivo, "\tor", offset(code,2), "%rax");
-	writeCodeInFile(archivo, "\tmov", "%rax", offset(code,3));
+	writeCodeInFile(file, "\tmov", offset(code,1), "%rax");
+	writeCodeInFile(file, "\tor", offset(code,2), "%rax");
+	writeCodeInFile(file, "\tmov", "%rax", offset(code,3));
 }
 
 /* Puts in the file the translation of the MINUS_INT action */
-void translateAnd(FILE* archivo, Code3D* code)
+void translateAnd(FILE* file, Code3D* code)
 {
-	writeCodeInFile(archivo, "\tmov", offset(code,1), "%rax");
-	writeCodeInFile(archivo, "\tand", offset(code,2), "%rax");
-	writeCodeInFile(archivo, "\tmov", "%rax", offset(code,3));
+	writeCodeInFile(file, "\tmov", offset(code,1), "%rax");
+	writeCodeInFile(file, "\tand", offset(code,2), "%rax");
+	writeCodeInFile(file, "\tmov", "%rax", offset(code,3));
 }
 
 /* Puts in the file the translation of the MINUS_INT action */
-void translateNot(FILE* archivo, Code3D* code)
+void translateNot(FILE* file, Code3D* code)
 {
-	writeCodeInFile(archivo, "\tmov", offset(code,1), "%rax");
-	writeCodeInFile(archivo, "\tnot", "%rax", "");
-	writeCodeInFile(archivo, "\tmov", "%rax", offset(code,2));
+	writeCodeInFile(file, "\tmov", offset(code,1), "%rax");
+	writeCodeInFile(file, "\tnot", "%rax", "");
+	writeCodeInFile(file, "\tmov", "%rax", offset(code,2));
 }
 
 /********************************************************************************************/
@@ -138,114 +138,114 @@ void translateNot(FILE* archivo, Code3D* code)
 
 /*-----------------------------------------------------------------------*/
 /**"NEG_INT %s %s\n" */
-void neg_Int_Translate(FILE* archivo, Code3D* code)
+void neg_Int_Translate(FILE* file, Code3D* code)
 {
-	writeCodeInFile(archivo, "\tmovl", offset(code, 1), "%eax");
-	writeCodeInFile(archivo, "\tnegl", "%eax", "");
-	writeCodeInFile(archivo, "\tmovl", "%eax", offset(code, 2));
+	writeCodeInFile(file, "\tmovl", offset(code, 1), "%eax");
+	writeCodeInFile(file, "\tnegl", "%eax", "");
+	writeCodeInFile(file, "\tmovl", "%eax", offset(code, 2));
 }
 
 /*-----------------------------------------------------------------------*/
 /**"ADD_INT %s %s %s\n" */
-void add_Int_Translate(FILE* archivo, Code3D* code)
+void add_Int_Translate(FILE* file, Code3D* code)
 {
-	writeCodeInFile(archivo, "\tmovl", offset(code, 1), "%eax");
-	writeCodeInFile(archivo, "\taddl", offset(code, 2) ,"%eax");
-	writeCodeInFile(archivo, "\tmovl", "%eax", offset(code, 3));
+	writeCodeInFile(file, "\tmovl", offset(code, 1), "%eax");
+	writeCodeInFile(file, "\taddl", offset(code, 2) ,"%eax");
+	writeCodeInFile(file, "\tmovl", "%eax", offset(code, 3));
 }
 
 /*-----------------------------------------------------------------------*/
 /**"MULT_INT %s %s %s\n" */
-void mult_Int_Translate(FILE* archivo, Code3D* code)
+void mult_Int_Translate(FILE* file, Code3D* code)
 {
-	writeCodeInFile(archivo, "\tmovl", offset(code, 1), "%eax");
-	writeCodeInFile(archivo, "\timull", offset(code, 2) ,"%eax");
-	writeCodeInFile(archivo, "\tmovl", "%eax", offset(code, 3));
+	writeCodeInFile(file, "\tmovl", offset(code, 1), "%eax");
+	writeCodeInFile(file, "\timull", offset(code, 2) ,"%eax");
+	writeCodeInFile(file, "\tmovl", "%eax", offset(code, 3));
 }
 
 /*-----------------------------------------------------------------------*/
 /**"GREATER_INT %s %s %s\n" */
-void greater_IntTranslate(FILE* archivo, Code3D* code)
+void greater_IntTranslate(FILE* file, Code3D* code)
 {
-	writeCodeInFile(archivo, "\tmovl", offset(code, 2), "%eax");
-	writeCodeInFile(archivo, "\tcmpl", offset(code, 1) ,"%eax");
-	writeCodeInFile(archivo, "\tsetg", "%al", "");
-	writeCodeInFile(archivo, "\tmovzbl", "%al", "%eax");
-	writeCodeInFile(archivo, "\tmovl", "%eax", offset(code, 3));
+	writeCodeInFile(file, "\tmovl", offset(code, 2), "%eax");
+	writeCodeInFile(file, "\tcmpl", offset(code, 1) ,"%eax");
+	writeCodeInFile(file, "\tsetg", "%al", "");
+	writeCodeInFile(file, "\tmovzbl", "%al", "%eax");
+	writeCodeInFile(file, "\tmovl", "%eax", offset(code, 3));
 }
 
 /*-----------------------------------------------------------------------*/
 /**"GREATER_ EQ_INT %s %s %s\n" */
-void greater_Eq_IntTranslate(FILE* archivo, Code3D* code)
+void greater_Eq_IntTranslate(FILE* file, Code3D* code)
 {
-	writeCodeInFile(archivo, "\tmovl", offset(code, 2), "%eax");
-	writeCodeInFile(archivo, "\tcmpl", offset(code, 1) ,"%eax");
-	writeCodeInFile(archivo, "\tsetge", "%al", "");
-	writeCodeInFile(archivo, "\tmovzbl", "%al", "%eax");
-	writeCodeInFile(archivo, "\tmovl", "%eax", offset(code, 3));
+	writeCodeInFile(file, "\tmovl", offset(code, 2), "%eax");
+	writeCodeInFile(file, "\tcmpl", offset(code, 1) ,"%eax");
+	writeCodeInFile(file, "\tsetge", "%al", "");
+	writeCodeInFile(file, "\tmovzbl", "%al", "%eax");
+	writeCodeInFile(file, "\tmovl", "%eax", offset(code, 3));
 }
 
 /* Puts in the file the translation of the MINUS_INT action */
-void translateMinusInt(FILE* archivo, Code3D* code)
+void translateMinusInt(FILE* file, Code3D* code)
 {
-	writeCodeInFile(archivo, "\tmov", offset(code,1), "%rax");
-	writeCodeInFile(archivo, "\tmov", offset(code,2), "%r10");
-	writeCodeInFile(archivo, "\tsub", "%rax", "%r10");
-	writeCodeInFile(archivo, "\tmov", "%r10", offset(code,3));
+	writeCodeInFile(file, "\tmov", offset(code,1), "%rax");
+	writeCodeInFile(file, "\tmov", offset(code,2), "%r10");
+	writeCodeInFile(file, "\tsub", "%rax", "%r10");
+	writeCodeInFile(file, "\tmov", "%r10", offset(code,3));
 }
 
 /* Puts in the file the translation of the MOD_INT action */
-void translateModInt(FILE* archivo, Code3D* code)
+void translateModInt(FILE* file, Code3D* code)
 {
 	/* it divides"rdx:rax" by "divisor". Stores quotient in rax and remainder in rdx */
-	writeCodeInFile(archivo, "\tmov", "$0", "%rdx");
-	writeCodeInFile(archivo, "\tmov", "$0", "%rax");
-	writeCodeInFile(archivo, "\tmov", offset(code,1) ,"%rax");
-	writeCodeInFile(archivo, "\tidiv", offset(code,2), "");
-	writeCodeInFile(archivo, "\tmov", "%rdx", offset(code,3));
+	writeCodeInFile(file, "\tmov", "$0", "%rdx");
+	writeCodeInFile(file, "\tmov", "$0", "%rax");
+	writeCodeInFile(file, "\tmov", offset(code,1) ,"%rax");
+	writeCodeInFile(file, "\tidiv", offset(code,2), "");
+	writeCodeInFile(file, "\tmov", "%rdx", offset(code,3));
 }
 
 /* Puts in the file the translation of the DIV_INT action */
-void translateDivInt(FILE* archivo, Code3D* code)
+void translateDivInt(FILE* file, Code3D* code)
 {
 	/* it divides"rdx:rax" by "divisor". Stores quotient in rax and remainder in rdx */
-	writeCodeInFile(archivo, "\tmov", "$0", "%rdx");
-	writeCodeInFile(archivo, "\tmov", "$0", "%rax");
-	writeCodeInFile(archivo, "\tmov", offset(code,1) ,"%rax");
-	writeCodeInFile(archivo, "\tidiv", offset(code,2), "");
-	writeCodeInFile(archivo, "\tmov", "%rax", offset(code,3));
+	writeCodeInFile(file, "\tmov", "$0", "%rdx");
+	writeCodeInFile(file, "\tmov", "$0", "%rax");
+	writeCodeInFile(file, "\tmov", offset(code,1) ,"%rax");
+	writeCodeInFile(file, "\tidiv", offset(code,2), "");
+	writeCodeInFile(file, "\tmov", "%rax", offset(code,3));
 }
 
 /* Puts in the file the translation of the LESSER_INT action */
-void translateLesserInt(FILE* archivo, Code3D* code)
+void translateLesserInt(FILE* file, Code3D* code)
 {
-	writeCodeInFile(archivo, "\tmov", offset(code,2), "%rax");
-	writeCodeInFile(archivo, "\tcmp", offset(code,1) ,"%rax");
-	writeCodeInFile(archivo, "\tcmovl", "%rax", offset(code,3));
+	writeCodeInFile(file, "\tmov", offset(code,2), "%rax");
+	writeCodeInFile(file, "\tcmp", offset(code,1) ,"%rax");
+	writeCodeInFile(file, "\tcmovl", "%rax", offset(code,3));
 }
 
 /* Puts in the file the translation of the LESSER_EQ_INT action */
-void translateLesserOrEqualInt(FILE* archivo, Code3D* code)
+void translateLesserOrEqualInt(FILE* file, Code3D* code)
 {
-	writeCodeInFile(archivo, "\tmov", offset(code,2), "%rax");
-	writeCodeInFile(archivo, "\tcmp", offset(code,1) ,"%rax");
-	writeCodeInFile(archivo, "\tcmovle", "%rax", offset(code,3));
+	writeCodeInFile(file, "\tmov", offset(code,2), "%rax");
+	writeCodeInFile(file, "\tcmp", offset(code,1) ,"%rax");
+	writeCodeInFile(file, "\tcmovle", "%rax", offset(code,3));
 }
 
 /* Puts in the file the translation of the EQ_INT action */
-void translateEqualInt(FILE* archivo, Code3D* code)
+void translateEqualInt(FILE* file, Code3D* code)
 {
-	writeCodeInFile(archivo, "\tmov", offset(code,2), "%rax");
-	writeCodeInFile(archivo, "\tcmp", offset(code,1) ,"%rax");
-	writeCodeInFile(archivo, "\tcmove", "%rax", offset(code,3));
+	writeCodeInFile(file, "\tmov", offset(code,2), "%rax");
+	writeCodeInFile(file, "\tcmp", offset(code,1) ,"%rax");
+	writeCodeInFile(file, "\tcmove", "%rax", offset(code,3));
 }
 
 /* Puts in the file the translation of the DIST_INT action */
-void translateDistinctInt(FILE* archivo, Code3D* code)
+void translateDistinctInt(FILE* file, Code3D* code)
 {
-	writeCodeInFile(archivo, "\tmov", offset(code,2), "%rax");
-	writeCodeInFile(archivo, "\tcmp", offset(code,1) ,"%rax");
-	writeCodeInFile(archivo, "\tcmovne", "%rax", offset(code,3));
+	writeCodeInFile(file, "\tmov", offset(code,2), "%rax");
+	writeCodeInFile(file, "\tcmp", offset(code,1) ,"%rax");
+	writeCodeInFile(file, "\tcmovne", "%rax", offset(code,3));
 }
 
 /********************************************************************************************/
@@ -254,100 +254,100 @@ void translateDistinctInt(FILE* archivo, Code3D* code)
 
 /*-----------------------------------------------------------------------*/
 /**"EQ_FLOAT %s %s %s\n" */
-void eq_FloatTranslate(FILE* archivo, Code3D* code)
+void eq_FloatTranslate(FILE* file, Code3D* code)
 {
-	writeCodeInFile(archivo, "\tmovss", offset(code, 1), "%xmm0");
-	writeCodeInFile(archivo, "\tucomiss", offset(code, 2) ,"%xmm0");
-	writeCodeInFile(archivo, "\tsetnp", "%dl", "");
-	writeCodeInFile(archivo, "\tmovl", "%0", "eax");
-	writeCodeInFile(archivo, "\tmovss", offset(code, 1), "%xmm0");
-	writeCodeInFile(archivo, "\tucomiss", offset(code, 2) ,"%xmm0");
-	writeCodeInFile(archivo, "\tcmove", "%edx", "eax");
-	writeCodeInFile(archivo, "\tmovb", "%al", offset(code, 3));
+	writeCodeInFile(file, "\tmovss", offset(code, 1), "%xmm0");
+	writeCodeInFile(file, "\tucomiss", offset(code, 2) ,"%xmm0");
+	writeCodeInFile(file, "\tsetnp", "%dl", "");
+	writeCodeInFile(file, "\tmovl", "%0", "eax");
+	writeCodeInFile(file, "\tmovss", offset(code, 1), "%xmm0");
+	writeCodeInFile(file, "\tucomiss", offset(code, 2) ,"%xmm0");
+	writeCodeInFile(file, "\tcmove", "%edx", "eax");
+	writeCodeInFile(file, "\tmovb", "%al", offset(code, 3));
 }
 
 
 /**"DIST_FLOAT %s %s %s\n" */
-void dist_FloatTranslate(FILE* archivo, Code3D* code)
+void dist_FloatTranslate(FILE* file, Code3D* code)
 {
-	writeCodeInFile(archivo, "\tmovss", offset(code, 1), "%xmm0");
-	writeCodeInFile(archivo, "\tucomiss", offset(code, 2) ,"%xmm0");
-	writeCodeInFile(archivo, "\tsetp", "%dl", "");
-	writeCodeInFile(archivo, "\tmovl", "%1", "eax");
-	writeCodeInFile(archivo, "\tmovss", offset(code, 1), "%xmm0");
-	writeCodeInFile(archivo, "\tucomiss", offset(code, 2) ,"%xmm0");
-	writeCodeInFile(archivo, "\tcmove", "%edx", "eax");
-	writeCodeInFile(archivo, "\tmovb", "%al", offset(code, 3));
+	writeCodeInFile(file, "\tmovss", offset(code, 1), "%xmm0");
+	writeCodeInFile(file, "\tucomiss", offset(code, 2) ,"%xmm0");
+	writeCodeInFile(file, "\tsetp", "%dl", "");
+	writeCodeInFile(file, "\tmovl", "%1", "eax");
+	writeCodeInFile(file, "\tmovss", offset(code, 1), "%xmm0");
+	writeCodeInFile(file, "\tucomiss", offset(code, 2) ,"%xmm0");
+	writeCodeInFile(file, "\tcmove", "%edx", "eax");
+	writeCodeInFile(file, "\tmovb", "%al", offset(code, 3));
 }
 
 /*-----------------------------------------------------------------------*/
 /**"GREATER_FLOAT %s %s %s\n" */
-void greater_FloatTranslate(FILE* archivo, Code3D* code)
+void greater_FloatTranslate(FILE* file, Code3D* code)
 {
-	writeCodeInFile(archivo, "\tmovss", offset(code, 2), "%xmm0");
-	writeCodeInFile(archivo, "\tucomiss", offset(code, 1) ,"%xmm0");
-	writeCodeInFile(archivo, "\tseta", "%al", "");
-	writeCodeInFile(archivo, "\tmovb", "%al", offset(code, 3));
+	writeCodeInFile(file, "\tmovss", offset(code, 2), "%xmm0");
+	writeCodeInFile(file, "\tucomiss", offset(code, 1) ,"%xmm0");
+	writeCodeInFile(file, "\tseta", "%al", "");
+	writeCodeInFile(file, "\tmovb", "%al", offset(code, 3));
 }
 
 /*-----------------------------------------------------------------------*/
 /**"GREATER_ EQ_FLOAT %s %s %s\n" */
-void greater_Eq_FloatTranslate(FILE* archivo, Code3D* code)
+void greater_Eq_FloatTranslate(FILE* file, Code3D* code)
 {
-	writeCodeInFile(archivo, "\tmovss", offset(code, 2), "%xmm0");
-	writeCodeInFile(archivo, "\tucomiss", offset(code, 1) ,"%xmm0");
-	writeCodeInFile(archivo, "\tsetae", "%al", "");
-	writeCodeInFile(archivo, "\tmovb", "%al", offset(code, 3));
+	writeCodeInFile(file, "\tmovss", offset(code, 2), "%xmm0");
+	writeCodeInFile(file, "\tucomiss", offset(code, 1) ,"%xmm0");
+	writeCodeInFile(file, "\tsetae", "%al", "");
+	writeCodeInFile(file, "\tmovb", "%al", offset(code, 3));
 }
 
 /* Puts in the file the translation of the LESSER_EQ_FLOAT action */
-void translateLesserOrEqualFloat(File *file, Code3D* code)
+void translateLesserOrEqualFloat(FILE *file, Code3D* code)
 {
-	writeCodeInFile(archivo, "\tmovss", offset(code, 2), "%xmm0");
-	writeCodeInFile(archivo, "\tucomiss", offset(code, 1) ,"%xmm0");
-	writeCodeInFile(archivo, "\tsetbe", "%al", "");
-	writeCodeInFile(archivo, "\tmovb", "%al", offset(code, 3));
+	writeCodeInFile(file, "\tmovss", offset(code, 2), "%xmm0");
+	writeCodeInFile(file, "\tucomiss", offset(code, 1) ,"%xmm0");
+	writeCodeInFile(file, "\tsetbe", "%al", "");
+	writeCodeInFile(file, "\tmovb", "%al", offset(code, 3));
 }
 
 /* Puts in the file the translation of the LESSER_FLOAT action */
-void translateLesserFloat(File *file, Code3D* code)
+void translateLesserFloat(FILE *file, Code3D* code)
 {
-	writeCodeInFile(archivo, "\tmovss", offset(code, 2), "%xmm0");
-	writeCodeInFile(archivo, "\tucomiss", offset(code, 1) ,"%xmm0");
-	writeCodeInFile(archivo, "\tsetb", "%al", "");
-	writeCodeInFile(archivo, "\tmovb", "%al", offset(code, 3));
+	writeCodeInFile(file, "\tmovss", offset(code, 2), "%xmm0");
+	writeCodeInFile(file, "\tucomiss", offset(code, 1) ,"%xmm0");
+	writeCodeInFile(file, "\tsetb", "%al", "");
+	writeCodeInFile(file, "\tmovb", "%al", offset(code, 3));
 }
 
 /* Puts in the file the translation of the DIV_FLOAT action */
-void translateDivFloat(FILE* archivo, Code3D* code)
+void translateDivFloat(FILE* file, Code3D* code)
 {
-	writeCodeInFile(archivo, "\tmovss", offset(code,2) ,"%xmm0");
-	writeCodeInFile(archivo, "\tdivss", offset(code,1), "%xmm0");
-	writeCodeInFile(archivo, "\tmovss", "%xmm0", offset(code,3));
+	writeCodeInFile(file, "\tmovss", offset(code,2) ,"%xmm0");
+	writeCodeInFile(file, "\tdivss", offset(code,1), "%xmm0");
+	writeCodeInFile(file, "\tmovss", "%xmm0", offset(code,3));
 }
 
 /* Puts in the file the translation of the MULT_FLOAT action */
-void translateMultFloat(FILE* archivo, Code3D* code)
+void translateMultFloat(FILE* file, Code3D* code)
 {
-	writeCodeInFile(archivo, "\tmovss", offset(code,2) ,"%xmm0");
-	writeCodeInFile(archivo, "\tmulss", offset(code,1), "%xmm0");
-	writeCodeInFile(archivo, "\tmovss", "%xmm0", offset(code,3));
+	writeCodeInFile(file, "\tmovss", offset(code,2) ,"%xmm0");
+	writeCodeInFile(file, "\tmulss", offset(code,1), "%xmm0");
+	writeCodeInFile(file, "\tmovss", "%xmm0", offset(code,3));
 }
 
 /* Puts in the file the translation of the ADD_FLOAT action */
-void translateAddFloat(FILE* archivo, Code3D* code)
+void translateAddFloat(FILE* file, Code3D* code)
 {
-	writeCodeInFile(archivo, "\tmovss", offset(code,2) ,"%xmm0");
-	writeCodeInFile(archivo, "\taddss", offset(code,1), "%xmm0");
-	writeCodeInFile(archivo, "\tmovss", "%xmm0", offset(code,3));
+	writeCodeInFile(file, "\tmovss", offset(code,2) ,"%xmm0");
+	writeCodeInFile(file, "\taddss", offset(code,1), "%xmm0");
+	writeCodeInFile(file, "\tmovss", "%xmm0", offset(code,3));
 }
 
 /* Puts in the file the translation of the MINUS_FLOAT action */
-void translateMinusFloat(FILE* archivo, Code3D* code)
+void translateMinusFloat(FILE* file, Code3D* code)
 {
-	writeCodeInFile(archivo, "\tmovss", offset(code,2) ,"%xmm0");
-	writeCodeInFile(archivo, "\tsubss", offset(code,1), "%xmm0");
-	writeCodeInFile(archivo, "\tmovss", "%xmm0", offset(code,3));
+	writeCodeInFile(file, "\tmovss", offset(code,2) ,"%xmm0");
+	writeCodeInFile(file, "\tsubss", offset(code,1), "%xmm0");
+	writeCodeInFile(file, "\tmovss", "%xmm0", offset(code,3));
 }
 
 void printOperation(FILE *file, Code3D *code)
