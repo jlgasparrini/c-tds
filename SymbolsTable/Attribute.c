@@ -24,11 +24,14 @@ StVariable createStVariable(PrimitiveType type)
 /* creates a variable attribute containing the information included in the parameters */
 Attribute* createVariable(char *id, PrimitiveType type)
 {
+	static int globalOffset = -16;
 	Attribute *attr = (Attribute*) malloc (sizeof(Attribute)); 
 	(*attr).type = Variable;
 	(*attr).decl.variable = (StVariable*) malloc (sizeof(StVariable));
 	*(*attr).decl.variable = createStVariable(type);
 	(*(*attr).decl.variable).id = strdup(id);
+	(*(*attr).decl.variable).offset = globalOffset;
+	globalOffset += -4;
 	return attr;
 }
 
@@ -159,6 +162,12 @@ Boolean getArrayBoolVal(Attribute *attr, unsigned int pos)
 	return (*attr).decl.array.arrayValues[pos].value.boolVal;
 }
 
+/* Returns the offset of the attribute */
+int getOffsetVal(Attribute *attr);
+{
+	return (*(*attr).decl.variable).offset;
+}
+
 /* Sets the intVal of the attribute */
 void setIntVal(Attribute *attr, int value)
 {
@@ -202,4 +211,22 @@ void setArrayFloatVal(Attribute *attr, unsigned int pos, float value)
 void setArrayBoolVal(Attribute *attr, unsigned int pos, Boolean value)
 {
 	(*attr).decl.array.arrayValues[pos].value.boolVal = value;
+}
+
+/* Returns the global offset of the class */
+int getGlobalOffset()
+{
+	return globalOffset;
+}
+
+/* Set the global offset of the class */
+void setGlobalOffset(int newOffset)
+{
+	globalOffset = newOffset;
+}
+
+/* Set the global offset of the class in a -16 */
+void resetGlobalOffset()
+{
+	globalOffset = -16;
 }

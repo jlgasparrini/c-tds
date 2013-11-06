@@ -18,7 +18,7 @@ typedef struct              /* A variable has:											    */
 	char *id;				/* The "id" of the variable 								    */
 	PrimitiveType type;		/* A "type" (int, float, boolean) (the word, name of the type)  */
 	VarValue value;			/* A "value" (int, float, true, false) (variable's value') 	    */
-    int offset;
+    int offset;				/* A "offset" of the variable									*/
 } StVariable;
 
 typedef struct              /* An array has                                                 */
@@ -34,7 +34,7 @@ typedef struct              /* A method has: 				       							*/
 	char *id;				/* The "id" of the method										*/
 	ReturnType type; 		/* A "return type" (int, float, boolean, void) 				    */
 	unsigned int paramSize; /* An int value indicating the number of parameters			    */
-	StVariable **parameters; /* An array with the parameters, in case of having them			*/
+	StVariable **parameters; /* An array with the parameters, in case of having them		*/
 	VarValue returnValue;   /* The return value of the current method						*/
 } StMethod;
 
@@ -95,6 +95,9 @@ float getArrayFloatVal(Attribute *attr, unsigned int pos);
 /* Returns the boolVal of the array attribute in the "pos" position */
 Boolean getArrayBoolVal(Attribute *attr, unsigned int pos);
 
+/* Returns the offset of the attribute */
+int getOffsetVal(Attribute *attr);
+
 /* Sets the intVal of the attribute */
 void setIntVal(Attribute *attr, int value);
 
@@ -112,5 +115,14 @@ void setArrayFloatVal(Attribute *attr, unsigned int pos, float value);
 
 /* Sets the boolVal of the array attribute in the "pos" position */
 void setArrayBoolVal(Attribute *attr, unsigned int pos, Boolean value);
+
+/* Returns the global offset of the class */
+int getGlobalOffset();
+
+/* Set the global offset of the class */
+void setGlobalOffset(int newOffset);
+
+/* Set the global offset of the class in a -16 */
+void resetGlobalOffset();
 
 #endif

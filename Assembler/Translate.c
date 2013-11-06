@@ -59,7 +59,7 @@ char* value(Code3D* code)
 char* offset(Code3D* code, int param)
 {
 	char *result = (char*) malloc(sizeof(char));
-	//result = getOffSet(code, param);   NO EXISTE getOffSet
+	//result = getOffset(code, param);   NO EXISTE getOffset
 	return concat (result, ", (%rbp)");
 }
 
@@ -256,14 +256,20 @@ void translateDistinctInt(FILE* archivo, Code3D* code)
 /**"GREATER_FLOAT %s %s %s\n" */
 void greater_FloatTranslate(FILE* archivo, Code3D* code)
 {
-	//ToDo
+	writeCodeInFile(archivo, "\tmovss", offset(code, 2), "%xmm0");
+	writeCodeInFile(archivo, "\tucomiss", offset(code, 1) ,"%xmm0");
+	writeCodeInFile(archivo, "\tseta", "%al", "");
+	writeCodeInFile(archivo, "\tmovb", "%al", offset(code, 3));
 }
 
 /*-----------------------------------------------------------------------*/
 /**"GREATER_ EQ_FLOAT %s %s %s\n" */
 void greater_Eq_FloatTranslate(FILE* archivo, Code3D* code)
 {
-	//ToDo
+	writeCodeInFile(archivo, "\tmovss", offset(code, 2), "%xmm0");
+	writeCodeInFile(archivo, "\tucomiss", offset(code, 1) ,"%xmm0");
+	writeCodeInFile(archivo, "\tsetae", "%al", "");
+	writeCodeInFile(archivo, "\tmovb", "%al", offset(code, 3));
 }
 
 void printOperation(FILE *file, Code3D *code)
