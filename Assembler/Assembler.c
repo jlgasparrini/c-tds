@@ -150,6 +150,7 @@ int generateOperation(int position)
 
             /* NEG_FLOAT */
         case 25: 
+			neg_Float_Translate(file, code);
             break;
             
             /* PARAM_ASSIGN */

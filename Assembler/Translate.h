@@ -45,6 +45,7 @@ void translateDistinctInt(FILE* archivo, Code3D* code);
 /********************************************************************************************/
 /********************************* FLOAT OPERATIONS TREATEMENT ******************************/
 /********************************************************************************************/
+void neg_Float_Translate(FILE* file, Code3D* code);
 void greater_FloatTranslate(FILE* archivo, Code3D* code);
 void greater_Eq_FloatTranslate(FILE* archivo, Code3D* code);
 

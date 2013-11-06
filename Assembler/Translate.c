@@ -253,16 +253,30 @@ void translateDistinctInt(FILE* file, Code3D* code)
 /********************************************************************************************/
 
 /*-----------------------------------------------------------------------*/
+/**"NEG_FLOAT %s %s\n" */
+void neg_Float_Translate(FILE* file, Code3D* code)
+{
+writeCodeInFile(file, "\txorps", "%xmm0", "%xmm0");
+writeCodeInFile(file, "\tucomiss", offset(code,1), "%xmm0");
+writeCodeInFile(file, "\tsetp", "%dl", "");
+writeCodeInFile(file, "\tmovl", "$1", "%eax");
+writeCodeInFile(file, "\txorps", "%xmm0", "%xmm0");
+writeCodeInFile(file, "\tucomiss", offset(code,1), "%xmm0");
+writeCodeInFile(file, "\tcmove", "%edx", "%eax");
+writeCodeInFile(file, "\tmovb", "%al", offset(code,2));
+}
+
+/*-----------------------------------------------------------------------*/
 /**"EQ_FLOAT %s %s %s\n" */
 void eq_FloatTranslate(FILE* file, Code3D* code)
 {
 	writeCodeInFile(file, "\tmovss", offset(code, 1), "%xmm0");
 	writeCodeInFile(file, "\tucomiss", offset(code, 2) ,"%xmm0");
 	writeCodeInFile(file, "\tsetnp", "%dl", "");
-	writeCodeInFile(file, "\tmovl", "%0", "eax");
+	writeCodeInFile(file, "\tmovl", "%0", "%eax");
 	writeCodeInFile(file, "\tmovss", offset(code, 1), "%xmm0");
 	writeCodeInFile(file, "\tucomiss", offset(code, 2) ,"%xmm0");
-	writeCodeInFile(file, "\tcmove", "%edx", "eax");
+	writeCodeInFile(file, "\tcmove", "%edx", "%eax");
 	writeCodeInFile(file, "\tmovb", "%al", offset(code, 3));
 }
 
@@ -273,10 +287,10 @@ void dist_FloatTranslate(FILE* file, Code3D* code)
 	writeCodeInFile(file, "\tmovss", offset(code, 1), "%xmm0");
 	writeCodeInFile(file, "\tucomiss", offset(code, 2) ,"%xmm0");
 	writeCodeInFile(file, "\tsetp", "%dl", "");
-	writeCodeInFile(file, "\tmovl", "%1", "eax");
+	writeCodeInFile(file, "\tmovl", "%1", "%eax");
 	writeCodeInFile(file, "\tmovss", offset(code, 1), "%xmm0");
 	writeCodeInFile(file, "\tucomiss", offset(code, 2) ,"%xmm0");
-	writeCodeInFile(file, "\tcmove", "%edx", "eax");
+	writeCodeInFile(file, "\tcmove", "%edx", "%eax");
 	writeCodeInFile(file, "\tmovb", "%al", offset(code, 3));
 }
 
