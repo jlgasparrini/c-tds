@@ -7,6 +7,8 @@
 #include <string.h>
 #include "Attribute.h"
 
+static int globalOffset = -16;
+
 /* Creates a StVariable with the respective type and initialized */
 StVariable createStVariable(PrimitiveType type)
 {
@@ -24,7 +26,6 @@ StVariable createStVariable(PrimitiveType type)
 /* creates a variable attribute containing the information included in the parameters */
 Attribute* createVariable(char *id, PrimitiveType type)
 {
-	static int globalOffset = -16;
 	Attribute *attr = (Attribute*) malloc (sizeof(Attribute)); 
 	(*attr).type = Variable;
 	(*attr).decl.variable = (StVariable*) malloc (sizeof(StVariable));
@@ -163,7 +164,7 @@ Boolean getArrayBoolVal(Attribute *attr, unsigned int pos)
 }
 
 /* Returns the offset of the attribute */
-int getOffsetVal(Attribute *attr);
+int getOffsetVal(Attribute *attr    )
 {
 	return (*(*attr).decl.variable).offset;
 }
