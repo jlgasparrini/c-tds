@@ -81,7 +81,8 @@ void finalizar()
     else
 	{
         // show the list of code 3D
-		// show3DCode(lcode3d); // uncommenting this line will show the 3 directions code of the parsed code
+		//show3DCode(lcode3d); // uncommenting this line will show the 3 directions code of the parsed code
+        //initInterpreter(listmlabel, lcode3d);
 		initAssembler(listmlabel, lcode3d, returnStack, fileName);
 		printf("-----Codigo Assembler Generado.-----\n");
 	}
@@ -354,13 +355,15 @@ iteration     :    WHILE {
                                 char *whileLabel = newLabelName("while"); 
                                 add_CodeLabel(lcode3d, newCode(LABEL), whileLabel); // label of While
                                 push(labelsWhile, whileLabel);
+								push(labelsWhile, intToString(codeSize(lcode3d)));
                     } 
                    expression { 
                                 char *endWhile = newLabelName("end_while");
+                                char *pos = pop(labelsWhile);
                                 char *whileLabel = pop(labelsWhile);
                                 push(labelsWhile, endWhile);
 								push(labelsWhile, whileLabel); 
-								push(labelsWhile, intToString(codeSize(lcode3d)));
+								push(labelsWhile, pos);
 								controlType(errorQ,$3,Bool,"while",1);
                                 add_CodeLabelCond(lcode3d, newCode(GOTO_LABEL_COND), $3, endWhile); // Go to label of Expression
 					} block {							
@@ -371,15 +374,20 @@ iteration     :    WHILE {
               |    FOR ID {
 						if (getAttributeType(getVariableAttribute(errorQ,symbolsTable,$2)) != Int)
 							insertError(errorQ,toString("El identificador \"", $2, "\" no pertenece a una variable de tipo \"int\""));
+                        /* It musn't have the same treatment that while? */
 					} '=' expression ',' expression {
 									controlType(errorQ,$5,Int,"for",2); controlType(errorQ,$7,Int,"for",3); 
-									char *forLabel = newLabelName("for"); char *endLabel = newLabelName("end_for");
-									push(labelsFor,endLabel); push(labelsFor,forLabel); push(labelsFor, intToString(codeSize(lcode3d)));
+									char *forLabel = newLabelName("for");
+                                    char *endLabel = newLabelName("end_for");
+									push(labelsFor, endLabel);
+                                    push(labelsFor, forLabel);
+                                    push(labelsFor, intToString(codeSize(lcode3d)));
                                     add_Assignation(lcode3d, newCode(ASSIGNATION), $5, getVariableAttribute(errorQ, symbolsTable, $2));
 									Attribute *res = returnDistinct(errorQ, lcode3d, getVariableAttribute(errorQ, symbolsTable, $2), $7);
                                     add_CodeLabel(lcode3d, newCode(LABEL), forLabel);
 									add_CodeLabelCond(lcode3d, newCode(GOTO_LABEL_COND), res, endLabel); // Go to label of Expression
 					} block {
+                            controlAssignation(errorQ,lcode3d,getVariableAttribute(errorQ,symbolsTable,$2),"+=",returnValue(lcode3d,Int,"1"));
                             add_code(lcode3d, get_code(lcode3d, atoi(pop(labelsFor))+1));
 							add_CodeLabel(lcode3d, newCode(GOTO_LABEL), pop(labelsFor)); // Go to label of For
 							add_CodeLabel(lcode3d, newCode(LABEL), pop(labelsFor)); // label_end of For

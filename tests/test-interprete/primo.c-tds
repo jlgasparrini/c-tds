@@ -1,0 +1,36 @@
+class primo{
+
+
+    boolean isPrimo(int c){
+        int i;
+        i = 1;
+        if(c==0){
+            return false;
+        }
+        if(c==1){
+            return false;
+        }
+        if(c==2){
+            return true;
+        }        
+        while(i != c-1){
+            if(c % (c-i) == 0){
+                return false;
+            }
+            i += 1;
+        }
+        return true;
+    }
+
+    void main(){    
+        print isPrimo(13);
+        print isPrimo(37);
+        print isPrimo(1);
+        print isPrimo(0);
+        print isPrimo(2);
+        print isPrimo(544);
+        print isPrimo(733);
+        return;
+    }
+
+}

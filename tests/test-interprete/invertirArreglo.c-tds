@@ -1,0 +1,46 @@
+class array{
+    int arr[22];
+    int largo;
+    
+    void llenar(){
+        int i;
+        arr[0] = 2;
+        for i = 1, largo {
+            arr[i] = arr[i-1] * 2;
+        }
+        return;
+    }
+    
+    
+    void invertir(){
+        int i,tmp,tmp2;
+        //
+        for i=0,largo/2 {
+            tmp = arr[i];
+            tmp2 = arr[(largo-1)-i];
+            arr[i] = tmp2;
+            arr[(largo-1)-i] = tmp;
+        }
+        return;
+    }
+
+    void printArr(){
+        int i;
+        for i=0,largo{
+            print arr[i];
+         //   print " ";
+        }
+        //print " ";
+        return;
+    }
+    
+    void main(){
+        largo = 22;
+        llenar();
+        printArr();
+        invertir();
+        printArr();
+        return;
+    }
+
+}

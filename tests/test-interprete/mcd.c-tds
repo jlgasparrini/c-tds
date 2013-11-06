@@ -1,0 +1,31 @@
+class test_maxcomdiv{
+
+int maxcomdiv (int a, int b){
+    int dividendo,divisor,resto;
+    //print "a: ";
+    print a;
+    //print "b: ";
+    print b;
+	if(a > b){
+		dividendo = a;
+		divisor = b;
+	}
+	else{
+		dividendo = b;
+		divisor = a;
+	}
+	resto = 1;
+	while ((resto != 0)){
+		resto = dividendo % divisor;
+		dividendo = divisor;
+		divisor = resto;
+	}
+	return dividendo;
+}
+
+void main(){
+   print maxcomdiv(500,400);
+   return;
+}
+
+}

@@ -20,7 +20,7 @@ echo "     "
 
 comp="../c-tds"
 
-files=`ls ../tests/interprete/*.c-tds`
+files=`ls ../tests/test-interprete/*.c-tds`
 
 for file in $files ; do 
 	echo "---------------- Test $file ... -------------------" 

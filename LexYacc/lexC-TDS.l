@@ -105,7 +105,7 @@ print		"print"
 {externinvk}					{columnNumb=columnNumb+strlen(yytext); return(EXTERNINVK);}
 {true}                          {columnNumb=columnNumb+strlen(yytext); yylval.stringValue = strdup(yytext); return(BOOLEAN);}
 {false}                         {columnNumb=columnNumb+strlen(yytext); yylval.stringValue = strdup(yytext); return(BOOLEAN);}
--?{int}                         {columnNumb=columnNumb+strlen(yytext); yylval.stringValue = strdup(yytext); return(INTEGER);}
+{int}                           {columnNumb=columnNumb+strlen(yytext); yylval.stringValue = strdup(yytext); return(INTEGER);}
 {float}						    {columnNumb=columnNumb+strlen(yytext); yylval.stringValue = strdup(yytext); return(FLOAT);}
 {break}                         {columnNumb=columnNumb+strlen(yytext); return(BREAK);}
 {class}                         {columnNumb=columnNumb+strlen(yytext); return(CLASS);}

@@ -1,0 +1,40 @@
+class test_mincommult{
+
+    boolean notCero(int value)
+    {
+        if (value != 0)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    int maxcomdiv (int a, int b){
+        int dividendo,divisor,resto;
+	    if(a > b){
+		    dividendo = a;
+		    divisor = b;
+	    }
+	    else{
+		    dividendo = b;
+		    divisor = a;
+	    }
+	    resto = 1;
+	    while ((notCero(resto))){
+		    resto = dividendo % divisor;
+		    dividendo = divisor;
+		    divisor = resto;
+	    }
+	    return dividendo;
+    }
+
+    int mincommult (int a, int b){
+        return ((a*b) / maxcomdiv(a,b));
+    }
+
+    void main(){
+       print mincommult(3,7);
+       return;
+    }
+
+}

@@ -1,0 +1,31 @@
+class potencia{
+
+    float potencia(float num,int pot){
+        int i,k;
+        float res;
+        i = 2;
+        res = num;
+        if(pot == 0){
+            return 1.0;
+        }
+        
+        for i=2,pot+1 {
+            res = res * num;
+        }
+        
+        return res;
+    }
+    
+    void main(){
+        print potencia(4.0,0);
+        print potencia(4.0,1);
+        print potencia(4.0,2);
+        print potencia(4.0,3);
+        print potencia(5.0,2);
+        print potencia(5.0,5);
+        print potencia(2.0,16);
+        return;
+    }
+    
+
+}

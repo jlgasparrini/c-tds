@@ -23,7 +23,7 @@ int runOperation(int position)
     Code3D*	code = get_code(codeList,position);
     switch ((*code).command)
     {
-            /* LOAD_CONST */
+        /* LOAD_CONST */
         case 0:
             if (getAttributeType(getAttribute(code,2)) == Int)
                 setIntVal(getAttribute(code,2), (*(*code).param1).val.intAttri);
@@ -170,7 +170,7 @@ int runOperation(int position)
 
             /* GOTO_LABEL */
         case 21: 
-		    return searchByLabel((*codeList).codes, getLabel(code, 1));
+            return searchByLabel((*codeList).codes, getLabel(code, 1));
 
             /* GOTO_LABEL_COND */
         case 22:
@@ -191,10 +191,10 @@ int runOperation(int position)
         case 25: 
             setFloatVal(getAttribute(code,2), -getFloatVal(getAttribute(code,1)));
             return position + 1;
-            
+
             /* PARAM_ASSIGN */
         case 26: 
-			if (getAttributeType(getAttribute(code,1)) == Int)
+            if (getAttributeType(getAttribute(code,1)) == Int)
                 setIntVal(getAttribute(code,2), getIntVal(getAttribute(code,1)));
             if (getAttributeType(getAttribute(code,1)) == Float)
                 setFloatVal(getAttribute(code,2), getFloatVal(getAttribute(code,1)));
@@ -213,22 +213,22 @@ int runOperation(int position)
                 if (getBoolVal(getAttribute(code,1)) == True)	
                     printf("Print. El valor booleano es: true\n");
                 if (getBoolVal(getAttribute(code,1)) == False)
-					printf("Print. El valor booleano es: false\n");
+                    printf("Print. El valor booleano es: false\n");
             }
             return position + 1;
 
-			/* LOAD_ARRAY */
-		case 28: 
-			/* parameter 1 of 3d code is the position of the array
-			   parameter 2 is the array from which the number will be getted from.
-			   parameter 3 is the resulting attribute. 
-			    */
-			(*getAttribute(code,3)).decl.variable = &(*getAttribute(code,2)).decl.array.arrayValues[getIntVal(getAttribute(code,1))];
+            /* LOAD_ARRAY */
+        case 28: 
+            /* parameter 1 of 3d code is the position of the array
+               parameter 2 is the array from which the number will be getted from.
+               parameter 3 is the resulting attribute. 
+               */
+            (*getAttribute(code,3)).decl.variable = &(*getAttribute(code,2)).decl.array.arrayValues[getIntVal(getAttribute(code,1))];
             return position + 1;
 
             /* RETURN_EXPR */
         case 29: 
-			/* Link the expression obtained with the return value of the method */
+            /* Link the expression obtained with the return value of the method */
             if (getAttributeType(getAttribute(code,2)) == Int)
                 setIntVal(getAttribute(code,2), getIntVal(getAttribute(code,1)));
             if (getAttributeType(getAttribute(code,2)) == Float)
@@ -237,11 +237,11 @@ int runOperation(int position)
                 setBoolVal(getAttribute(code,2), getBoolVal(getAttribute(code,1)));
             return atoi(popString(methodsCallStack));
 
-			/* GOTO_METHOD */
-		case 30: 
-			/* Save on the stack the place where treatment must continue after the method call */
-			pushString(methodsCallStack, intToString(position + 1));
-			return searchByLabel((*codeList).codes, getLabel(code,1));
+            /* GOTO_METHOD */
+        case 30: 
+            /* Save on the stack the place where treatment must continue after the method call */
+            pushString(methodsCallStack, intToString(position + 1));
+            return searchByLabel((*codeList).codes, getLabel(code,1));
     }
 
 }
@@ -264,11 +264,11 @@ int searchByMethodLabel(char* label)
         while (!labelFound && i < codeSize(codeList))
         {
             aux = get_code(codeList,i);
-			if (isLabel(aux,1))
-			{
-	            if (strcmp(auxLabel, getLabel(aux, 1)) == 0)
-		            labelFound = true;
-			}
+            if (isLabel(aux,1))
+            {
+                if (strcmp(auxLabel, getLabel(aux, 1)) == 0)
+                    labelFound = true;
+            }
             i++;
         } 
         if (labelFound)
@@ -284,7 +284,7 @@ int searchByMethodLabel(char* label)
 void runMain(int pos)
 {
     while (pos < codeSize(codeList))
-		pos = runOperation(pos);
+        pos = runOperation(pos);
 }
 
 /* 
@@ -296,7 +296,7 @@ void initInterpreter(ListMLabel *labelL, LCode3D *codeL)
 {
     labelList = labelL;
     codeList = codeL;
-	methodsCallStack = initializeSS();
-	pushString(methodsCallStack, intToString(codeSize(codeL)));
+    methodsCallStack = initializeSS();
+    pushString(methodsCallStack, intToString(codeSize(codeL)));
     runMain(searchByMethodLabel("main"));
 }
