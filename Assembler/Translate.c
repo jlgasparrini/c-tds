@@ -253,6 +253,34 @@ void translateDistinctInt(FILE* archivo, Code3D* code)
 /********************************************************************************************/
 
 /*-----------------------------------------------------------------------*/
+/**"EQ_FLOAT %s %s %s\n" */
+void eq_FloatTranslate(FILE* archivo, Code3D* code)
+{
+	writeCodeInFile(archivo, "\tmovss", offset(code, 1), "%xmm0");
+	writeCodeInFile(archivo, "\tucomiss", offset(code, 2) ,"%xmm0");
+	writeCodeInFile(archivo, "\tsetnp", "%dl", "");
+	writeCodeInFile(archivo, "\tmovl", "%0", "eax");
+	writeCodeInFile(archivo, "\tmovss", offset(code, 1), "%xmm0");
+	writeCodeInFile(archivo, "\tucomiss", offset(code, 2) ,"%xmm0");
+	writeCodeInFile(archivo, "\tcmove", "%edx", "eax");
+	writeCodeInFile(archivo, "\tmovb", "%al", offset(code, 3));
+}
+
+
+/**"DIST_FLOAT %s %s %s\n" */
+void dist_FloatTranslate(FILE* archivo, Code3D* code)
+{
+	writeCodeInFile(archivo, "\tmovss", offset(code, 1), "%xmm0");
+	writeCodeInFile(archivo, "\tucomiss", offset(code, 2) ,"%xmm0");
+	writeCodeInFile(archivo, "\tsetp", "%dl", "");
+	writeCodeInFile(archivo, "\tmovl", "%1", "eax");
+	writeCodeInFile(archivo, "\tmovss", offset(code, 1), "%xmm0");
+	writeCodeInFile(archivo, "\tucomiss", offset(code, 2) ,"%xmm0");
+	writeCodeInFile(archivo, "\tcmove", "%edx", "eax");
+	writeCodeInFile(archivo, "\tmovb", "%al", offset(code, 3));
+}
+
+/*-----------------------------------------------------------------------*/
 /**"GREATER_FLOAT %s %s %s\n" */
 void greater_FloatTranslate(FILE* archivo, Code3D* code)
 {

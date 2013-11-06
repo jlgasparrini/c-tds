@@ -172,10 +172,12 @@ int generateOperation(int position)
 			
 		    /* EQ_FLOAT */
         case 31:
+			eq_FloatTranslate(file, code);
             break;
 
             /* DIST_FLOAT */
         case 32:
+			dist_FloatTranslate(file, code);
             break;
 
             /* GREATER_FLOAT */
