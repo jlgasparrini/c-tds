@@ -99,11 +99,7 @@ Attribute* checkAndGetMethodRetAttribute(ErrorsQueue *eq, SymbolsTable *aSymbols
             else
             {
                 Attribute *aux = createVariable(getVariableName(), getAttributeType(attr));
-                Code3D *codeValue = newCode(ASSIGNATION);
-                setAttribute(codeValue, 1, attr);
-                setAttribute(codeValue, 2, aux);
-                setNull(codeValue, 3);
-                add_code(lcode3d, codeValue);	
+                add_Assignation(lcode3d, attr, aux);
                 return aux;
             }
         }
@@ -277,10 +273,7 @@ unsigned char controlAssignation(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *a
         {
             Code3D *add;
             if (strcmp(op, "=") == 0)
-				if (getAttributeType(attr1) == Float)
-					add_Assignation(lcode3d, newCode(ASSIGNATION_FLOAT), attr2, attr1);
-				if (getAttributeType(attr1) == Int)
-					add_Assignation(lcode3d, newCode(ASSIGNATION_INT), attr2, attr1);
+				add_Assignation(lcode3d, attr2, attr1);
             else
             {
                 if (strcmp(op, "+=") == 0)
@@ -300,10 +293,7 @@ unsigned char controlAssignation(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *a
                 Attribute *res = createVariable(getVariableName(), getAttributeType(attr1));
                 setCode3D(add, attr1, attr2, res);
                 add_code(lcode3d, add);
-				if (getAttributeType(attr1) == Float)
-					add_Assignation(lcode3d, newCode(ASSIGNATION_FLOAT), res, attr1);
-				if (getAttributeType(attr1) == Int)
-					add_Assignation(lcode3d, newCode(ASSIGNATION_INT), res, attr1);
+				add_Assignation(lcode3d, res, attr1);
             }
             return 0;
         }

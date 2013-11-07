@@ -39,7 +39,7 @@ char* translate(char* operation, char* code1, char* code2)
     char* blank = " ";
     char* tab = "\t";
     char* comma = ",";
-    char* result = malloc(strlen(tab)+strlen(operation)+2*strlen(blank)+strlen(code1)+strlen(comma)+strlen(code2)+strlen(backSlashN));
+    char* result = (char*) malloc(strlen(tab)+strlen(operation)+2*strlen(blank)+strlen(code1)+strlen(comma)+strlen(code2)+strlen(backSlashN));
     strcat(result, tab); 
     strcat(result, operation);
     if (strlen(code1)>0)
@@ -178,7 +178,7 @@ void translateLoadArray(FILE *file, Code3D *code)
 
 /* Puts in the file the translation of the GOTO_METHOD action */
 /* "GOTO_METHOD %s\n" */
-void goTo_Method (FILE* file, Code3D* code);
+void goTo_Method (FILE* file, Code3D* code)
 {
 	writeCodeInFile(file, translate("call", getLabel(code,1), ""));
 }

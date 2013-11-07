@@ -50,7 +50,6 @@
 
 /**Returns the respective code of an ID */
 char* getCodeByID(int ID);
-
 /**Returns the respective type of attribute according to the type */
 char* getTypeByID(int type);
 

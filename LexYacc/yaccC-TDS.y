@@ -382,7 +382,7 @@ iteration     :    WHILE {
 									push(labelsFor, endLabel);
                                     push(labelsFor, forLabel);
                                     push(labelsFor, intToString(codeSize(lcode3d)));
-                                    add_Assignation(lcode3d, newCode(ASSIGNATION), $5, getVariableAttribute(errorQ, symbolsTable, $2));
+                                    add_Assignation(lcode3d, $5, getVariableAttribute(errorQ, symbolsTable, $2));
 									Attribute *res = returnDistinct(errorQ, lcode3d, getVariableAttribute(errorQ, symbolsTable, $2), $7);
                                     add_CodeLabel(lcode3d, newCode(LABEL), forLabel);
 									add_CodeLabelCond(lcode3d, newCode(GOTO_LABEL_COND), res, endLabel); // Go to label of Expression

@@ -6,6 +6,7 @@
 #ifndef GENCODE3D_H
 #define GENCODE3D_H
 
+#include "../SymbolsTable/Attribute.h"
 #include "listc3d.h"
 #include "code3d.h"
 
@@ -27,7 +28,7 @@ int codeSize(LCode3D *lcode3d);
 void add_CodeLabel(LCode3D *lcode3d, Code3D *code, char *label);
 void add_CodeLabelCond(LCode3D *lcode3d, Code3D *code, Attribute *attri1, char *labelJumpTo);
 
-void add_Assignation(LCode3D *lcode3d, Code3D *code,  Attribute *attri1,  Attribute *attriRes);
+void add_Assignation(LCode3D *lcode3d, Attribute *attri1,  Attribute *attriRes);
 void add_Print(LCode3D *lcode3d, Code3D *code, Attribute *attr);
 void add_MethodCall(LCode3D *lcode3d, Code3D *code,  Attribute *attri1, Attribute *attriRes);
 

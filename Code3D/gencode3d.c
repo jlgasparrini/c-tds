@@ -4,9 +4,8 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "../SymbolsTable/Attribute.h"
-#include "listc3d.h"
 #include "gencode3d.h"
+#include "codespecs.h"
 
 /**Constructor de la Lista de Codigos 3D*/
 LCode3D* initLCode3D() 
@@ -49,8 +48,14 @@ void add_CodeLabelCond(LCode3D *lcode3d, Code3D *code, Attribute *attri1, char *
 }
 
 /**Metodo que a base de un Codigo 3D y dos Atributos, setea el codigo y lo agrega a la Lista*/
-void add_Assignation(LCode3D *lcode3d, Code3D *code,  Attribute *attri1,  Attribute *attriRes)
+void add_Assignation(LCode3D *lcode3d, Attribute *attri1,  Attribute *attriRes)
 {
+    Code3D *code;
+    if (getAttributeType(attri1) == Int)
+        code = newCode(ASSIGNATION_INT);  
+    if (getAttributeType(attri1) == Float)
+        code = newCode(ASSIGNATION_FLOAT);  
+
 	setCode2D(code, attri1, attriRes);
 	add_code(lcode3d, code);
 }

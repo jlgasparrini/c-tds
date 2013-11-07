@@ -11,7 +11,6 @@
 
 #include <stdbool.h>
 #include "nodec3d.h"
-#include "../SymbolsTable/Attribute.h"
 
 typedef struct {
     NodeC3D    *init;
