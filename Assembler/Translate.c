@@ -101,13 +101,6 @@ void translateGotoLabelCondition(FILE* file, Code3D* code)
 	writeCodeInFile(file, translate("je", getLabel(code,2), ""));
 }
 
-/* Puts in the file the translation of the ASSIGNATION action */
-void translateAssignation(FILE* file, Code3D* code)
-{
-	writeCodeInFile(file, translate("mov", offset(code,1), "%rax"));
-	writeCodeInFile(file, translate("mov", "%rax", offset(code,2)));
-}
-
 /* Puts in the file the translation of the RETURN action */
 void translateReturn(FILE* file, Code3D* code)
 {
@@ -184,11 +177,10 @@ void translateLoadArray(FILE *file, Code3D *code)
 }
 
 /* Puts in the file the translation of the GOTO_METHOD action */
-void translateGotoMethod(FILE *file, Code3D *code)
+/* "GOTO_METHOD %s\n" */
+void goTo_Method (FILE* file, Code3D* code);
 {
-    /* --------------------------------------- MUST BE IMPLEMENTED --------------------------------------- */
-    /* --------------------------------------- MUST BE IMPLEMENTED --------------------------------------- */
-    /* --------------------------------------- MUST BE IMPLEMENTED --------------------------------------- */
+	writeCodeInFile(file, translate("call", getLabel(code,1), ""));
 }
 
 
@@ -196,6 +188,13 @@ void translateGotoMethod(FILE *file, Code3D *code)
 /********************************************************************************************/
 /********************************* INT OPERATIONS TREATEMENT ********************************/
 /********************************************************************************************/
+
+/* Puts in the file the translation of the ASSIGNATION action */
+void translateAssignationInt(FILE* file, Code3D* code)
+{
+	writeCodeInFile(file, translate("mov", offset(code,1), "%rax"));
+	writeCodeInFile(file, translate("mov", "%rax", offset(code,2)));
+}
 
 /*-----------------------------------------------------------------------*/
 /**"NEG_INT %s %s\n" */
@@ -314,17 +313,25 @@ void translateDistinctInt(FILE* file, Code3D* code)
 /********************************************************************************************/
 
 /*-----------------------------------------------------------------------*/
+/**"ASSIGNATION_FLOAT %s %s\n" */
+void assignation_FloatTranslate(FILE* file, Code3D* code)
+{
+	writeCodeInFile(file, translate("movss", offset(code,1), "%rax"));
+	writeCodeInFile(file, translate("movss", "%rax", offset(code,2)));
+}
+
+/*-----------------------------------------------------------------------*/
 /**"NEG_FLOAT %s %s\n" */
 void neg_Float_Translate(FILE* file, Code3D* code)
 {
-writeCodeInFile(file, translate("xorps", "%xmm0", "%xmm0"));
-writeCodeInFile(file, translate("ucomiss", offset(code,1), "%xmm0"));
-writeCodeInFile(file, translate("setp", "%dl", ""));
-writeCodeInFile(file, translate("movl", "$1", "%eax"));
-writeCodeInFile(file, translate("xorps", "%xmm0", "%xmm0"));
-writeCodeInFile(file, translate("ucomiss", offset(code,1), "%xmm0"));
-writeCodeInFile(file, translate("cmove", "%edx", "%eax"));
-writeCodeInFile(file, translate("movb", "%al", offset(code,2)));
+	writeCodeInFile(file, translate("xorps", "%xmm0", "%xmm0"));
+	writeCodeInFile(file, translate("ucomiss", offset(code,1), "%xmm0"));
+	writeCodeInFile(file, translate("setp", "%dl", ""));
+	writeCodeInFile(file, translate("movl", "$1", "%eax"));
+	writeCodeInFile(file, translate("xorps", "%xmm0", "%xmm0"));
+	writeCodeInFile(file, translate("ucomiss", offset(code,1), "%xmm0"));
+	writeCodeInFile(file, translate("cmove", "%edx", "%eax"));
+	writeCodeInFile(file, translate("movb", "%al", offset(code,2)));
 }
 
 /*-----------------------------------------------------------------------*/

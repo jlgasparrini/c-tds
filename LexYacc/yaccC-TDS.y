@@ -449,7 +449,10 @@ expression_aux:    expression {
 									correctParamBC(errorQ,symbolsTable,$1,lastCalledMethod,cantParams); 
 									Attribute *param = (Attribute*) malloc (sizeof(Attribute));
 									param->decl.variable = ((*searchIdInSymbolsTable(errorQ,symbolsTable,lastCalledMethod)).decl.method.parameters[cantParams]); // obtencion del parametro formal.
-									add_MethodCall(lcode3d, newCode(PARAM_ASSIGN), $1, param); 
+									if (getAttributeType($1) == Float)
+										add_MethodCall(lcode3d, newCode(PARAM_ASSIGN_FLOAT), $1, param);
+									if (getAttributeType($1) == Int)
+										add_MethodCall(lcode3d, newCode(PARAM_ASSIGN_INT), $1, param); 
 									cantParams++; /* This sentence must be in the last line because parameter's numbers start from 0 */
 								}
 					}
@@ -459,7 +462,10 @@ expression_aux:    expression {
 									correctParamIC(errorQ,symbolsTable,$1,lastCalledMethod,cantParams); 
 									Attribute *param = (Attribute*) malloc (sizeof(Attribute));
 									param->decl.variable = ((*searchIdInSymbolsTable(errorQ,symbolsTable,lastCalledMethod)).decl.method.parameters[cantParams]); // obtencion del parametro formal.
-									add_MethodCall(lcode3d, newCode(PARAM_ASSIGN), $1, param);
+									if (getAttributeType($1) == Float)
+										add_MethodCall(lcode3d, newCode(PARAM_ASSIGN_FLOAT), $1, param);
+									if (getAttributeType($1) == Int)
+										add_MethodCall(lcode3d, newCode(PARAM_ASSIGN_INT), $1, param); 
 									cantParams++; /* This sentence must be in the last line because parameter's numbers start from 0 */
 								} 
 					} ',' expression_aux 

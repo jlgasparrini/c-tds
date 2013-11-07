@@ -28,9 +28,10 @@ int generateOperation(int position)
 			load_Const_Translate(file, code);
             break;
 
-            /* ASSIGNATION */
+            /* ASSIGNATION_INT */
         case 1: 
-			translateAssignation(file, code); break;
+			translateAssignationInt(file, code); 
+			break;
 
             /* MINUS_INT */
         case 2:
@@ -152,7 +153,7 @@ int generateOperation(int position)
 			neg_Float_Translate(file, code);
             break;
             
-            /* PARAM_ASSIGN */
+            /* PARAM_ASSIGN_INT */
             /* --------------------------------------- MUST BE IMPLEMENTED --------------------------------------- */
         case 26: 
             translateParamAssign(file, code);
@@ -175,9 +176,8 @@ int generateOperation(int position)
             break;
 
 			/* GOTO_METHOD */
-            /* --------------------------------------- MUST BE IMPLEMENTED --------------------------------------- */
 		case 30: 
-			translateGotoMethod(file, code);
+			goTo_Method(file, code);
             break;
 			
 		    /* EQ_FLOAT */
@@ -208,6 +208,16 @@ int generateOperation(int position)
             /* LESSER_EQ_FLOAT */
         case 36:
 			translateLesserOrEqualFloat(file, code);
+            break;
+			
+			/* ASSIGNATION_FLOAT */
+        case 37:
+			assignation_FloatTranslate(file, code);
+            break;
+
+			/* PARAM_ASSIGN_FLOAT */
+			/* --------------------------------------- MUST BE IMPLEMENTED --------------------------------------- */
+        case 38:
             break;
     }
 

@@ -41,7 +41,9 @@ char* getCodeByID(int ID)
 		case 33: return "GREATER_FLOAT";    
 		case 34: return "LOWER_FLOAT";      
 		case 35: return "GEQ_FLOAT";        
-		case 36: return "LEQ_FLOAT";        
+		case 36: return "LEQ_FLOAT";
+		case 37: return "ASSIGNATION_FLOAT"; 
+		case 38: return "PARAM_ASSIGN_FLOAT";        
     }
     return "NULL!";
 }
