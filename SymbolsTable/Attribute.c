@@ -75,7 +75,10 @@ Attribute* createParameter(Attribute *attr, unsigned int pos, char *id, Primitiv
 		if (aux != NULL)
 		{
 			(*attr).decl.method.parameters = aux;
-			Attribute *aux = createVariable(id, type);
+			Attribute *aux = (Attribute*) malloc (sizeof(Attribute)); 
+	        (*aux).type = Variable;
+        	*(*aux).decl.variable = createStVariable(type);
+	        (*(*aux).decl.variable).id = strdup(id);
             (*attr).decl.method.parameters[pos] = (StVariable*) malloc(sizeof(StVariable));
 			(*attr).decl.method.parameters[pos] = ((*aux).decl.variable);
 			return aux;
