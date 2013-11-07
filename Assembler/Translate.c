@@ -75,8 +75,8 @@ char* value(Code3D* code)
 char* offset(Code3D* code, int param)
 {
 	char *result = (char*) malloc(sizeof(char));
-	//result = getOffset(code, param);   NO EXISTE getOffset
-	return concat (result, ", (%rbp)");
+	result = getOffsetVal(getAttribute(code, param));
+	return concat (result, "(%rbp)");
 }
 
 
