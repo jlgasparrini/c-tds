@@ -70,7 +70,7 @@ int main( argc, argv )
 			yyin = fopen( argv[0], "r" );
         else
 			yyin = stdin;
-			yyparse();
+        yyparse();
 	return 0;
 }
 
@@ -81,8 +81,8 @@ void finalizar()
     else
 	{
         // show the list of code 3D
-		//show3DCode(lcode3d); // uncommenting this line will show the 3 directions code of the parsed code
-        //initInterpreter(listmlabel, lcode3d);
+		show3DCode(lcode3d); // uncommenting this line will show the 3 directions code of the parsed code;
+        //initInterpreter(listmlabel, lcode3d); // The interpreter in this version is not working.
 		initAssembler(listmlabel, lcode3d, returnStack, fileName);
 		printf("-----Codigo Assembler Generado.-----\n");
 	}

@@ -39,8 +39,9 @@ char* translate(char* operation, char* code1, char* code2)
     char* blank = " ";
     char* tab = "\t";
     char* comma = ",";
+    printf("ACA SE ROMPE!   %s      %s     %s \n", operation, code1, code2);
     char* result = (char*) malloc(strlen(tab)+strlen(operation)+2*strlen(blank)+strlen(code1)+strlen(comma)+strlen(code2)+strlen(backSlashN));
-    strcat(result, tab); 
+    strcpy(result, tab); 
     strcat(result, operation);
     if (strlen(code1)>0)
     {
@@ -76,7 +77,7 @@ char* offset(Code3D* code, int param)
 {
 	char *result = (char*) malloc(sizeof(char));
 	//result = getOffset(code, param);   NO EXISTE getOffset
-	return concat (result, ", (%rbp)");
+	return concat (result, "(%rbp)");
 }
 
 
