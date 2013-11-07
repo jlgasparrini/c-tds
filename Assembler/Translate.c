@@ -39,7 +39,6 @@ char* translate(char* operation, char* code1, char* code2)
     char* blank = " ";
     char* tab = "\t";
     char* comma = ",";
-    printf("ACA SE ROMPE!   %s      %s     %s \n", operation, code1, code2);
     char* result = (char*) malloc(strlen(tab)+strlen(operation)+2*strlen(blank)+strlen(code1)+strlen(comma)+strlen(code2)+strlen(backSlashN));
     strcpy(result, tab); 
     strcat(result, operation);
@@ -106,6 +105,7 @@ void translateGotoLabelCondition(FILE* file, Code3D* code)
 void translateReturn(FILE* file, Code3D* code)
 {
 	writeCodeInFile(file, translate("mov", "$0", "%rax"));
+    writeCodeInFile(file, translate("popq", "%rbp", ""));
 	writeCodeInFile(file, translate("leave","",""));
 	writeCodeInFile(file, translate("ret","",""));
 }
@@ -114,7 +114,6 @@ void translateReturn(FILE* file, Code3D* code)
 void translateReturnExpression(FILE* file, Code3D* code)
 {
 	writeCodeInFile(file, translate("mov", offset(code,1), "%rax"));
-	writeCodeInFile(file, translate("leave","",""));
 	writeCodeInFile(file, translate("ret","",""));
 }
 
@@ -146,19 +145,49 @@ void translateNot(FILE* file, Code3D* code)
 void printOperation(FILE *file, Code3D *code)
 {
     char* aux;
-    sprintf(aux, "%d", getIntVal(getAttribute(code, 1)));
     writeCodeInFile(file, translate("pushq", "%rbp", ""));
-    writeCodeInFile(file, translate("movl", concat(concat("$", aux), ", "), "%esi"));
-    writeCodeInFile(file, translate("movl", concat(concat("$", ".INT"), ", "), "%edi"));
+    if (getAttributeType(getAttribute(code, 1)) == Int)
+    {
+        aux = intToString(getIntVal(getAttribute(code, 1)));
+        writeCodeInFile(file, translate("movl", concat(concat("$", aux), ", "), "%esi"));
+        writeCodeInFile(file, translate("movl", concat(concat("$", ".INT"), ", "), "%edi"));
+    }
+    if (getAttributeType(getAttribute(code, 1)) == Float)
+    {
+    //DOESN'T WORKING
+       //aux = floatToString(getFloatVal(getAttribute(code, 1)));
+       //writeCodeInFile(file, translate("movl", concat(concat("$", aux), ", "), "%esi"));
+       //writeCodeInFile(file, translate("movl", concat(concat("$", ".FLOAT"), ", "), "%edi"));
+    }
+    if (getAttributeType(getAttribute(code, 1)) == Bool)
+    {
+    //DOESN'T WORKING
+       //if (getBoolVal(getAttribute(code, 1) == True))
+       //{
+       // aux = "True";
+       // writeCodeInFile(file, translate("movl", concat(concat("$", aux), ", "), "%esi"));
+       //}
+       //if (getBoolVal(getAttribute(code,1)) == False)
+       //{
+       // aux = "False";
+       // writeCodeInFile(file, translate("movl", concat(concat("$", aux), ", "), "%esi"));
+       //}
+       // writeCodeInFile(file, translate("movl", concat(concat("$", ".BOOL"), ", "), "%edi"));
+    }
     writeCodeInFile(file, translate("call", "printf", ""));
-    writeCodeInFile(file, translate("popq", "%rbp", ""));
-    writeCodeInFile(file, translate("ret", "", ""));
 }
             
 /* Puts in the file the translation of the LABEL action */
 void writeLabel(FILE *file, Code3D *code)
 {
-    writeCodeInFile(file, concat(getLabel(code,1), ":"));
+    if ((*getAttribute(code, 1)).type != Method)
+        writeCodeInFile(file, concat(getLabel(code,1), ":"));
+    else
+    {
+       writeCodeInFile(file, concat(getLabel(code,1), ":"));
+       writeCodeInFile(file, translate("pushq", "%rbp", ""));
+       writeCodeInFile(file, translate("movq", "%rsp", "%rbp"));
+    }
 }
 
 /* Puts in the file the translation of the PARAM_ASSIGN action */

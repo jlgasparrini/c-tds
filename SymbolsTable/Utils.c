@@ -171,6 +171,14 @@ char* intToString(int value)
     return aux;
 }
 
+/* Returns the string representation of the float "value" */
+char* floatToString(float value)
+{
+    char *aux;
+    sprintf(aux,"%f",value);
+    return aux;
+}
+
 /* Returns 0 if the type parameter in "paramSize" position of the method's parameters is equal to the type of "var" 
    and the amount of params are equal.
    Returns 1 otherwise */

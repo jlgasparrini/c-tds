@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "../Code3D/gencode3d.h"
+#include "../SymbolsTable/Utils.h"
 
 /* Writing methods */
 char* concat(char* str1, char* str2);
