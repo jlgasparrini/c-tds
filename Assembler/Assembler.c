@@ -231,12 +231,12 @@ void initAssembler(ListMLabel *labelL, LCode3D *codeL, Stack *stack, char* nameO
     file = fopen(fileName,"w");
     writeCodeInFile(file, translate(".file", concat(concat("\"", concat(nameOfFile, ".s")), "\""), ""));
     writeCodeInFile(file, translate(".global", "main", ""));
-    writeCodeInFile(file, ".INT:");
-    writeCodeInFile(file, translate(".string", "\"Print. El valor entero es: %d \\n\"", ""));
-    writeCodeInFile(file, ".FLOAT:");
-    writeCodeInFile(file, translate(".string", "\"Print. El valor flotante es: %d \\n\"", ""));
-    writeCodeInFile(file, ".BOOL:");
-    writeCodeInFile(file, translate(".string", "\"Print. El valor booleano es: %d \\n\"", ""));
+    writeCodeInFile(file, ".INT:\n");
+    writeCodeInFile(file, translate("\t.string", "\"Print. El valor entero es: %d \\n\"", ""));
+    writeCodeInFile(file, ".FLOAT:\n");
+    writeCodeInFile(file, translate("\t.string", "\"Print. El valor flotante es: %d \\n\"", ""));
+    writeCodeInFile(file, ".BOOL:\n");
+    writeCodeInFile(file, translate("\t.string", "\"Print. El valor booleano es: %d \\n\"", ""));
     labelList = labelL;
     codeList = codeL;
     returnStack = stack;
