@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "../ListMethod/genlistml.h"
 #include "../Code3D/gencode3d.h"
 #include "../SymbolsTable/Utils.h"
 
@@ -27,7 +28,7 @@ void translateOr(FILE* file, Code3D* code);
 void translateAnd(FILE* file, Code3D* code);
 void translateNot(FILE* file, Code3D* code);
 void printOperation(FILE *file, Code3D *code);
-void writeLabel(FILE *file, Code3D *code);
+void writeLabel(FILE *file, ListMLabel *labelList, Code3D *code);
 void translateParamAssign(FILE *file, Code3D *code);
 void translateLoadArray(FILE *file, Code3D *code);
 void goTo_Method (FILE* file, Code3D* code);

@@ -9,6 +9,7 @@
 #include "../ListMethod/genlistml.h"
 #include "../Code3D/gencode3d.h"
 #include "../Stack/stack.h"
+#include "Translate.h"
 
 /* Initializes the interpreter and runs it */
 void initAssembler(ListMLabel *labelL, LCode3D *codeL, Stack *stack, char* fileName);

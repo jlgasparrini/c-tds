@@ -34,11 +34,11 @@ char* fileName;
 /*Create new Label*/
 char* newLabelName(char* msg) 
 {
-	char *labelName = malloc(sizeof(char)*(digitAmount(labelCount)+strlen("%d_label_")+strlen(msg)));
-	sprintf(labelName, labelID, labelCount);
-	strcat(labelName,msg);
+    char *labelName = malloc(sizeof(char)*(digitAmount(labelCount)+strlen("%d_label_")+strlen(msg)));
+    sprintf(labelName, labelID, labelCount);
+    strcat(labelName,msg);
     labelCount++;
-   	return labelName;
+    return labelName;
 }
 
 
@@ -46,32 +46,32 @@ int yydebug = 1;
 
 int yyerror (char *str)
 {
-	printErrorList(errorQ);
+    printErrorList(errorQ);
     deleteAllErrors(errorQ);
     if (strcmp(str, "syntax error") == 0)
-		printf("%s\n",toString("Error GRAMATICO.","",""));
+        printf("%s\n",toString("Error GRAMATICO.","",""));
     else
-		if (strcmp(str, "incorrecto") != 0)
-			printf("%s\n","Error DESCONOCIDO.");
+        if (strcmp(str, "incorrecto") != 0)
+            printf("%s\n","Error DESCONOCIDO.");
     return 0;
 }
- 
+
 int yywrap()
 {
-	return 1;
+    return 1;
 } 
-  
+
 int main( argc, argv )
     int argc;
     char **argv; 
     { 
     ++argv, --argc;	/* skip over program name */
         if ( argc > 0 )
-			yyin = fopen( argv[0], "r" );
+            yyin = fopen( argv[0], "r" );
         else
-			yyin = stdin;
+            yyin = stdin;
         yyparse();
-	return 0;
+    return 0;
 }
 
 void finalizar() 
@@ -79,13 +79,13 @@ void finalizar()
     if ((*errorQ).size > 0) 
         yyerror("incorrecto");
     else
-	{
+    {
         // show the list of code 3D
-		show3DCode(lcode3d); // uncommenting this line will show the 3 directions code of the parsed code;
+        show3DCode(lcode3d); // uncommenting this line will show the 3 directions code of the parsed code;
         //initInterpreter(listmlabel, lcode3d); // The interpreter in this version is not working.
-		initAssembler(listmlabel, lcode3d, returnStack, fileName);
-		printf("-----Codigo Assembler Generado.-----\n");
-	}
+        initAssembler(listmlabel, lcode3d, returnStack, fileName);
+        printf("-----Codigo Assembler Generado.-----\n");
+    }
 }
 
 void out(char *msg) 
@@ -96,8 +96,8 @@ void out(char *msg)
 
 %union
 {
-	char *stringValue;
-	Attribute *at;
+    char *stringValue;
+    Attribute *at;
 }
 
 
@@ -121,29 +121,29 @@ void out(char *msg)
 /* ------------------- PROGRAM -------------------- */
 
 program       :    CLASS ID '{' '}' {
-									errorQ=initializeQueue(); 
-									lcode3d = initLCode3D();
-									finalizar();
+              errorQ=initializeQueue(); 
+                                    lcode3d = initLCode3D();
+                                    finalizar();
                                     fileName = $2;
-					} 
+                    } 
               |    CLASS ID '{' {
-									symbolsTable = initializeSymbolsTable(); 
-									pushLevel(symbolsTable);
-									errorQ = initializeQueue();
-									paramsStack = initializeSS(); 
-									methodsIDStack = initializeSS();
-									labelsCYC = newStack();
+                                    symbolsTable = initializeSymbolsTable(); 
+                                    pushLevel(symbolsTable);
+                                    errorQ = initializeQueue();
+                                    paramsStack = initializeSS(); 
+                                    methodsIDStack = initializeSS();
+                                    labelsCYC = newStack();
                                     labelsWhile = newStack();
-									returnStack = newStack();
-									labelsFor = newStack();
-									listmlabel = initL();
-									lcode3d = initLCode3D();
+                                    returnStack = newStack();
+                                    labelsFor = newStack();
+                                    listmlabel = initL();
+                                    lcode3d = initLCode3D();
                                     fileName = $2;
-					} body {
-								checkMain(errorQ,symbolsTable); 
-								popLevel(symbolsTable); 
-								finalizar();
-					} '}' 
+                    } body {
+                                checkMain(errorQ,symbolsTable); 
+                                popLevel(symbolsTable); 
+                                finalizar();
+                    } '}' 
               ;
 
 body          :    fields_decls method_decl
@@ -153,21 +153,21 @@ body          :    fields_decls method_decl
 
 fields_decls  :    type fields ';' 			
               |    fields_decls type fields ';' 	
-			  ;
+              ;
 
 fields        :    field 
-			  |    fields ',' field
-			  ;
+              |    fields ',' field
+              ;
 
 field         :    ID			{pushElement(errorQ, symbolsTable, createVariable($1, vaType));}
               |    ID '[' INTEGER {if (atoi($3) <= 0) 
-									{	insertError(errorQ,toString("Error en definicion del arreglo \"",$1,"\". El tamaño del arreglo debe ser un entero mayor que 0."));
-										pushElement(errorQ, symbolsTable, createArray($1, vaType, 10)); /* Array size of 10 in case of error */
-									}
-									else
-										pushElement(errorQ, symbolsTable, createArray($1, vaType, atoi($3)));
-								}
-						']'	
+                                    {	insertError(errorQ,toString("Error en definicion del arreglo \"",$1,"\". El tamaño del arreglo debe ser un entero mayor que 0."));
+                                        pushElement(errorQ, symbolsTable, createArray($1, vaType, 10)); /* Array size of 10 in case of error */
+                                    }
+                                    else
+                                        pushElement(errorQ, symbolsTable, createArray($1, vaType, atoi($3)));
+                                }
+                        ']'	
               ;
 
 type          :		INTW		{vaType = Int; mType = RetInt;} 
@@ -176,74 +176,74 @@ type          :		INTW		{vaType = Int; mType = RetInt;}
               ;
 
 method_decl   :     type ID {
-								lastDefMethod=$2; 
-								pushElement(errorQ,symbolsTable,createMethod($2,mType)); 
-								pushLevel(symbolsTable); 
-								returns = 0;
-								char *initLabel = newLabelName($2);
-								add_CodeLabel(lcode3d, newCode(LABEL), initLabel); // Mark to Label of Init of Method
-								insert_MethodL(listmlabel, $2, initLabel);
-					} param block {
-								popLevel(symbolsTable); 
-								if(returns==0) insertError(errorQ,toString("El metodo \"",$2,"\" debe tener al menos un return."));
-					}
+                                lastDefMethod=$2; 
+                                pushElement(errorQ,symbolsTable,createMethod($2,mType)); 
+                                pushLevel(symbolsTable); 
+                                returns = 0;
+                                char *initLabel = newLabelName($2);
+                                add_CodeLabel(lcode3d, newCode(LABEL), initLabel); // Mark to Label of Init of Method
+                                insert_MethodL(listmlabel, $2, initLabel);
+                    } param block {
+                                popLevel(symbolsTable); 
+                                if(returns==0) insertError(errorQ,toString("El metodo \"",$2,"\" debe tener al menos un return."));
+                    }
               |		method_decl type ID {
-								lastDefMethod=$3; 
-								pushElement(errorQ,symbolsTable,createMethod($3,mType)); 
-								pushLevel(symbolsTable); 
-								returns = 0;
-								char *initLabel = newLabelName($3);
-								add_CodeLabel(lcode3d, newCode(LABEL), initLabel); // Mark to Label of Init of Method
-								insert_MethodL(listmlabel, $3, initLabel);
-					} param block {
-								popLevel(symbolsTable); 
-								if(returns==0) insertError(errorQ,toString("El metodo \"",$3,"\" debe tener al menos un return."));
-					}
+                                lastDefMethod=$3; 
+                                pushElement(errorQ,symbolsTable,createMethod($3,mType)); 
+                                pushLevel(symbolsTable); 
+                                returns = 0;
+                                char *initLabel = newLabelName($3);
+                                add_CodeLabel(lcode3d, newCode(LABEL), initLabel); // Mark to Label of Init of Method
+                                insert_MethodL(listmlabel, $3, initLabel);
+                    } param block {
+                                popLevel(symbolsTable); 
+                                if(returns==0) insertError(errorQ,toString("El metodo \"",$3,"\" debe tener al menos un return."));
+                    }
               |     VOID ID {
-								lastDefMethod=$2; 
-								pushElement(errorQ,symbolsTable,createMethod($2,RetVoid)); 
-								pushLevel(symbolsTable); 
-								returns = 0;
-								add_CodeLabel(lcode3d, newCode(LABEL), $2); // Mark to Label of Init of Method
-								insert_MethodL(listmlabel, $2, $2);
-					} param block {
-								popLevel(symbolsTable); 
-								if(returns==0) insertError(errorQ,toString("El metodo \"",$2,"\" debe tener al menos un return."));
-					}
+                                lastDefMethod=$2; 
+                                pushElement(errorQ,symbolsTable,createMethod($2,RetVoid)); 
+                                pushLevel(symbolsTable); 
+                                returns = 0;
+                                add_CodeLabel(lcode3d, newCode(LABEL), $2); // Mark to Label of Init of Method
+                                insert_MethodL(listmlabel, $2, $2);
+                    } param block {
+                                popLevel(symbolsTable); 
+                                if(returns==0) insertError(errorQ,toString("El metodo \"",$2,"\" debe tener al menos un return."));
+                    }
               |	    method_decl VOID ID {
-								lastDefMethod=$3; 
-								pushElement(errorQ,symbolsTable,createMethod($3,RetVoid)); 
-								pushLevel(symbolsTable); 
-								returns = 0;
-								add_CodeLabel(lcode3d, newCode(LABEL), $3); // Mark to Label of Init of Method
-								insert_MethodL(listmlabel, $3, $3);
-					} param block {
-								popLevel(symbolsTable); 
-								if(returns==0) insertError(errorQ,toString("El metodo \"",$3,"\" debe tener al menos un return."));
-					}
+                                lastDefMethod=$3; 
+                                pushElement(errorQ,symbolsTable,createMethod($3,RetVoid)); 
+                                pushLevel(symbolsTable); 
+                                returns = 0;
+                                add_CodeLabel(lcode3d, newCode(LABEL), $3); // Mark to Label of Init of Method
+                                insert_MethodL(listmlabel, $3, $3);
+                    } param block {
+                                popLevel(symbolsTable); 
+                                if(returns==0) insertError(errorQ,toString("El metodo \"",$3,"\" debe tener al menos un return."));
+                    }
               ;
 
 param		  :    '(' {cantParams = 0; setAmountOfParameters(searchIdInSymbolsTable(errorQ,symbolsTable,lastDefMethod),0);} ')' 
-			  |    '(' {if (strcmp(lastDefMethod,"main") == 0)
-							insertError(errorQ,toString("El metodo \"main\" no debe contener parametros.","","")); cantParams = 0;}
-					parameters {setAmountOfParameters(searchIdInSymbolsTable(errorQ,symbolsTable,lastDefMethod),cantParams);} ')'
-			  ;
-              
-parameters    :		type ID {Attribute *aux = createParameter(searchIdInSymbolsTable(errorQ,symbolsTable,lastDefMethod),cantParams,$2,vaType);
-								if (aux != NULL) {pushElement(errorQ,symbolsTable,aux); cantParams++;}
-								else insertError(errorQ,toString("El identificador \"",$2,"\" no puede contener parametros/esa cantidad de parametros."));
-							}
+         |    '(' {if (strcmp(lastDefMethod,"main") == 0)
+                            insertError(errorQ,toString("El metodo \"main\" no debe contener parametros.","","")); cantParams = 0;}
+                    parameters {setAmountOfParameters(searchIdInSymbolsTable(errorQ,symbolsTable,lastDefMethod),cantParams);} ')'
+              ;
 
-			  |		type ID {Attribute *aux = createParameter(searchIdInSymbolsTable(errorQ,symbolsTable,lastDefMethod),cantParams,$2,vaType);
-								if (aux != NULL) {pushElement(errorQ,symbolsTable,aux); cantParams++;}
-								else insertError(errorQ,toString("El identificador \"",$2,"\" no puede contener parametros/esa cantidad de parametros."));
-							}
-							',' parameters 
-			  ;
+parameters    :		type ID {Attribute *aux = createParameter(searchIdInSymbolsTable(errorQ,symbolsTable,lastDefMethod),cantParams,$2,vaType);
+              if (aux != NULL) {pushElement(errorQ,symbolsTable,aux); cantParams++;}
+                                else insertError(errorQ,toString("El identificador \"",$2,"\" no puede contener parametros/esa cantidad de parametros."));
+                            }
+
+|		type ID {Attribute *aux = createParameter(searchIdInSymbolsTable(errorQ,symbolsTable,lastDefMethod),cantParams,$2,vaType);
+                                if (aux != NULL) {pushElement(errorQ,symbolsTable,aux); cantParams++;}
+                                else insertError(errorQ,toString("El identificador \"",$2,"\" no puede contener parametros/esa cantidad de parametros."));
+                            }
+                            ',' parameters 
+              ;
 
 block         :    '{' '}'
-			  |    '{' codeBlock '}' 
-			  ;
+              |    '{' codeBlock '}' 
+              ;
 
 codeBlock     :    fields_decls statements
               |    statements
@@ -264,56 +264,56 @@ statement     :    conditional
               |    {pushLevel(symbolsTable);} block {popLevel(symbolsTable);}
               |    PRINTT expression ';' { add_Print(lcode3d, newCode(PRINT), $2); }
               ;
-              
+
 action        :
               |    BREAK {
-							if (isEmpty(labelsWhile) && isEmpty(labelsFor))
-								insertError(errorQ,toString("Error. Solo se puede usar la sentencia \"break\" dentro de un ciclo.","",""));
-							else{
+                            if (isEmpty(labelsWhile) && isEmpty(labelsFor))
+                                insertError(errorQ,toString("Error. Solo se puede usar la sentencia \"break\" dentro de un ciclo.","",""));
+                            else{
                                 char* aux = pop(labelsWhile);
                                 char* aux2 = pop(labelsWhile);
-								add_CodeLabel(lcode3d, newCode(GOTO_LABEL), peek(labelsWhile)); //Go to char of End of While
+                                add_CodeLabel(lcode3d, newCode(GOTO_LABEL), peek(labelsWhile)); //Go to char of End of While
                                 push(labelsWhile, aux2);
                                 push(labelsWhile, aux);
                                 }
-					}
+                    }
               |    CONTINUE {
-							if (isEmpty(labelsWhile) && isEmpty(labelsFor))
+                            if (isEmpty(labelsWhile) && isEmpty(labelsFor))
                                 insertError(errorQ,toString("Error. Solo se puede usar la sentencia \"continue\" dentro de un ciclo.","",""));
-							else
-							{
+                            else
+                            {
                                 char *posLabel = pop(labelsWhile); //Label of End of While
-								add_CodeLabel(lcode3d, newCode(GOTO_LABEL), peek(labelsWhile)); //Go to char of Init of While
-								push(labelsWhile, posLabel);
-							} 
-					}
-			  |	   RETURNN {
-							returns++; 
-							if ((idNotFound == False) && (checkReturn(errorQ,symbolsTable,lastDefMethod) == 0))
-							{
-								Code3D *ret = newCode(RETURN);
-								setCodeLabel(ret, "   -   ");  /* Label "    -    " is added because there are no arguments */
-								add_code(lcode3d, ret);
-							}
-					}   
-			  |	   RETURNN expression {
-									returns++; 									
-									if (idNotFound == False && checkReturnExpression(errorQ,symbolsTable,lastDefMethod,$2) == 0)
-									{ 
-										Code3D *ret = newCode(RETURN_EXPR);
-										setCode2D(ret, $2, searchIdInSymbolsTable(errorQ,symbolsTable,lastDefMethod)); 
-										add_code(lcode3d, ret);  
-									}                           
-					}
+                                add_CodeLabel(lcode3d, newCode(GOTO_LABEL), peek(labelsWhile)); //Go to char of Init of While
+                                push(labelsWhile, posLabel);
+                            } 
+                    }
+              |	   RETURNN {
+                            returns++; 
+                            if ((idNotFound == False) && (checkReturn(errorQ,symbolsTable,lastDefMethod) == 0))
+                            {
+                                Code3D *ret = newCode(RETURN);
+                                setCodeLabel(ret, "   -   ");  /* Label "    -    " is added because there are no arguments */
+                                add_code(lcode3d, ret);
+                            }
+                    }   
+              |	   RETURNN expression {
+                                    returns++; 									
+                                    if (idNotFound == False && checkReturnExpression(errorQ,symbolsTable,lastDefMethod,$2) == 0)
+                                    { 
+                                        Code3D *ret = newCode(RETURN_EXPR);
+                                        setCode2D(ret, $2, searchIdInSymbolsTable(errorQ,symbolsTable,lastDefMethod)); 
+                                        add_code(lcode3d, ret);  
+                                    }                           
+                    }
               |    asignation 
               |    method_call                        
               ;
-              
+
 asignation    :    location assig_op expression {
-							controlAssignation(errorQ,lcode3d,$1,$2,$3);
-					}
-			  ;
-              
+              controlAssignation(errorQ,lcode3d,$1,$2,$3);
+                    }
+              ;
+
 assig_op      :    '=' {$$ = "=";} 
               |    PLUSEQUAL {$$ = "+=";}
               |    MINUSEQUAL {$$ = "-=";}
@@ -324,74 +324,74 @@ assig_op      :    '=' {$$ = "=";}
 /* -------------------- CONDITIONALS AND CICLES ------------------------------ */
 
 conditional   :    IF '(' expression { 
-					controlType(errorQ,$3,Bool,"if",1);
+              controlType(errorQ,$3,Bool,"if",1);
                     char *ifLabel = newLabelName("if");
                     char *elseLabel = newLabelName("else");
-					char *endLabel = newLabelName("end_if");
+                    char *endLabel = newLabelName("end_if");
                     add_CodeLabel(lcode3d, newCode(LABEL), ifLabel);
-					add_CodeLabelCond(lcode3d, newCode(GOTO_LABEL_COND), $3, elseLabel); 
+                    add_CodeLabelCond(lcode3d, newCode(GOTO_LABEL_COND), $3, elseLabel); 
                     push(labelsCYC, endLabel);
                     push(labelsCYC, elseLabel);
-				} ')' 
-					block optional 
-			  ;
+                } ')' 
+                    block optional 
+              ;
 
 optional	  :		{
-				add_CodeLabel(lcode3d, newCode(LABEL), pop(labelsCYC)); // Mark to char of End
-				push(returnStack, pop(labelsCYC));
-			}
-		  |	   	ELSE {
-					char* elseLabel = pop(labelsCYC);
-					add_CodeLabel(lcode3d, newCode(GOTO_LABEL), peek(labelsCYC)); //Go to char of Else
-					add_CodeLabel(lcode3d, newCode(LABEL), elseLabel); // Mark to char of Else
+           add_CodeLabel(lcode3d, newCode(LABEL), pop(labelsCYC)); // Mark to char of End
+                push(returnStack, pop(labelsCYC));
+            }
+          |	   	ELSE {
+                    char* elseLabel = pop(labelsCYC);
+                    add_CodeLabel(lcode3d, newCode(GOTO_LABEL), peek(labelsCYC)); //Go to char of Else
+                    add_CodeLabel(lcode3d, newCode(LABEL), elseLabel); // Mark to char of Else
                     } block{	
-				char* aux = pop(labelsCYC);
-				add_CodeLabel(lcode3d, newCode(LABEL), aux); // Mark to char of End
-				push(returnStack, aux);
-			}
-			  ;
+                char* aux = pop(labelsCYC);
+                add_CodeLabel(lcode3d, newCode(LABEL), aux); // Mark to char of End
+                push(returnStack, aux);
+            }
+              ;
 
 iteration     :    WHILE {
-                                char *whileLabel = newLabelName("while"); 
+              char *whileLabel = newLabelName("while"); 
                                 add_CodeLabel(lcode3d, newCode(LABEL), whileLabel); // label of While
                                 push(labelsWhile, whileLabel);
-								push(labelsWhile, intToString(codeSize(lcode3d)));
+                                push(labelsWhile, intToString(codeSize(lcode3d)));
                     } 
                    expression { 
                                 char *endWhile = newLabelName("end_while");
                                 char *pos = pop(labelsWhile);
                                 char *whileLabel = pop(labelsWhile);
                                 push(labelsWhile, endWhile);
-								push(labelsWhile, whileLabel); 
-								push(labelsWhile, pos);
-								controlType(errorQ,$3,Bool,"while",1);
+                                push(labelsWhile, whileLabel); 
+                                push(labelsWhile, pos);
+                                controlType(errorQ,$3,Bool,"while",1);
                                 add_CodeLabelCond(lcode3d, newCode(GOTO_LABEL_COND), $3, endWhile); // Go to label of Expression
-					} block {							
+                    } block {							
                             add_code(lcode3d, get_code(lcode3d, atoi(pop(labelsWhile))+1));
-							add_CodeLabel(lcode3d, newCode(GOTO_LABEL), pop(labelsWhile)); // Go to label of while
-							add_CodeLabel(lcode3d, newCode(LABEL), pop(labelsWhile)); // label_end of while
-					}
+                            add_CodeLabel(lcode3d, newCode(GOTO_LABEL), pop(labelsWhile)); // Go to label of while
+                            add_CodeLabel(lcode3d, newCode(LABEL), pop(labelsWhile)); // label_end of while
+                    }
               |    FOR ID {
-						if (getAttributeType(getVariableAttribute(errorQ,symbolsTable,$2)) != Int)
-							insertError(errorQ,toString("El identificador \"", $2, "\" no pertenece a una variable de tipo \"int\""));
+                        if (getAttributeType(getVariableAttribute(errorQ,symbolsTable,$2)) != Int)
+                            insertError(errorQ,toString("El identificador \"", $2, "\" no pertenece a una variable de tipo \"int\""));
                         /* It musn't have the same treatment that while? */
-					} '=' expression ',' expression {
-									controlType(errorQ,$5,Int,"for",2); controlType(errorQ,$7,Int,"for",3); 
-									char *forLabel = newLabelName("for");
+                    } '=' expression ',' expression {
+                                    controlType(errorQ,$5,Int,"for",2); controlType(errorQ,$7,Int,"for",3); 
+                                    char *forLabel = newLabelName("for");
                                     char *endLabel = newLabelName("end_for");
-									push(labelsFor, endLabel);
+                                    push(labelsFor, endLabel);
                                     push(labelsFor, forLabel);
                                     push(labelsFor, intToString(codeSize(lcode3d)));
                                     add_Assignation(lcode3d, $5, getVariableAttribute(errorQ, symbolsTable, $2));
-									Attribute *res = returnMinorComparison(errorQ, lcode3d, getVariableAttribute(errorQ, symbolsTable, $2), $7);
+                                    Attribute *res = returnMinorComparison(errorQ, lcode3d, getVariableAttribute(errorQ, symbolsTable, $2), $7);
                                     add_CodeLabel(lcode3d, newCode(LABEL), forLabel);
-									add_CodeLabelCond(lcode3d, newCode(GOTO_LABEL_COND), res, endLabel); // Go to label of Expression
-					} block {
+                                    add_CodeLabelCond(lcode3d, newCode(GOTO_LABEL_COND), res, endLabel); // Go to label of Expression
+                    } block {
                             controlAssignation(errorQ,lcode3d,getVariableAttribute(errorQ,symbolsTable,$2),"+=",returnValue(lcode3d,Int,"1"));
                             add_code(lcode3d, get_code(lcode3d, atoi(pop(labelsFor))+1));
-							add_CodeLabel(lcode3d, newCode(GOTO_LABEL), pop(labelsFor)); // Go to label of For
-							add_CodeLabel(lcode3d, newCode(LABEL), pop(labelsFor)); // label_end of For
-					}
+                            add_CodeLabel(lcode3d, newCode(GOTO_LABEL), pop(labelsFor)); // Go to label of For
+                            add_CodeLabel(lcode3d, newCode(LABEL), pop(labelsFor)); // label_end of For
+                    }
               ;                                                               
 
 /* -------------------- END OF CONDITIONALS AND CICLES ------------------------------- */
@@ -400,77 +400,77 @@ iteration     :    WHILE {
 
 location      :    ID {$$ = getVariableAttribute(errorQ, symbolsTable, $1);}
               |    ID '[' expression ']' { $$ = checkArrayPos(errorQ,symbolsTable,lcode3d,$1,$3);}
-			  ;
+              ;
 
 method_call   :	   ID '(' ')' {
-								cantParams=0; 
-								pushString(paramsStack,intToString(cantParams)); /*ver si esta linea debe ir o no*/
-								lastCalledMethod=$1; 
-								add_CodeLabel(lcode3d, newCode(GOTO_METHOD), get_Label(listmlabel, $1)); //Go to char of Init of Method
-								$$ = checkAndGetMethodRetAttribute(errorQ,symbolsTable,lcode3d,$1,0);
-					}
+                                cantParams=0; 
+                                pushString(paramsStack,intToString(cantParams)); /*ver si esta linea debe ir o no*/
+                                lastCalledMethod=$1; 
+                                add_CodeLabel(lcode3d, newCode(GOTO_METHOD), get_Label(listmlabel, $1)); //Go to char of Init of Method
+                                $$ = checkAndGetMethodRetAttribute(errorQ,symbolsTable,lcode3d,$1,0);
+                    }
 
-              |    ID '(' {if (searchIdInSymbolsTable(errorQ,symbolsTable,$1) == NULL) 
-								idNotFound = True; 
-							else
-							{
-								pushString(paramsStack,intToString(cantParams));
-								cantParams=0;								
-								pushString(methodsIDStack,lastCalledMethod);
-								lastCalledMethod = $1;
-							}
-					} expression_aux ')' {
-							if (idNotFound != True)
-							{
-								add_CodeLabel(lcode3d, newCode(GOTO_METHOD), get_Label(listmlabel, $1)); //Go to char of Init of Method 
-								$$ = checkAndGetMethodRetAttribute(errorQ,symbolsTable,lcode3d,$1,cantParams); 
-								cantParams=atoi(popString(paramsStack));
-							}
-							else
-							{
-								$$ = createVariable((char*) getVariableName(),Int); 
-								idNotFound = False;
-							}
-					} 
+|    ID '(' {if (searchIdInSymbolsTable(errorQ,symbolsTable,$1) == NULL) 
+                                idNotFound = True; 
+                            else
+                            {
+                                pushString(paramsStack,intToString(cantParams));
+                                cantParams=0;								
+                                pushString(methodsIDStack,lastCalledMethod);
+                                lastCalledMethod = $1;
+                            }
+                    } expression_aux ')' {
+                            if (idNotFound != True)
+                            {
+                                add_CodeLabel(lcode3d, newCode(GOTO_METHOD), get_Label(listmlabel, $1)); //Go to char of Init of Method 
+                                $$ = checkAndGetMethodRetAttribute(errorQ,symbolsTable,lcode3d,$1,cantParams); 
+                                cantParams=atoi(popString(paramsStack));
+                            }
+                            else
+                            {
+                                $$ = createVariable((char*) getVariableName(),Int); 
+                                idNotFound = False;
+                            }
+                    } 
 
-              |    EXTERNINVK '(' STRING ',' typevoid ')' {/*if (mType != RetVoid) $$=createVariable("",mType);*/
+|    EXTERNINVK '(' STRING ',' typevoid ')' {/*if (mType != RetVoid) $$=createVariable("",mType);*/
                                                             /*add_CodeLabel(lcode3d, newCode(LABEL), newLabelName("extern_invk"));*/
-															$$=createVariable((char*) getVariableName(),Int);
-														}
+                                                            $$=createVariable((char*) getVariableName(),Int);
+                                                        }
               |    EXTERNINVK '(' STRING ',' typevoid ',' externinvk_arg ')' {/*if (mType != RetVoid) $$=createVariable("",mType);*/
                                                             /*add_CodeLabel(lcode3d, newCode(LABEL), newLabelName("extern_invk"));*/
-															$$=createVariable((char*) getVariableName(),Int);
-															}
+                                                            $$=createVariable((char*) getVariableName(),Int);
+                                                            }
               ;
 
 expression_aux:    expression {
-								if (idNotFound != True)
-								{
-									correctParamBC(errorQ,symbolsTable,$1,lastCalledMethod,cantParams); 
-									Attribute *param = (Attribute*) malloc (sizeof(Attribute));
-									param->decl.variable = ((*searchIdInSymbolsTable(errorQ,symbolsTable,lastCalledMethod)).decl.method.parameters[cantParams]); // obtencion del parametro formal.
-									if (getAttributeType($1) == Float)
-										add_MethodCall(lcode3d, newCode(PARAM_ASSIGN_FLOAT), $1, param);
-									if (getAttributeType($1) == Int)
-										add_MethodCall(lcode3d, newCode(PARAM_ASSIGN_INT), $1, param); 
-									cantParams++; /* This sentence must be in the last line because parameter's numbers start from 0 */
-								}
-					}
-			  |    expression {
-								if (idNotFound != True)
-								{
-									correctParamIC(errorQ,symbolsTable,$1,lastCalledMethod,cantParams); 
-									Attribute *param = (Attribute*) malloc (sizeof(Attribute));
-									param->decl.variable = ((*searchIdInSymbolsTable(errorQ,symbolsTable,lastCalledMethod)).decl.method.parameters[cantParams]); // obtencion del parametro formal.
-									if (getAttributeType($1) == Float)
-										add_MethodCall(lcode3d, newCode(PARAM_ASSIGN_FLOAT), $1, param);
-									if (getAttributeType($1) == Int)
-										add_MethodCall(lcode3d, newCode(PARAM_ASSIGN_INT), $1, param); 
-									cantParams++; /* This sentence must be in the last line because parameter's numbers start from 0 */
-								} 
-					} ',' expression_aux 
-			  ;
-              
+              if (idNotFound != True)
+                                {
+                                    correctParamBC(errorQ,symbolsTable,$1,lastCalledMethod,cantParams); 
+                                    Attribute *param = (Attribute*) malloc (sizeof(Attribute));
+                                    param->decl.variable = ((*searchIdInSymbolsTable(errorQ,symbolsTable,lastCalledMethod)).decl.method.parameters[cantParams]); // obtencion del parametro formal.
+                                    if (getAttributeType($1) == Float)
+                                        add_MethodCall(lcode3d, newCode(PARAM_ASSIGN_FLOAT), $1, param);
+                                    if (getAttributeType($1) == Int)
+                                        add_MethodCall(lcode3d, newCode(PARAM_ASSIGN_INT), $1, param); 
+                                    cantParams++; /* This sentence must be in the last line because parameter's numbers start from 0 */
+                                }
+                    }
+              |    expression {
+                                if (idNotFound != True)
+                                {
+                                    correctParamIC(errorQ,symbolsTable,$1,lastCalledMethod,cantParams); 
+                                    Attribute *param = (Attribute*) malloc (sizeof(Attribute));
+                                    param->decl.variable = ((*searchIdInSymbolsTable(errorQ,symbolsTable,lastCalledMethod)).decl.method.parameters[cantParams]); // obtencion del parametro formal.
+                                    if (getAttributeType($1) == Float)
+                                        add_MethodCall(lcode3d, newCode(PARAM_ASSIGN_FLOAT), $1, param);
+                                    if (getAttributeType($1) == Int)
+                                        add_MethodCall(lcode3d, newCode(PARAM_ASSIGN_INT), $1, param); 
+                                    cantParams++; /* This sentence must be in the last line because parameter's numbers start from 0 */
+                                } 
+                    } ',' expression_aux 
+              ;
+
 typevoid      :    type                            
               |    VOID {mType = RetVoid;} 
               ;
@@ -478,11 +478,11 @@ typevoid      :    type
 externinvk_arg:    arg                           
               |    arg ',' externinvk_arg
               ;
-						
+
 arg           :    expression
               |    STRING                     
               ;
-              
+
 expression    :    conjunction					{$$ = $1;}                             
               |    expression ORR conjunction	{$$ = returnOr(errorQ, lcode3d, $1, $3);}
               ;
@@ -526,13 +526,13 @@ primary       :    INTEGER			{$$ = returnValue(lcode3d, Int, $1);}
               |    ID '[' expression ']'  {$$ = checkArrayPos(errorQ,symbolsTable,lcode3d,$1,$3);}
               |    '(' expression ')'  {$$ = $2;}
               |    method_call      {
-										if (methodReturnType(errorQ,symbolsTable,lastCalledMethod) == RetVoid)
-										{	insertError(errorQ,toString("El metodo \"",lastCalledMethod,"\" no puede ser usado en una expresion ya que retorna void."));
-											$$ = createVariable("",Int); /* creamos variables int por defecto ------------------------------- */
-										}
-										else $$ = $1;
-										lastCalledMethod=popString(methodsIDStack);
-									}
+                                        if (methodReturnType(errorQ,symbolsTable,lastCalledMethod) == RetVoid)
+                                        {	insertError(errorQ,toString("El metodo \"",lastCalledMethod,"\" no puede ser usado en una expresion ya que retorna void."));
+                                            $$ = createVariable("",Int); /* creamos variables int por defecto ------------------------------- */
+                                        }
+                                        else $$ = $1;
+                                        lastCalledMethod=popString(methodsIDStack);
+                                    }
               ;
 
 /* ------------------------- END OF EXPRESSIONS ------------------------------- */

@@ -7,7 +7,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include "Assembler.h"
-#include "Translate.h"
 #include "../Code3D/codespecs.h"
 
 FILE *file;
@@ -23,39 +22,39 @@ int generateOperation(int position)
     Code3D*	code = get_code(codeList,position);
     switch ((*code).command)
     {
-            /* LOAD_CONST */
+        /* LOAD_CONST */
         case 0:
-			load_Const_Translate(file, code);
+            load_Const_Translate(file, code);
             break;
 
             /* ASSIGNATION_INT */
         case 1: 
-			translateAssignationInt(file, code); 
-			break;
+            translateAssignationInt(file, code); 
+            break;
 
             /* MINUS_INT */
         case 2:
-			translateMinusInt(file, code);
+            translateMinusInt(file, code);
             break;
 
             /* ADD_INT */
         case 3:
-			add_Int_Translate(file, code);
+            add_Int_Translate(file, code);
             break;
 
             /* MULT_INT */
         case 4:
-			mult_Int_Translate(file, code);
+            mult_Int_Translate(file, code);
             break;
 
             /* DIV_INT */
         case 5:
-			translateDivInt(file, code);
+            translateDivInt(file, code);
             break;
 
             /* MOD_INT */
         case 6:
-			translateModInt(file, code);
+            translateModInt(file, code);
             break;
 
             /* MINUS_FLOAT */
@@ -80,79 +79,79 @@ int generateOperation(int position)
 
             /* EQ_INT */
         case 11:
-			translateEqualInt(file, code);
+            translateEqualInt(file, code);
             break;
 
             /* DIST_INT */
         case 12:
-			translateDistinctInt(file, code);
+            translateDistinctInt(file, code);
             break;
 
             /* GREATER_INT */
         case 13:
-			greater_IntTranslate(file, code);
+            greater_IntTranslate(file, code);
             break;
 
             /* LESSER_INT */
         case 14: 
-			translateLesserInt(file, code);
+            translateLesserInt(file, code);
             break;
 
             /* GEQ_INT */
         case 15:
-			greater_Eq_IntTranslate(file, code);
+            greater_Eq_IntTranslate(file, code);
             break;
 
-			/* LESSER_EQ_INT */
+            /* LESSER_EQ_INT */
         case 16:
-			translateLesserOrEqualInt(file, code);
+            translateLesserOrEqualInt(file, code);
             break;
 
             /* OR */
         case 17:
-			translateOr(file, code);
+            translateOr(file, code);
             break;
 
             /* AND */
         case 18:
-			translateAnd(file, code);
+            translateAnd(file, code);
             break;
 
             /* NOT */
         case 19: 
-			translateNot(file, code);
+            translateNot(file, code);
             break;
 
             /* LABEL */
         case 20: 
-            writeLabel(file, code);
+            writeLabel(file, labelList, code);
             break;
 
             /* GOTO_LABEL */
         case 21: 
-			translateGotoLabel(file, code);
+            translateGotoLabel(file, code);
             break;
 
             /* GOTO_LABEL_COND */
         case 22:
-			translateGotoLabelCondition(file, code);
+            translateGotoLabelCondition(file, code);
             break;
 
             /* RETURN */
         case 23: 
-			translateReturn(file, code);
+            translateReturn(file, code);
             break;
 
             /* NEG_INT */
         case 24:
-			neg_Int_Translate(file, code);
+            neg_Int_Translate(file, code);
             break;
 
             /* NEG_FLOAT */
         case 25: 
-			neg_Float_Translate(file, code);
+            neg_Float_Translate(file, code);
             break;
-            
+
             /* PARAM_ASSIGN_INT */
             /* --------------------------------------- MUST BE IMPLEMENTED --------------------------------------- */
         case 26: 
@@ -163,36 +162,36 @@ int generateOperation(int position)
         case 27:
             printOperation(file, code);
             break;
-			
-			/* LOAD_ARRAY */
+
+            /* LOAD_ARRAY */
             /* --------------------------------------- MUST BE IMPLEMENTED --------------------------------------- */
-		case 28: 
+        case 28: 
             translateLoadArray(file, code);
             break;
-			
-		    /* RETURN_EXPR */
+
+            /* RETURN_EXPR */
         case 29:
-			translateReturnExpression(file, code);
+            translateReturnExpression(file, code);
             break;
 
-			/* GOTO_METHOD */
-		case 30: 
-			goTo_Method(file, code);
+            /* GOTO_METHOD */
+        case 30: 
+            goTo_Method(file, code);
             break;
-			
-		    /* EQ_FLOAT */
+
+            /* EQ_FLOAT */
         case 31:
-			eq_FloatTranslate(file, code);
+            eq_FloatTranslate(file, code);
             break;
 
             /* DIST_FLOAT */
         case 32:
-			dist_FloatTranslate(file, code);
+            dist_FloatTranslate(file, code);
             break;
 
             /* GREATER_FLOAT */
         case 33:
-			greater_FloatTranslate(file, code);
+            greater_FloatTranslate(file, code);
             break;
 
             /* LESSER_FLOAT */
@@ -202,21 +201,21 @@ int generateOperation(int position)
 
             /* GEQ_FLOAT */
         case 35:
-			greater_Eq_FloatTranslate(file, code);
+            greater_Eq_FloatTranslate(file, code);
             break;
 
             /* LESSER_EQ_FLOAT */
         case 36:
-			translateLesserOrEqualFloat(file, code);
-            break;
-			
-			/* ASSIGNATION_FLOAT */
-        case 37:
-			assignation_FloatTranslate(file, code);
+            translateLesserOrEqualFloat(file, code);
             break;
 
-			/* PARAM_ASSIGN_FLOAT */
-			/* --------------------------------------- MUST BE IMPLEMENTED --------------------------------------- */
+            /* ASSIGNATION_FLOAT */
+        case 37:
+            assignation_FloatTranslate(file, code);
+            break;
+
+            /* PARAM_ASSIGN_FLOAT */
+            /* --------------------------------------- MUST BE IMPLEMENTED --------------------------------------- */
         case 38:
             break;
     }
