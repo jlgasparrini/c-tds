@@ -1,4 +1,7 @@
+class helloWorld {
+
 void main(){
-    int i;
-    i = 78;
+    print true;
+    return;
+}
 }

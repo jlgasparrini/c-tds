@@ -139,37 +139,31 @@ void translateNot(FILE* file, Code3D* code)
 /* Puts in the file the translation of the PRINT action */
 void printOperation(FILE *file, Code3D *code)
 {
-    char* aux;
-    writeCodeInFile(file, translate("pushq", "%rbp", ""));
     if (getAttributeType(getAttribute(code, 1)) == Int)
     {
-        aux = intToString(getIntVal(getAttribute(code, 1)));
-        writeCodeInFile(file, translate("movl", concat(concat("$", aux), ", "), "%esi"));
-        writeCodeInFile(file, translate("movl", concat(concat("$", ".INT"), ", "), "%edi"));
+        writeCodeInFile(file, translate("movl", offset(code, 1), "%esi"));
+        writeCodeInFile(file, translate("movl", concat("$", ".INT"), "%edi"));
     }
     if (getAttributeType(getAttribute(code, 1)) == Float)
     {
-        //DOESN'T WORKING
-        //aux = floatToString(getFloatVal(getAttribute(code, 1)));
-        //writeCodeInFile(file, translate("movl", concat(concat("$", aux), ", "), "%esi"));
-        //writeCodeInFile(file, translate("movl", concat(concat("$", ".FLOAT"), ", "), "%edi"));
+        /* - -- - - - - - - - - - - -  DOESN'T WORKING!!!!!! - - - - - - -- - - - - - - -*/
+        //Esto tiene que ser de la forma                    movsd .LC0(%rip), %xmm0
+        //                                                  .LC0:
+        //                                                       .long	4172646627
+        //                                                       .long	1072693268
+        //                                                       .text
+        writeCodeInFile(file, translate("movsd", "%xmm0", ""));
+        writeCodeInFile(file, translate("movl", concat("$", ".FLOAT"), "%edi"));
+        writeCodeInFile(file, translate("movl", "$1", "%eax"));
     }
     if (getAttributeType(getAttribute(code, 1)) == Bool)
     {
-        //DOESN'T WORKING
-        //if (getBoolVal(getAttribute(code, 1) == True))
-        //{
-        // aux = "True";
-        // writeCodeInFile(file, translate("movl", concat(concat("$", aux), ", "), "%esi"));
-        //}
-        //if (getBoolVal(getAttribute(code,1)) == False)
-        //{
-        // aux = "False";
-        // writeCodeInFile(file, translate("movl", concat(concat("$", aux), ", "), "%esi"));
-        //}
-        // writeCodeInFile(file, translate("movl", concat(concat("$", ".BOOL"), ", "), "%edi"));
+        if (getBoolVal((*(*code).param1).val.attri) == True)
+            writeCodeInFile(file, translate("movl", concat("$", ".BOOL_TRUE"), "%edi"));
+        if (getBoolVal((*(*code).param1).val.attri) == False)
+            writeCodeInFile(file, translate("movl", concat("$", ".BOOL_FALSE"), "%edi"));
     }
-    writeCodeInFile(file, translate("call", "printf", ""));
+    writeCodeInFile(file, translate("call", "puts", ""));
 }
 
 /* Puts in the file the translation of the LABEL action */

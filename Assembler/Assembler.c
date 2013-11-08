@@ -20,7 +20,7 @@ int size;
 int generateOperation(int position)
 {
     Code3D*	code = get_code(codeList,position);
-    printf("ENTRO POR ACA!         %i   ==    %s\n", code->command, getCodeByID(code->command));
+//    printf("Genero la operacion....!         %i   ==    %s\n", code->command, getCodeByID(code->command));
     switch ((*code).command)
     {
         /* LOAD_CONST */
@@ -233,11 +233,13 @@ void initAssembler(ListMLabel *labelL, LCode3D *codeL, Stack *stack, char* nameO
     writeCodeInFile(file, translate(".file", concat(concat("\"", concat(nameOfFile, ".s")), "\""), ""));
     writeCodeInFile(file, translate(".global", "main", ""));
     writeCodeInFile(file, ".INT:\n");
-    writeCodeInFile(file, translate("\t.string", "\"Print. El valor entero es: %d \\n\"", ""));
+    writeCodeInFile(file, translate(".string", "\"Print. El valor entero es: %d \\n\"", ""));
     writeCodeInFile(file, ".FLOAT:\n");
-    writeCodeInFile(file, translate("\t.string", "\"Print. El valor flotante es: %d \\n\"", ""));
-    writeCodeInFile(file, ".BOOL:\n");
-    writeCodeInFile(file, translate("\t.string", "\"Print. El valor booleano es: %d \\n\"", ""));
+    writeCodeInFile(file, translate(".string", "\"Print. El valor flotante es: %f \\n\"", ""));
+    writeCodeInFile(file, ".BOOL_TRUE:\n");
+    writeCodeInFile(file, translate(".string", "\"Print. El valor booleano es: True\"", ""));
+    writeCodeInFile(file, ".BOOL_FALSE:\n");
+    writeCodeInFile(file, translate(".string", "\"Print. El valor booleano es: False\"", ""));
     labelList = labelL;
     codeList = codeL;
     returnStack = stack;
