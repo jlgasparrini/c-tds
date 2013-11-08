@@ -74,7 +74,6 @@ char* offset(Code3D* code, int param)
     return concat (result, "(%rbp)");
 }
 
-
 /*-----------------------------------------------------------------------*/
 /**"LOAD_CONST %s %s\n" */
 void load_Const_Translate(FILE* file, Code3D* code)
@@ -163,7 +162,7 @@ void printOperation(FILE *file, Code3D *code)
         if (getBoolVal((*(*code).param1).val.attri) == False)
             writeCodeInFile(file, translate("movl", concat("$", ".BOOL_FALSE"), "%edi"));
     }
-    writeCodeInFile(file, translate("call", "puts", ""));
+    writeCodeInFile(file, translate("call", "printf", ""));
 }
 
 /* Puts in the file the translation of the LABEL action */
@@ -203,8 +202,6 @@ void goTo_Method (FILE* file, Code3D* code)
 {
     writeCodeInFile(file, translate("call", getLabel(code,1), ""));
 }
-
-
 
 /********************************************************************************************/
 /********************************* INT OPERATIONS TREATEMENT ********************************/
@@ -282,7 +279,7 @@ void translateModInt(FILE* file, Code3D* code)
     writeCodeInFile(file, translate("mov", "$0", "%rdx"));
     writeCodeInFile(file, translate("mov", "$0", "%rax"));
     writeCodeInFile(file, translate("mov", offset(code,1) ,"%rax"));
-    writeCodeInFile(file, translate("idiv", offset(code,2), ""));
+    writeCodeInFile(file, translate("idivl", offset(code,2), ""));
     writeCodeInFile(file, translate("mov", "%rdx", offset(code,3)));
 }
 
@@ -293,7 +290,7 @@ void translateDivInt(FILE* file, Code3D* code)
     writeCodeInFile(file, translate("mov", "$0", "%rdx"));
     writeCodeInFile(file, translate("mov", "$0", "%rax"));
     writeCodeInFile(file, translate("mov", offset(code,1) ,"%rax"));
-    writeCodeInFile(file, translate("idiv", offset(code,2), ""));
+    writeCodeInFile(file, translate("idivl", offset(code,2), ""));
     writeCodeInFile(file, translate("mov", "%rax", offset(code,3)));
 }
 

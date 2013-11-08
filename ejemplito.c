@@ -1,7 +1,9 @@
 class helloWorld {
 
 void main(){
-    print true;
+    i = 4;
+    j = 3;
+    print j - i;
     return;
 }
 }
