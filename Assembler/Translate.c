@@ -101,7 +101,7 @@ void translateReturn(FILE* file, Code3D* code)
 {
     writeCodeInFile(file, translate("mov", "$0", "%rax"));
     writeCodeInFile(file, translate("popq", "%rbp", ""));
-    writeCodeInFile(file, translate("leave","",""));
+    //writeCodeInFile(file, translate("leave","","")); ESTA SOLO SE DEBE HACER CUANDO HAY ALGO DEL ESTILO    i = inc(i);
     writeCodeInFile(file, translate("ret","",""));
 }
 
@@ -177,11 +177,11 @@ void writeLabel(FILE *file, ListMLabel *labelList, Code3D *code)
 {
     if (strcmp(get_Label(labelList, getLabel(code, 1)), "NULL") == 0)
     {
-        writeCodeInFile(file, concat(getLabel(code,1), ":"));
+        writeCodeInFile(file, concat(getLabel(code,1), ":\n"));
     }
     else
     {
-        writeCodeInFile(file, concat(getLabel(code,1), ":"));
+        writeCodeInFile(file, concat(getLabel(code,1), ":\n"));
         writeCodeInFile(file, translate("pushq", "%rbp", ""));
         writeCodeInFile(file, translate("movq", "%rsp", "%rbp"));
     }

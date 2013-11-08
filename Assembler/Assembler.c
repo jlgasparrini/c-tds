@@ -20,6 +20,7 @@ int size;
 int generateOperation(int position)
 {
     Code3D*	code = get_code(codeList,position);
+    printf("ENTRO POR ACA!         %i   ==    %s\n", code->command, getCodeByID(code->command));
     switch ((*code).command)
     {
         /* LOAD_CONST */
@@ -242,7 +243,7 @@ void initAssembler(ListMLabel *labelL, LCode3D *codeL, Stack *stack, char* nameO
     returnStack = stack;
     size = codeSize(codeL);
     int i = 0;
-    while (i < size - 1)
+    while (i < size)
     {       
         generateOperation(i);
         i++;
