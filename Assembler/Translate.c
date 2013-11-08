@@ -27,11 +27,6 @@ void writeCodeInFile(FILE* file, char* code)
     fprintf(file,"%s", code);
 }
 
-void writeBlank(FILE* file)
-{
-    fprintf(file, "\n");
-}
-
 /* Returns the respective operation in assembly code */
 char* translate(char* operation, char* code1, char* code2)
 {

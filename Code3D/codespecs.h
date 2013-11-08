@@ -47,6 +47,7 @@
 #define LEQ_FLOAT          36
 #define ASSIGNATION_FLOAT  37 
 #define PARAM_ASSIGN_FLOAT 38
+#define ASSIGNATION_BOOL   39 
 
 /**Returns the respective code of an ID */
 char* getCodeByID(int ID);

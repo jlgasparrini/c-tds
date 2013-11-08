@@ -32,14 +32,9 @@ int runOperation(int position)
                 setBoolVal(getAttribute(code,2), (*(*code).param1).val.boolAttri);
             return position + 1;
 
-            /* ASSIGNATION */
+            /* ASSIGNATION_INT */
         case 1: 
-            if (getAttributeType(getAttribute(code,1)) == Int)
-                setIntVal(getAttribute(code,2), getIntVal(getAttribute(code,1)));
-            if (getAttributeType(getAttribute(code,1)) == Float)
-                setFloatVal(getAttribute(code,2), getFloatVal(getAttribute(code,1)));
-            if (getAttributeType(getAttribute(code,1)) == Bool)
-                setBoolVal(getAttribute(code,2), getBoolVal(getAttribute(code,1)));
+            setIntVal(getAttribute(code,2), getIntVal(getAttribute(code,1)));
             return position + 1;
 
             /* MINUS_INT */
@@ -241,6 +236,18 @@ int runOperation(int position)
             /* Save on the stack the place where treatment must continue after the method call */
             pushString(methodsCallStack, intToString(position + 1));
             return searchByLabel((*codeList).codes, getLabel(code,1));
+
+
+            /* ASSIGNATION_FLOAT */
+        case 37: 
+            setFloatVal(getAttribute(code,2), getFloatVal(getAttribute(code,1)));
+            return position + 1;
+
+            /* ASSIGNATION_BOOL */
+        case 39: 
+            setBoolVal(getAttribute(code,2), getBoolVal(getAttribute(code,1)));
+            return position + 1;
+
     }
 
 }
