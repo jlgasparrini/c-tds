@@ -439,7 +439,7 @@ method_call   :	   ID '(' ')' {
                                 $$ = checkAndGetMethodRetAttribute(errorQ,symbolsTable,lcode3d,$1,0);
                     }
 
-|    ID '(' {if (searchIdInSymbolsTable(errorQ,symbolsTable,$1) == NULL) 
+				|    ID '(' {if (searchIdInSymbolsTable(errorQ,symbolsTable,$1) == NULL) 
                                 idNotFound = True; 
                             else
                             {
@@ -462,15 +462,15 @@ method_call   :	   ID '(' ')' {
                             }
                     } 
 
-|    EXTERNINVK '(' STRING ',' typevoid ')' {/*if (mType != RetVoid) $$=createVariable("",mType);*/
+				|    EXTERNINVK '(' STRING ',' typevoid ')' {/*if (mType != RetVoid) $$=createVariable("",mType);*/
                                                             /*add_CodeLabel(lcode3d, newCode(LABEL), newLabelName("extern_invk"));*/
                                                             $$=createVariable((char*) getVariableName(),Int);
                                                         }
-              |    EXTERNINVK '(' STRING ',' typevoid ',' externinvk_arg ')' {/*if (mType != RetVoid) $$=createVariable("",mType);*/
+				|    EXTERNINVK '(' STRING ',' typevoid ',' externinvk_arg ')' {/*if (mType != RetVoid) $$=createVariable("",mType);*/
                                                             /*add_CodeLabel(lcode3d, newCode(LABEL), newLabelName("extern_invk"));*/
                                                             $$=createVariable((char*) getVariableName(),Int);
                                                             }
-              ;
+				;
 
 expression_aux:    expression {
                                 if (idNotFound != True)

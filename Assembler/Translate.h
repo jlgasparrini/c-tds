@@ -28,14 +28,14 @@ void translateAnd(FILE* file, Code3D* code);
 void translateNot(FILE* file, Code3D* code);
 void printOperation(FILE *file, Code3D *code);
 void writeLabel(FILE *file, ListMLabel *labelList, Code3D *code);
-void translateParamAssign(FILE *file, Code3D *code);
 void translateLoadArray(FILE *file, Code3D *code);
 void goTo_Method (FILE* file, Code3D* code);
 
 /********************************************************************************************/
 /********************************* INT OPERATIONS TREATEMENT ********************************/
 /********************************************************************************************/
-void translateAssignationInt(FILE* archivo, Code3D* code);
+void translateAssignationInt(FILE* file, Code3D* code);
+void translateParamAssignInt(FILE *file, Code3D *code);
 void neg_Int_Translate(FILE* file, Code3D* code);
 void add_Int_Translate(FILE* file, Code3D* code);
 void mult_Int_Translate(FILE* file, Code3D* code);
@@ -53,6 +53,7 @@ void translateDistinctInt(FILE* file, Code3D* code);
 /********************************* FLOAT OPERATIONS TREATEMENT ******************************/
 /********************************************************************************************/
 void assignation_FloatTranslate(FILE* file, Code3D* code);
+void translateParamAssignFloat(FILE *file, Code3D *code);
 void neg_Float_Translate(FILE* file, Code3D* code);
 void eq_FloatTranslate(FILE* file, Code3D* code);
 void dist_FloatTranslate(FILE* file, Code3D* code);
