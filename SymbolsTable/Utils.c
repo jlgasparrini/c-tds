@@ -182,7 +182,7 @@ char* floatToString(float value)
 /* Returns 0 if the type parameter in "paramSize" position of the method's parameters is equal to the type of "var" 
    and the amount of params are equal.
    Returns 1 otherwise */
-unsigned char correctParamBC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attribute *attr, char* lastCalledMethod, unsigned char paramSize)
+void correctParamBC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, LCode3D *lcode3d, Attribute *attr, char* lastCalledMethod, unsigned char paramSize)
 {
     Attribute *aux = searchIdInSymbolsTable(eq, aSymbolsTable, lastCalledMethod);
     if(aux != NULL) 
@@ -193,7 +193,16 @@ unsigned char correctParamBC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attri
             if (paramSize+1 == (*aux).decl.method.paramSize) 
             {
                 if (correctParameterType((*attr).decl.variable, aux, paramSize) == 0) 
-                    return 0;
+                {
+                    Attribute *param = (Attribute*) malloc (sizeof(Attribute));
+                    param->decl.variable = (*aux).decl.method.parameters[paramSize]; // obtencion del parametro formal.
+                    if (getAttributeType(attr) == Float)
+                        add_MethodCall(lcode3d, newCode(PARAM_ASSIGN_FLOAT), attr, param);
+                    if (getAttributeType(attr) == Int)
+                        add_MethodCall(lcode3d, newCode(PARAM_ASSIGN_INT), attr, param); 
+                    if (getAttributeType(attr) == Bool)
+                        add_MethodCall(lcode3d, newCode(PARAM_ASSIGN_BOOL), attr, param); 
+                }
                 else
                 {
                     char* number = (char*) malloc (digitAmount(paramSize+1)*sizeof(char));
@@ -215,13 +224,12 @@ unsigned char correctParamBC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attri
                 else
                     insertError(eq,toString("Error en llamada al metodo \"", lastCalledMethod, "\". Se tiene mayor cantidad de parametros que en su declaracion."));  
         }
-    return 1;
 }
 
 /* Returns 0 if the type parameter in "paramSize" position of the method's parameters is equal to the type of "var" 
    and paramSize <= than the amount of parameters of the method.
    Returns 1 otherwise */
-unsigned char correctParamIC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attribute *attr, char* lastCalledMethod, unsigned char paramSize)
+void correctParamIC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, LCode3D *lcode3d, Attribute *attr, char* lastCalledMethod, unsigned char paramSize)
 {
     Attribute *aux = searchIdInSymbolsTable(eq, aSymbolsTable, lastCalledMethod);
     if(aux != NULL) 
@@ -232,10 +240,18 @@ unsigned char correctParamIC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attri
             if (paramSize < (*aux).decl.method.paramSize) 
             {
                 if (correctParameterType((*attr).decl.variable, aux, paramSize) == 0) 
-                    return 0;
+                {
+                    Attribute *param = (Attribute*) malloc (sizeof(Attribute));
+                    param->decl.variable = (*aux).decl.method.parameters[paramSize]; // obtencion del parametro formal.
+                    if (getAttributeType(attr) == Float)
+                        add_MethodCall(lcode3d, newCode(PARAM_ASSIGN_FLOAT), attr, param);
+                    if (getAttributeType(attr) == Int)
+                        add_MethodCall(lcode3d, newCode(PARAM_ASSIGN_INT), attr, param); 
+                    if (getAttributeType(attr) == Bool)
+                        add_MethodCall(lcode3d, newCode(PARAM_ASSIGN_BOOL), attr, param); 
+                }
             }
         }
-    return 1;
 }
 
 /* Insert an error message if the attribute "attr" isn't a variable of type "type" */
@@ -454,6 +470,8 @@ Attribute* returnDistinct(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, A
             codeDist = newCode(DIST_FLOAT);
         if (getAttributeType(oper1) == Int)
             codeDist = newCode(DIST_INT);
+        if (getAttributeType(oper1) == Bool)
+            codeDist = newCode(DIST_BOOL);
         setCode3D(codeDist, oper1, oper2, aux);
         add_code(lcode3d, codeDist);
         return aux;
@@ -477,6 +495,8 @@ Attribute* returnEqual(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attr
             codeEqual = newCode(EQ_FLOAT);
         if (getAttributeType(oper1) == Int)
             codeEqual = newCode(EQ_INT);
+        if (getAttributeType(oper1) == Bool)
+            codeEqual = newCode(EQ_BOOL);
         setCode3D(codeEqual, oper1, oper2, aux);
         add_code(lcode3d, codeEqual); 
         return aux;
@@ -501,7 +521,7 @@ Attribute* returnMinorComparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *o
         Code3D *codeMinor;
         if (getAttributeType(oper1) == Float)
             codeMinor = newCode(LOWER_FLOAT);
-        if (getAttributeType(oper1) == Int)
+        else
             codeMinor = newCode(LOWER_INT);
         setCode3D(codeMinor, oper1, oper2, aux);
         add_code(lcode3d, codeMinor); 
@@ -524,7 +544,7 @@ Attribute* returnMajorComparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *o
         Code3D *codeGreat;
         if (getAttributeType(oper1) == Float)
             codeGreat = newCode(GREATER_FLOAT);
-        if (getAttributeType(oper1) == Int)
+        else
             codeGreat = newCode(GREATER_INT);
         setCode3D(codeGreat, oper1, oper2, aux);
         add_code(lcode3d, codeGreat); 
@@ -547,7 +567,7 @@ Attribute* returnGEqualComparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *
         Code3D *codeGEqual;
         if (getAttributeType(oper1) == Float)
             codeGEqual = newCode(GEQ_FLOAT);
-        if (getAttributeType(oper1) == Int)
+        else
             codeGEqual = newCode(GEQ_INT);
         setCode3D(codeGEqual, oper1, oper2, aux);
         add_code(lcode3d, codeGEqual);
@@ -570,7 +590,7 @@ Attribute* returnLEqualComparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *
         Code3D *codeLEqual;
         if (getAttributeType(oper1) == Float)
             codeLEqual = newCode(LEQ_FLOAT);
-        if (getAttributeType(oper1) == Int)
+        else
             codeLEqual = newCode(LEQ_INT);
         setCode3D(codeLEqual, oper1, oper2, aux);
         add_code(lcode3d, codeLEqual); 
@@ -596,7 +616,7 @@ Attribute* returnAdd(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attrib
         Attribute *aux = createVariable(getVariableName(), getAttributeType(oper1));
         if (getAttributeType(oper1) == Float)
             codeAdd = newCode(ADD_FLOAT);
-        if (getAttributeType(oper1) == Int)
+        else 
             codeAdd = newCode(ADD_INT);
         setCode3D(codeAdd, oper1, oper2, aux);
         add_code(lcode3d, codeAdd);
@@ -619,7 +639,7 @@ Attribute* returnSub(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attrib
         Attribute *aux = createVariable(getVariableName(), getAttributeType(oper1));
         if (getAttributeType(oper1) == Float)
             codeSub = newCode(MINUS_FLOAT);
-        if (getAttributeType(oper1) == Int)
+        else
             codeSub = newCode(MINUS_INT);											
         setCode3D(codeSub, oper1, oper2, aux);
         add_code(lcode3d, codeSub); 
@@ -662,7 +682,7 @@ Attribute* returnDiv(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attrib
         Attribute *aux = createVariable(getVariableName(), getAttributeType(oper1));
         if (getAttributeType(oper1) == Float)
             codeDiv = newCode(DIV_FLOAT);
-        if (getAttributeType(oper1) == Int)
+        else 
             codeDiv = newCode(DIV_INT);
         setCode3D(codeDiv, oper1, oper2, aux);
         add_code(lcode3d, codeDiv);
@@ -685,7 +705,7 @@ Attribute* returnMult(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attri
         Attribute *aux = createVariable(getVariableName(), getAttributeType(oper1));
         if (getAttributeType(oper1) == Float)
             codeMult = newCode(MULT_FLOAT);
-        if (getAttributeType(oper1) == Int)
+        else
             codeMult = newCode(MULT_INT);
         setCode3D(codeMult, oper1, oper2, aux);
         add_code(lcode3d, codeMult);
@@ -727,7 +747,7 @@ Attribute* returnNeg(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1)
         Attribute *aux = createVariable(getVariableName(), getAttributeType(oper1));
         if (getAttributeType(oper1) == Float)
             codeNeg = newCode(NEG_FLOAT);
-        if (getAttributeType(oper1) == Int)
+        else
             codeNeg = newCode(NEG_INT);
         setCode2D(codeNeg, oper1, aux);
         add_code(lcode3d, codeNeg);

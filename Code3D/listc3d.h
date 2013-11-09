@@ -9,7 +9,6 @@
 #ifndef LISTC3D_H
 #define LISTC3D_H
 
-#include <stdbool.h>
 #include "nodec3d.h"
 
 typedef struct {

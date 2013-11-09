@@ -1,6 +1,6 @@
 #ifndef Utils_H
 #define Utils_H
-#include "Attribute.h"
+
 #include "SymbolsTable.h"
 #include "../ErrorsQueue/ErrorsQueue.h"
 #include "../Code3D/gencode3d.h"
@@ -30,15 +30,13 @@ unsigned int digitAmount(int value);
 /* Returns the string representation of the int "value" */
 char* intToString(int value);
 
-/* Returns 0 if the type parameter in "paramSize" position of the method's parameters is equal to the type of "var" 
-   and the amount of params are equal.
-	Returns 1 otherwise */
-unsigned char correctParamBC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attribute *attr, char* lastCalledMethod, unsigned char paramSize);
+/* Checks if the type parameter in "paramSize" position of the method's parameters is equal to the type of "var" 
+   and the amount of params are equal. */
+void correctParamBC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, LCode3D *lcode3d, Attribute *attr, char* lastCalledMethod, unsigned char paramSize);
 
-/* Returns 0 if the type parameter in "paramSize" position of the method's parameters is equal to the type of "var" 
-   and paramSize <= than the amount of parameters of the method.
-	Returns 1 otherwise */
-unsigned char correctParamIC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attribute *attr, char* lastCalledMethod, unsigned char paramSize);
+/* Checks if if the type parameter in "paramSize" position of the method's parameters is equal to the type of "var" 
+   and paramSize <= than the amount of parameters of the method. */
+void correctParamIC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, LCode3D *lcode3d, Attribute *attr, char* lastCalledMethod, unsigned char paramSize);
 
 /* Insert an error message if the attribute "attr" isn't a variable of type "type" */
 /* Return 1 if ocurred one error, or 0 if all type is ok*/
