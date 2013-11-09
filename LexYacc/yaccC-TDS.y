@@ -81,7 +81,9 @@ void finalizar()
     else
     {
         // show the list of code 3D
+        printf("por mostrar cod 3 dir!\n");
         show3DCode(lcode3d); // uncommenting this line will show the 3 directions code of the parsed code;
+        printf("ya mostre cod 3 dir!. Por llamar al interprete\n");
         initInterpreter(listmlabel, lcode3d); // The interpreter in this version is not working.
         //initAssembler(listmlabel, lcode3d, returnStack, fileName);
         printf("-----Codigo Assembler Generado.-----\n");
@@ -139,6 +141,7 @@ program       :    CLASS ID '{' '}' {
                                     listmlabel = initL();
                                     lcode3d = initLCode3D();
                                     fileName = $2;
+                                    printf("arranco a tratar el body!\n");
                     } body {
                                 checkMain(errorQ,symbolsTable); 
                                 popLevel(symbolsTable); 
@@ -146,7 +149,7 @@ program       :    CLASS ID '{' '}' {
                     } '}' 
               ;
 
-body          :    fields_decls method_decl
+body          :    fields_decls method_decl 
               |    fields_decls
               |    method_decl
               ;
@@ -155,7 +158,7 @@ fields_decls  :    type fields ';'
               |    fields_decls type fields ';' 	
               ;
 
-fields        :    field 
+fields        :    field
               |    fields ',' field
               ;
 
@@ -178,47 +181,47 @@ type          :		INTW		{vaType = Int; mType = RetInt;}
 method_decl   :     type ID {
                                 lastDefMethod=$2; 
                                 pushElement(errorQ,symbolsTable,createMethod($2,mType)); 
-                                pushLevel(symbolsTable); 
                                 returns = 0;
                                 char *initLabel = newLabelName($2);
                                 add_CodeLabel(lcode3d, newCode(LABEL), initLabel); // Mark to Label of Init of Method
                                 insert_MethodL(listmlabel, $2, initLabel);
+                                printf("viendo si se rompe antes de los parametros!\n");
                     } param block {
-                                popLevel(symbolsTable); 
+                                printf("viendo si se rompe despues de los parametros!\n");
                                 if(returns==0) insertError(errorQ,toString("El metodo \"",$2,"\" debe tener al menos un return."));
                     }
               |		method_decl type ID {
                                 lastDefMethod=$3; 
                                 pushElement(errorQ,symbolsTable,createMethod($3,mType)); 
-                                pushLevel(symbolsTable); 
                                 returns = 0;
                                 char *initLabel = newLabelName($3);
                                 add_CodeLabel(lcode3d, newCode(LABEL), initLabel); // Mark to Label of Init of Method
                                 insert_MethodL(listmlabel, $3, initLabel);
+                                printf("viendo si se rompe antes de los parametros!\n");
                     } param block {
-                                popLevel(symbolsTable); 
+                                printf("viendo si se rompe despues de los parametros!\n");
                                 if(returns==0) insertError(errorQ,toString("El metodo \"",$3,"\" debe tener al menos un return."));
                     }
               |     VOID ID {
                                 lastDefMethod=$2; 
                                 pushElement(errorQ,symbolsTable,createMethod($2,RetVoid)); 
-                                pushLevel(symbolsTable); 
                                 returns = 0;
                                 add_CodeLabel(lcode3d, newCode(LABEL), $2); // Mark to Label of Init of Method
                                 insert_MethodL(listmlabel, $2, $2);
+                                printf("viendo si se rompe antes de los parametros!\n");
                     } param block {
-                                popLevel(symbolsTable); 
+                                printf("viendo si se rompe despues de los parametros!\n");
                                 if(returns==0) insertError(errorQ,toString("El metodo \"",$2,"\" debe tener al menos un return."));
                     }
               |	    method_decl VOID ID {
                                 lastDefMethod=$3; 
                                 pushElement(errorQ,symbolsTable,createMethod($3,RetVoid)); 
-                                pushLevel(symbolsTable); 
                                 returns = 0;
                                 add_CodeLabel(lcode3d, newCode(LABEL), $3); // Mark to Label of Init of Method
                                 insert_MethodL(listmlabel, $3, $3);
+                                printf("viendo si se rompe antes de los parametros!\n");
                     } param block {
-                                popLevel(symbolsTable); 
+                                printf("viendo si se rompe despues de los parametros!\n");
                                 if(returns==0) insertError(errorQ,toString("El metodo \"",$3,"\" debe tener al menos un return."));
                     }
               ;
@@ -243,7 +246,7 @@ parameters    :		type ID {
               ;
 
 block         :    '{' '}'
-              |    '{' codeBlock '}' 
+              |    '{' {pushLevel(symbolsTable); printf("entra al block!\n");} codeBlock {popLevel(symbolsTable); printf("sale del block!\n");}'}' 
               ;
 
 codeBlock     :    fields_decls statements
@@ -262,7 +265,7 @@ statements    :    statement
 statement     :    conditional 
               |    iteration 
               |    action ';'     
-              |    {pushLevel(symbolsTable);} block {popLevel(symbolsTable);}
+              |    block 
               |    PRINTT expression ';' { add_Print(lcode3d, newCode(PRINT), $2); }
               ;
 
