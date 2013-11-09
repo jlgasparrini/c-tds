@@ -117,12 +117,21 @@ void setArrayFloatVal(Attribute *attr, unsigned int pos, float value);
 void setArrayBoolVal(Attribute *attr, unsigned int pos, Boolean value);
 
 /* Returns the global offset of the class */
-int getGlobalOffset();
+int getGlobalVarOffset();
 
 /* Set the global offset of the class */
-void setGlobalOffset(int newOffset);
+void setGlobalVarOffset(int newOffset);
 
 /* Set the global offset of the class in a -16 */
-void resetGlobalOffset();
+void resetGlobalVarOffset();
+
+/* Returns the global parameters offset of the class */
+int getGlobalParamOffset();
+
+/* Set the global parameters offset of the class */
+void setGlobalParamOffset(int newOffset);
+
+/* Set the global parameters offset of the class in a 8 */
+void resetGlobalParamOffset();
 
 #endif

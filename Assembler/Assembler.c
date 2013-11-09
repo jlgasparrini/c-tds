@@ -23,202 +23,226 @@ int generateOperation(int position)
 //    printf("Genero la operacion....!         %i   ==    %s\n", code->command, getCodeByID(code->command));
     switch ((*code).command)
     {
-        /* LOAD_CONST */
+/********************************* GENERAL OPERATIONS ******************************/
+			/* LOAD_CONST */
         case 0:
             load_Const_Translate(file, code);
             break;
 
-            /* ASSIGNATION_INT */
+			/* LOAD_ARRAY */
+        /* --------------------------------------- MUST BE IMPLEMENTED --------------------------------------- */
         case 1: 
-            translateAssignationInt(file, code); 
+            translateLoadArray(file, code);
             break;
 
-            /* MINUS_INT */
+			/* PRINT */
         case 2:
-            translateMinusInt(file, code);
+            printOperation(file, code);
+            break;			
+		
+			/* RETURN */
+        case 3: 
+            translateReturn(file, code);
             break;
-
-            /* ADD_INT */
-        case 3:
-            add_Int_Translate(file, code);
-            break;
-
-            /* MULT_INT */
+		
+			/* RETURN_EXPR */
         case 4:
-            mult_Int_Translate(file, code);
+            translateReturnExpression(file, code);
             break;
-
-            /* DIV_INT */
-        case 5:
-            translateDivInt(file, code);
-            break;
-
-            /* MOD_INT */
-        case 6:
-            translateModInt(file, code);
-            break;
-
-            /* MINUS_FLOAT */
-        case 7:
-            translateMinusFloat(file, code);
-            break;
-
-            /* ADD_FLOAT */
-        case 8:
-            translateAddFloat(file, code);
-            break;
-
-            /* MULT_FLOAT */
-        case 9:
-            translateMultFloat(file, code);
-            break;
-
-            /* DIV_FLOAT */
-        case 10:
-            translateDivFloat(file, code);
-            break;
-
-            /* EQ_INT */
-        case 11:
-            translateEqualInt(file, code);
-            break;
-
-            /* DIST_INT */
-        case 12:
-            translateDistinctInt(file, code);
-            break;
-
-            /* GREATER_INT */
-        case 13:
-            greater_IntTranslate(file, code);
-            break;
-
-            /* LESSER_INT */
-        case 14: 
-            translateLesserInt(file, code);
-            break;
-
-            /* GEQ_INT */
-        case 15:
-            greater_Eq_IntTranslate(file, code);
-            break;
-
-            /* LESSER_EQ_INT */
-        case 16:
-            translateLesserOrEqualInt(file, code);
-            break;
-
-            /* OR */
-        case 17:
-            translateOr(file, code);
-            break;
-
-            /* AND */
-        case 18:
-            translateAnd(file, code);
-            break;
-
-            /* NOT */
-        case 19: 
-            translateNot(file, code);
-            break;
-
-            /* LABEL */
-        case 20: 
+		
+		    /* LABEL */
+        case 5: 
             writeLabel(file, labelList, code);
             break;
 
             /* GOTO_LABEL */
-        case 21: 
+        case 6: 
             translateGotoLabel(file, code);
             break;
 
             /* GOTO_LABEL_COND */
-        case 22:
+        case 7:
             translateGotoLabelCondition(file, code);
             break;
-
-            /* RETURN */
-        case 23: 
-            translateReturn(file, code);
-            break;
-
-            /* NEG_INT */
-        case 24:
-            neg_Int_Translate(file, code);
-            break;
-
-            /* NEG_FLOAT */
-        case 25: 
-            neg_Float_Translate(file, code);
-            break;
-
-            /* PARAM_ASSIGN_INT */
-            /* --------------------------------------- MUST BE IMPLEMENTED --------------------------------------- */
-        case 26: 
-            translateParamAssign(file, code);
-            break;
-
-            /* PRINT */
-        case 27:
-            printOperation(file, code);
-            break;
-
-            /* LOAD_ARRAY */
-            /* --------------------------------------- MUST BE IMPLEMENTED --------------------------------------- */
-        case 28: 
-            translateLoadArray(file, code);
-            break;
-
-            /* RETURN_EXPR */
-        case 29:
-            translateReturnExpression(file, code);
-            break;
-
-            /* GOTO_METHOD */
-        case 30: 
+		
+		/* GOTO_METHOD */
+        case 8: 
             goTo_Method(file, code);
             break;
-
-            /* EQ_FLOAT */
-        case 31:
-            eq_FloatTranslate(file, code);
+		
+/********************************* INT OPERATIONS **********************************/		
+            /* ASSIGNATION_INT */
+        case 9: 
+            translateAssignationInt(file, code); 
             break;
 
-            /* DIST_FLOAT */
-        case 32:
-            dist_FloatTranslate(file, code);
+			/* PARAM_ASSIGN_INT */
+        case 10: 
+            translateParamAssignInt(file, code);
+            break;	
+			
+            /* MINUS_INT */
+        case 11:
+            translateMinusInt(file, code);
             break;
 
-            /* GREATER_FLOAT */
-        case 33:
-            greater_FloatTranslate(file, code);
+            /* ADD_INT */
+        case 12:
+            add_Int_Translate(file, code);
             break;
 
-            /* LESSER_FLOAT */
-        case 34: 
-            translateLesserFloat(file, code);
+            /* MULT_INT */
+        case 13:
+            mult_Int_Translate(file, code);
             break;
 
-            /* GEQ_FLOAT */
-        case 35:
-            greater_Eq_FloatTranslate(file, code);
+            /* DIV_INT */
+        case 14:
+            translateDivInt(file, code);
             break;
 
-            /* LESSER_EQ_FLOAT */
-        case 36:
-            translateLesserOrEqualFloat(file, code);
+            /* MOD_INT */
+        case 15:
+            translateModInt(file, code);
             break;
 
-            /* ASSIGNATION_FLOAT */
-        case 37:
+			/* NEG_INT */
+        case 16:
+            neg_Int_Translate(file, code);
+            break;
+		            
+			/* EQ_INT */
+        case 17:
+            translateEqualInt(file, code);
+            break;
+
+            /* DIST_INT */
+        case 18:
+            translateDistinctInt(file, code);
+            break;	
+			
+            /* GREATER_INT */
+        case 19:
+            greater_IntTranslate(file, code);
+            break;
+
+            /* LOWER_INT */
+        case 20: 
+            translateLesserInt(file, code);
+            break;		
+
+			/* GEQ_INT */
+        case 21:
+            greater_Eq_IntTranslate(file, code);
+            break;
+			
+		    /* LEQ_INT */
+        case 22:
+            translateLesserOrEqualInt(file, code);
+            break;
+			
+/********************************* FLOAT OPERATIONS ******************************/			
+		    /* ASSIGNATION_FLOAT */
+        case 23:
             assignation_FloatTranslate(file, code);
             break;
 
             /* PARAM_ASSIGN_FLOAT */
-            /* --------------------------------------- MUST BE IMPLEMENTED --------------------------------------- */
-        case 38:
+        case 24:
+			translateParamAssignFloat(file, code);
             break;
+			
+            /* MINUS_FLOAT */
+        case 25:
+            translateMinusFloat(file, code);
+            break;
+
+            /* ADD_FLOAT */
+        case 26:
+            translateAddFloat(file, code);
+            break;
+
+            /* MULT_FLOAT */
+        case 27:
+            translateMultFloat(file, code);
+            break;
+
+            /* DIV_FLOAT */
+        case 28:
+            translateDivFloat(file, code);
+            break;
+
+			/* NEG_FLOAT */
+        case 29: 
+            neg_Float_Translate(file, code);
+            break;
+
+			/* EQ_FLOAT */
+        case 30:
+            eq_FloatTranslate(file, code);
+            break;
+
+            /* DIST_FLOAT */
+        case 31:
+            dist_FloatTranslate(file, code);
+            break;
+
+            /* GREATER_FLOAT */
+        case 32:
+            greater_FloatTranslate(file, code);
+            break;
+
+            /* LOWER_FLOAT */
+        case 33: 
+            translateLesserFloat(file, code);
+            break;
+
+            /* GEQ_FLOAT */
+        case 34:
+            greater_Eq_FloatTranslate(file, code);
+            break;
+
+            /* LEQ_FLOAT */
+        case 35:
+            translateLesserOrEqualFloat(file, code);
+            break;
+
+/********************************* BOOLEAN OPERATIONS ******************************/
+		    /* ASSIGNATION_BOOL */
+        case 36:
+            translateAssignationInt(file, code);
+            break;
+
+            /* PARAM_ASSIGN_BOOL */
+        case 37:
+			translateParamAssignInt(file, code);
+            break;
+
+			/* EQ_BOOL */
+        case 38:
+            translateEqualInt(file, code);
+            break;
+
+            /* DIST_BOOL */
+        case 39:
+            translateDistinctInt(file, code);
+            break;
+
+            /* OR */
+        case 40:
+            translateOr(file, code);
+            break;
+
+            /* AND */
+        case 41:
+            translateAnd(file, code);
+            break;
+
+            /* NOT */
+        case 42: 
+            translateNot(file, code);
+            break;
+
     }
 
 }

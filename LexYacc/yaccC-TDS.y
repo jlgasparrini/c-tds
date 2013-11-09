@@ -6,7 +6,9 @@
 #  include  "../SymbolsTable/StringStack.h"
 #  include  "../SymbolsTable/Utils.h"
 #  include	"../Stack/stack.h"
+#  include	"../Stack/stackOffset.h"
 #  include  "../ListMethod/genlistml.h" 
+
 extern FILE *yyin;
 ErrorsQueue *errorQ;						/* Errors Queue definition */
 SymbolsTable *symbolsTable;					/* <----Symbols Table Definition----- */
@@ -26,6 +28,8 @@ Stack *labelsCYC;
 Stack *labelsWhile;
 Stack *labelsFor;
 Stack *returnStack;//Utilizada para los saltos en el interprete!
+StackOffset *offsetsVar;
+StackOffset *offsetsParam;
 ListMLabel *listmlabel;
 
 //Assembly
@@ -138,6 +142,8 @@ program       :    CLASS ID '{' '}' {
                                     labelsWhile = newStack();
                                     returnStack = newStack();
                                     labelsFor = newStack();
+									offsetsVar = newStackOffset();
+									offsetsParam = newStackOffset();
                                     listmlabel = initL();
                                     lcode3d = initLCode3D();
                                     fileName = $2;
@@ -179,7 +185,11 @@ type          :		INTW		{vaType = Int; mType = RetInt;}
               ;
 
 method_decl   :     type ID {
-                                lastDefMethod=$2; 
+                                pushOffset(offsetsVar, getGlobalVarOffset());/////////////////////////////////
+								resetGlobalVarOffset();////////////////////////////
+								pushOffset(offsetsParam, getGlobalParamOffset());////////////////////////////
+								resetGlobalParamOffset();////////////////////////////
+								lastDefMethod=$2; 
                                 pushElement(errorQ,symbolsTable,createMethod($2,mType)); 
                                 returns = 0;
                                 char *initLabel = newLabelName($2);
@@ -188,9 +198,15 @@ method_decl   :     type ID {
                                 printf("viendo si se rompe antes de los parametros!\n");
                     } param block {
                                 printf("viendo si se rompe despues de los parametros!\n");
+								setGlobalVarOffset(popOffset(offsetsVar));//////////////////////////////////////////
+								setGlobalParamOffset(popOffset(offsetsParam));/////////////////////////////////////
                                 if(returns==0) insertError(errorQ,toString("El metodo \"",$2,"\" debe tener al menos un return."));
                     }
               |		method_decl type ID {
+								pushOffset(offsetsVar, getGlobalVarOffset());////////////////////////////
+								resetGlobalVarOffset();////////////////////////////
+								pushOffset(offsetsParam, getGlobalParamOffset());////////////////////////////
+								resetGlobalParamOffset();////////////////////////////
                                 lastDefMethod=$3; 
                                 pushElement(errorQ,symbolsTable,createMethod($3,mType)); 
                                 returns = 0;
@@ -200,9 +216,15 @@ method_decl   :     type ID {
                                 printf("viendo si se rompe antes de los parametros!\n");
                     } param block {
                                 printf("viendo si se rompe despues de los parametros!\n");
+								setGlobalVarOffset(popOffset(offsetsVar));//////////////////////////////////////////
+								setGlobalParamOffset(popOffset(offsetsParam));/////////////////////////////////////
                                 if(returns==0) insertError(errorQ,toString("El metodo \"",$3,"\" debe tener al menos un return."));
                     }
               |     VOID ID {
+			  					pushOffset(offsetsVar, getGlobalVarOffset());////////////////////////////
+								resetGlobalVarOffset();////////////////////////////
+								pushOffset(offsetsParam, getGlobalParamOffset());////////////////////////////
+								resetGlobalParamOffset();////////////////////////////
                                 lastDefMethod=$2; 
                                 pushElement(errorQ,symbolsTable,createMethod($2,RetVoid)); 
                                 returns = 0;
@@ -211,9 +233,15 @@ method_decl   :     type ID {
                                 printf("viendo si se rompe antes de los parametros!\n");
                     } param block {
                                 printf("viendo si se rompe despues de los parametros!\n");
+								setGlobalVarOffset(popOffset(offsetsVar));//////////////////////////////////////////
+								setGlobalParamOffset(popOffset(offsetsParam));/////////////////////////////////////
                                 if(returns==0) insertError(errorQ,toString("El metodo \"",$2,"\" debe tener al menos un return."));
                     }
               |	    method_decl VOID ID {
+								pushOffset(offsetsVar, getGlobalVarOffset());////////////////////////////
+								resetGlobalVarOffset();////////////////////////////
+								pushOffset(offsetsParam, getGlobalParamOffset());////////////////////////////
+								resetGlobalParamOffset();////////////////////////////
                                 lastDefMethod=$3; 
                                 pushElement(errorQ,symbolsTable,createMethod($3,RetVoid)); 
                                 returns = 0;
@@ -222,6 +250,8 @@ method_decl   :     type ID {
                                 printf("viendo si se rompe antes de los parametros!\n");
                     } param block {
                                 printf("viendo si se rompe despues de los parametros!\n");
+								setGlobalVarOffset(popOffset(offsetsVar));//////////////////////////////////////////
+								setGlobalParamOffset(popOffset(offsetsParam));/////////////////////////////////////
                                 if(returns==0) insertError(errorQ,toString("El metodo \"",$3,"\" debe tener al menos un return."));
                     }
               ;
@@ -413,7 +443,7 @@ method_call   :	   ID '(' ')' {
                                 $$ = checkAndGetMethodRetAttribute(errorQ,symbolsTable,lcode3d,$1,0);
                     }
 
-|    ID '(' {if (searchIdInSymbolsTable(errorQ,symbolsTable,$1) == NULL) 
+				|    ID '(' {if (searchIdInSymbolsTable(errorQ,symbolsTable,$1) == NULL) 
                                 idNotFound = True; 
                             else
                             {
@@ -436,15 +466,15 @@ method_call   :	   ID '(' ')' {
                             }
                     } 
 
-|    EXTERNINVK '(' STRING ',' typevoid ')' {/*if (mType != RetVoid) $$=createVariable("",mType);*/
+				|    EXTERNINVK '(' STRING ',' typevoid ')' {/*if (mType != RetVoid) $$=createVariable("",mType);*/
                                                             /*add_CodeLabel(lcode3d, newCode(LABEL), newLabelName("extern_invk"));*/
                                                             $$=createVariable((char*) getVariableName(),Int);
                                                         }
-              |    EXTERNINVK '(' STRING ',' typevoid ',' externinvk_arg ')' {/*if (mType != RetVoid) $$=createVariable("",mType);*/
+				|    EXTERNINVK '(' STRING ',' typevoid ',' externinvk_arg ')' {/*if (mType != RetVoid) $$=createVariable("",mType);*/
                                                             /*add_CodeLabel(lcode3d, newCode(LABEL), newLabelName("extern_invk"));*/
                                                             $$=createVariable((char*) getVariableName(),Int);
                                                             }
-              ;
+				;
 
 expression_aux:    expression {
                                 if (idNotFound != True)

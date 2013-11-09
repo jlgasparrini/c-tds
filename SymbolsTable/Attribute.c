@@ -7,7 +7,8 @@
 #include <string.h>
 #include "Attribute.h"
 
-static int globalOffset = -16;
+static int globalVarOffset = -16;
+static int globalParamOffset = 8;
 
 /* Creates a StVariable with the respective type and initialized */
 StVariable createStVariable(PrimitiveType type)
@@ -31,8 +32,8 @@ Attribute* createVariable(char *id, PrimitiveType type)
 	(*attr).decl.variable = (StVariable*) malloc (sizeof(StVariable));
 	*(*attr).decl.variable = createStVariable(type);
 	(*(*attr).decl.variable).id = strdup(id);
-	(*(*attr).decl.variable).offset = globalOffset;
-	globalOffset += -4;
+	(*(*attr).decl.variable).offset = globalVarOffset;
+	globalVarOffset += -4;
 	return attr;
 }
 
@@ -79,6 +80,8 @@ Attribute* createParameter(Attribute *attr, unsigned int pos, char *id, Primitiv
 	        (*aux).type = Variable;
         	*(*aux).decl.variable = createStVariable(type);
 	        (*(*aux).decl.variable).id = strdup(id);
+			(*(*attr).decl.variable).offset = globalParamOffset;
+			globalParamOffset += 4;
             (*attr).decl.method.parameters[pos] = (StVariable*) malloc(sizeof(StVariable));
 			(*attr).decl.method.parameters[pos] = ((*aux).decl.variable);
 			return aux;
@@ -217,20 +220,38 @@ void setArrayBoolVal(Attribute *attr, unsigned int pos, Boolean value)
 	(*attr).decl.array.arrayValues[pos].value.boolVal = value;
 }
 
-/* Returns the global offset of the class */
-int getGlobalOffset()
+/* Returns the global variable offset of the class */
+int getGlobalVarOffset()
 {
-	return globalOffset;
+	return globalVarOffset;
 }
 
-/* Set the global offset of the class */
-void setGlobalOffset(int newOffset)
+/* Set the global variable offset of the class */
+void setGlobalVarOffset(int newOffset)
 {
-	globalOffset = newOffset;
+	globalVarOffset = newOffset;
 }
 
-/* Set the global offset of the class in a -16 */
-void resetGlobalOffset()
+/* Set the global variable offset of the class in a -16 */
+void resetGlobalVarOffset()
 {
-	globalOffset = -16;
+	globalVarOffset = -16;
+}
+
+/* Returns the global parameters offset of the class */
+int getGlobalParamOffset()
+{
+	return globalVarOffset;
+}
+
+/* Set the global parameters offset of the class */
+void setGlobalParamOffset(int newOffset)
+{
+	globalVarOffset = newOffset;
+}
+
+/* Set the global parameters offset of the class in a 8 */
+void resetGlobalParamOffset()
+{
+	globalVarOffset = 8;
 }
