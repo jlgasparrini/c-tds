@@ -1,0 +1,33 @@
+/************************************************************************************************
+*Define la estructura y funciones asociadas para un Nodo a ser utilizado en listas encadenadas  *
+*Un nodo esta formado por :                                                                     *
+*- info         :   la informacion contenida por el nodo                                        *
+*- next		    :   un puntero al siguiente nodo                                                *
+*************************************************************************************************/
+
+#ifndef LINKNODEOFFSET_H
+#define LINKNODEOFFSET_H
+
+typedef struct NodeStackOffset {
+    int *info;
+    struct NodeStackOffset *next;
+} NodeStackOffset;
+
+/*funciones publicas para manipular nodos*/
+
+/*constructores*/
+
+NodeStackOffset* newLinkNodeOffset_empty();
+NodeStackOffset* newLinkNodeOffset_info(int info);
+NodeStackOffset* newLinkNodeOffset_info_next(int info, NodeStackOffset *next);
+
+/*lectura de informacion*/
+
+int getInfo_linkNodeOffset(NodeStackOffset *node);
+NodeStackOffset* getNext_linkNodeOffset(NodeStackOffset *node);
+
+/*escritura de informacion*/
+void setInfo_linkNodeOffset(NodeStackOffset *node, int info);
+void setNext_linkNodeOffset(NodeStackOffset *node, NodeStackOffset *next);
+
+#endif

@@ -6,6 +6,7 @@
 #  include  "../SymbolsTable/StringStack.h"
 #  include  "../SymbolsTable/Utils.h"
 #  include	"../Stack/stack.h"
+#  include	"../Stack/stackOffet.h"
 #  include  "../ListMethod/genlistml.h" 
 extern FILE *yyin;
 ErrorsQueue *errorQ;						/* Errors Queue definition */
@@ -26,6 +27,8 @@ Stack *labelsCYC;
 Stack *labelsWhile;
 Stack *labelsFor;
 Stack *returnStack;//Utilizada para los saltos en el interprete!
+StackOffset *offsetsVar;
+StackOffset *offsetsParam;
 ListMLabel *listmlabel;
 
 //Assembly
@@ -136,6 +139,8 @@ program       :    CLASS ID '{' '}' {
                                     labelsWhile = newStack();
                                     returnStack = newStack();
                                     labelsFor = newStack();
+									offsetsVar = newStackOffset();
+									offsetsParam = newStackOffset();
                                     listmlabel = initL();
                                     lcode3d = initLCode3D();
                                     fileName = $2;
@@ -176,7 +181,11 @@ type          :		INTW		{vaType = Int; mType = RetInt;}
               ;
 
 method_decl   :     type ID {
-                                lastDefMethod=$2; 
+                                pushOffset(offsetsVar, getGlobalVarOffset());/////////////////////////////////
+								resetGlobalVarOffset();////////////////////////////
+								pushOffset(offsetsParam, getGlobalParamOffset());////////////////////////////
+								resetGlobalParamOffset();////////////////////////////
+								lastDefMethod=$2; 
                                 pushElement(errorQ,symbolsTable,createMethod($2,mType)); 
                                 pushLevel(symbolsTable); 
                                 returns = 0;
@@ -184,10 +193,16 @@ method_decl   :     type ID {
                                 add_CodeLabel(lcode3d, newCode(LABEL), initLabel); // Mark to Label of Init of Method
                                 insert_MethodL(listmlabel, $2, initLabel);
                     } param block {
+								setGlobalVarOffset(popOffset(offsetsVar));//////////////////////////////////////////
+								setGlobalParamOffset(popOffset(offsetsParam));/////////////////////////////////////
                                 popLevel(symbolsTable); 
                                 if(returns==0) insertError(errorQ,toString("El metodo \"",$2,"\" debe tener al menos un return."));
                     }
               |		method_decl type ID {
+								pushOffset(offsetsVar, getGlobalVarOffset());////////////////////////////
+								resetGlobalVarOffset();////////////////////////////
+								pushOffset(offsetsParam, getGlobalParamOffset());////////////////////////////
+								resetGlobalParamOffset();////////////////////////////
                                 lastDefMethod=$3; 
                                 pushElement(errorQ,symbolsTable,createMethod($3,mType)); 
                                 pushLevel(symbolsTable); 
@@ -196,10 +211,16 @@ method_decl   :     type ID {
                                 add_CodeLabel(lcode3d, newCode(LABEL), initLabel); // Mark to Label of Init of Method
                                 insert_MethodL(listmlabel, $3, initLabel);
                     } param block {
+								setGlobalVarOffset(popOffset(offsetsVar));//////////////////////////////////////////
+								setGlobalParamOffset(popOffset(offsetsParam));/////////////////////////////////////
                                 popLevel(symbolsTable); 
                                 if(returns==0) insertError(errorQ,toString("El metodo \"",$3,"\" debe tener al menos un return."));
                     }
               |     VOID ID {
+			  					pushOffset(offsetsVar, getGlobalVarOffset());////////////////////////////
+								resetGlobalVarOffset();////////////////////////////
+								pushOffset(offsetsParam, getGlobalParamOffset());////////////////////////////
+								resetGlobalParamOffset();////////////////////////////
                                 lastDefMethod=$2; 
                                 pushElement(errorQ,symbolsTable,createMethod($2,RetVoid)); 
                                 pushLevel(symbolsTable); 
@@ -207,10 +228,16 @@ method_decl   :     type ID {
                                 add_CodeLabel(lcode3d, newCode(LABEL), $2); // Mark to Label of Init of Method
                                 insert_MethodL(listmlabel, $2, $2);
                     } param block {
+								setGlobalVarOffset(popOffset(offsetsVar));//////////////////////////////////////////
+								setGlobalParamOffset(popOffset(offsetsParam));/////////////////////////////////////
                                 popLevel(symbolsTable); 
                                 if(returns==0) insertError(errorQ,toString("El metodo \"",$2,"\" debe tener al menos un return."));
                     }
               |	    method_decl VOID ID {
+								pushOffset(offsetsVar, getGlobalVarOffset());////////////////////////////
+								resetGlobalVarOffset();////////////////////////////
+								pushOffset(offsetsParam, getGlobalParamOffset());////////////////////////////
+								resetGlobalParamOffset();////////////////////////////
                                 lastDefMethod=$3; 
                                 pushElement(errorQ,symbolsTable,createMethod($3,RetVoid)); 
                                 pushLevel(symbolsTable); 
@@ -218,6 +245,8 @@ method_decl   :     type ID {
                                 add_CodeLabel(lcode3d, newCode(LABEL), $3); // Mark to Label of Init of Method
                                 insert_MethodL(listmlabel, $3, $3);
                     } param block {
+								setGlobalVarOffset(popOffset(offsetsVar));//////////////////////////////////////////
+								setGlobalParamOffset(popOffset(offsetsParam));/////////////////////////////////////
                                 popLevel(symbolsTable); 
                                 if(returns==0) insertError(errorQ,toString("El metodo \"",$3,"\" debe tener al menos un return."));
                     }
