@@ -313,17 +313,19 @@ void translateLesserOrEqualInt(FILE* file, Code3D* code)
 /* Puts in the file the translation of the EQ_INT action */
 void translateEqualInt(FILE* file, Code3D* code)
 {
-    writeCodeInFile(file, translate("mov", offset(code,2), "%rax"));
-    writeCodeInFile(file, translate("cmp", offset(code,1) ,"%rax"));
-    writeCodeInFile(file, translate("cmove", "%rax", offset(code,3)));
+    writeCodeInFile(file, translate("mov", offset(code,2), "%eax"));
+    writeCodeInFile(file, translate("cmp", offset(code,1) ,"%eax"));
+    //writeCodeInFile(file, translate("cmove", "%rax", offset(code,3))); ESTO TAMPOCO ME SIRVE
+    writeCodeInFile(file, "\tjne ");
 }
 
 /* Puts in the file the translation of the DIST_INT action */
 void translateDistinctInt(FILE* file, Code3D* code)
 {
-    writeCodeInFile(file, translate("mov", offset(code,2), "%rax"));
-    writeCodeInFile(file, translate("cmp", offset(code,1) ,"%rax"));
-    writeCodeInFile(file, translate("cmovne", "%rax", offset(code,3)));
+    writeCodeInFile(file, translate("mov", offset(code,2), "%eax"));
+    writeCodeInFile(file, translate("cmp", offset(code,1) ,"%eax"));
+    //writeCodeInFile(file, translate("cmovne", "%rax", offset(code,3))); ESTO TAMPOCO ME SIRVE
+    writeCodeInFile(file, "\tje ");
 }
 
 /********************************************************************************************/
