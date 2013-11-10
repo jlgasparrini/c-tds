@@ -7,7 +7,7 @@
 #include <string.h>
 #include "Attribute.h"
 
-static int globalVarOffset = -16;
+static int globalVarOffset = -4;
 static int globalParamOffset = 8;
 
 /* Creates a StVariable with the respective type and initialized */
@@ -234,7 +234,7 @@ void setGlobalVarOffset(int newOffset)
 /* Set the global variable offset of the class in a -16 */
 void resetGlobalVarOffset()
 {
-	globalVarOffset = -16;
+	globalVarOffset = -4;
 }
 
 /* Returns the global parameters offset of the class */

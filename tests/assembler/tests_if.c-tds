@@ -1,0 +1,128 @@
+class helloWorld{
+    void main()
+    {
+        //El siguiente programa deberia de arrojar por pantalla:
+        int i;
+        int j;
+        int f;
+        i = 1;
+
+        if (1>2){
+            print 1;
+        }
+        else{ 
+            print 2; //<-.- POR ACA!!!
+        }
+
+        if (2<2){
+            print 1;
+        }
+        else{ 
+            print 2; //<-.- POR ACA!!!
+        }
+        
+        if (2>2){
+            print 1;
+        }
+        else{ 
+            print 2; //<-.- POR ACA!!!
+        }
+        j = 6;
+        f = 2;
+       
+        if (1>=2){
+            print 1;
+        }
+        else{ 
+            print 2; //<-.- POR ACA!!!
+        }
+       
+        if (2<=1){
+            print 1;
+        }
+        else{ 
+            print 2; //<-.- POR ACA!!!
+        }
+
+        if (f>j){
+            print 1;
+        }
+        else{ 
+            print 2; //<-.- POR ACA!!!
+        }
+       
+        if (j<f){
+            print 1;
+        }
+        else{ 
+            print 2; //<-.- POR ACA!!!
+        }
+       
+        j = 100;
+        f = 10;
+       
+        if (j<=f){
+            print 1;
+        }
+        else{ 
+            print 2; //<-.- POR ACA!!!
+        }
+       
+        if (j>=f){
+            print 1; //<-.- POR ACA!!!
+        }
+        else{ 
+            print 2;
+        }
+        f = j;
+       
+        if (j<=f){
+            print 1; //<-.- POR ACA!!!
+        }
+        else{ 
+            print 2;
+        }
+       
+        if (j>=f){
+            print 1; //<-.- POR ACA!!!
+        }
+        else{ 
+            print 2;
+        }
+       
+        //---------- Ahora testeamos if's anidados -----------//
+        //Si imprime 11 funciona correctamente el anidamiento....
+        if (f <= j){
+            if (j>= f){
+                if (j<f){
+                    print 130;
+                }
+                else{
+                    print 11;
+                }
+            }    
+            else{
+                print 321;
+            }
+        }
+        //------------ Ahora para estos ifs se deberia arrojar por pantalla.... :
+        //12
+        //14
+        //9
+        i = 3;
+        j = 7;
+        if (i == j){
+            print 7;
+        }
+        else {
+            print 12;
+            if (i != j){
+                print 14;
+            }
+        }
+        if (i != j){
+            print 9;
+        }
+        return;
+    }
+}

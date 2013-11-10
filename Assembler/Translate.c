@@ -254,8 +254,8 @@ void greater_IntTranslate(FILE* file, Code3D* code)
 /**"GREATER_ EQ_INT %s %s %s\n" */
 void greater_Eq_IntTranslate(FILE* file, Code3D* code)
 {
-    writeCodeInFile(file, translate("mov", offset(code, 2), "%rax"));
-    writeCodeInFile(file, translate("cmp", offset(code, 1) ,"%rax"));
+    writeCodeInFile(file, translate("mov", offset(code,2), "%eax")); //ACA TUVE QUE CAMBIAR RAX POR EAX DEBIDO A QUE ANDA A VECES EL ASSEMBLER..
+    writeCodeInFile(file, translate("cmp", offset(code,1), "%eax"));
     //writeCodeInFile(file, translate("setge", "%al", "")); //MAS COSAS QUE NO SE PARA QUE SIRVEN
     //writeCodeInFile(file, translate("movzbl", "%al", "%rax"));
     //writeCodeInFile(file, translate("movl", "%rax", offset(code, 3)));
