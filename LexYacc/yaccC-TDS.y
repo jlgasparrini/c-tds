@@ -86,8 +86,8 @@ void finalizar()
     {
         // show the list of code 3D
         show3DCode(lcode3d); // uncommenting this line will show the 3 directions code of the parsed code;
-        initInterpreter(listmlabel, lcode3d); // The interpreter in this version is not working.
-        //initAssembler(listmlabel, lcode3d, returnStack, fileName);
+        //initInterpreter(listmlabel, lcode3d); // The interpreter in this version is not working.
+        initAssembler(listmlabel, lcode3d, returnStack, fileName);
         printf("-----Codigo Assembler Generado.-----\n");
     }
 }
@@ -354,16 +354,15 @@ assig_op      :    '=' {$$ = "=";}
 
 /* -------------------- CONDITIONALS AND CICLES ------------------------------ */
 
-conditional   :     IF '(' expression { 
-                        controlType(errorQ,$3,Bool,"if",1);
-                        char *ifLabel = newLabelName("if");
-                        char *elseLabel = newLabelName("else");
-                        char *endLabel = newLabelName("end_if");
-                        add_CodeLabel(lcode3d, newCode(LABEL), ifLabel);
-                        add_CodeLabelCond(lcode3d, newCode(GOTO_LABEL_COND), $3, elseLabel); 
-                        push(labelsCYC, endLabel);
-                        push(labelsCYC, elseLabel);
-                    } ')' block optional 
+conditional   :     IF '(' {
+                            add_CodeLabel(lcode3d, newCode(LABEL), newLabelName("if"));
+                        } expression { 
+                            controlType(errorQ,$4,Bool,"if",1);
+                            char *elseLabel = newLabelName("else");
+                            add_CodeLabelCond(lcode3d, newCode(GOTO_LABEL_COND), $4, elseLabel); 
+                            push(labelsCYC, newLabelName("end_if"));
+                            push(labelsCYC, elseLabel);
+                        } ')' block optional 
               ;
 
 optional	  :		{

@@ -90,9 +90,7 @@ void translateGotoLabel(FILE* file, Code3D* code)
 /* Puts in the file the translation of the GOTO_LABEL_CONDITION action */
 void translateGotoLabelCondition(FILE* file, Code3D* code)
 {
-    writeCodeInFile(file, translate("mov", offset(code,1), "%rax"));
-    writeCodeInFile(file, translate("cmp", "$0", "%rax"));
-    writeCodeInFile(file, translate("je", getLabel(code,2), ""));
+    writeCodeInFile(file, concat(getLabel(code,2), "\n"));
 }
 
 /* Puts in the file the translation of the RETURN action */
@@ -244,11 +242,12 @@ void mult_Int_Translate(FILE* file, Code3D* code)
 /**"GREATER_INT %s %s %s\n" */
 void greater_IntTranslate(FILE* file, Code3D* code)
 {
-    writeCodeInFile(file, translate("movl", offset(code, 2), "%rax"));
-    writeCodeInFile(file, translate("cmpl", offset(code, 1) ,"%rax"));
-    writeCodeInFile(file, translate("setg", "%al", ""));
-    writeCodeInFile(file, translate("movzbl", "%al", "%rax"));
-    writeCodeInFile(file, translate("movl", "%rax", offset(code, 3)));
+    writeCodeInFile(file, translate("movl", "%rax", offset(code, 2)));
+    writeCodeInFile(file, translate("cmpl" ,"%rax", offset(code, 1) ));
+    //writeCodeInFile(file, translate("setg", "%al", "")); NO ENTIENDO PARA QUE ESTA ESTO!!
+    //writeCodeInFile(file, translate("movzbl", "%al", "%rax"));
+    //writeCodeInFile(file, translate("movl", "%rax", offset(code, 3)));
+    writeCodeInFile(file, "jle");
 }
 
 /*-----------------------------------------------------------------------*/
@@ -298,7 +297,7 @@ void translateLesserInt(FILE* file, Code3D* code)
 {
     writeCodeInFile(file, translate("mov", offset(code,2), "%rax"));
     writeCodeInFile(file, translate("cmp", offset(code,1) ,"%rax"));
-    writeCodeInFile(file, translate("cmovl", "%rax", offset(code,3)));
+    writeCodeInFile(file, "\tjge ");
 }
 
 /* Puts in the file the translation of the LESSER_EQ_INT action */
