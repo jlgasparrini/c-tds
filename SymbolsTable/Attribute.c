@@ -72,18 +72,17 @@ Attribute* createParameter(Attribute *attr, unsigned int pos, char *id, Primitiv
 {
 	if (attr != NULL && (*attr).type == Method)
 	{
-		StVariable **aux = (StVariable**) realloc ((*attr).decl.method.parameters, (pos+1)*sizeof(StVariable*));
-		if (aux != NULL)
+		StVariable **auxParameters = (StVariable**) realloc ((*attr).decl.method.parameters, (pos+1)*sizeof(StVariable*));
+        // ver por que funciona de las dos maneras
+		//StVariable **auxParameters = (StVariable**) realloc ((*attr).decl.method.parameters, (pos+1)*sizeof(StVariable));
+		if (auxParameters != NULL)
 		{
-			(*attr).decl.method.parameters = aux;
-			Attribute *aux = (Attribute*) malloc (sizeof(Attribute)); 
-	        (*aux).type = Variable;
-        	*(*aux).decl.variable = createStVariable(type);
-	        (*(*aux).decl.variable).id = strdup(id);
-			(*(*attr).decl.variable).offset = globalParamOffset;
+			(*attr).decl.method.parameters = auxParameters;
+			Attribute *aux = createVariable(id, type);
+			(*(*aux).decl.variable).offset = globalParamOffset;
 			globalParamOffset += 4;
             (*attr).decl.method.parameters[pos] = (StVariable*) malloc(sizeof(StVariable));
-			(*attr).decl.method.parameters[pos] = ((*aux).decl.variable);
+			(*attr).decl.method.parameters[pos] = (*aux).decl.variable;
 			return aux;
 		}
 	}

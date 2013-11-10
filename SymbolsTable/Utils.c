@@ -99,7 +99,8 @@ Attribute* checkAndGetMethodRetAttribute(ErrorsQueue *eq, SymbolsTable *aSymbols
             else
             {
                 Attribute *aux = createVariable(getVariableName(), getAttributeType(attr));
-                add_Assignation(lcode3d, attr, aux);
+                if (getAttributeType(attr) != RetVoid)
+                    add_Assignation(lcode3d, attr, aux);
                 return aux;
             }
         }

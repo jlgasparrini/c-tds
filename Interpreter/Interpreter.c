@@ -323,12 +323,9 @@ void runMain(int pos)
  */
 void initInterpreter(ListMLabel *labelL, LCode3D *codeL)
 {
-    printf("arranco el interprete!\n");
     labelList = labelL;
     codeList = codeL;
     methodsCallStack = initializeSS();
     pushString(methodsCallStack, intToString(codeSize(codeL)));
-    printf("se esta por largar el main!\n");
     runMain(searchByMethodLabel("main"));
-    printf("termino de correrse el main!\n");
 }

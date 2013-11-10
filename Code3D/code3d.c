@@ -245,12 +245,12 @@ void setAttribute(Code3D *code, int param, Attribute *attri)
         code->param1->type = CodeATTRI;
         code->param1->val.attri = attri;
     } 
-    else if (param == 2) 
+    if (param == 2) 
     {
         code->param2->type = CodeATTRI;
         code->param2->val.attri = attri;
     }
-    else if (param == 3) 
+    if (param == 3) 
     {
         code->param3->type = CodeATTRI;
         code->param3->val.attri = attri;
