@@ -243,30 +243,6 @@ void mult_Int_Translate(FILE* file, Code3D* code)
     writeCodeInFile(file, translate("movl", "%rax", offset(code, 3)));
 }
 
-/*-----------------------------------------------------------------------*/
-/**"GREATER_INT %s %s %s\n" */
-void greater_IntTranslate(FILE* file, Code3D* code)
-{
-    writeCodeInFile(file, translate("mov", offset(code,2), "%eax")); //ACA TUVE QUE CAMBIAR RAX POR EAX DEBIDO A QUE ANDA A VECES EL ASSEMBLER..
-    writeCodeInFile(file, translate("cmp", offset(code,1), "%eax"));
-    //writeCodeInFile(file, translate("setg", "%al", "")); NO ENTIENDO PARA QUE ESTA ESTO!!
-    //writeCodeInFile(file, translate("movzbl", "%al", "%rax"));
-    //writeCodeInFile(file, translate("movl", "%rax", offset(code, 3)));
-    writeCodeInFile(file, "\tjge ");
-}
-
-/*-----------------------------------------------------------------------*/
-/**"GREATER_ EQ_INT %s %s %s\n" */
-void greater_Eq_IntTranslate(FILE* file, Code3D* code)
-{
-    writeCodeInFile(file, translate("mov", offset(code,2), "%eax")); //ACA TUVE QUE CAMBIAR RAX POR EAX DEBIDO A QUE ANDA A VECES EL ASSEMBLER..
-    writeCodeInFile(file, translate("cmp", offset(code,1), "%eax"));
-    //writeCodeInFile(file, translate("setge", "%al", "")); //MAS COSAS QUE NO SE PARA QUE SIRVEN
-    //writeCodeInFile(file, translate("movzbl", "%al", "%rax"));
-    //writeCodeInFile(file, translate("movl", "%rax", offset(code, 3)));
-    writeCodeInFile(file, "\tjg ");
-}
-
 /* Puts in the file the translation of the MINUS_INT action */
 void translateMinusInt(FILE* file, Code3D* code)
 {
@@ -296,6 +272,24 @@ void translateDivInt(FILE* file, Code3D* code)
     writeCodeInFile(file, translate("mov", offset(code,1) ,"%rax"));
     writeCodeInFile(file, translate("idivl", offset(code,2), ""));
     writeCodeInFile(file, translate("mov", "%rax", offset(code,3)));
+}
+
+/*-----------------------------------------------------------------------*/
+/**"GREATER_INT %s %s %s\n" */
+void greater_IntTranslate(FILE* file, Code3D* code)
+{
+    writeCodeInFile(file, translate("mov", offset(code,2), "%eax")); //ACA TUVE QUE CAMBIAR RAX POR EAX DEBIDO A QUE ANDA A VECES EL ASSEMBLER..
+    writeCodeInFile(file, translate("cmp", offset(code,1), "%eax"));
+    writeCodeInFile(file, translate("cmovg", "%rax", offset(code, 3));
+}
+
+/*-----------------------------------------------------------------------*/
+/**"GREATER_ EQ_INT %s %s %s\n" */
+void greater_Eq_IntTranslate(FILE* file, Code3D* code)
+{
+    writeCodeInFile(file, translate("mov", offset(code,2), "%eax")); //ACA TUVE QUE CAMBIAR RAX POR EAX DEBIDO A QUE ANDA A VECES EL ASSEMBLER..
+    writeCodeInFile(file, translate("cmp", offset(code,1), "%eax"));
+    writeCodeInFile(file, translate("cmovge", "%rax", offset(code, 3));
 }
 
 /* Puts in the file the translation of the LESSER_INT action */
