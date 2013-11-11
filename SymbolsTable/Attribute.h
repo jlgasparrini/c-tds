@@ -99,7 +99,7 @@ Boolean getArrayBoolVal(Attribute *attr, unsigned int pos);
 int getOffsetVal(Attribute *attr);
 
 /* Returns the offset of the array */
-int getOffsetArray(Attribute *attr)
+int getOffsetArray(Attribute *attr);
 
 /* Sets the intVal of the attribute */
 void setIntVal(Attribute *attr, int value);
