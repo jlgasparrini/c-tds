@@ -194,7 +194,12 @@ void translateLoadArray(FILE *file, Code3D *code)
      * parameter 3 is the resulting attribute. 
      */
     writeCodeInFile(file, translate("mov", offset(code,1), "%ebx");
-	writeCodeInFile(file, translate("mov", offsetArray(code,2,"%ebx"), offset(code,3)));
+	if (getAttributeType(getAttribute(code, param)) == Float)
+	{
+		writeCodeInFile(file, translate("movss", offsetArray(code,2,"%ebx"), offset(code,3)));
+	}else{
+		writeCodeInFile(file, translate("mov", offsetArray(code,2,"%ebx"), offset(code,3)));
+	}
 }
 
 /* Puts in the file the translation of the GOTO_METHOD action */
