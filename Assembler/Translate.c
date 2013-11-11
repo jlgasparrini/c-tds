@@ -69,9 +69,17 @@ char* value(Code3D* code)
 /**Metodo para la obtencion del offset de una variable*/
 char* offset(Code3D* code, int param)
 {
-    char *result = (char*) malloc(sizeof(char));
+    char *result = (char*) malloc(sizeof(char));/* CHECK OUT THIS CASE BECAUSE sizeof(char) ONLY STORES MEMORY FOR ONLY ONE CHARACTER! */
     result =intToString(getOffsetVal(getAttribute(code, param)));
     return concat (result, "(%rbp)");
+}
+
+/**Metodo para la obtencion del offset de un arreglo*/
+char* offsetArray(Code3D* code, int param, char* reg)
+{
+    char *result = (char*) malloc(sizeof(char));/* CHECK OUT THIS CASE BECAUSE sizeof(char) ONLY STORES MEMORY FOR ONLY ONE CHARACTER! */
+    result =intToString(getOffsetArray(getAttribute(code, param)));
+    return concat((concat ((concat (result, "(%rbp," )), reg)), ",4)");
 }
 
 /*-----------------------------------------------------------------------*/
@@ -185,10 +193,8 @@ void translateLoadArray(FILE *file, Code3D *code)
      * parameter 2 is the array from which the number will be getted from.
      * parameter 3 is the resulting attribute. 
      */
-
-    /* --------------------------------------- MUST BE IMPLEMENTED --------------------------------------- */
-    /* --------------------------------------- MUST BE IMPLEMENTED --------------------------------------- */
-    /* --------------------------------------- MUST BE IMPLEMENTED --------------------------------------- */
+    writeCodeInFile(file, translate("mov", offset(code,1), "%ebx");
+	writeCodeInFile(file, translate("mov", offsetArray(code,2,"%ebx"), offset(code,3)));
 }
 
 /* Puts in the file the translation of the GOTO_METHOD action */
