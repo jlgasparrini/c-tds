@@ -7,7 +7,7 @@
 #include <string.h>
 #include "Attribute.h"
 
-static int globalVarOffset = -16;
+static int globalVarOffset = -4;
 static int globalParamOffset = 8;
 
 /* Creates a StVariable with the respective type and initialized */
@@ -168,10 +168,16 @@ Boolean getArrayBoolVal(Attribute *attr, unsigned int pos)
 	return (*attr).decl.array.arrayValues[pos].value.boolVal;
 }
 
-/* Returns the offset of the attribute */
+/* Returns the offset of the variable */
 int getOffsetVal(Attribute *attr)
 {
 	return (*(*attr).decl.variable).offset;
+}
+
+/* Returns the offset of the array */
+int getOffsetArray(Attribute *attr)
+{
+	return (*attr).decl.array.arrayValues[0].offset;
 }
 
 /* Sets the intVal of the attribute */
@@ -234,7 +240,7 @@ void setGlobalVarOffset(int newOffset)
 /* Set the global variable offset of the class in a -16 */
 void resetGlobalVarOffset()
 {
-	globalVarOffset = -16;
+	globalVarOffset = -4;
 }
 
 /* Returns the global parameters offset of the class */

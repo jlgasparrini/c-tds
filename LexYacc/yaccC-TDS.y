@@ -70,6 +70,7 @@ int main( argc, argv )
     char **argv; 
     { 
     ++argv, --argc;	/* skip over program name */
+    fileName = argv[0];
         if ( argc > 0 )
             yyin = fopen( argv[0], "r" );
         else
@@ -128,7 +129,6 @@ program       :    CLASS ID '{' '}' {
                                     errorQ=initializeQueue(); 
                                     lcode3d = initLCode3D();
                                     finalizar();
-                                    fileName = $2;
                     } 
               |    CLASS ID '{' {
                                     symbolsTable = initializeSymbolsTable(); 
@@ -144,7 +144,6 @@ program       :    CLASS ID '{' '}' {
 									offsetsParam = newStackOffset();
                                     listmlabel = initL();
                                     lcode3d = initLCode3D();
-                                    fileName = $2;
                     } body {
                                 checkMain(errorQ,symbolsTable); 
                                 popLevel(symbolsTable); 
