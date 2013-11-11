@@ -90,7 +90,7 @@ void translateGotoLabel(FILE* file, Code3D* code)
 /* Puts in the file the translation of the GOTO_LABEL_CONDITION action */
 void translateGotoLabelCondition(FILE* file, Code3D* code)
 {
-    writeCodeInFile(file, concat(getLabel(code,2), "\n"));
+    writeCodeInFile(file, translate("jz", getLabel(code,2), ""));
 }
 
 /* Puts in the file the translation of the RETURN action */
@@ -181,6 +181,11 @@ void writeLabel(FILE *file, ListMLabel *labelList, Code3D *code)
 /* Puts in the file the translation of the LOAD_ARRAY action */
 void translateLoadArray(FILE *file, Code3D *code)
 {
+    /* parameter 1 of 3d code is the position of the array
+     * parameter 2 is the array from which the number will be getted from.
+     * parameter 3 is the resulting attribute. 
+     */
+
     /* --------------------------------------- MUST BE IMPLEMENTED --------------------------------------- */
     /* --------------------------------------- MUST BE IMPLEMENTED --------------------------------------- */
     /* --------------------------------------- MUST BE IMPLEMENTED --------------------------------------- */
@@ -298,7 +303,7 @@ void translateLesserInt(FILE* file, Code3D* code)
 {
     writeCodeInFile(file, translate("mov", offset(code,2), "%eax")); //ACA TUVE QUE CAMBIAR RAX POR EAX DEBIDO A QUE ANDA A VECES EL ASSEMBLER..
     writeCodeInFile(file, translate("cmp", offset(code,1), "%eax"));
-    writeCodeInFile(file, "\tjle ");
+    writeCodeInFile(file, translate("cmovl", "%eax", 1), offset(code,3));
 }
 
 /* Puts in the file the translation of the LESSER_EQ_INT action */
@@ -306,8 +311,7 @@ void translateLesserOrEqualInt(FILE* file, Code3D* code)
 {
     writeCodeInFile(file, translate("mov", offset(code,2), "%eax")); //ACA TUVE QUE CAMBIAR RAX POR EAX DEBIDO A QUE ANDA A VECES EL ASSEMBLER..
     writeCodeInFile(file, translate("cmp", offset(code,1), "%eax"));
-    //writeCodeInFile(file, translate("cmovle", "%rax", offset(code,3))); TAMPOCO SE PARA QUE SIRVE
-    writeCodeInFile(file, "\tjl ");
+    writeCodeInFile(file, translate("cmovle", "%rax", offset(code,3)));
 }
 
 /* Puts in the file the translation of the EQ_INT action */
@@ -315,8 +319,7 @@ void translateEqualInt(FILE* file, Code3D* code)
 {
     writeCodeInFile(file, translate("mov", offset(code,2), "%eax"));
     writeCodeInFile(file, translate("cmp", offset(code,1) ,"%eax"));
-    //writeCodeInFile(file, translate("cmove", "%rax", offset(code,3))); ESTO TAMPOCO ME SIRVE
-    writeCodeInFile(file, "\tjne ");
+    writeCodeInFile(file, translate("cmove", "%rax", offset(code,3)));
 }
 
 /* Puts in the file the translation of the DIST_INT action */
@@ -324,8 +327,7 @@ void translateDistinctInt(FILE* file, Code3D* code)
 {
     writeCodeInFile(file, translate("mov", offset(code,2), "%eax"));
     writeCodeInFile(file, translate("cmp", offset(code,1) ,"%eax"));
-    //writeCodeInFile(file, translate("cmovne", "%rax", offset(code,3))); ESTO TAMPOCO ME SIRVE
-    writeCodeInFile(file, "\tje ");
+    writeCodeInFile(file, translate("cmovne", "%rax", offset(code,3)));
 }
 
 /********************************************************************************************/
@@ -375,14 +377,13 @@ void eq_FloatTranslate(FILE* file, Code3D* code)
     writeCodeInFile(file, translate("movb", "%al", offset(code, 3)));
 }
 
-
 /**"DIST_FLOAT %s %s %s\n" */
 void dist_FloatTranslate(FILE* file, Code3D* code)
 {
     writeCodeInFile(file, translate("movss", offset(code, 1), "%xmm0"));
     writeCodeInFile(file, translate("ucomiss", offset(code, 2) ,"%xmm0"));
     writeCodeInFile(file, translate("setp", "%dl", ""));
-    writeCodeInFile(file, translate("movl", "%1", "%rax"));
+    writeCodeInFile(file, translate("movl", "$1", "%rax"));
     writeCodeInFile(file, translate("movss", offset(code, 1), "%xmm0"));
     writeCodeInFile(file, translate("ucomiss", offset(code, 2) ,"%xmm0"));
     writeCodeInFile(file, translate("cmove", "%edx", "%rax"));
