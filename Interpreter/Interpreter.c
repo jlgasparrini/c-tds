@@ -84,7 +84,7 @@ int runOperation(int position)
 
             /* GOTO_LABEL_COND */
         case 7:
-            if (getBoolVal((*(*code).param1).val.attri) == False)
+            if (getBoolVal(getAttribute(code,1)) == False)
                 return searchByLabel((*codeList).codes,getLabel(code, 2)); 
             return position + 1;
 

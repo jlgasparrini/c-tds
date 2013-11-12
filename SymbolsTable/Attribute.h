@@ -95,8 +95,11 @@ float getArrayFloatVal(Attribute *attr, unsigned int pos);
 /* Returns the boolVal of the array attribute in the "pos" position */
 Boolean getArrayBoolVal(Attribute *attr, unsigned int pos);
 
-/* Returns the offset of the attribute */
+/* Returns the offset of the variable */
 int getOffsetVal(Attribute *attr);
+
+/* Returns the offset of the array */
+int getOffsetArray(Attribute *attr);
 
 /* Sets the intVal of the attribute */
 void setIntVal(Attribute *attr, int value);
