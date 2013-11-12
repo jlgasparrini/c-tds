@@ -7,8 +7,12 @@
 #include "../ListMethod/genlistml.h"
 #include "../Code3D/gencode3d.h"
 #include "../SymbolsTable/Utils.h"
-#include "../Stack/floatStack.h"
-StackFloat *floatS;
+typedef union{
+    int entero;
+    float real;
+}FloatValue;
+
+FloatValue fValue;
 
 /* Writing methods */
 char* concat(char* str1, char* str2);

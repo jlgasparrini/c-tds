@@ -267,11 +267,9 @@ void initAssembler(ListMLabel *labelL, LCode3D *codeL, Stack *stack, char* nameO
     returnStack = stack;
     size = codeSize(codeL);
     int i = 0;
-    floatS = newStackFloat();
     while (i < size)
     {       
         generateOperation(i);
         i++;
     }
-    writeFloatNumbers(file);
 }

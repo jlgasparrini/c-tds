@@ -87,14 +87,13 @@ char* offsetArray(Code3D* code, int param, char* reg)
 void load_Const_Translate(FILE* file, Code3D* code)
 {
     if (!isFloat(code, 1))
-    {
         writeCodeInFile(file, translate("movl", value(code), offset(code, 2)));
-    }
     else
     {
-        char *label = (char*) newLabelName("FLOAT");
-        pushFloat(floatS, label, getFloat(code, 1));
-        writeCodeInFile(file, translate("mov", concat("$", label), "%rax"));
+        fValue.real = getFloat(code, 1);
+        fprintf(file, "\tmov $0x");
+        fprintf(file, "%x",fValue.entero);
+        fprintf(file, ", %rax\n");
         writeCodeInFile(file, translate("mov", "%rax", offset(code, 2)));
     }
 }
@@ -161,13 +160,8 @@ void printOperation(FILE *file, Code3D *code)
     }
     if (getAttributeType(getAttribute(code, 1)) == Float)
     {
-        /* - -- - - - - - - - - - - -  DOESN'T WORKING!!!!!! - - - - - - -- - - - - - - -*/
-        //Esto tiene que ser de la forma                    movsd .LC0(%rip), %xmm0
-        //                                                  .LC0:
-        //                                                       .long	4172646627
-        //                                                       .long	1072693268
-        //                                                       .text
-//        writeCodeInFile(file, translate("movsd", "%xmm0", ""));
+        writeCodeInFile(file, translate("movss", offset(code, 1), "%xmm0"));
+        writeCodeInFile(file, translate("cvtps2pd", "%xmm0", "%xmm0"));
         writeCodeInFile(file, translate("movl", concat("$", ".FLOAT"), "%edi"));
         writeCodeInFile(file, translate("mov", "$1", "%rax"));
     }
@@ -203,13 +197,13 @@ void translateLoadArray(FILE *file, Code3D *code)
      * parameter 2 is the array from which the number will be getted from.
      * parameter 3 is the resulting attribute. 
      */
-    writeCodeInFile(file, translate("mov", offset(code,1), "%ebx");
-	if (getAttributeType(getAttribute(code, param)) == Float)
-	{
-		writeCodeInFile(file, translate("movss", offsetArray(code,2,"%ebx"), offset(code,3)));
-	}else{
-		writeCodeInFile(file, translate("mov", offsetArray(code,2,"%ebx"), offset(code,3)));
-	}
+    writeCodeInFile(file, translate("mov", offset(code,1), "%ebx"));
+    if (getAttributeType(getAttribute(code, 1)) == Float)
+    {
+        writeCodeInFile(file, translate("movss", offsetArray(code,2,"%ebx"), offset(code,3)));
+    }else{
+        writeCodeInFile(file, translate("mov", offsetArray(code,2,"%ebx"), offset(code,3)));
+    }
 }
 
 /* Puts in the file the translation of the GOTO_METHOD action */
@@ -234,7 +228,7 @@ void translateAssignationInt(FILE* file, Code3D* code)
 void translateParamAssignInt(FILE *file, Code3D *code)
 {
     writeCodeInFile(file, translate("movl", offset(code, 1), "%rax"));
-	writeCodeInFile(file, translate("push", "%rax", ""));
+    writeCodeInFile(file, translate("push", "%rax", ""));
 }
 
 /*-----------------------------------------------------------------------*/
@@ -361,7 +355,7 @@ void assignation_FloatTranslate(FILE* file, Code3D* code)
 void translateParamAssignFloat(FILE *file, Code3D *code)
 {
     writeCodeInFile(file, translate("movss", offset(code, 1), "%rax"));
-	writeCodeInFile(file, translate("push", "%rax", ""));
+    writeCodeInFile(file, translate("push", "%rax", ""));
 }
 
 /*-----------------------------------------------------------------------*/
@@ -473,25 +467,4 @@ void translateMinusFloat(FILE* file, Code3D* code)
     writeCodeInFile(file, translate("movss", offset(code,2) ,"%xmm0"));
     writeCodeInFile(file, translate("subss", offset(code,1), "%xmm0"));
     writeCodeInFile(file, translate("movss", "%xmm0", offset(code,3)));
-}
-
-/* Puts un the file the float inmediatly numbers */
-void writeFloatNumbers(FILE* file)
-{
-    while (!isEmptyFloat(floatS))
-    {
-        NodeStackFloat* aux = popFloat(floatS);
-        writeCodeInFile(file, concat(aux->label, ":\n")); 
-        writeCodeInFile(file, "\t.float ");
- //       printf("imprimiendo sin trasformar a string  %f \n", (*aux).info);
- //       char *auxFloat = (char*) malloc (sizeof(char)*30);
- //       printf("por hacer la asignacion\n");
-//        auxFloat = floatToString(aux->info);
-        //auxFloat = floatToString((double)aux->info);
- //       printf("despues de transformarlo \n");
- //       printf("despues de transformado: %s\n",  floatToString(aux->info));
-        fprintf(file, "%f", (*aux).info);
-        fprintf(file, "%s", "\n");
-//        writeCodeInFile(file, concat(auxFloat, "\n"));
-    }
 }
