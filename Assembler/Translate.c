@@ -107,6 +107,7 @@ void translateGotoLabel(FILE* file, Code3D* code)
 /* Puts in the file the translation of the GOTO_LABEL_CONDITION action */
 void translateGotoLabelCondition(FILE* file, Code3D* code)
 {
+    writeCodeInFile(file, translate("cmp", "$1", offset(code, 1)));
     writeCodeInFile(file, translate("jz", getLabel(code,2), ""));
 }
 
@@ -312,8 +313,9 @@ void translateLesserInt(FILE* file, Code3D* code)
 {
     writeCodeInFile(file, translate("mov", offset(code,2), "%eax"));
     writeCodeInFile(file, translate("cmp", offset(code,1), "%eax"));
-    writeCodeInFile(file, translate("setle", "%al", "");
-    writeCodeInFile(file, translate("movzbl", "%al", offset(code,3)));
+    writeCodeInFile(file, translate("setle", "%al", ""));
+    writeCodeInFile(file, translate("movzbl", "%al", "%eax"));
+    writeCodeInFile(file, translate("mov", "%eax", offset(code,3))); 
 }
 
 /* Puts in the file the translation of the LESSER_EQ_INT action */
@@ -321,7 +323,7 @@ void translateLesserOrEqualInt(FILE* file, Code3D* code)
 {
     writeCodeInFile(file, translate("mov", offset(code,2), "%eax")); //ACA TUVE QUE CAMBIAR RAX POR EAX DEBIDO A QUE ANDA A VECES EL ASSEMBLER..
     writeCodeInFile(file, translate("cmp", offset(code,1), "%eax"));
-    writeCodeInFile(file, translate("setle", "%al", "");
+    writeCodeInFile(file, translate("setle", "%al", ""));
     writeCodeInFile(file, translate("movzbl", "%al", offset(code,3)));
 }
 
