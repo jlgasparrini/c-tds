@@ -310,9 +310,10 @@ void greater_Eq_IntTranslate(FILE* file, Code3D* code)
 /* Puts in the file the translation of the LESSER_INT action */
 void translateLesserInt(FILE* file, Code3D* code)
 {
-    writeCodeInFile(file, translate("mov", offset(code,2), "%eax")); //ACA TUVE QUE CAMBIAR RAX POR EAX DEBIDO A QUE ANDA A VECES EL ASSEMBLER..
+    writeCodeInFile(file, translate("mov", offset(code,2), "%eax"));
     writeCodeInFile(file, translate("cmp", offset(code,1), "%eax"));
-    writeCodeInFile(file, translate("cmovl", "%eax", offset(code,3)));
+    writeCodeInFile(file, translate("setle", "%al", "");
+    writeCodeInFile(file, translate("movzbl", "%al", offset(code,3)));
 }
 
 /* Puts in the file the translation of the LESSER_EQ_INT action */
@@ -320,7 +321,8 @@ void translateLesserOrEqualInt(FILE* file, Code3D* code)
 {
     writeCodeInFile(file, translate("mov", offset(code,2), "%eax")); //ACA TUVE QUE CAMBIAR RAX POR EAX DEBIDO A QUE ANDA A VECES EL ASSEMBLER..
     writeCodeInFile(file, translate("cmp", offset(code,1), "%eax"));
-    writeCodeInFile(file, translate("cmovle", "%rax", offset(code,3)));
+    writeCodeInFile(file, translate("setle", "%al", "");
+    writeCodeInFile(file, translate("movzbl", "%al", offset(code,3)));
 }
 
 /* Puts in the file the translation of the EQ_INT action */
