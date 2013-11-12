@@ -20,10 +20,9 @@ int size;
 int generateOperation(int position)
 {
     Code3D*	code = get_code(codeList,position);
-//    printf("Genero la operacion....!         %i   ==    %s\n", code->command, getCodeByID(code->command));
     switch ((*code).command)
     {
-/********************************* GENERAL OPERATIONS ******************************/
+        /********************************* GENERAL OPERATIONS ******************************/
 			/* LOAD_CONST */
         case 0:
             load_Const_Translate(file, code);
@@ -70,7 +69,7 @@ int generateOperation(int position)
             goTo_Method(file, code);
             break;
 		
-/********************************* INT OPERATIONS **********************************/		
+        /********************************* INT OPERATIONS **********************************/		
             /* ASSIGNATION_INT */
         case 9: 
             translateAssignationInt(file, code); 
@@ -141,7 +140,7 @@ int generateOperation(int position)
             translateLesserOrEqualInt(file, code);
             break;
 			
-/********************************* FLOAT OPERATIONS ******************************/			
+        /********************************* FLOAT OPERATIONS ******************************/			
 		    /* ASSIGNATION_FLOAT */
         case 23:
             assignation_FloatTranslate(file, code);
@@ -207,7 +206,7 @@ int generateOperation(int position)
             translateLesserOrEqualFloat(file, code);
             break;
 
-/********************************* BOOLEAN OPERATIONS ******************************/
+        /********************************* BOOLEAN OPERATIONS ******************************/
 		    /* ASSIGNATION_BOOL */
         case 36:
             translateAssignationInt(file, code);
@@ -247,8 +246,7 @@ int generateOperation(int position)
 
 }
 
-/* Initializes the interpreter and run */
-//Toma el codigo 3D, la lista de metodos y la pila de IF's!!
+/* Initializes the assembly engine and run */
 void initAssembler(ListMLabel *labelL, LCode3D *codeL, Stack *stack, char* nameOfFile)
 {
     //Initialize file.
@@ -269,9 +267,11 @@ void initAssembler(ListMLabel *labelL, LCode3D *codeL, Stack *stack, char* nameO
     returnStack = stack;
     size = codeSize(codeL);
     int i = 0;
+    floatS = newStackFloat();
     while (i < size)
     {       
         generateOperation(i);
         i++;
     }
+    writeFloatNumbers(file);
 }

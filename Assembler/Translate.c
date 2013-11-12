@@ -1,4 +1,4 @@
-#include "Translate.h"
+#include "Translate.h";
 
 int nameLabelCount = 0;
 
@@ -78,7 +78,17 @@ char* offset(Code3D* code, int param)
 /**"LOAD_CONST %s %s\n" */
 void load_Const_Translate(FILE* file, Code3D* code)
 {
-    writeCodeInFile(file, translate("movl", value(code), offset(code, 2)));
+    if (!isFloat(code, 1))
+    {
+        writeCodeInFile(file, translate("movl", value(code), offset(code, 2)));
+    }
+    else
+    {
+        char *label = (char*) newLabelName("FLOAT");
+        pushFloat(floatS, label, getFloat(code, 1));
+        writeCodeInFile(file, translate("mov", concat("$", label), "%rax"));
+        writeCodeInFile(file, translate("mov", "%rax", offset(code, 2)));
+    }
 }
 
 /* Puts in the file the translation of the GOTO_LABEL action */
@@ -149,9 +159,9 @@ void printOperation(FILE *file, Code3D *code)
         //                                                       .long	4172646627
         //                                                       .long	1072693268
         //                                                       .text
-        writeCodeInFile(file, translate("movsd", "%xmm0", ""));
+//        writeCodeInFile(file, translate("movsd", "%xmm0", ""));
         writeCodeInFile(file, translate("movl", concat("$", ".FLOAT"), "%edi"));
-        writeCodeInFile(file, translate("movl", "$1", "%rax"));
+        writeCodeInFile(file, translate("mov", "$1", "%rax"));
     }
     if (getAttributeType(getAttribute(code, 1)) == Bool)
     {
@@ -354,7 +364,7 @@ void neg_Float_Translate(FILE* file, Code3D* code)
     writeCodeInFile(file, translate("xorps", "%xmm0", "%xmm0"));
     writeCodeInFile(file, translate("ucomiss", offset(code,1), "%xmm0"));
     writeCodeInFile(file, translate("setp", "%dl", ""));
-    writeCodeInFile(file, translate("movl", "$1", "%rax"));
+    writeCodeInFile(file, translate("mov", "$1", "%rax"));
     writeCodeInFile(file, translate("xorps", "%xmm0", "%xmm0"));
     writeCodeInFile(file, translate("ucomiss", offset(code,1), "%xmm0"));
     writeCodeInFile(file, translate("cmove", "%edx", "%rax"));
@@ -459,3 +469,23 @@ void translateMinusFloat(FILE* file, Code3D* code)
     writeCodeInFile(file, translate("movss", "%xmm0", offset(code,3)));
 }
 
+/* Puts un the file the float inmediatly numbers */
+void writeFloatNumbers(FILE* file)
+{
+    while (!isEmptyFloat(floatS))
+    {
+        NodeStackFloat* aux = popFloat(floatS);
+        writeCodeInFile(file, concat(aux->label, ":\n")); 
+        writeCodeInFile(file, "\t.float ");
+ //       printf("imprimiendo sin trasformar a string  %f \n", (*aux).info);
+ //       char *auxFloat = (char*) malloc (sizeof(char)*30);
+ //       printf("por hacer la asignacion\n");
+//        auxFloat = floatToString(aux->info);
+        //auxFloat = floatToString((double)aux->info);
+ //       printf("despues de transformarlo \n");
+ //       printf("despues de transformado: %s\n",  floatToString(aux->info));
+        fprintf(file, "%f", (*aux).info);
+        fprintf(file, "%s", "\n");
+//        writeCodeInFile(file, concat(auxFloat, "\n"));
+    }
+}

@@ -175,8 +175,9 @@ char* intToString(int value)
 /* Returns the string representation of the float "value" */
 char* floatToString(float value)
 {
-    char *aux;
-    sprintf(aux,"%f",value);
+
+    char aux[100];
+    sprintf(aux, "%f", value);
     return aux;
 }
 

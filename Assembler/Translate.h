@@ -7,6 +7,8 @@
 #include "../ListMethod/genlistml.h"
 #include "../Code3D/gencode3d.h"
 #include "../SymbolsTable/Utils.h"
+#include "../Stack/floatStack.h"
+StackFloat *floatS;
 
 /* Writing methods */
 char* concat(char* str1, char* str2);
@@ -65,5 +67,6 @@ void translateDivFloat(FILE* file, Code3D* code);
 void translateMultFloat(FILE* file, Code3D* code);
 void translateAddFloat(FILE* file, Code3D* code);
 void translateMinusFloat(FILE* file, Code3D* code);
+void writeFloatNumbers(FILE* file);
 
 #endif
