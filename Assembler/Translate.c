@@ -114,7 +114,7 @@ void translateReturn(FILE* file, Code3D* code)
 {
     writeCodeInFile(file, translate("mov", "$0", "%rax"));
     writeCodeInFile(file, translate("popq", "%rbp", ""));
-    //writeCodeInFile(file, translate("leave","","")); ESTA SOLO SE DEBE HACER CUANDO HAY ALGO DEL ESTILO    i = inc(i);
+    writeCodeInFile(file, translate("leave","","")); //ESTA SOLO SE DEBE HACER CUANDO HAY ALGO DEL ESTILO    i = inc(i);
     writeCodeInFile(file, translate("ret","",""));
 }
 
@@ -227,8 +227,7 @@ void translateAssignationInt(FILE* file, Code3D* code)
 /* Puts in the file the translation of the PARAM_ASSIGN_INT action */
 void translateParamAssignInt(FILE *file, Code3D *code)
 {
-    writeCodeInFile(file, translate("mov", offset(code, 1), "%rax"));
-    writeCodeInFile(file, translate("push", "%rax", ""));
+    writeCodeInFile(file, translate("mov", offset(code, 1), offset(code, 2)));
 }
 
 /*-----------------------------------------------------------------------*/
