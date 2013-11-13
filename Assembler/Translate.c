@@ -8,9 +8,7 @@ char* createNewLabel(char* msg)
     char* aux;
     sprintf(aux, "%d", nameLabelCount);
     char *newLabel = concat(msg, aux);
-    nameLabelCount++;
-    return newLabel;
-}
+    nameLabelCount++; return newLabel; }
 
 //Retorna la contatenacion de dos cadenas.
 char* concat(char *s1, char *s2)
@@ -107,7 +105,7 @@ void translateGotoLabel(FILE* file, Code3D* code)
 /* Puts in the file the translation of the GOTO_LABEL_CONDITION action */
 void translateGotoLabelCondition(FILE* file, Code3D* code)
 {
-    writeCodeInFile(file, translate("cmp", "$1", offset(code, 1)));
+    writeCodeInFile(file, translate("cmp", "$0", offset(code, 1)));
     writeCodeInFile(file, translate("jz", getLabel(code,2), ""));
 }
 
@@ -146,9 +144,10 @@ void translateAnd(FILE* file, Code3D* code)
 /* Puts in the file the translation of the MINUS_INT action */
 void translateNot(FILE* file, Code3D* code)
 {
-    writeCodeInFile(file, translate("mov", offset(code,1), "%rax"));
-    writeCodeInFile(file, translate("not", "%rax", ""));
-    writeCodeInFile(file, translate("mov", "%rax", offset(code,2)));
+    writeCodeInFile(file, translate("cmpl", "$1", offset(code,1)));
+    writeCodeInFile(file, translate("setne", "%al", ""));
+    writeCodeInFile(file, translate("movzbl", "%al", "%eax"));
+    writeCodeInFile(file, translate("mov", "%eax", offset(code, 2)));
 }
 
 /* Puts in the file the translation of the PRINT action */
@@ -228,7 +227,7 @@ void translateAssignationInt(FILE* file, Code3D* code)
 /* Puts in the file the translation of the PARAM_ASSIGN_INT action */
 void translateParamAssignInt(FILE *file, Code3D *code)
 {
-    writeCodeInFile(file, translate("movl", offset(code, 1), "%rax"));
+    writeCodeInFile(file, translate("mov", offset(code, 1), "%rax"));
     writeCodeInFile(file, translate("push", "%rax", ""));
 }
 
@@ -236,34 +235,34 @@ void translateParamAssignInt(FILE *file, Code3D *code)
 /**"NEG_INT %s %s\n" */
 void neg_Int_Translate(FILE* file, Code3D* code)
 {
-    writeCodeInFile(file, translate("movl", offset(code, 1), "%rax"));
-    writeCodeInFile(file, translate("negl", "%rax", ""));
-    writeCodeInFile(file, translate("movl", "%rax", offset(code, 2)));
+    writeCodeInFile(file, translate("mov", offset(code, 1), "%rax"));
+    writeCodeInFile(file, translate("neg", "%rax", ""));
+    writeCodeInFile(file, translate("mov", "%rax", offset(code, 2)));
 }
 
 /*-----------------------------------------------------------------------*/
 /**"ADD_INT %s %s %s\n" */
 void add_Int_Translate(FILE* file, Code3D* code)
 {
-    writeCodeInFile(file, translate("movl", offset(code, 1), "%rax"));
-    writeCodeInFile(file, translate("addl", offset(code, 2) ,"%rax"));
-    writeCodeInFile(file, translate("movl", "%rax", offset(code, 3)));
+    writeCodeInFile(file, translate("mov", offset(code, 1), "%rax"));
+    writeCodeInFile(file, translate("add", offset(code, 2) ,"%rax"));
+    writeCodeInFile(file, translate("mov", "%rax", offset(code, 3)));
 }
 
 /*-----------------------------------------------------------------------*/
 /**"MULT_INT %s %s %s\n" */
 void mult_Int_Translate(FILE* file, Code3D* code)
 {
-    writeCodeInFile(file, translate("movl", offset(code, 1), "%rax"));
-    writeCodeInFile(file, translate("imull", offset(code, 2) ,"%rax"));
-    writeCodeInFile(file, translate("movl", "%rax", offset(code, 3)));
+    writeCodeInFile(file, translate("mov", offset(code, 1), "%rax"));
+    writeCodeInFile(file, translate("imul", offset(code, 2) ,"%rax"));
+    writeCodeInFile(file, translate("mov", "%rax", offset(code, 3)));
 }
 
 /* Puts in the file the translation of the MINUS_INT action */
 void translateMinusInt(FILE* file, Code3D* code)
 {
-    writeCodeInFile(file, translate("mov", offset(code,1), "%rax"));
-    writeCodeInFile(file, translate("mov", offset(code,2), "%r10"));
+    writeCodeInFile(file, translate("mov", offset(code,2), "%rax"));
+    writeCodeInFile(file, translate("mov", offset(code,1), "%r10"));
     writeCodeInFile(file, translate("sub", "%rax", "%r10"));
     writeCodeInFile(file, translate("mov", "%r10", offset(code,3)));
 }
@@ -294,26 +293,30 @@ void translateDivInt(FILE* file, Code3D* code)
 /**"GREATER_INT %s %s %s\n" */
 void greater_IntTranslate(FILE* file, Code3D* code)
 {
-    writeCodeInFile(file, translate("mov", offset(code,2), "%eax")); //ACA TUVE QUE CAMBIAR RAX POR EAX DEBIDO A QUE ANDA A VECES EL ASSEMBLER..
-    writeCodeInFile(file, translate("cmp", offset(code,1), "%eax"));
-    writeCodeInFile(file, translate("cmovg", "%rax", offset(code, 3)));
+    writeCodeInFile(file, translate("mov", offset(code,1), "%eax")); //ACA TUVE QUE CAMBIAR RAX POR EAX DEBIDO A QUE ANDA A VECES EL ASSEMBLER..
+    writeCodeInFile(file, translate("cmp", offset(code,2), "%eax"));
+    writeCodeInFile(file, translate("setg", "%al", ""));
+    writeCodeInFile(file, translate("movzbl", "%al", "%eax"));
+    writeCodeInFile(file, translate("mov", "%eax", offset(code,3))); 
 }
 
 /*-----------------------------------------------------------------------*/
 /**"GREATER_ EQ_INT %s %s %s\n" */
 void greater_Eq_IntTranslate(FILE* file, Code3D* code)
 {
-    writeCodeInFile(file, translate("mov", offset(code,2), "%eax")); //ACA TUVE QUE CAMBIAR RAX POR EAX DEBIDO A QUE ANDA A VECES EL ASSEMBLER..
-    writeCodeInFile(file, translate("cmp", offset(code,1), "%eax"));
-    writeCodeInFile(file, translate("cmovge", "%rax", offset(code, 3)));
+    writeCodeInFile(file, translate("mov", offset(code,1), "%eax")); //ACA TUVE QUE CAMBIAR RAX POR EAX DEBIDO A QUE ANDA A VECES EL ASSEMBLER..
+    writeCodeInFile(file, translate("cmp", offset(code,2), "%eax"));
+    writeCodeInFile(file, translate("setge", "%al", ""));
+    writeCodeInFile(file, translate("movzbl", "%al", "%eax"));
+    writeCodeInFile(file, translate("mov", "%eax", offset(code,3))); 
 }
 
 /* Puts in the file the translation of the LESSER_INT action */
 void translateLesserInt(FILE* file, Code3D* code)
 {
-    writeCodeInFile(file, translate("mov", offset(code,2), "%eax"));
-    writeCodeInFile(file, translate("cmp", offset(code,1), "%eax"));
-    writeCodeInFile(file, translate("setle", "%al", ""));
+    writeCodeInFile(file, translate("mov", offset(code,1), "%eax"));
+    writeCodeInFile(file, translate("cmp", offset(code,2), "%eax"));
+    writeCodeInFile(file, translate("setl", "%al", ""));
     writeCodeInFile(file, translate("movzbl", "%al", "%eax"));
     writeCodeInFile(file, translate("mov", "%eax", offset(code,3))); 
 }
@@ -321,26 +324,31 @@ void translateLesserInt(FILE* file, Code3D* code)
 /* Puts in the file the translation of the LESSER_EQ_INT action */
 void translateLesserOrEqualInt(FILE* file, Code3D* code)
 {
-    writeCodeInFile(file, translate("mov", offset(code,2), "%eax")); //ACA TUVE QUE CAMBIAR RAX POR EAX DEBIDO A QUE ANDA A VECES EL ASSEMBLER..
-    writeCodeInFile(file, translate("cmp", offset(code,1), "%eax"));
+    writeCodeInFile(file, translate("mov", offset(code,1), "%eax")); //ACA TUVE QUE CAMBIAR RAX POR EAX DEBIDO A QUE ANDA A VECES EL ASSEMBLER..
+    writeCodeInFile(file, translate("cmp", offset(code,2), "%eax"));
     writeCodeInFile(file, translate("setle", "%al", ""));
-    writeCodeInFile(file, translate("movzbl", "%al", offset(code,3)));
+    writeCodeInFile(file, translate("movzbl", "%al", "%eax"));
+    writeCodeInFile(file, translate("mov", "%eax", offset(code,3))); 
 }
 
 /* Puts in the file the translation of the EQ_INT action */
 void translateEqualInt(FILE* file, Code3D* code)
 {
-    writeCodeInFile(file, translate("mov", offset(code,2), "%eax"));
-    writeCodeInFile(file, translate("cmp", offset(code,1) ,"%eax"));
-    writeCodeInFile(file, translate("cmove", "%rax", offset(code,3)));
+    writeCodeInFile(file, translate("mov", offset(code,1), "%eax"));
+    writeCodeInFile(file, translate("cmp", offset(code,2) ,"%eax"));
+    writeCodeInFile(file, translate("sete", "%al", ""));
+    writeCodeInFile(file, translate("movzbl", "%al", "%eax"));
+    writeCodeInFile(file, translate("mov", "%eax", offset(code,3))); 
 }
 
 /* Puts in the file the translation of the DIST_INT action */
 void translateDistinctInt(FILE* file, Code3D* code)
 {
-    writeCodeInFile(file, translate("mov", offset(code,2), "%eax"));
-    writeCodeInFile(file, translate("cmp", offset(code,1) ,"%eax"));
-    writeCodeInFile(file, translate("cmovne", "%rax", offset(code,3)));
+    writeCodeInFile(file, translate("mov", offset(code,1), "%eax"));
+    writeCodeInFile(file, translate("cmp", offset(code,2) ,"%eax"));
+    writeCodeInFile(file, translate("setne", "%al", ""));
+    writeCodeInFile(file, translate("movzbl", "%al", "%eax"));
+    writeCodeInFile(file, translate("mov", "%eax", offset(code,3))); 
 }
 
 /********************************************************************************************/
@@ -351,29 +359,31 @@ void translateDistinctInt(FILE* file, Code3D* code)
 /**"ASSIGNATION_FLOAT %s %s\n" */
 void assignation_FloatTranslate(FILE* file, Code3D* code)
 {
-    writeCodeInFile(file, translate("movss", offset(code,1), "%rax"));
-    writeCodeInFile(file, translate("movss", "%rax", offset(code,2)));
+    writeCodeInFile(file, translate("movss", offset(code,1), "%xmm0"));
+    writeCodeInFile(file, translate("movss", "%xmm0", offset(code,2)));
 }
 
 /* Puts in the file the translation of the PARAM_ASSIGN_FLOAT action */
 void translateParamAssignFloat(FILE *file, Code3D *code)
 {
-    writeCodeInFile(file, translate("movss", offset(code, 1), "%rax"));
-    writeCodeInFile(file, translate("push", "%rax", ""));
+    writeCodeInFile(file, translate("movss", offset(code, 1), "%xmm0"));
+    writeCodeInFile(file, translate("push", "%xmm0", ""));
 }
 
 /*-----------------------------------------------------------------------*/
 /**"NEG_FLOAT %s %s\n" */
 void neg_Float_Translate(FILE* file, Code3D* code)
 {
-    writeCodeInFile(file, translate("xorps", "%xmm0", "%xmm0"));
-    writeCodeInFile(file, translate("ucomiss", offset(code,1), "%xmm0"));
-    writeCodeInFile(file, translate("setp", "%dl", ""));
-    writeCodeInFile(file, translate("mov", "$1", "%rax"));
-    writeCodeInFile(file, translate("xorps", "%xmm0", "%xmm0"));
-    writeCodeInFile(file, translate("ucomiss", offset(code,1), "%xmm0"));
-    writeCodeInFile(file, translate("cmove", "%edx", "%rax"));
-    writeCodeInFile(file, translate("movb", "%al", offset(code,2)));
+    //writeCodeInFile(file, translate("movss", offset(code, 1), "%xmm0");
+    //writeCodeInFile(file, translate("xorps", "%xmm0", "%xmm0"));
+    //writeCodeInFile(file, translate("ucomiss", offset(code,1), "%xmm0"));
+    //writeCodeInFile(file, translate("setp", "%dl", ""));
+    //writeCodeInFile(file, translate("mov", "$1", "%rax"));
+    //writeCodeInFile(file, translate("xorps", "%xmm0", "%xmm0"));
+    //writeCodeInFile(file, translate("ucomiss", offset(code,1), "%xmm0"));
+    //writeCodeInFile(file, translate("cmove", "%edx", "%rax"));
+    //writeCodeInFile(file, translate("movb", "%al", offset(code,2)));
+    //writeCodeInFile(file, translate("movss", "%xmm0", offset(code, 2)));
 }
 
 /*-----------------------------------------------------------------------*/
