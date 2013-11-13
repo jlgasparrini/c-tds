@@ -75,9 +75,13 @@ char* offset(Code3D* code, int param)
 /**Metodo para la obtencion del offset de un arreglo*/
 char* offsetArray(Code3D* code, int param, char* reg)
 {
-    char *result = (char*) malloc(sizeof(char));/* CHECK OUT THIS CASE BECAUSE sizeof(char) ONLY STORES MEMORY FOR ONLY ONE CHARACTER! */
-    result =intToString(getOffsetArray(getAttribute(code, param)));
-    return concat((concat ((concat (result, "(%rbp," )), reg)), ",4)");
+    int offset = getOffsetArray(getAttribute(code, param));
+    /*
+        conozco el offset de la posicion 0 del arreglo. en "reg" esta el *char con el registro que tiene como valor el indice al cual debo acceder
+        la pregunta es:¿como hago para realizar la operacion (offset-4*valor(reg)) (%rbp)?
+
+    */
+    return concat(concat(concat(intToString(offset), "(%rbp,"), reg), ",4)");
 }
 
 /*-----------------------------------------------------------------------*/
@@ -114,7 +118,7 @@ void translateReturn(FILE* file, Code3D* code)
 {
     writeCodeInFile(file, translate("mov", "$0", "%rax"));
     writeCodeInFile(file, translate("popq", "%rbp", ""));
-    writeCodeInFile(file, translate("leave","","")); //ESTA SOLO SE DEBE HACER CUANDO HAY ALGO DEL ESTILO    i = inc(i);
+//    writeCodeInFile(file, translate("leave","","")); //ESTA SOLO SE DEBE HACER CUANDO HAY ALGO DEL ESTILO    i = inc(i);
     writeCodeInFile(file, translate("ret","",""));
 }
 
@@ -197,12 +201,17 @@ void translateLoadArray(FILE *file, Code3D *code)
      * parameter 2 is the array from which the number will be getted from.
      * parameter 3 is the resulting attribute. 
      */
-    writeCodeInFile(file, translate("mov", offset(code,1), "%ebx"));
-    if (getAttributeType(getAttribute(code, 1)) == Float)
+    writeCodeInFile(file, translate("mov", offset(code,1), "%rax"));
+    
+    if (getAttributeType(getAttribute(code, 2)) == Float)
     {
-        writeCodeInFile(file, translate("movss", offsetArray(code,2,"%ebx"), offset(code,3)));
-    }else{
-        writeCodeInFile(file, translate("mov", offsetArray(code,2,"%ebx"), offset(code,3)));
+        writeCodeInFile(file, translate("movss", offsetArray(code,2,"%rax"), "%xmm0"));
+        writeCodeInFile(file, translate("movss", "%xmm0", offset(code,3)));
+    }
+    else
+    {
+        writeCodeInFile(file, translate("mov", offsetArray(code,2,"%rax"), "%rdx"));
+        writeCodeInFile(file, translate("mov", "%rdx", offset(code,3)));
     }
 }
 

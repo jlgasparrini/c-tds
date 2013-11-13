@@ -187,9 +187,8 @@ method_decl   :     type ID {
                                 pushElement(errorQ,symbolsTable,createMethod($2,mType)); 
                                 pushLevel(symbolsTable);
                                 returns = 0;
-                                char *initLabel = newLabelName($2);
-                                add_CodeLabel(lcode3d, newCode(LABEL), initLabel); // Mark to Label of Init of Method
-                                insert_MethodL(listmlabel, $2, initLabel);
+                                add_CodeLabel(lcode3d, newCode(LABEL), $2); // Mark to Label of Init of Method
+                                insert_MethodL(listmlabel, $2, $2);
                     } param block {
 								setGlobalVarOffset(popOffset(offsetsVar));//////////////////////////////////////////
                                 if(returns==0) insertError(errorQ,toString("El metodo \"",$2,"\" debe tener al menos un return."));
@@ -203,9 +202,8 @@ method_decl   :     type ID {
                                 pushLevel(symbolsTable);
                                 returns = 0;
                                 returns = 0;
-                                char *initLabel = newLabelName($3);
-                                add_CodeLabel(lcode3d, newCode(LABEL), initLabel); // Mark to Label of Init of Method
-                                insert_MethodL(listmlabel, $3, initLabel);
+                                add_CodeLabel(lcode3d, newCode(LABEL), $3); // Mark to Label of Init of Method
+                                insert_MethodL(listmlabel, $3, $3);
                     } param block {
 								setGlobalVarOffset(popOffset(offsetsVar));//////////////////////////////////////////
                                 if(returns==0) insertError(errorQ,toString("El metodo \"",$3,"\" debe tener al menos un return."));

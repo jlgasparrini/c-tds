@@ -50,6 +50,8 @@ Attribute* createArray(char *id, PrimitiveType type, unsigned int length)
 	for(i = 0; i < length; i++)
 	{	// Initializes all the values of the array
 		(*attr).decl.array.arrayValues[i] = createStVariable(type);
+        (*attr).decl.array.arrayValues[i].offset = globalVarOffset;
+        globalVarOffset -= 4;
 	}
 	return attr;
 }
