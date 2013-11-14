@@ -137,4 +137,10 @@ void setGlobalParamOffset(int newOffset);
 /* Set the global parameters offset of the class in a 8 */
 void resetGlobalParamOffset();
 
+/* Returns the structure type of the attribute.
+ * Return 0 if it's a variable 
+ * Return 1 if it's a method 
+ * Return 2 if it's an array */
+StructureType getStructureType(Attribute *attr);
+
 #endif

@@ -33,6 +33,7 @@ Attribute* createVariable(char *id, PrimitiveType type)
 	*(*attr).decl.variable = createStVariable(type);
 	(*(*attr).decl.variable).id = strdup(id);
 	(*(*attr).decl.variable).offset = globalVarOffset;
+    printf("Variable \"%s\". Offset: %d\n", id, globalVarOffset);
 	globalVarOffset += -4;
 	return attr;
 }
@@ -47,8 +48,10 @@ Attribute* createArray(char *id, PrimitiveType type, unsigned int length)
 	(*attr).decl.array.length = length;
 	(*attr).decl.array.arrayValues = (StVariable*) malloc (length*sizeof(StVariable)); /* creates the necessary memory for the array */
 	int i;
+    printf("Array \"%s\". Size %d\n", id, length);
 	for(i = 0; i < length; i++)
 	{	// Initializes all the values of the array
+        printf("Offset of %d° position of \"%s\": %d\n", i, id, globalVarOffset);
 		(*attr).decl.array.arrayValues[i] = createStVariable(type);
         (*attr).decl.array.arrayValues[i].offset = globalVarOffset;
         globalVarOffset -= 4;
@@ -79,6 +82,7 @@ Attribute* createParameter(Attribute *attr, unsigned int pos, char *id, Primitiv
 		//StVariable **auxParameters = (StVariable**) realloc ((*attr).decl.method.parameters, (pos+1)*sizeof(StVariable));
 		if (auxParameters != NULL)
 		{
+            printf("Offset of %d° variable parameter \"%s\": %d\n", pos, id, globalParamOffset);
 			(*attr).decl.method.parameters = auxParameters;
 			Attribute *aux = createVariable(id, type);
 			(*(*aux).decl.variable).offset = globalParamOffset;
@@ -176,10 +180,10 @@ int getOffsetVal(Attribute *attr)
 	return (*(*attr).decl.variable).offset;
 }
 
-/* Returns the offset of the array */
+/* Returns the offset of the array -the last position's offset- */
 int getOffsetArray(Attribute *attr)
 {
-	return (*attr).decl.array.arrayValues[0].offset;
+	return (*attr).decl.array.arrayValues[ (*attr).decl.array.length - 1 ].offset;
 }
 
 /* Sets the intVal of the attribute */
@@ -261,4 +265,13 @@ void setGlobalParamOffset(int newOffset)
 void resetGlobalParamOffset()
 {
 	globalVarOffset = 8;
+}
+
+/* Returns the structure type of the attribute.
+ * Return 0 if it's a variable 
+ * Return 1 if it's a method 
+ * Return 2 if it's an array */
+StructureType getStructureType(Attribute *attr)
+{
+    return (*attr).type;
 }

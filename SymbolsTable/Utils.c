@@ -23,7 +23,7 @@ Attribute* getVariableAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, ch
     Attribute *attr = searchIdInSymbolsTable(eq, aSymbolsTable, id);
     if(attr != NULL) 
     {
-        if((*attr).type != Variable)
+        if(getStructureType(attr) != Variable)
             insertError(eq, toString("El identificador \"", id, "\" no corresponde a una variable."));
         else
             return attr;
@@ -37,7 +37,7 @@ Attribute* getMethodReturnAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable
     Attribute *attr = searchIdInSymbolsTable(eq, aSymbolsTable, id);
     if(attr != NULL) 
     {
-        if((*attr).type != Method)
+        if(getStructureType(attr) != Method)
             insertError(eq,toString("El identificador \"", id,"\" no corresponde a un metodo."));
         else
         {	
@@ -65,7 +65,7 @@ void setMethodReturnAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char
     Attribute *attr = searchIdInSymbolsTable(eq, aSymbolsTable, id);
     if(attr != NULL) 
     {
-        if((*attr).type != Method)
+        if(getStructureType(attr) != Method)
             insertError(eq,toString("El identificador \"", id,"\" no corresponde a un metodo."));
         else
         {	
@@ -90,7 +90,7 @@ Attribute* checkAndGetMethodRetAttribute(ErrorsQueue *eq, SymbolsTable *aSymbols
     Attribute *attr = searchIdInSymbolsTable(eq, aSymbolsTable, id);
     if (attr != NULL)
     {
-        if ((*attr).type != Method)
+        if (getStructureType(attr) != Method)
             insertError(eq,toString("El identificador \"", id,"\" no corresponde a un metodo."));
         else
         {
@@ -122,7 +122,7 @@ ReturnType methodReturnType(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* 
 {
     Attribute *attr = searchIdInSymbolsTable(eq, aSymbolsTable, id);
     if(attr != NULL) 
-        if((*attr).type != Method)
+        if(getStructureType(attr) != Method)
             insertError(eq, toString("El identificador \"", id, "\" no corresponde a un metodo."));
         else
             return getAttributeType(attr);
@@ -132,11 +132,11 @@ ReturnType methodReturnType(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* 
 /* Returns the type of the attribute, although it is a variable, array or method */
 ReturnType getAttributeType(Attribute *attr)
 {
-    if((*attr).type == Variable)
+    if(getStructureType(attr) == Variable)
         return (*(*attr).decl.variable).type;
-    if((*attr).type == Array)
+    if(getStructureType(attr) == Array)
         return (*attr).decl.array.type;
-    if((*attr).type == Method)
+    if(getStructureType(attr) == Method)
         return (*attr).decl.method.type;
 }
 
@@ -188,7 +188,7 @@ void correctParamBC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, LCode3D *lcode
 {
     Attribute *aux = searchIdInSymbolsTable(eq, aSymbolsTable, lastCalledMethod);
     if(aux != NULL) 
-        if((*aux).type != Method)
+        if(getStructureType(aux) != Method)
             insertError(eq, toString("El identificador \"", lastCalledMethod, "\" no corresponde a un metodo."));
         else
         {
@@ -235,7 +235,7 @@ void correctParamIC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, LCode3D *lcode
 {
     Attribute *aux = searchIdInSymbolsTable(eq, aSymbolsTable, lastCalledMethod);
     if(aux != NULL) 
-        if((*aux).type != Method)
+        if(getStructureType(aux) != Method)
             insertError(eq, toString("El identificador \"", lastCalledMethod, "\" no corresponde a un metodo."));
         else
         {
@@ -291,7 +291,7 @@ unsigned char controlType(ErrorsQueue *eq, Attribute *attr, PrimitiveType type, 
    Returns 0 otherwise */
 unsigned char controlAssignation(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *attr1, char* op, Attribute *attr2)
 {
-    if ((*attr1).type != Method)
+    if (getStructureType(attr1) != Method)
     {
         if (getAttributeType(attr1) != getAttributeType(attr2))
             insertError(eq, toString("El lado derecho de la asignacion debe ser de tipo \"", getType(getAttributeType(attr1)), "\"."));
@@ -384,7 +384,7 @@ Attribute* checkArrayPos(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, LCode3D *
     Attribute *aux = searchIdInSymbolsTable(eq,aSymbolsTable,id);
     if (aux != NULL)
     {
-        if((*aux).type != Array)
+        if(getStructureType(aux) != Array)
             insertError(eq, toString("El identificador \"", id, "\" no corresponde a un arreglo."));
         else
         {
@@ -412,7 +412,7 @@ void checkMain(ErrorsQueue *eq, SymbolsTable *aSymbolsTable)
     if (attr == NULL)
         insertError(eq, "El programa no tiene un metodo \"main\".");
     else
-        if ((*attr).type != Method)
+        if (getStructureType(attr) != Method)
             insertError(eq, "El identificador \"main\" solo puede ser un metodo.");
 }
 

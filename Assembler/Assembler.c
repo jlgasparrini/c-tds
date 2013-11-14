@@ -244,6 +244,7 @@ int generateOperation(int position)
 
     }
 
+    writeCodeInFile(file, "\n");
 }
 
 /* Initializes the assembly engine and run */
@@ -259,9 +260,9 @@ void initAssembler(ListMLabel *labelL, LCode3D *codeL, Stack *stack, char* nameO
     writeCodeInFile(file, ".FLOAT:\n");
     writeCodeInFile(file, translate(".string", "\"Print. El valor flotante es: %f \\n\"", ""));
     writeCodeInFile(file, ".BOOL_TRUE:\n");
-    writeCodeInFile(file, translate(".string", "\"Print. El valor booleano es: True\"", ""));
+    writeCodeInFile(file, translate(".string", "\"Print. El valor booleano es: True \\n\"", ""));
     writeCodeInFile(file, ".BOOL_FALSE:\n");
-    writeCodeInFile(file, translate(".string", "\"Print. El valor booleano es: False\"", ""));
+    writeCodeInFile(file, translate(".string", "\"Print. El valor booleano es: False \\n\"", ""));
     labelList = labelL;
     codeList = codeL;
     returnStack = stack;
