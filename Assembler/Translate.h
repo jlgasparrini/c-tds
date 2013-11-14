@@ -19,10 +19,6 @@ char* concat(char* str1, char* str2);
 void writeCodeInFile(FILE* file, char* code);
 char* translate(char* operation, char* code1, char* code2);
 
-/* Getters methods */
-char* value(Code3D* code);
-char* offset(Code3D* code, int param);
-
 /* Methods for translation to assembly code */
 void load_Const_Translate(FILE* file, Code3D* code);
 void translateGotoLabel(FILE* file, Code3D* code);
@@ -73,4 +69,6 @@ void translateAddFloat(FILE* file, Code3D* code);
 void translateMinusFloat(FILE* file, Code3D* code);
 void writeFloatNumbers(FILE* file);
 
+/**************************** EXTERNAL OPERATIONS **********************************/
+void translateExternInvk(FILE* file, Code3D* code);
 #endif

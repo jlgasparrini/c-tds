@@ -28,6 +28,7 @@ Stack *labelsCYC;
 Stack *labelsWhile;
 Stack *labelsFor;
 Stack *returnStack;//Utilizada para los saltos en el interprete!
+Stack *maxMethodOffset;
 StackOffset *offsetsVar;
 StackOffset *offsetsParam;
 ListMLabel *listmlabel;
@@ -69,7 +70,7 @@ int main( argc, argv )
     int argc;
     char **argv; 
     { 
-    ++argv, --argc;	/* skip over program name */
+    ++argv, --argc; /* skip over program name */
     fileName = argv[0];
         if ( argc > 0 )
             yyin = fopen( argv[0], "r" );
@@ -109,14 +110,14 @@ void out(char *msg)
 %start program
 
 /* %token<stringValue> es solo para tokens */
-%token<stringValue> FLOAT INTEGER BOOLEAN INTW FLOATW BOOLEANW ID PLUSEQUAL MINUSEQUAL
+%token<stringValue> FLOAT INTEGER BOOLEAN INTW FLOATW BOOLEANW ID PLUSEQUAL MINUSEQUAL STRING
 %token EQUAL DISTINCT GEQUAL LEQUAL ORR ANDD 
-%token BREAK IF CONTINUE ELSE RETURNN WHILE CLASS FOR VOID EXTERNINVK STRING PRINTT
+%token BREAK IF CONTINUE ELSE RETURNN WHILE CLASS FOR VOID EXTERNINVK PRINTT
 %nonassoc '<' '>' EQUAL DISTINCT GEQUAL LEQUAL
 %left '+' '-'
 %left '*' '/'
 %left '%'
-%type<at> expression conjunction inequality comparison relation term factor primary method_call location
+%type<at> expression conjunction inequality comparison relation term factor primary method_call location factor1
 %type<stringValue> assig_op
 /* %type<at> es solo para no-terminales */
 
@@ -140,6 +141,7 @@ program       :    CLASS ID '{' '}' {
                                     labelsWhile = newStack();
                                     returnStack = newStack();
                                     labelsFor = newStack();
+                                    maxMethodOffset = newStack();
 									offsetsVar = newStackOffset();
 									offsetsParam = newStackOffset();
                                     listmlabel = initL();
@@ -188,8 +190,11 @@ method_decl   :     type ID {
                                 pushLevel(symbolsTable);
                                 returns = 0;
                                 add_CodeLabel(lcode3d, newCode(LABEL), $2); // Mark to Label of Init of Method
+                                push(maxMethodOffset, intToString(codeSize(lcode3d)));
                                 insert_MethodL(listmlabel, $2, $2);
                     } param block {
+                                int pos = atoi(pop(maxMethodOffset));
+                                set_code_int(lcode3d, pos, 2, getGlobalVarOffset());
 								setGlobalVarOffset(popOffset(offsetsVar));//////////////////////////////////////////
                                 if(returns==0) insertError(errorQ,toString("El metodo \"",$2,"\" debe tener al menos un return."));
                                 popLevel(symbolsTable);
@@ -201,10 +206,12 @@ method_decl   :     type ID {
                                 pushElement(errorQ,symbolsTable,createMethod($3,mType)); 
                                 pushLevel(symbolsTable);
                                 returns = 0;
-                                returns = 0;
                                 add_CodeLabel(lcode3d, newCode(LABEL), $3); // Mark to Label of Init of Method
+                                push(maxMethodOffset, intToString(codeSize(lcode3d)));
                                 insert_MethodL(listmlabel, $3, $3);
                     } param block {
+                                int pos = atoi(pop(maxMethodOffset));
+                                set_code_int(lcode3d, pos, 2, getGlobalVarOffset());
 								setGlobalVarOffset(popOffset(offsetsVar));//////////////////////////////////////////
                                 if(returns==0) insertError(errorQ,toString("El metodo \"",$3,"\" debe tener al menos un return."));
                                 popLevel(symbolsTable);
@@ -216,10 +223,12 @@ method_decl   :     type ID {
                                 pushElement(errorQ,symbolsTable,createMethod($2,RetVoid)); 
                                 pushLevel(symbolsTable);
                                 returns = 0;
-                                returns = 0;
                                 add_CodeLabel(lcode3d, newCode(LABEL), $2); // Mark to Label of Init of Method
+                                push(maxMethodOffset, intToString(codeSize(lcode3d)));
                                 insert_MethodL(listmlabel, $2, $2);
                     } param block {
+                                int pos = atoi(pop(maxMethodOffset));
+                                set_code_int(lcode3d, pos, 2, getGlobalVarOffset());
 								setGlobalVarOffset(popOffset(offsetsVar));//////////////////////////////////////////
                                 if(returns==0) insertError(errorQ,toString("El metodo \"",$2,"\" debe tener al menos un return."));
                                 popLevel(symbolsTable);
@@ -231,10 +240,12 @@ method_decl   :     type ID {
                                 pushElement(errorQ,symbolsTable,createMethod($3,RetVoid)); 
                                 pushLevel(symbolsTable);
                                 returns = 0;
-                                returns = 0;
                                 add_CodeLabel(lcode3d, newCode(LABEL), $3); // Mark to Label of Init of Method
+                                push(maxMethodOffset, intToString(codeSize(lcode3d)));
                                 insert_MethodL(listmlabel, $3, $3);
                     } param block {
+                                int pos = atoi(pop(maxMethodOffset));
+                                set_code_int(lcode3d, pos, 2, getGlobalVarOffset());
 								setGlobalVarOffset(popOffset(offsetsVar));//////////////////////////////////////////
                                 if(returns==0) insertError(errorQ,toString("El metodo \"",$3,"\" debe tener al menos un return."));
                                 popLevel(symbolsTable);
@@ -458,14 +469,24 @@ method_call   :	   ID '(' ')' {
                             }
                     } 
 
-				|    EXTERNINVK '(' STRING ',' typevoid ')' {/*if (mType != RetVoid) $$=createVariable("",mType);*/
-                                                            /*add_CodeLabel(lcode3d, newCode(LABEL), newLabelName("extern_invk"));*/
-                                                            $$=createVariable((char*) getVariableName(),Int);
-                                                        }
-				|    EXTERNINVK '(' STRING ',' typevoid ',' externinvk_arg ')' {/*if (mType != RetVoid) $$=createVariable("",mType);*/
-                                                            /*add_CodeLabel(lcode3d, newCode(LABEL), newLabelName("extern_invk"));*/
-                                                            $$=createVariable((char*) getVariableName(),Int);
+				|    EXTERNINVK '(' STRING ',' typevoid ')' {
+                                                            Attribute* res;
+                                                            if (mType != RetVoid) 
+                                                                res = createVariable("",mType);
+                                                            else
+                                                                res = createVariable((char*) getVariableName(),Int);
+                                                            //add_CodeExternInvk(lcode3d, newCode(EXTERN_INVOKATION),$3, res);
+                                                            $$ = res;
                                                             }
+				|    EXTERNINVK '(' STRING ',' typevoid ',' externinvk_arg ')' {
+                                                                                Attribute* res;
+                                                                                if (mType != RetVoid) 
+                                                                                    res = createVariable("",mType);
+                                                                                else
+                                                                                    res = createVariable((char*) getVariableName(),Int);
+                                                                                //add_CodeExternInvk(lcode3d, newCode(EXTERN_INVOKATION),$3, res);
+                                                                                $$ = res;
+                                                                                }
 				;
 
 expression_aux:    expression {
@@ -519,18 +540,22 @@ relation      :    term                 {$$ = $1;}
               |    term LEQUAL term     {$$ = returnLEqualComparison(errorQ, lcode3d, $1, $3);}
               ;
 
-term          :    factor			{$$ = $1;}
-              |    term '+' factor	{$$ = returnAdd(errorQ, lcode3d, $1, $3);}
-              |    term '-' factor	{$$ = returnSub(errorQ, lcode3d, $1, $3);}
-              |    term '%' factor	{$$ = returnMod(errorQ, lcode3d, $1, $3);}
-              |    term '/' factor	{$$ = returnDiv(errorQ, lcode3d, $1, $3);}
-              |    term '*' factor	{$$ = returnMult(errorQ, lcode3d, $1, $3);}
+term          :    factor1			{$$ = $1;}
+              |    factor1 '+' term	{$$ = returnAdd(errorQ, lcode3d, $1, $3);}
+              |    factor1 '-' term	{$$ = returnSub(errorQ, lcode3d, $1, $3);}
+              ;
+
+factor1       :    factor			{$$ = $1;}
+              |    factor '*' factor1	{$$ = returnMult(errorQ, lcode3d, $1, $3);}
+              |    factor '/' factor1	{$$ = returnDiv(errorQ, lcode3d, $1, $3);}
+              |    factor '%' factor1	{$$ = returnMod(errorQ, lcode3d, $1, $3);}
               ;
 
 factor        :    primary		{$$ = $1;}  
               |    '!' factor	{$$ = returnNot(errorQ, lcode3d, $2);}
               |    '-' factor	{$$ = returnNeg(errorQ, lcode3d, $2);}
               ;
+
 
 primary       :    INTEGER			{$$ = returnValue(lcode3d, Int, $1);}
               |    FLOAT            {$$ = returnValue(lcode3d, Float, $1);}

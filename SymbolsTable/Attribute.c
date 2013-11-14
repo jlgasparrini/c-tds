@@ -8,7 +8,7 @@
 #include "Attribute.h"
 
 static int globalVarOffset = -4;
-static int globalParamOffset = 8;
+static int globalParamOffset = 16;
 
 /* Creates a StVariable with the respective type and initialized */
 StVariable createStVariable(PrimitiveType type)
@@ -264,7 +264,7 @@ void setGlobalParamOffset(int newOffset)
 /* Set the global parameters offset of the class in a 8 */
 void resetGlobalParamOffset()
 {
-	globalVarOffset = 8;
+	globalVarOffset = 16;
 }
 
 /* Returns the structure type of the attribute.

@@ -32,6 +32,20 @@ Code3D* get_listC3D(ListC3D *list, int index) {
 int size_listC3D(ListC3D *list) {
     return (*list).size;
 }
+    
+void set_listC3D_int(ListC3D *list,int index,int param, int numb)
+{
+    NodeC3D *runner = (*list).init;
+    if ((index >= 0) && (index < size_listC3D(list))) {
+        int i = 0;
+        while (i < index-1) {
+            runner = runner->next;
+            i++;
+        }
+        setInt(runner->info, param, numb);
+    } 
+        
+}
 
 /**Metodo para que agrega un Codigo 3D en una posicion en la lista*/
 void add_listC3D(ListC3D *list, Code3D *elem, int index) {

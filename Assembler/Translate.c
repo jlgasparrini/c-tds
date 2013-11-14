@@ -2,6 +2,20 @@
 
 int nameLabelCount = 0;
 
+/*-----------------------------------------------------------------------*/
+/**Metodo para la obtencion del valor de una constante*/  
+char* value(Code3D* code, int i)
+{
+    char *result = (char*) malloc(sizeof(char));/* CHECK OUT THIS CASE BECAUSE sizeof(char) ONLY STORES MEMORY FOR ONLY ONE CHARACTER! */
+    if (isInt(code, i))/* IF THE NUMBER HAS MORE THAN ONE DIGIT (CHARACTER) IT WILL BROKE! */
+        sprintf(result, "%d", getInt(code, i));
+    if (isFloat(code, i))
+        sprintf(result, "%f", getFloat(code, i));
+    if (isBool(code, i))
+        sprintf(result, "%d", getBool(code, i));
+    return concat("$", result);		
+}
+
 /*Create new Label*/
 char* createNewLabel(char* msg) 
 {
@@ -50,20 +64,6 @@ char* translate(char* operation, char* code1, char* code2)
     return result;
 }
 
-/*-----------------------------------------------------------------------*/
-/**Metodo para la obtencion del valor de una constante*/  
-char* value(Code3D* code)
-{
-    char *result = (char*) malloc(sizeof(char));/* CHECK OUT THIS CASE BECAUSE sizeof(char) ONLY STORES MEMORY FOR ONLY ONE CHARACTER! */
-    if (isInt(code, 1))/* IF THE NUMBER HAS MORE THAN ONE DIGIT (CHARACTER) IT WILL BROKE! */
-        sprintf(result, "%d", getInt(code, 1));
-    if (isFloat(code, 1))
-        sprintf(result, "%f", getFloat(code, 1));
-    if (isBool(code, 1))
-        sprintf(result, "%d", getBool(code, 1));
-    return concat("$", result);		
-}
-
 /**Metodo para la obtencion del offset de una variable*/
 char* offset(Code3D* code, int param)
 {
@@ -84,7 +84,7 @@ char* offsetArray(Code3D* code, int param, char* reg)
 void load_Const_Translate(FILE* file, Code3D* code)
 {
     if (!isFloat(code, 1))
-        writeCodeInFile(file, translate("movq", value(code), offset(code, 2)));
+        writeCodeInFile(file, translate("movq", value(code, 1), offset(code, 2)));
     else
     {
         fValue.real = getFloat(code, 1);
@@ -162,7 +162,6 @@ void printOperation(FILE *file, Code3D *code)
         writeCodeInFile(file, translate("movss", offset(code, 1), "%xmm0"));
         writeCodeInFile(file, translate("cvtps2pd", "%xmm0", "%xmm0"));
         writeCodeInFile(file, translate("mov", concat("$", ".FLOAT"), "%edi"));
-        writeCodeInFile(file, translate("movq", "$1", "%rax"));
     }
     if (getAttributeType(getAttribute(code, 1)) == Bool)
     {
@@ -171,6 +170,7 @@ void printOperation(FILE *file, Code3D *code)
         if (getBoolVal((*(*code).param1).val.attri) == False)
             writeCodeInFile(file, translate("mov", concat("$", ".BOOL_FALSE"), "%edi"));
     }
+    writeCodeInFile(file, translate("mov", "$0", "%rax"));
     writeCodeInFile(file, translate("call", "printf", ""));
 }
 
@@ -186,6 +186,7 @@ void writeLabel(FILE *file, ListMLabel *labelList, Code3D *code)
         writeCodeInFile(file, concat(getLabel(code,1), ":\n"));
         writeCodeInFile(file, translate("pushq", "%rbp", ""));
         writeCodeInFile(file, translate("movq", "%rsp", "%rbp"));
+        writeCodeInFile(file, translate("addq", value(code, 2), "%rsp"));
     }
 }
 
@@ -214,6 +215,8 @@ void translateLoadArray(FILE *file, Code3D *code)
 /* "GOTO_METHOD %s\n" */
 void goTo_Method (FILE* file, Code3D* code)
 {
+
+
     writeCodeInFile(file, translate("call", getLabel(code,1), ""));
 }
 
@@ -231,8 +234,14 @@ void translateAssignationInt(FILE* file, Code3D* code)
 /* Puts in the file the translation of the PARAM_ASSIGN_INT action */
 void translateParamAssignInt(FILE *file, Code3D *code)
 {
-    writeCodeInFile(file, translate("movq", offset(code, 1), offset(code, 2)));
+   //desde el yacc.. traemos la posicion del parametro. 
+   writeCodeInFile(file, translate("subq", "$4", "%rsp"));
+   writeCodeInFile(file, translate("mov", offset(code, 1), "%rax"));
+   writeCodeInFile(file, translate("mov", "%eax", "0(%rsp)"));
 }
+//|    subq $8, %rsp
+//|    mov -4(%rbp), %eax
+//|    mov %eax, 0(%rsp)
 
 /*-----------------------------------------------------------------------*/
 /**"NEG_INT %s %s\n" */
@@ -377,16 +386,10 @@ void translateParamAssignFloat(FILE *file, Code3D *code)
 /**"NEG_FLOAT %s %s\n" */
 void neg_Float_Translate(FILE* file, Code3D* code)
 {
-    //writeCodeInFile(file, translate("movss", offset(code, 1), "%xmm0");
-    //writeCodeInFile(file, translate("xorps", "%xmm0", "%xmm0"));
-    //writeCodeInFile(file, translate("ucomiss", offset(code,1), "%xmm0"));
-    //writeCodeInFile(file, translate("setp", "%dl", ""));
-    //writeCodeInFile(file, translate("movq", "$1", "%rax"));
-    //writeCodeInFile(file, translate("xorps", "%xmm0", "%xmm0"));
-    //writeCodeInFile(file, translate("ucomiss", offset(code,1), "%xmm0"));
-    //writeCodeInFile(file, translate("cmove", "%edx", "%rax"));
-    //writeCodeInFile(file, transgate("movb", "%al", offset(code,2)));
-    //writeCodeInFile(file, translate("movss", "%xmm0", offset(code, 2)));
+    writeCodeInFile(file, translate("movss", offset(code, 1), "%xmm1"));
+    writeCodeInFile(file, translate("movss", ".NEG_FLOAT(%rip)", "%xmm0"));
+    writeCodeInFile(file, translate("xorps", "%xmm1", "%xmm0"));
+    writeCodeInFile(file, translate("movss", "%xmm0", offset(code, 2)));
 }
 
 /*-----------------------------------------------------------------------*/
@@ -484,4 +487,16 @@ void translateMinusFloat(FILE* file, Code3D* code)
     writeCodeInFile(file, translate("movss", offset(code,2) ,"%xmm0"));
     writeCodeInFile(file, translate("subss", offset(code,1), "%xmm0"));
     writeCodeInFile(file, translate("movss", "%xmm0", offset(code,3)));
+}
+
+/* Puts in the file the translation of the EXTERNINVK action */
+void translateExternInvk(FILE* file, Code3D* code)
+{
+    writeCodeInFile(file, translate("call", getLabel(code, 1), ""));
+}
+
+void writeNegFloat(FILE* file)
+{
+    writeCodeInFile(file, "\t.NEG_FLOAT:\n");
+    writeCodeInFile(file, "\t\t.long 2147483648\n");
 }
