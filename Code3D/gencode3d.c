@@ -32,6 +32,11 @@ int codeSize(LCode3D *lcode3d)
 {
     return size_listC3D((*lcode3d).codes);
 }
+                                
+void set_code_int(LCode3D *lcode3d,int index,int param, int numb)
+{
+    set_listC3D_int(lcode3d->codes,index, param, numb);
+}
 
 /**Metodo que a base de un Codigo 3D y un label, setea el codigo y lo agrega a la Lista*/
 void add_CodeLabel(LCode3D *lcode3d, Code3D *code, char *label)

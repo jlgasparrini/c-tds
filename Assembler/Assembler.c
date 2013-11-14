@@ -242,6 +242,10 @@ int generateOperation(int position)
             translateNot(file, code);
             break;
 
+            /* EXTERN_INVOKATION */
+        case 43:
+            translateExternInvk(file, code);
+            break;
     }
 
 }
@@ -254,6 +258,7 @@ void initAssembler(ListMLabel *labelL, LCode3D *codeL, Stack *stack, char* nameO
     file = fopen(fileName,"w");
     writeCodeInFile(file, translate(".file", concat(concat("\"", concat(nameOfFile, ".s")), "\""), ""));
     writeCodeInFile(file, translate(".global", "main", ""));
+    writeCodeInFile(file, translate(".type", "main", "@function"));
     writeCodeInFile(file, ".INT:\n");
     writeCodeInFile(file, translate(".string", "\"Print. El valor entero es: %d \\n\"", ""));
     writeCodeInFile(file, ".FLOAT:\n");
@@ -272,4 +277,5 @@ void initAssembler(ListMLabel *labelL, LCode3D *codeL, Stack *stack, char* nameO
         generateOperation(i);
         i++;
     }
+    writeNegFloat(file);
 }

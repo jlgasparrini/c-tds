@@ -59,6 +59,9 @@
 #define AND                41
 #define NOT                42
 
+/******************************** EXTERNAL OPERATIONS *****************************/
+#define EXTERN_INVOKATION  43
+
 /**Returns the respective code of an ID */
 char* getCodeByID(int ID);
 /**Returns the respective type of attribute according to the type */

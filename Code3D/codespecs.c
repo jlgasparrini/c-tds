@@ -51,6 +51,8 @@ char* getCodeByID(int ID)
         case 40 : return "OR";
         case 41 : return "AND";
         case 42 : return "NOT";
+        
+        case 43 : return "EXTERNINVK";
     }
     return "NULL!";
 }
