@@ -33,8 +33,7 @@ Attribute* createVariable(char *id, PrimitiveType type)
 	*(*attr).decl.variable = createStVariable(type);
 	(*(*attr).decl.variable).id = strdup(id);
 	(*(*attr).decl.variable).offset = globalVarOffset;
-    printf("Variable \"%s\". Offset: %d\n", id, globalVarOffset);
-	globalVarOffset += -4;
+    decreaseVarOffset();
 	return attr;
 }
 
@@ -48,13 +47,11 @@ Attribute* createArray(char *id, PrimitiveType type, unsigned int length)
 	(*attr).decl.array.length = length;
 	(*attr).decl.array.arrayValues = (StVariable*) malloc (length*sizeof(StVariable)); /* creates the necessary memory for the array */
 	int i;
-    printf("Array \"%s\". Size %d\n", id, length);
 	for(i = 0; i < length; i++)
 	{	// Initializes all the values of the array
-        printf("Offset of %d° position of \"%s\": %d\n", i, id, globalVarOffset);
 		(*attr).decl.array.arrayValues[i] = createStVariable(type);
         (*attr).decl.array.arrayValues[i].offset = globalVarOffset;
-        globalVarOffset -= 4;
+        decreaseVarOffset();
 	}
 	return attr;
 }
@@ -247,6 +244,18 @@ void setGlobalVarOffset(int newOffset)
 void resetGlobalVarOffset()
 {
 	globalVarOffset = -4;
+}
+
+/* Increases in 4 the variable's offset */
+void increaseVarOffset()
+{
+    globalVarOffset += 4;
+}
+
+/* Decreases in 4 the variable's offset */
+void decreaseVarOffset()
+{
+    globalVarOffset -= 4;
 }
 
 /* Returns the global parameters offset of the class */
