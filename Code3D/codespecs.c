@@ -5,54 +5,54 @@
 char* getCodeByID(int ID)
 {
     switch (ID) {
-        case 0 : return "LOAD_CONST";
-        case 1 : return "LOAD_ARRAY";
-        case 2 : return "PRINT";
-        case 3 : return "RETURN";
-        case 4 : return "RETURN_EXPR";
-        case 5 : return "LABEL";
-        case 6 : return "GOTO_LABEL";
-        case 7 : return "GOTO_LABEL_COND";
-        case 8 : return "GOTO_METHOD";
+        case LOAD_CONST : return "LOAD_CONST";
+        case LOAD_ARRAY : return "LOAD_ARRAY";
+        case PRINT : return "PRINT";
+        case RETURN : return "RETURN";
+        case RETURN_EXPR : return "RETURN_EXPR";
+        case LABEL : return "LABEL";
+        case GOTO_LABEL : return "GOTO_LABEL";
+        case GOTO_LABEL_COND : return "GOTO_LABEL_COND";
+        case GOTO_METHOD : return "GOTO_METHOD";
 
-        case 9  : return "ASSIGNATION_INT";
-        case 10 : return "PARAM_ASSIGN_INT";
-        case 11 : return "MINUS_INT";
-        case 12 : return "ADD_INT";
-        case 13 : return "MULT_INT";
-        case 14 : return "DIV_INT";
-        case 15 : return "MOD_INT";
-        case 16 : return "NEG_INT";
-        case 17 : return "EQ_INT";
-        case 18 : return "DIST_INT";
-        case 19 : return "GREATER_INT";
-        case 20 : return "LOWER_INT";
-        case 21 : return "GEQ_INT";
-        case 22 : return "LEQ_INT";
+        case ASSIGNATION_INT  : return "ASSIGNATION_INT";
+        case PARAM_ASSIGN_INT : return "PARAM_ASSIGN_INT";
+        case MINUS_INT : return "MINUS_INT";
+        case ADD_INT : return "ADD_INT";
+        case MULT_INT : return "MULT_INT";
+        case DIV_INT : return "DIV_INT";
+        case MOD_INT : return "MOD_INT";
+        case NEG_INT : return "NEG_INT";
+        case EQ_INT : return "EQ_INT";
+        case DIST_INT : return "DIST_INT";
+        case GREATER_INT : return "GREATER_INT";
+        case LOWER_INT : return "LOWER_INT";
+        case GEQ_INT : return "GEQ_INT";
+        case LEQ_INT : return "LEQ_INT";
 
-        case 23 : return "ASSIGNATION_FLOAT";
-        case 24 : return "PARAM_ASSIGN_FLOAT";
-        case 25 : return "MINUS_FLOAT";
-        case 26 : return "ADD_FLOAT";
-        case 27 : return "MULT_FLOAT";
-        case 28 : return "DIV_FLOAT";
-        case 29 : return "NEG_FLOAT";
-        case 30 : return "EQ_FLOAT";
-        case 31 : return "DIST_FLOAT";
-        case 32 : return "GREATER_FLOAT";
-        case 33 : return "LOWER_FLOAT";
-        case 34 : return "GEQ_FLOAT";
-        case 35 : return "LEQ_FLOAT";
+        case ASSIGNATION_FLOAT : return "ASSIGNATION_FLOAT";
+        case PARAM_ASSIGN_FLOAT : return "PARAM_ASSIGN_FLOAT";
+        case MINUS_FLOAT : return "MINUS_FLOAT";
+        case ADD_FLOAT : return "ADD_FLOAT";
+        case MULT_FLOAT : return "MULT_FLOAT";
+        case DIV_FLOAT : return "DIV_FLOAT";
+        case NEG_FLOAT : return "NEG_FLOAT";
+        case EQ_FLOAT : return "EQ_FLOAT";
+        case DIST_FLOAT : return "DIST_FLOAT";
+        case GREATER_FLOAT : return "GREATER_FLOAT";
+        case LOWER_FLOAT : return "LOWER_FLOAT";
+        case GEQ_FLOAT : return "GEQ_FLOAT";
+        case LEQ_FLOAT : return "LEQ_FLOAT";
 
-        case 36 : return "ASSIGNATION_BOOL";
-        case 37 : return "PARAM_ASSIGN_BOOL";
-        case 38 : return "EQ_BOOL";
-        case 39 : return "DIST_BOOL";
-        case 40 : return "OR";
-        case 41 : return "AND";
-        case 42 : return "NOT";
+        case ASSIGNATION_BOOL : return "ASSIGNATION_BOOL";
+        case PARAM_ASSIGN_BOOL : return "PARAM_ASSIGN_BOOL";
+        case EQ_BOOL : return "EQ_BOOL";
+        case DIST_BOOL : return "DIST_BOOL";
+        case OR : return "OR";
+        case AND : return "AND";
+        case NOT : return "NOT";
         
-        case 43 : return "EXTERNINVK";
+        case EXTERN_INVK : return "EXTERNINVK";
     }
     return "NULL!";
 }

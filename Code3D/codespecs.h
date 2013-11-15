@@ -60,7 +60,7 @@
 #define NOT                42
 
 /******************************** EXTERNAL OPERATIONS *****************************/
-#define EXTERN_INVOKATION  43
+#define EXTERN_INVK  43
 
 /**Returns the respective code of an ID */
 char* getCodeByID(int ID);

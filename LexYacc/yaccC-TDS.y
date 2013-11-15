@@ -436,7 +436,7 @@ iteration     :    WHILE {
 /* -------------------- EXPRESSIONS ------------------------------- */
 
 location      :    ID {$$ = getVariableAttribute(errorQ, symbolsTable, $1);}
-              |    ID '[' expression ']' { $$ = checkArrayPos(errorQ,symbolsTable,lcode3d,$1,$3);}
+              |    ID '[' expression ']' {$$ = checkArrayPos(errorQ,symbolsTable,lcode3d,$1,$3);}
               ;
 
 method_call   :	   ID '(' ')' {
@@ -475,7 +475,7 @@ method_call   :	   ID '(' ')' {
                                                                 res = createVariable("",mType);
                                                             else
                                                                 res = createVariable((char*) getVariableName(),Int);
-                                                            //add_CodeExternInvk(lcode3d, newCode(EXTERN_INVOKATION),$3, res);
+                                                            //add_CodeExternInvk(lcode3d, newCode(EXTERN_INVK),$3, res);
                                                             $$ = res;
                                                             }
 				|    EXTERNINVK '(' STRING ',' typevoid ',' externinvk_arg ')' {
@@ -484,7 +484,7 @@ method_call   :	   ID '(' ')' {
                                                                                     res = createVariable("",mType);
                                                                                 else
                                                                                     res = createVariable((char*) getVariableName(),Int);
-                                                                                //add_CodeExternInvk(lcode3d, newCode(EXTERN_INVOKATION),$3, res);
+                                                                                //add_CodeExternInvk(lcode3d, newCode(EXTERN_INVK),$3, res);
                                                                                 $$ = res;
                                                                                 }
 				;

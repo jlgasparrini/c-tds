@@ -395,6 +395,8 @@ Attribute* checkArrayPos(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, LCode3D *
                 setAttribute(codeArrayValue, 1, attr);
                 setAttribute(codeArrayValue, 2, aux);
                 setAttribute(codeArrayValue, 3, variable);
+                (*(*variable).decl.variable).offset = (*aux).decl.array.arrayValues[getIntVal(attr)].offset;
+                increaseVarOffset();
                 add_code(lcode3d, codeArrayValue);	
                 return variable;          
             }
