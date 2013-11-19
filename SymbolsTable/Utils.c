@@ -390,15 +390,21 @@ Attribute* checkArrayPos(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, LCode3D *
         {
             if (getAttributeType(attr) == Int)
             {
-                Attribute *variable = createVariable(getVariableName(), getAttributeType(aux));
-                Code3D *codeArrayValue = newCode(LOAD_ARRAY);
-                setAttribute(codeArrayValue, 1, attr);
-                setAttribute(codeArrayValue, 2, aux);
-                setAttribute(codeArrayValue, 3, variable);
-                (*(*variable).decl.variable).offset = (*aux).decl.array.arrayValues[getIntVal(attr)].offset;
-                increaseVarOffset();
-                add_code(lcode3d, codeArrayValue);	
-                return variable;          
+                if (getIntVal(attr) >= 0 && getIntVal(attr) < (*aux).decl.array.length)
+                {
+                    Attribute *variable = createVariable(getVariableName(), getAttributeType(aux));
+                    increaseVarOffset();
+                    (*(*variable).decl.variable).offset = getOffsetArray(aux) + (getIntVal(attr)*4);
+                   // (*(*variable).decl.variable).offset = (*aux).decl.array.arrayValues[getIntVal(attr)].offset;
+                    Code3D *codeArrayValue = newCode(LOAD_ARRAY);
+                    setAttribute(codeArrayValue, 1, attr);
+                    setAttribute(codeArrayValue, 2, aux);
+                    setAttribute(codeArrayValue, 3, variable);
+                    add_code(lcode3d, codeArrayValue);	
+                    return variable;          
+                }
+                else
+                    insertError(eq, toString("La expresion para acceder al arreglo \"", id, "\" se encuentra fuera de rango.")); 
             }
             else
                 insertError(eq, toString("La expresion para acceder a la posicion del arreglo \"", id, "\" debe ser de tipo \"int\".")); 

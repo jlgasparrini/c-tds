@@ -32,7 +32,8 @@ Attribute* createVariable(char *id, PrimitiveType type)
 	(*attr).decl.variable = (StVariable*) malloc (sizeof(StVariable));
 	*(*attr).decl.variable = createStVariable(type);
 	(*(*attr).decl.variable).id = strdup(id);
-	(*(*attr).decl.variable).offset = globalVarOffset;
+	(*(*attr).decl.variable).offset = getGlobalVarOffset();
+    printf("Offset of variable \"%s\": %d\n", id, getGlobalVarOffset());
     decreaseVarOffset();
 	return attr;
 }
@@ -47,10 +48,12 @@ Attribute* createArray(char *id, PrimitiveType type, unsigned int length)
 	(*attr).decl.array.length = length;
 	(*attr).decl.array.arrayValues = (StVariable*) malloc (length*sizeof(StVariable)); /* creates the necessary memory for the array */
 	int i;
+    printf("Offsets of array \"%s\":\n", id);
 	for(i = 0; i < length; i++)
 	{	// Initializes all the values of the array
+        printf("Offset of %d° position of array \"%s\": %d\n", i, id, getGlobalVarOffset());
 		(*attr).decl.array.arrayValues[i] = createStVariable(type);
-        (*attr).decl.array.arrayValues[i].offset = globalVarOffset;
+        (*attr).decl.array.arrayValues[i].offset = getGlobalVarOffset();
         decreaseVarOffset();
 	}
 	return attr;

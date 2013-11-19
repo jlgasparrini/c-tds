@@ -143,4 +143,10 @@ void resetGlobalParamOffset();
  * Return 2 if it's an array */
 StructureType getStructureType(Attribute *attr);
 
+/* Decreases in 4 the offset for variables */
+void decreaseVarOffset();
+
+/* Increases in 4 the offset for variables */
+void increaseVarOffset();
+
 #endif
