@@ -8,6 +8,7 @@
 #  include	"../Stack/stack.h"
 #  include	"../Stack/stackOffset.h"
 #  include  "../ListMethod/genlistml.h" 
+#include <unistd.h>
 
 extern FILE *yyin;
 ErrorsQueue *errorQ;						/* Errors Queue definition */
@@ -35,6 +36,239 @@ ListMLabel *listmlabel;
 
 //Assembly
 char* fileName;
+
+
+// abre el archivo a tratar (entrada)
+int openInput(char* name)
+{
+    yyin = fopen(name,"r");
+    if(yyin == NULL)
+    {
+        printf("Archivo Invalido\n");
+        return EXIT_FAILURE;
+    }
+    return EXIT_SUCCESS;
+}
+
+int validateArgs(char* argv[],int argc)
+{
+    // Debe ingresar argumentos
+    if(argc == 1)
+    {
+       printf("Faltan Argumentos\n");
+       printf("Modo de Uso:\n\t");
+       printf("./c-tds [-target parsear | verCI | interprete | assembler | compilar] archivo_entrada [archivo_externo]* [-o nombre_salida]\n");
+        return 0;
+    }
+    // Analizo los comandos de entrada
+    int i;
+    for(i=1;i<argc;i++)
+    {
+        // Compruebo target
+        if(strcmp(argv[i],"-target") == 0)
+        {
+            // Compruebo cantidad de argumentos
+            if(argc<=3)
+            {
+                printf("Faltan Argumentos\n");
+                printf("Modo de Uso:\t");
+                printf("./c-tds [-target parsear | verCI | interprete | assembler | compilar] archivo_entrada [archivo_externo]* [-o nombre_salida]\n");
+                return 0;
+            }
+            // Compruebo etapa de compilacion
+            if(strcmp(argv[i+1],"parsear") != 0 && strcmp(argv[i+1],"verCI") != 0 
+              && strcmp(argv[i+1],"interprete") != 0 && strcmp(argv[i+1],"assembler") != 0 && strcmp(argv[i+1],"compilar") != 0)
+            {
+                printf("Error en los argumentos, usted a pasado -target %s\n", argv[i+1]);
+                printf("\tSolo se permite: -target parsear | verCI | interprete | assembler | compilar\n");
+                return 0;  
+            }
+            else 
+            {
+                // Compruebo valides archivo entrada .c-tds y .ctds
+                char* entrada = argv[i+2];
+                int length = strlen(entrada);
+                if(length < 6)
+                {
+                    printf("Archivo Entrada Invalido\n");
+                    return 0;  
+                }                
+                int index;
+                int pos_punto;
+                for(index = length-1;index>0;index--)
+                {
+                    if(entrada[index] == '.'){ pos_punto = index; break;}
+                }
+                char* extension = calloc(sizeof(char)*(length-pos_punto),sizeof(char));
+                int j = 0;
+                for(index = pos_punto+1;index<length;index++)
+                {
+                    extension[j] = entrada[index];
+                    j++;
+                }
+                if(strcmp(extension,"ctds") != 0 && strcmp(extension,"c-tds") != 0)
+                {
+                    printf("Extension de archivo invalida, use: .c-tds || .ctds\n");
+                    return 0;  
+                }
+                
+            }
+        }
+        // Compruebo argumento "nombre de salida"
+        if(strcmp(argv[i],"-o") == 0)
+        {
+            if(i == argc-1)
+            {
+                printf("Argumento de Salida Incorrecto\n");
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
+
+void initializeStructures()
+{
+    errorQ = initializeQueue();
+    symbolsTable = initializeSymbolsTable(); 
+    lcode3d = initLCode3D();
+    paramsStack = initializeSS(); 
+    methodsIDStack = initializeSS();
+    labelsCYC = newStack();
+    labelsWhile = newStack();
+    returnStack = newStack();
+    labelsFor = newStack();
+    maxMethodOffset = newStack();
+    offsetsVar = newStackOffset();
+    offsetsParam = newStackOffset();
+    listmlabel = initL();
+    lcode3d = initLCode3D();
+}
+
+int parse()
+{
+    yyparse();
+    return (*errorQ).size;
+}
+
+void compile(char *mainFile, char **linked_files, int size)
+{
+    initAssembler(listmlabel, lcode3d, returnStack, fileName);
+    char** args = malloc(sizeof(char*)* (3 + size));
+    args[0] = "gcc";
+    args[1] = mainFile;
+    if(linked_files != NULL)
+    {
+        int i;
+        for(i=0;i<size;i++)
+            args[2+i] = linked_files[i];
+    }
+    args[5+size] = NULL;
+    pid_t child_pid = fork();
+    if(child_pid == 0) 
+    {
+        printf("Compilando Assembler\n");
+        // Ejecuto comando Compilacion C
+        execvp(args[0],args);    
+        // si execvp retorna, es porque fallo
+        printf("Comandos Incorrectos\n");
+        exit(0);
+    }
+    printf("Borrando Assembler Temporal\n");
+    //remove(mainFile);
+    printf("Termino Compilacion GCC\n");               
+}
+
+// Calcula el nombre del archivo de entrada sin extension ni ruta
+char* getName(char* file){
+    int length = strlen(file);
+    int i;
+    int pos_punto = 0;
+    int pos_barra = -1;
+    for(i = length - 1;i>0;i--)
+    {
+        if(file[i] == '.' && pos_punto == 0)
+        {
+            pos_punto = i;
+        }
+        if(file[i] == '/')
+        {
+            pos_barra = i;
+            break;
+        }
+    }
+    char* res = malloc(sizeof(char)* (pos_punto - pos_barra - 1));
+    int j = 0;
+    for(i = pos_barra +1;i<pos_punto;i++)
+        res[i - pos_barra -1 ] = file[i];
+    return res;
+}
+
+
+int main(int argc,char **argv)
+{ 
+    char** linked_files;
+    int inicio;
+    int fin;
+    initializeStructures();
+    if(validateArgs(argv,argc) == 0) 
+        return EXIT_FAILURE;
+    if(strcmp(argv[1],"-target") == 0)
+    {
+        // Avanzo hasta el target
+        char* target = argv[2];
+        char* file_in = argv[3];
+        char* fileName = getName(file_in);
+        // Abro archivo entrada
+        if(openInput(file_in) == EXIT_FAILURE)
+            return EXIT_FAILURE;
+        // Parsea la entrada
+        if(strcmp(target,"parsear") == 0)
+            if (parse() == 0)
+                printf("Codigo parseado correctamente\n");
+            else
+                printErrorList(errorQ);
+        if(strcmp(target,"verCI") == 0)
+            // show the list of code 3D
+            if (parse() == 0)
+                show3DCode(lcode3d);
+            else
+                printErrorList(errorQ);
+        if(strcmp(target,"interprete") == 0)
+            if (parse() == 0)
+                initInterpreter(listmlabel, lcode3d); // The interpreter in this version is not working.
+            else
+                printErrorList(errorQ);
+        if(strcmp(target,"assembler") == 0)
+            if (parse() == 0)
+                initAssembler(listmlabel, lcode3d, returnStack, fileName);
+            else
+                printErrorList(errorQ);
+        if(strcmp(target,"compilar") == 0)
+            if(argc > 4)
+            {
+                int i,j = 0;
+                inicio = 4;
+                fin = argc;
+                linked_files = malloc(sizeof(char*)*(fin-inicio));
+                for(i = inicio;i<fin;i++){
+                    linked_files[j] = argv[i];
+                    j++;
+                }
+            }
+            if (parse() == 0)
+                compile(fileName, linked_files, fin-inicio);
+            else
+                printErrorList(errorQ);
+    }
+    else
+    {
+        if (parse() == 0)
+            compile(fileName, linked_files, fin-inicio);
+        else
+            printErrorList(errorQ);
+    }
+}
 
 /*Create new Label*/
 char* newLabelName(char* msg) 
@@ -65,34 +299,6 @@ int yywrap()
 {
     return 1;
 } 
-
-int main( argc, argv )
-    int argc;
-    char **argv; 
-    { 
-    ++argv, --argc; /* skip over program name */
-    fileName = argv[0];
-        if ( argc > 0 )
-            yyin = fopen( argv[0], "r" );
-        else
-            yyin = stdin;
-        yyparse();
-    return 0;
-}
-
-void finalizar() 
-{
-    if ((*errorQ).size > 0) 
-        yyerror("incorrecto");
-    else
-    {
-        // show the list of code 3D
-        show3DCode(lcode3d); // uncommenting this line will show the 3 directions code of the parsed code;
-        //initInterpreter(listmlabel, lcode3d); // The interpreter in this version is not working.
-        initAssembler(listmlabel, lcode3d, returnStack, fileName);
-        printf("-----Codigo Assembler Generado.-----\n");
-    }
-}
 
 void out(char *msg) 
 {
@@ -127,30 +333,10 @@ void out(char *msg)
 /* ------------------- PROGRAM -------------------- */
 
 program       :    CLASS ID '{' '}' {
-                                    errorQ=initializeQueue(); 
-                                    lcode3d = initLCode3D();
-                                    finalizar();
-                    } 
-              |    CLASS ID '{' {
-                                    symbolsTable = initializeSymbolsTable(); 
-                                    pushLevel(symbolsTable);
-                                    errorQ = initializeQueue();
-                                    paramsStack = initializeSS(); 
-                                    methodsIDStack = initializeSS();
-                                    labelsCYC = newStack();
-                                    labelsWhile = newStack();
-                                    returnStack = newStack();
-                                    labelsFor = newStack();
-                                    maxMethodOffset = newStack();
-									offsetsVar = newStackOffset();
-									offsetsParam = newStackOffset();
-                                    listmlabel = initL();
-                                    lcode3d = initLCode3D();
-                    } body {
+              |    CLASS ID '{' { pushLevel(symbolsTable);} 
+                                  body {
                                 checkMain(errorQ,symbolsTable); 
-                                popLevel(symbolsTable); 
-                                finalizar();
-                    } '}' 
+                                popLevel(symbolsTable);} '}' 
               ;
 
 body          :    fields_decls method_decl 
@@ -576,4 +762,3 @@ primary       :    INTEGER			{$$ = returnValue(lcode3d, Int, $1);}
 /* ------------------------- END OF EXPRESSIONS ------------------------------- */
 
 %%
-

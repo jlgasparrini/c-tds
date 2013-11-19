@@ -7,7 +7,7 @@
 #include <string.h>
 #include "Attribute.h"
 
-static int globalVarOffset = -4;
+static int globalVarOffset = -8;
 static int globalParamOffset = 16;
 
 /* Creates a StVariable with the respective type and initialized */
@@ -85,7 +85,7 @@ Attribute* createParameter(Attribute *attr, unsigned int pos, char *id, Primitiv
             printf("Offset of %d° variable parameter \"%s\": %d\n", pos, id, globalParamOffset);
 			(*attr).decl.method.parameters = auxParameters;
 			Attribute *aux = createVariable(id, type);
-			(*(*aux).decl.variable).offset = globalParamOffset;
+			(*(*aux).decl.variable).offset = globalParamOffset-4;;
 			globalParamOffset += 4;
             (*attr).decl.method.parameters[pos] = (StVariable*) malloc(sizeof(StVariable));
 			(*attr).decl.method.parameters[pos] = (*aux).decl.variable;
@@ -246,7 +246,7 @@ void setGlobalVarOffset(int newOffset)
 /* Set the global variable offset of the class in a -16 */
 void resetGlobalVarOffset()
 {
-	globalVarOffset = -4;
+	globalVarOffset = -8;
 }
 
 /* Increases in 4 the variable's offset */
