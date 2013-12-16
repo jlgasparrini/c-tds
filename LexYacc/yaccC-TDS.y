@@ -37,7 +37,12 @@ ListMLabel *listmlabel;
 //Assembly
 char* fileName;
 
-
+//Main parameters
+int argumentsC;
+char **argumentsV;
+char **linkedFiles;
+//Target input
+char* actionIN = "";
 // abre el archivo a tratar (entrada)
 int openInput(char* name)
 {
@@ -111,7 +116,6 @@ int validateArgs(char* argv[],int argc)
                     printf("Extension de archivo invalida, use: .c-tds || .ctds\n");
                     return 0;  
                 }
-                
             }
         }
         // Compruebo argumento "nombre de salida"
@@ -145,16 +149,11 @@ void initializeStructures()
     lcode3d = initLCode3D();
 }
 
-int parse()
-{
-    yyparse();
-    return (*errorQ).size;
-}
-
 void compile(char *mainFile, char **linked_files, int size)
 {
     initAssembler(listmlabel, lcode3d, returnStack, fileName);
     char** args = malloc(sizeof(char*)* (3 + size));
+    linkedFiles = linked_files;
     args[0] = "gcc";
     args[1] = mainFile;
     if(linked_files != NULL)
@@ -201,72 +200,75 @@ char* getName(char* file){
     int j = 0;
     for(i = pos_barra +1;i<pos_punto;i++)
         res[i - pos_barra -1 ] = file[i];
-    return res;
+    return strdup(res);
 }
 
 
 int main(int argc,char **argv)
 { 
+    argumentsC = argc;
+    argumentsV = argv;
     char** linked_files;
     int inicio;
     int fin;
     initializeStructures();
     if(validateArgs(argv,argc) == 0) 
+    {
         return EXIT_FAILURE;
-    if(strcmp(argv[1],"-target") == 0)
+    }
+    else if(strcmp(argv[1],"-target") == 0)
     {
         // Avanzo hasta el target
         char* target = argv[2];
         char* file_in = argv[3];
-        char* fileName = getName(file_in);
+        fileName = getName(file_in);
         // Abro archivo entrada
         if(openInput(file_in) == EXIT_FAILURE)
             return EXIT_FAILURE;
         // Parsea la entrada
-        if(strcmp(target,"parsear") == 0)
-            if (parse() == 0)
-                printf("Codigo parseado correctamente\n");
-            else
-                printErrorList(errorQ);
-        if(strcmp(target,"verCI") == 0)
-            // show the list of code 3D
-            if (parse() == 0)
-                show3DCode(lcode3d);
-            else
-                printErrorList(errorQ);
-        if(strcmp(target,"interprete") == 0)
-            if (parse() == 0)
-                initInterpreter(listmlabel, lcode3d); // The interpreter in this version is not working.
-            else
-                printErrorList(errorQ);
-        if(strcmp(target,"assembler") == 0)
-            if (parse() == 0)
-                initAssembler(listmlabel, lcode3d, returnStack, fileName);
-            else
-                printErrorList(errorQ);
-        if(strcmp(target,"compilar") == 0)
-            if(argc > 4)
-            {
-                int i,j = 0;
-                inicio = 4;
-                fin = argc;
-                linked_files = malloc(sizeof(char*)*(fin-inicio));
-                for(i = inicio;i<fin;i++){
-                    linked_files[j] = argv[i];
-                    j++;
-                }
-            }
-            if (parse() == 0)
-                compile(fileName, linked_files, fin-inicio);
-            else
-                printErrorList(errorQ);
+        actionIN = target;
+        yyparse();
     }
     else
     {
-        if (parse() == 0)
-            compile(fileName, linked_files, fin-inicio);
+       printf("Error en los argumentos. ");
+       printf("Modo de Uso:\n\t");
+       printf("./c-tds [-target parsear | verCI | interprete | assembler | compilar] archivo_entrada [archivo_externo]* [-o nombre_salida]\n");
+    }
+}
+
+finalize()
+{
+    if ((*errorQ).size > 0)
+        printErrorList(errorQ);
+    else
+    {
+        int i,j = 0;
+        int inicio = 4;
+        int fin = argumentsC;
+        linkedFiles = malloc(sizeof(char*)*(fin-inicio));
+        if(strcmp(actionIN,"parsear") == 0)
+            printf("Codigo parseado correctamente\n");
+        else if(strcmp(actionIN,"verCI") == 0)
+            // show the list of code 3D
+            show3DCode(lcode3d);
+        else if(strcmp(actionIN,"interprete") == 0)
+            initInterpreter(listmlabel, lcode3d); // The interpreter in this version is not working.
+        else if(strcmp(actionIN,"assembler") == 0)
+        {
+            initAssembler(listmlabel, lcode3d, returnStack, fileName);
+        }
+        else if(strcmp(actionIN,"compilar") == 0)
+        {
+            if(argumentsC > 4)
+                for(i = inicio;i<fin;i++){
+                    linkedFiles[j] = argumentsV[i];
+                    j++;
+                }
+            compile(fileName, linkedFiles, fin-inicio);
+        }
         else
-            printErrorList(errorQ);
+            compile(fileName, linkedFiles, fin-inicio);
     }
 }
 
@@ -332,15 +334,14 @@ void out(char *msg)
 
 /* ------------------- PROGRAM -------------------- */
 
-program       :    CLASS ID '{' '}' {
-              |    CLASS ID '{' { pushLevel(symbolsTable);} 
-                                  body {
-                                checkMain(errorQ,symbolsTable); 
-                                popLevel(symbolsTable);} '}' 
+program       :    CLASS ID '{' '}'{finalize();}
+              |    CLASS ID '{' {pushLevel(symbolsTable);} 
+                                body 
+                                {checkMain(errorQ,symbolsTable);
+                                popLevel(symbolsTable);
+                                finalize();} '}' 
               ;
-
-body          :    fields_decls method_decl 
-              |    fields_decls
+body          :    fields_decls method_decl |    fields_decls
               |    method_decl
               ;
 
@@ -644,6 +645,7 @@ method_call   :	   ID '(' ')' {
                     } expression_aux ')' {
                             if (idNotFound != True)
                             {
+                                set_listC3D_int(lcode3d, size_listC3D(lcode3d)-cantParams, 3, cantParams);
                                 add_CodeLabel(lcode3d, newCode(GOTO_METHOD), get_Label(listmlabel, $1)); //Go to char of Init of Method 
                                 $$ = checkAndGetMethodRetAttribute(errorQ,symbolsTable,lcode3d,$1,cantParams); 
                                 cantParams=atoi(popString(paramsStack));

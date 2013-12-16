@@ -44,7 +44,6 @@ void set_listC3D_int(ListC3D *list,int index,int param, int numb)
         }
         setInt(runner->info, param, numb);
     } 
-        
 }
 
 /**Metodo para que agrega un Codigo 3D en una posicion en la lista*/

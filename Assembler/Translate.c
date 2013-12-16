@@ -1,6 +1,7 @@
 #include "Translate.h";
 
 int nameLabelCount = 0;
+int auxParam = 1;
 
 /*-----------------------------------------------------------------------*/
 /**Metodo para la obtencion del valor de una constante*/  
@@ -232,10 +233,11 @@ void translateAssignationInt(FILE* file, Code3D* code)
 /* Puts in the file the translation of the PARAM_ASSIGN_INT action */
 void translateParamAssignInt(FILE *file, Code3D *code)
 {
-    //desde el yacc.. traemos la posicion del parametro. 
-    writeCodeInFile(file, translate("subq", "$4", "%rsp"));
+    if (getInt(code, 3) != NULL)
+        writeCodeInFile(file, translate("subq", concat("$", intToString(getInt(code, 3))), "%rsp"));
     writeCodeInFile(file, translate("movq", offset(code, 1), "%rax"));
-    writeCodeInFile(file, translate("movq", "%rax", "0(%rsp)"));
+    writeCodeInFile(file, translate("movq", "%rax", concat(intToString(auxParam*4), "(%rbp)")));
+    auxParam++;
 }
 
 /*-----------------------------------------------------------------------*/

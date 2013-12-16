@@ -20,6 +20,7 @@ int size;
 int generateOperation(int position)
 {
     Code3D*	code = get_code(codeList,position);
+    printf("Voy a generar la operacion %i   %s\n", position, getCodeByID(code->command));
     switch ((*code).command)
     {
         /********************************* GENERAL OPERATIONS ******************************/
@@ -53,12 +54,10 @@ int generateOperation(int position)
         case 5: 
             writeLabel(file, labelList, code);
             break;
-
             /* GOTO_LABEL */
         case 6: 
             translateGotoLabel(file, code);
             break;
-
             /* GOTO_LABEL_COND */
         case 7:
             translateGotoLabelCondition(file, code);
@@ -74,7 +73,6 @@ int generateOperation(int position)
         case 9: 
             translateAssignationInt(file, code); 
             break;
-
 			/* PARAM_ASSIGN_INT */
         case 10: 
             translateParamAssignInt(file, code);
@@ -84,27 +82,22 @@ int generateOperation(int position)
         case 11:
             translateMinusInt(file, code);
             break;
-
             /* ADD_INT */
         case 12:
             add_Int_Translate(file, code);
             break;
-
             /* MULT_INT */
         case 13:
             mult_Int_Translate(file, code);
             break;
-
             /* DIV_INT */
         case 14:
             translateDivInt(file, code);
             break;
-
             /* MOD_INT */
         case 15:
             translateModInt(file, code);
             break;
-
 			/* NEG_INT */
         case 16:
             neg_Int_Translate(file, code);
@@ -114,7 +107,6 @@ int generateOperation(int position)
         case 17:
             translateEqualInt(file, code);
             break;
-
             /* DIST_INT */
         case 18:
             translateDistinctInt(file, code);
@@ -124,12 +116,10 @@ int generateOperation(int position)
         case 19:
             greater_IntTranslate(file, code);
             break;
-
             /* LOWER_INT */
         case 20: 
             translateLesserInt(file, code);
             break;		
-
 			/* GEQ_INT */
         case 21:
             greater_Eq_IntTranslate(file, code);
@@ -145,7 +135,6 @@ int generateOperation(int position)
         case 23:
             assignation_FloatTranslate(file, code);
             break;
-
             /* PARAM_ASSIGN_FLOAT */
         case 24:
 			translateParamAssignFloat(file, code);
@@ -155,99 +144,80 @@ int generateOperation(int position)
         case 25:
             translateMinusFloat(file, code);
             break;
-
             /* ADD_FLOAT */
         case 26:
             translateAddFloat(file, code);
             break;
-
             /* MULT_FLOAT */
         case 27:
             translateMultFloat(file, code);
             break;
-
             /* DIV_FLOAT */
         case 28:
             translateDivFloat(file, code);
             break;
-
 			/* NEG_FLOAT */
         case 29: 
             neg_Float_Translate(file, code);
             break;
-
 			/* EQ_FLOAT */
         case 30:
             eq_FloatTranslate(file, code);
             break;
-
             /* DIST_FLOAT */
         case 31:
             dist_FloatTranslate(file, code);
             break;
-
             /* GREATER_FLOAT */
         case 32:
             greater_FloatTranslate(file, code);
             break;
-
             /* LOWER_FLOAT */
         case 33: 
             translateLesserFloat(file, code);
             break;
-
             /* GEQ_FLOAT */
         case 34:
             greater_Eq_FloatTranslate(file, code);
             break;
-
             /* LEQ_FLOAT */
         case 35:
             translateLesserOrEqualFloat(file, code);
             break;
-
         /********************************* BOOLEAN OPERATIONS ******************************/
 		    /* ASSIGNATION_BOOL */
         case 36:
             translateAssignationInt(file, code);
             break;
-
             /* PARAM_ASSIGN_BOOL */
         case 37:
 			translateParamAssignInt(file, code);
             break;
-
 			/* EQ_BOOL */
         case 38:
             translateEqualInt(file, code);
             break;
-
             /* DIST_BOOL */
         case 39:
             translateDistinctInt(file, code);
             break;
-
             /* OR */
         case 40:
             translateOr(file, code);
             break;
-
             /* AND */
         case 41:
             translateAnd(file, code);
             break;
-
             /* NOT */
         case 42: 
             translateNot(file, code);
             break;
-
             /* EXTERN_INVOKATION */
         case 43:
             translateExternInvk(file, code);
             break;
     }
-
     writeCodeInFile(file, "\n");
 }
 

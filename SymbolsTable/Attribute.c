@@ -8,7 +8,7 @@
 #include "Attribute.h"
 
 static int globalVarOffset = -8;
-static int globalParamOffset = 16;
+static int globalParamOffset = 20;
 
 /* Creates a StVariable with the respective type and initialized */
 StVariable createStVariable(PrimitiveType type)
@@ -33,7 +33,6 @@ Attribute* createVariable(char *id, PrimitiveType type)
 	*(*attr).decl.variable = createStVariable(type);
 	(*(*attr).decl.variable).id = strdup(id);
 	(*(*attr).decl.variable).offset = getGlobalVarOffset();
-    printf("Offset of variable \"%s\": %d\n", id, getGlobalVarOffset());
     decreaseVarOffset();
 	return attr;
 }
@@ -51,7 +50,6 @@ Attribute* createArray(char *id, PrimitiveType type, unsigned int length)
     printf("Offsets of array \"%s\":\n", id);
 	for(i = 0; i < length; i++)
 	{	// Initializes all the values of the array
-        printf("Offset of %d° position of array \"%s\": %d\n", i, id, getGlobalVarOffset());
 		(*attr).decl.array.arrayValues[i] = createStVariable(type);
         (*attr).decl.array.arrayValues[i].offset = getGlobalVarOffset();
         decreaseVarOffset();
@@ -82,7 +80,6 @@ Attribute* createParameter(Attribute *attr, unsigned int pos, char *id, Primitiv
 		//StVariable **auxParameters = (StVariable**) realloc ((*attr).decl.method.parameters, (pos+1)*sizeof(StVariable));
 		if (auxParameters != NULL)
 		{
-            printf("Offset of %d° variable parameter \"%s\": %d\n", pos, id, globalParamOffset);
 			(*attr).decl.method.parameters = auxParameters;
 			Attribute *aux = createVariable(id, type);
 			(*(*aux).decl.variable).offset = globalParamOffset-4;;
@@ -246,7 +243,7 @@ void setGlobalVarOffset(int newOffset)
 /* Set the global variable offset of the class in a -16 */
 void resetGlobalVarOffset()
 {
-	globalVarOffset = -8;
+	globalVarOffset = -4;
 }
 
 /* Increases in 4 the variable's offset */
