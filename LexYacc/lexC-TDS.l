@@ -101,7 +101,7 @@ print		"print"
 {or}                            {columnNumb=columnNumb+strlen(yytext); return(ORR);}
 {and}                           {columnNumb=columnNumb+strlen(yytext); return(ANDD);}
 {print}							{columnNumb=columnNumb+strlen(yytext); return(PRINTT);}
-{string}                        {columnNumb=columnNumb+strlen(yytext); return(STRING);}
+{string}                        {columnNumb=columnNumb+strlen(yytext); yylval.stringValue = strdup(yytext); return(STRING);}
 {externinvk}					{columnNumb=columnNumb+strlen(yytext); return(EXTERNINVK);}
 {true}                          {columnNumb=columnNumb+strlen(yytext); yylval.stringValue = strdup(yytext); return(BOOLEAN);}
 {false}                         {columnNumb=columnNumb+strlen(yytext); yylval.stringValue = strdup(yytext); return(BOOLEAN);}

@@ -189,9 +189,7 @@ char* getName(char* file){
     for(i = length - 1;i>0;i--)
     {
         if(file[i] == '.' && pos_punto == 0)
-        {
             pos_punto = i;
-        }
         if(file[i] == '/')
         {
             pos_barra = i;
@@ -215,9 +213,7 @@ int main(int argc,char **argv)
     int fin;
     initializeStructures();
     if(validateArgs(argv,argc) == 0) 
-    {
         return EXIT_FAILURE;
-    }
     else if(strcmp(argv[1],"-target") == 0)
     {
         // Avanzo hasta el target
@@ -233,9 +229,14 @@ int main(int argc,char **argv)
     }
     else
     {
-       printf("Error en los argumentos. ");
-       printf("Modo de Uso:\n\t");
-       printf("./c-tds [-target parsear | verCI | interprete | assembler | compilar] archivo_entrada [archivo_externo]* [-o nombre_salida]\n");
+        char* file_in = argv[1];
+        fileName = getName(file_in);
+        // Abro archivo entrada
+        if(openInput(file_in) == EXIT_FAILURE)
+            return EXIT_FAILURE;
+        // Parsea la entrada
+        actionIN = "compilar";
+        yyparse();
     }
 }
 
@@ -328,7 +329,7 @@ void out(char *msg)
 %left '*' '/'
 %left '%'
 %type<at> expression conjunction inequality comparison relation term factor primary method_call location factor1
-%type<stringValue> assig_op
+%type<stringValue> assig_op typevoid
 /* %type<at> es solo para no-terminales */
 
 %%      /*  beginning  of  rules  section  */
@@ -665,7 +666,8 @@ method_call   :	   ID '(' ')' {
                                                                 res = createVariable("",mType);
                                                             else
                                                                 res = createVariable((char*) getVariableName(),Int);
-                                                            add_CodeExternInvk(lcode3d, newCode(EXTERN_INVK),$3, res);
+                                                            char token[2] = "\"";
+                                                            add_CodeExternInvk(lcode3d, newCode(EXTERN_INVK), strtok($3, token), $5);
                                                             $$ = res;
                                                             }
 				|    EXTERNINVK '(' STRING ',' typevoid ',' externinvk_arg ')' {
@@ -674,7 +676,8 @@ method_call   :	   ID '(' ')' {
                                                                                     res = createVariable("",mType);
                                                                                 else
                                                                                     res = createVariable((char*) getVariableName(),Int);
-                                                                                add_CodeExternInvk(lcode3d, newCode(EXTERN_INVK),$3, res);
+                                                                                char token[2] = " \"";
+                                                                                add_CodeExternInvk(lcode3d, newCode(EXTERN_INVK), strtok($3, token), $5);
                                                                                 $$ = res;
                                                                                 }
 				;
@@ -695,8 +698,17 @@ expression_aux:    expression {
                     } ',' expression_aux 
               ;
 
-typevoid      :    type                            
-              |    VOID {mType = RetVoid;} 
+typevoid      :    type {switch (mType)
+                            {
+                                case RetInt: $$=strdup("int");
+                                             break;
+                                case RetFloat: $$=strdup("float");
+                                             break;
+                                case RetBool: $$=strdup("bool");
+                                             break;
+                            } 
+                        }
+              |    VOID {mType = RetVoid; $$=strdup("void");} 
               ;
 
 externinvk_arg:    arg                           
