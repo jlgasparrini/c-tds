@@ -20,6 +20,7 @@ int size;
 int generateOperation(int position)
 {
     Code3D*	code = get_code(codeList,position);
+    printf("Voy a generar la operacion %i   %s\n", position, getCodeByID(code->command));
     switch ((*code).command)
     {
         /********************************* GENERAL OPERATIONS ******************************/

@@ -8,7 +8,7 @@
 #include "Attribute.h"
 
 static int globalVarOffset = -8;
-static int globalParamOffset = 24;
+static int globalParamOffset = 20;
 
 /* Creates a StVariable with the respective type and initialized */
 StVariable createStVariable(PrimitiveType type)
