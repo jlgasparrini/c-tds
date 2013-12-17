@@ -80,6 +80,12 @@ void add_MethodCall(LCode3D *lcode3d, Code3D *code,  Attribute *attri1,  Attribu
 	add_code(lcode3d, code);
 }
 
+void add_CodeExternInvk(LCode3D *lcode3d, Code3D *code,char *methodName,  Attribute *attriRes)
+{
+    setCode2D(code, attri1, attriRes);
+    add_code(lcode3d, code);
+}
+
 /**Metodo que borra un Codigo 3D de la lista dependiendo una posicion*/
 void delete_code(LCode3D *lcode3d, int index)
 {

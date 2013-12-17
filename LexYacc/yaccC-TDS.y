@@ -8,7 +8,7 @@
 #  include	"../Stack/stack.h"
 #  include	"../Stack/stackOffset.h"
 #  include  "../ListMethod/genlistml.h" 
-#include <unistd.h>
+#  include <unistd.h>
 
 extern FILE *yyin;
 ErrorsQueue *errorQ;						/* Errors Queue definition */
@@ -50,7 +50,9 @@ int openInput(char* name)
     yyin = fopen(name,"r");
     if(yyin == NULL)
     {
-        printf("Archivo Invalido\n");
+        printf("Archivo o Argumentos Invalidos.\n");
+        printf("Modo de Uso:\n\t");
+        printf("./c-tds [-target parsear | verCI | interprete | assembler | compilar] archivo_entrada [archivo_externo]* [-o nombre_salida]\n");
         return EXIT_FAILURE;
     }
     return EXIT_SUCCESS;
@@ -675,7 +677,7 @@ method_call   :	   ID '(' ')' {
                                                                 res = createVariable("",mType);
                                                             else
                                                                 res = createVariable((char*) getVariableName(),Int);
-                                                            //add_CodeExternInvk(lcode3d, newCode(EXTERN_INVK),$3, res);
+                                                            add_CodeExternInvk(lcode3d, newCode(EXTERN_INVK),$3, res);
                                                             $$ = res;
                                                             }
 				|    EXTERNINVK '(' STRING ',' typevoid ',' externinvk_arg ')' {
@@ -684,7 +686,7 @@ method_call   :	   ID '(' ')' {
                                                                                     res = createVariable("",mType);
                                                                                 else
                                                                                     res = createVariable((char*) getVariableName(),Int);
-                                                                                //add_CodeExternInvk(lcode3d, newCode(EXTERN_INVK),$3, res);
+                                                                                add_CodeExternInvk(lcode3d, newCode(EXTERN_INVK),$3, res);
                                                                                 $$ = res;
                                                                                 }
 				;
@@ -759,7 +761,6 @@ factor        :    primary		{$$ = $1;}
               |    '!' factor	{$$ = returnNot(errorQ, lcode3d, $2);}
               |    '-' factor	{$$ = returnNeg(errorQ, lcode3d, $2);}
               ;
-
 
 primary       :    INTEGER			{$$ = returnValue(lcode3d, Int, $1);}
               |    FLOAT            {$$ = returnValue(lcode3d, Float, $1);}
