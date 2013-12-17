@@ -19,6 +19,7 @@ PrimitiveType vaType;						/* Type of the variable or array */
 ReturnType mType;							/* Return type of the method */
 char *lastDefMethod, *lastCalledMethod = "";/* Name of the last defined method (lastDefMethod) and the last called method (lastCalledMethod) */
 Boolean idNotFound;
+int flagFirstParam = 0; //Bandera utilizada para manejar la cantidad de parametros por adelantado.
 
 /* Variables used for 3D code */
 LCode3D *lcode3d;
@@ -152,10 +153,12 @@ void initializeStructures()
 void compile(char *mainFile, char **linked_files, int size)
 {
     initAssembler(listmlabel, lcode3d, returnStack, fileName);
+    printf("Assembler Generado.\n");
     char** args = malloc(sizeof(char*)* (3 + size));
     linkedFiles = linked_files;
     args[0] = "gcc";
     args[1] = mainFile;
+    args[1] = strcat(args[1], ".s");
     if(linked_files != NULL)
     {
         int i;
@@ -173,7 +176,7 @@ void compile(char *mainFile, char **linked_files, int size)
         printf("Comandos Incorrectos\n");
         exit(0);
     }
-    printf("Borrando Assembler Temporal\n");
+    //printf("Borrando Assembler Temporal\n");
     //remove(mainFile);
     printf("Termino Compilacion GCC\n");               
 }
@@ -231,9 +234,14 @@ int main(int argc,char **argv)
     }
     else
     {
-       printf("Error en los argumentos. ");
-       printf("Modo de Uso:\n\t");
-       printf("./c-tds [-target parsear | verCI | interprete | assembler | compilar] archivo_entrada [archivo_externo]* [-o nombre_salida]\n");
+        char* file_in = argv[1];
+        fileName = getName(file_in);
+        // Abro archivo entrada
+        if(openInput(file_in) == EXIT_FAILURE)
+            return EXIT_FAILURE;
+        // Parsea la entrada
+        actionIN = "compilar";
+        yyparse();
     }
 }
 
@@ -248,14 +256,21 @@ finalize()
         int fin = argumentsC;
         linkedFiles = malloc(sizeof(char*)*(fin-inicio));
         if(strcmp(actionIN,"parsear") == 0)
-            printf("Codigo parseado correctamente\n");
+            printf("Codigo parseado correctamente.\n");
         else if(strcmp(actionIN,"verCI") == 0)
+        {
             // show the list of code 3D
+            printf("Codigo intermedio:\n");
             show3DCode(lcode3d);
+        }
         else if(strcmp(actionIN,"interprete") == 0)
+        {
+            printf("Codigo interpretado.\n");
             initInterpreter(listmlabel, lcode3d); // The interpreter in this version is not working.
+        }
         else if(strcmp(actionIN,"assembler") == 0)
         {
+            printf("Assembler generado.\n");
             initAssembler(listmlabel, lcode3d, returnStack, fileName);
         }
         else if(strcmp(actionIN,"compilar") == 0)
@@ -268,7 +283,11 @@ finalize()
             compile(fileName, linkedFiles, fin-inicio);
         }
         else
-            compile(fileName, linkedFiles, fin-inicio);
+        {
+            printf("Error en los argumentos. ");
+            printf("Modo de Uso:\n\t");
+            printf("./c-tds [-target parsear | verCI | interprete | assembler | compilar] archivo_entrada [archivo_externo]* [-o nombre_salida]\n");
+        }
     }
 }
 
@@ -281,7 +300,6 @@ char* newLabelName(char* msg)
     labelCount++;
     return labelName;
 }
-
 
 int yydebug = 1;
 
@@ -301,11 +319,6 @@ int yywrap()
 {
     return 1;
 } 
-
-void out(char *msg) 
-{
-    printf("%s\n", msg);
-}
 %}
 
 %union
@@ -314,9 +327,7 @@ void out(char *msg)
     Attribute *at;
 }
 
-
 %start program
-
 /* %token<stringValue> es solo para tokens */
 %token<stringValue> FLOAT INTEGER BOOLEAN INTW FLOATW BOOLEANW ID PLUSEQUAL MINUSEQUAL STRING
 %token EQUAL DISTINCT GEQUAL LEQUAL ORR ANDD 
@@ -645,7 +656,8 @@ method_call   :	   ID '(' ')' {
                     } expression_aux ')' {
                             if (idNotFound != True)
                             {
-                                set_listC3D_int(lcode3d, size_listC3D(lcode3d)-cantParams, 3, cantParams);
+                                set_code_int(lcode3d, flagFirstParam, 3, cantParams);
+                                flagFirstParam = 0;
                                 add_CodeLabel(lcode3d, newCode(GOTO_METHOD), get_Label(listmlabel, $1)); //Go to char of Init of Method 
                                 $$ = checkAndGetMethodRetAttribute(errorQ,symbolsTable,lcode3d,$1,cantParams); 
                                 cantParams=atoi(popString(paramsStack));
@@ -681,6 +693,8 @@ expression_aux:    expression {
                                 if (idNotFound != True)
                                 {
                                     correctParamBC(errorQ,symbolsTable,lcode3d,$1,lastCalledMethod,cantParams); 
+                                    if (flagFirstParam == 0)
+                                        flagFirstParam = codeSize(lcode3d);
                                     cantParams++;
                                 }
                     }
@@ -688,6 +702,8 @@ expression_aux:    expression {
                                 if (idNotFound != True)
                                 {
                                     correctParamIC(errorQ,symbolsTable,lcode3d,$1,lastCalledMethod,cantParams); 
+                                    if (flagFirstParam == 0)
+                                        flagFirstParam = codeSize(lcode3d);
                                     cantParams++;
                                 } 
                     } ',' expression_aux 

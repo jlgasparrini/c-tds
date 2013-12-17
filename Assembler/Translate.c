@@ -23,9 +23,10 @@ char* createNewLabel(char* msg)
     char* aux;
     sprintf(aux, "%d", nameLabelCount);
     char *newLabel = concat(msg, aux);
-    nameLabelCount++; return newLabel; }
+    nameLabelCount++; return newLabel; 
+}
 
-    //Retorna la contatenacion de dos cadenas.
+//Retorna la contatenacion de dos cadenas.
 char* concat(char *s1, char *s2)
 {
     char *result = malloc(strlen(s1)+strlen(s2)+1);
@@ -234,9 +235,9 @@ void translateAssignationInt(FILE* file, Code3D* code)
 void translateParamAssignInt(FILE *file, Code3D *code)
 {
     if (getInt(code, 3) != NULL)
-        writeCodeInFile(file, translate("subq", concat("$", intToString(getInt(code, 3))), "%rsp"));
+        writeCodeInFile(file, translate("subq", concat("$", intToString(getInt(code, 3)*4)), "%rsp"));
     writeCodeInFile(file, translate("movq", offset(code, 1), "%rax"));
-    writeCodeInFile(file, translate("movq", "%rax", concat(intToString(auxParam*4), "(%rbp)")));
+    writeCodeInFile(file, translate("movq", "%rax", concat(intToString(auxParam*4), "(%rsp)")));
     auxParam++;
 }
 
@@ -374,9 +375,10 @@ void assignation_FloatTranslate(FILE* file, Code3D* code)
 /* Puts in the file the translation of the PARAM_ASSIGN_FLOAT action */
 void translateParamAssignFloat(FILE *file, Code3D *code)
 {
-    writeCodeInFile(file, translate("subq", "$4", "%rsp"));
+    if (getInt(code, 3) != NULL)
+        writeCodeInFile(file, translate("subq", concat("$", intToString(getInt(code, 3)*4)), "%rsp"));
     writeCodeInFile(file, translate("movss", offset(code, 1), "%xmm0"));
-    writeCodeInFile(file, translate("movq", "%xmm0", "0(%rsp)"));
+    writeCodeInFile(file, translate("movq", "%rax", concat(intToString(auxParam*4), "(%rsp)")));
 }
 
 /**"NEG_FLOAT %s %s\n" */
