@@ -225,6 +225,7 @@ void initAssembler(ListMLabel *labelL, LCode3D *codeL, Stack *stack, char* nameO
 {
     //Initialize file.
     char *fileName = concat(nameOfFile, ".s");
+    printf("abriendo archivo  %s\n", fileName);
     file = fopen(fileName,"w");
     writeCodeInFile(file, translate(".file", concat(concat("\"", concat(nameOfFile, ".s")), "\""), ""));
     writeCodeInFile(file, translate(".global", "main", ""));

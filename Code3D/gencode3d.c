@@ -80,9 +80,10 @@ void add_MethodCall(LCode3D *lcode3d, Code3D *code,  Attribute *attri1,  Attribu
 	add_code(lcode3d, code);
 }
 
-void add_CodeExternInvk(LCode3D *lcode3d, Code3D *code,char *methodName,  Attribute *attriRes)
+void add_CodeExternInvk(LCode3D *lcode3d, Code3D *code,char *label,  char* type)
 {
-    setCode2D(code, attri1, attriRes);
+	setCodeLabel(code, label);
+    setLabel(code, 2, type);
     add_code(lcode3d, code);
 }
 
