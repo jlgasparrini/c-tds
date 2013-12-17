@@ -47,7 +47,6 @@ Attribute* createArray(char *id, PrimitiveType type, unsigned int length)
 	(*attr).decl.array.length = length;
 	(*attr).decl.array.arrayValues = (StVariable*) malloc (length*sizeof(StVariable)); /* creates the necessary memory for the array */
 	int i;
-    printf("Offsets of array \"%s\":\n", id);
 	for(i = 0; i < length; i++)
 	{	// Initializes all the values of the array
 		(*attr).decl.array.arrayValues[i] = createStVariable(type);
