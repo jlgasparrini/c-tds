@@ -35,7 +35,9 @@ StackOffset *offsetsParam;
 ListMLabel *listmlabel;
 
 //Assembly
-char* fileName;
+char* fileName; //String para almacenar el nombre del archivo sin extension.
+int flagTarget = 1; //Bandera utilizada para manejar si en la linea de entrada de mis argumentos, tengo un "-target".
+int flagFirstParam = 0; //Bandera utilizada para manejar la cantidad de parametros por adelantado.
 
 //Main parameters
 int argumentsC;
@@ -155,20 +157,23 @@ void compile(char *mainFile, char **linked_files, int size)
 {
     initAssembler(listmlabel, lcode3d, returnStack, fileName);
     char** args = malloc(sizeof(char*)* (3 + size));
-    linkedFiles = linked_files;
+    //linkedFiles = linked_files;
     args[0] = "gcc";
     args[1] = mainFile;
+    args[1] = strcat(args[1], ".s");
     if(linked_files != NULL)
     {
         int i;
         for(i=0;i<size;i++)
+        {
             args[2+i] = linked_files[i];
+        }
     }
     args[5+size] = NULL;
     pid_t child_pid = fork();
     if(child_pid == 0) 
     {
-        printf("Compilando Assembler\n");
+        printf("Generando ejecutable.\n");
         // Ejecuto comando Compilacion C
         execvp(args[0],args);    
         // si execvp retorna, es porque fallo
@@ -229,6 +234,7 @@ int main(int argc,char **argv)
     }
     else
     {
+        flagTarget = 0;
         char* file_in = argv[1];
         fileName = getName(file_in);
         // Abro archivo entrada
@@ -247,23 +253,27 @@ finalize()
     else
     {
         int i,j = 0;
-        int inicio = 4;
+        int inicio = 3;
         int fin = argumentsC;
         linkedFiles = malloc(sizeof(char*)*(fin-inicio));
         if(strcmp(actionIN,"parsear") == 0)
-            printf("Codigo parseado correctamente\n");
+            printf("Codigo parseado correctamente.\n");
         else if(strcmp(actionIN,"verCI") == 0)
+        {
+            printf("Codigo intermedio:\n");
             // show the list of code 3D
             show3DCode(lcode3d);
-        else if(strcmp(actionIN,"interprete") == 0)
-            initInterpreter(listmlabel, lcode3d); // The interpreter in this version is not working.
-        else if(strcmp(actionIN,"assembler") == 0)
-        {
-            initAssembler(listmlabel, lcode3d, returnStack, fileName);
         }
+        else if(strcmp(actionIN,"interprete") == 0)
+        {
+            printf("Codigo interpretado:\n");
+            initInterpreter(listmlabel, lcode3d); // The interpreter in this version is not working.
+        }
+        else if(strcmp(actionIN,"assembler") == 0)
+            initAssembler(listmlabel, lcode3d, returnStack, fileName);
         else if(strcmp(actionIN,"compilar") == 0)
         {
-            if(argumentsC > 4)
+            if((flagTarget=0 && argumentsC >= 3) || (flagTarget && argumentsC>=5))
                 for(i = inicio;i<fin;i++){
                     linkedFiles[j] = argumentsV[i];
                     j++;
@@ -304,11 +314,6 @@ int yywrap()
 {
     return 1;
 } 
-
-void out(char *msg) 
-{
-    printf("%s\n", msg);
-}
 %}
 
 %union
@@ -648,7 +653,8 @@ method_call   :	   ID '(' ')' {
                     } expression_aux ')' {
                             if (idNotFound != True)
                             {
-                                set_listC3D_int(lcode3d, size_listC3D(lcode3d)-cantParams, 3, cantParams);
+                                set_code_int(lcode3d, flagFirstParam, 3, cantParams);
+                                flagFirstParam = 0;
                                 add_CodeLabel(lcode3d, newCode(GOTO_METHOD), get_Label(listmlabel, $1)); //Go to char of Init of Method 
                                 $$ = checkAndGetMethodRetAttribute(errorQ,symbolsTable,lcode3d,$1,cantParams); 
                                 cantParams=atoi(popString(paramsStack));
@@ -676,7 +682,7 @@ method_call   :	   ID '(' ')' {
                                                                                     res = createVariable("",mType);
                                                                                 else
                                                                                     res = createVariable((char*) getVariableName(),Int);
-                                                                                char token[2] = " \"";
+                                                                                char token[2] = "\"";
                                                                                 add_CodeExternInvk(lcode3d, newCode(EXTERN_INVK), strtok($3, token), $5);
                                                                                 $$ = res;
                                                                                 }
@@ -686,6 +692,8 @@ expression_aux:    expression {
                                 if (idNotFound != True)
                                 {
                                     correctParamBC(errorQ,symbolsTable,lcode3d,$1,lastCalledMethod,cantParams); 
+                                    if (flagFirstParam == 0)
+                                        flagFirstParam = codeSize(lcode3d);
                                     cantParams++;
                                 }
                     }
@@ -693,6 +701,8 @@ expression_aux:    expression {
                                 if (idNotFound != True)
                                 {
                                     correctParamIC(errorQ,symbolsTable,lcode3d,$1,lastCalledMethod,cantParams); 
+                                     if (flagFirstParam == 0)
+                                         flagFirstParam = codeSize(lcode3d);
                                     cantParams++;
                                 } 
                     } ',' expression_aux 
