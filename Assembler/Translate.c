@@ -146,7 +146,7 @@ void translateNot(FILE* file, Code3D* code)
 {
     writeCodeInFile(file, translate("cmpl", "$1", offset(code,1)));
     writeCodeInFile(file, translate("setne", "%al", ""));
-    writeCodeInFile(file, translate("movzbl", "%al", "%rax"));
+    writeCodeInFile(file, translate("movzbq", "%al", "%rax"));
     writeCodeInFile(file, translate("movq", "%rax", offset(code, 2)));
 }
 
@@ -304,7 +304,7 @@ void greater_IntTranslate(FILE* file, Code3D* code)
     writeCodeInFile(file, translate("movq", offset(code,1), "%rax"));
     writeCodeInFile(file, translate("cmp", offset(code,2), "%rax"));
     writeCodeInFile(file, translate("setg", "%al", ""));
-    writeCodeInFile(file, translate("movzbl", "%al", "%rax"));
+    writeCodeInFile(file, translate("movzbq", "%al", "%rax"));
     writeCodeInFile(file, translate("movq", "%rax", offset(code,3))); 
 }
 
@@ -315,7 +315,7 @@ void greater_Eq_IntTranslate(FILE* file, Code3D* code)
     writeCodeInFile(file, translate("movq", offset(code,1), "%rax"));
     writeCodeInFile(file, translate("cmp", offset(code,2), "%rax"));
     writeCodeInFile(file, translate("setge", "%al", ""));
-    writeCodeInFile(file, translate("movzbl", "%al", "%rax"));
+    writeCodeInFile(file, translate("movzbq", "%al", "%rax"));
     writeCodeInFile(file, translate("movq", "%rax", offset(code,3))); 
 }
 
@@ -325,7 +325,7 @@ void translateLesserInt(FILE* file, Code3D* code)
     writeCodeInFile(file, translate("movq", offset(code,1), "%rax"));
     writeCodeInFile(file, translate("cmp", offset(code,2), "%rax"));
     writeCodeInFile(file, translate("setl", "%al", ""));
-    writeCodeInFile(file, translate("movzbl", "%al", "%rax"));
+    writeCodeInFile(file, translate("movzbq", "%al", "%rax"));
     writeCodeInFile(file, translate("movq", "%rax", offset(code,3))); 
 }
 
@@ -335,7 +335,7 @@ void translateLesserOrEqualInt(FILE* file, Code3D* code)
     writeCodeInFile(file, translate("movq", offset(code,1), "%rax"));
     writeCodeInFile(file, translate("cmp", offset(code,2), "%rax"));
     writeCodeInFile(file, translate("setle", "%al", ""));
-    writeCodeInFile(file, translate("movzbl", "%al", "%rax"));
+    writeCodeInFile(file, translate("movzbq", "%al", "%rax"));
     writeCodeInFile(file, translate("movq", "%rax", offset(code,3))); 
 }
 
@@ -345,7 +345,7 @@ void translateEqualInt(FILE* file, Code3D* code)
     writeCodeInFile(file, translate("movq", offset(code,1), "%rax"));
     writeCodeInFile(file, translate("cmp", offset(code,2) ,"%rax"));
     writeCodeInFile(file, translate("sete", "%al", ""));
-    writeCodeInFile(file, translate("movzbl", "%al", "%rax"));
+    writeCodeInFile(file, translate("movzbq", "%al", "%rax"));
     writeCodeInFile(file, translate("movq", "%rax", offset(code,3))); 
 }
 
@@ -355,7 +355,7 @@ void translateDistinctInt(FILE* file, Code3D* code)
     writeCodeInFile(file, translate("movq", offset(code,1), "%rax"));
     writeCodeInFile(file, translate("cmp", offset(code,2) ,"%rax"));
     writeCodeInFile(file, translate("setne", "%al", ""));
-    writeCodeInFile(file, translate("movzbl", "%al", "%rax"));
+    writeCodeInFile(file, translate("movzbq", "%al", "%rax"));
     writeCodeInFile(file, translate("movq", "%rax", offset(code,3))); 
 }
 
@@ -490,6 +490,63 @@ void translateMinusFloat(FILE* file, Code3D* code)
 void translateExternInvk(FILE* file, Code3D* code)
 {
     writeCodeInFile(file, translate("call", getLabel(code, 1), ""));
+}
+
+void translateIntExternParam(FILE *file, Code3D *code)
+{
+    switch (getInt(code, 2))
+    {
+        case 1: writeCodeInFile(file, translate("movl", offset(code, 1), "%edi"));
+                break;
+        case 2: writeCodeInFile(file, translate("movl", offset(code, 1), "%esi"));
+                break;
+        case 3: writeCodeInFile(file, translate("movl", offset(code, 1), "%edx"));
+                break;
+        case 4: writeCodeInFile(file, translate("movl", offset(code, 1), "%ecx"));
+                break;
+        case 5: writeCodeInFile(file, translate("movl", offset(code, 1), "%r8d"));
+                break;
+        case 6: writeCodeInFile(file, translate("movl", offset(code, 1), "%r9d"));
+                break;
+    }
+}
+
+void translateFloatExternParam(FILE *file, Code3D *code)
+{
+    switch (getInt(code, 2))
+    {
+        case 1: writeCodeInFile(file, translate("movl", offset(code, 1), "%edi"));
+                break;
+        case 2: writeCodeInFile(file, translate("movl", offset(code, 1), "%esi"));
+                break;
+        case 3: writeCodeInFile(file, translate("movl", offset(code, 1), "%edx"));
+                break;
+        case 4: writeCodeInFile(file, translate("movl", offset(code, 1), "%ecx"));
+                break;
+        case 5: writeCodeInFile(file, translate("movl", offset(code, 1), "%r8d"));
+                break;
+        case 6: writeCodeInFile(file, translate("movl", offset(code, 1), "%r9d"));
+                break;
+    }
+}
+
+void translateBoolExternParam(FILE *file, Code3D *code)
+{
+    switch (getInt(code, 2))
+    {
+        case 1: writeCodeInFile(file, translate("movl", offset(code, 1), "%edi"));
+                break;
+        case 2: writeCodeInFile(file, translate("movl", offset(code, 1), "%esi"));
+                break;
+        case 3: writeCodeInFile(file, translate("movl", offset(code, 1), "%edx"));
+                break;
+        case 4: writeCodeInFile(file, translate("movl", offset(code, 1), "%ecx"));
+                break;
+        case 5: writeCodeInFile(file, translate("movl", offset(code, 1), "%r8d"));
+                break;
+        case 6: writeCodeInFile(file, translate("movl", offset(code, 1), "%r9d"));
+                break;
+    }
 }
 
 void writeNegFloat(FILE* file)

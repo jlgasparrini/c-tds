@@ -87,6 +87,14 @@ void add_CodeExternInvk(LCode3D *lcode3d, Code3D *code,char *label,  char* type)
     add_code(lcode3d, code);
 }
 
+void addParamExternInvk(LCode3D *lcode3d, Code3D *code, Attribute *attr, int paramNumber)
+{
+    setAttribute(code, 1, attr);
+    setInt(code, 2, paramNumber);
+    setNull(code, 3);
+    add_code(lcode3d, code);
+}
+
 /**Metodo que borra un Codigo 3D de la lista dependiendo una posicion*/
 void delete_code(LCode3D *lcode3d, int index)
 {

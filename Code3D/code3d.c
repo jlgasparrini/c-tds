@@ -327,11 +327,10 @@ void showCode(Code3D *code, int param)
     }
 }
 
-/**Muestra el Codigo 3D*/
+//Muestro el codigo intermedio de manera correcta.
 void toString3DC(Code3D *code) 
 {
     printf("   %s   |   ", (char*)getCodeByID(getCommand(code)));
-	/**Shows the Code in the right way */
 	if (isNull(code, 3))
 	{
 		if (isNull(code, 2))

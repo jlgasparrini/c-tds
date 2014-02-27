@@ -24,200 +24,152 @@ int generateOperation(int position)
     {
         /********************************* GENERAL OPERATIONS ******************************/
 			/* LOAD_CONST */
-        case 0:
+        case LOAD_CONST:
             load_Const_Translate(file, code);
             break;
-
-			/* LOAD_ARRAY */
-        /* --------------------------------------- MUST BE IMPLEMENTED --------------------------------------- */
-        case 1: 
+        case LOAD_ARRAY: 
             translateLoadArray(file, code);
             break;
-
-			/* PRINT */
-        case 2:
+        case PRINT:
             printOperation(file, code);
             break;			
-		
-			/* RETURN */
-        case 3: 
+        case RETURN: 
             translateReturn(file, code);
             break;
-		
-			/* RETURN_EXPR */
-        case 4:
+        case RETURN_EXPR:
             translateReturnExpression(file, code);
             break;
-		
-		    /* LABEL */
-        case 5: 
+        case LABEL: 
             writeLabel(file, labelList, code);
             break;
-            /* GOTO_LABEL */
-        case 6: 
+        case GOTO_LABEL: 
             translateGotoLabel(file, code);
             break;
-            /* GOTO_LABEL_COND */
-        case 7:
+        case GOTO_LABEL_COND:
             translateGotoLabelCondition(file, code);
             break;
-		
-		/* GOTO_METHOD */
-        case 8: 
+        case GOTO_METHOD: 
             goTo_Method(file, code);
             break;
-		
         /********************************* INT OPERATIONS **********************************/		
-            /* ASSIGNATION_INT */
-        case 9: 
+        case ASSIGNATION_INT: 
             translateAssignationInt(file, code); 
             break;
-			/* PARAM_ASSIGN_INT */
-        case 10: 
+        case PARAM_ASSIGN_INT:
             translateParamAssignInt(file, code);
             break;	
-			
-            /* MINUS_INT */
-        case 11:
+        case MINUS_INT:
             translateMinusInt(file, code);
             break;
-            /* ADD_INT */
-        case 12:
+        case ADD_INT:
             add_Int_Translate(file, code);
             break;
-            /* MULT_INT */
-        case 13:
+        case MULT_INT:
             mult_Int_Translate(file, code);
             break;
-            /* DIV_INT */
-        case 14:
+        case DIV_INT:
             translateDivInt(file, code);
             break;
-            /* MOD_INT */
-        case 15:
+        case MOD_INT:
             translateModInt(file, code);
             break;
-			/* NEG_INT */
-        case 16:
+        case NEG_INT:
             neg_Int_Translate(file, code);
             break;
-		            
-			/* EQ_INT */
-        case 17:
+        case EQ_INT:
             translateEqualInt(file, code);
             break;
-            /* DIST_INT */
-        case 18:
+        case DIST_INT:
             translateDistinctInt(file, code);
             break;	
-			
-            /* GREATER_INT */
-        case 19:
+        case GREATER_INT:
             greater_IntTranslate(file, code);
             break;
-            /* LOWER_INT */
-        case 20: 
+        case LOWER_INT: 
             translateLesserInt(file, code);
             break;		
-			/* GEQ_INT */
-        case 21:
+        case GEQ_INT:
             greater_Eq_IntTranslate(file, code);
             break;
-			
-		    /* LEQ_INT */
-        case 22:
+        case LEQ_INT:
             translateLesserOrEqualInt(file, code);
             break;
-			
         /********************************* FLOAT OPERATIONS ******************************/			
-		    /* ASSIGNATION_FLOAT */
-        case 23:
+        case ASSIGNATION_FLOAT:
             assignation_FloatTranslate(file, code);
             break;
-            /* PARAM_ASSIGN_FLOAT */
-        case 24:
+        case PARAM_ASSIGN_FLOAT:
 			translateParamAssignFloat(file, code);
             break;
-			
-            /* MINUS_FLOAT */
-        case 25:
+        case MINUS_FLOAT:
             translateMinusFloat(file, code);
             break;
-            /* ADD_FLOAT */
-        case 26:
+        case ADD_FLOAT:
             translateAddFloat(file, code);
             break;
-            /* MULT_FLOAT */
-        case 27:
+        case MULT_FLOAT:
             translateMultFloat(file, code);
             break;
-            /* DIV_FLOAT */
-        case 28:
+        case DIV_FLOAT:
             translateDivFloat(file, code);
             break;
-			/* NEG_FLOAT */
-        case 29: 
+        case NEG_FLOAT: 
             neg_Float_Translate(file, code);
             break;
-			/* EQ_FLOAT */
-        case 30:
+        case EQ_FLOAT:
             eq_FloatTranslate(file, code);
             break;
-            /* DIST_FLOAT */
-        case 31:
+        case DIST_FLOAT:
             dist_FloatTranslate(file, code);
             break;
-            /* GREATER_FLOAT */
-        case 32:
+        case GREATER_FLOAT:
             greater_FloatTranslate(file, code);
             break;
-            /* LOWER_FLOAT */
-        case 33: 
+        case LOWER_FLOAT: 
             translateLesserFloat(file, code);
             break;
-            /* GEQ_FLOAT */
-        case 34:
+        case GEQ_FLOAT:
             greater_Eq_FloatTranslate(file, code);
             break;
-            /* LEQ_FLOAT */
-        case 35:
+        case LEQ_FLOAT:
             translateLesserOrEqualFloat(file, code);
             break;
         /********************************* BOOLEAN OPERATIONS ******************************/
-		    /* ASSIGNATION_BOOL */
-        case 36:
+        case ASSIGNATION_BOOL:
             translateAssignationInt(file, code);
             break;
-            /* PARAM_ASSIGN_BOOL */
-        case 37:
+        case PARAM_ASSIGN_BOOL:
 			translateParamAssignInt(file, code);
             break;
-			/* EQ_BOOL */
-        case 38:
+        case EQ_BOOL:
             translateEqualInt(file, code);
             break;
-            /* DIST_BOOL */
-        case 39:
+        case DIST_BOOL:
             translateDistinctInt(file, code);
             break;
-            /* OR */
-        case 40:
+        case OR:
             translateOr(file, code);
             break;
-            /* AND */
-        case 41:
+        case AND:
             translateAnd(file, code);
             break;
-            /* NOT */
-        case 42: 
+        case NOT: 
             translateNot(file, code);
             break;
-            /* EXTERN_INVOKATION */
-        case 43:
+        /********************************* EXTERNAL OPERATIONS ******************************/
+        case EXTERN_INVK:
             translateExternInvk(file, code);
             break;
+        case EXTERN_PARAM_ASSIGN_BOOL:
+            translateIntExternParam(file, code);
+            break;
+        case EXTERN_PARAM_ASSIGN_FLOAT:
+            translateFloatExternParam(file, code);
+            break;
+        case EXTERN_PARAM_ASSIGN_INT:
+            translateIntExternParam(file, code);
+            break;
     }
-    writeCodeInFile(file, "\n");
 }
 
 /* Initializes the assembly engine and run */

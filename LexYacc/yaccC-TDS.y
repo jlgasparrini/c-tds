@@ -38,11 +38,11 @@ ListMLabel *listmlabel;
 char* fileName; //String para almacenar el nombre del archivo sin extension.
 int flagTarget = 1; //Bandera utilizada para manejar si en la linea de entrada de mis argumentos, tengo un "-target".
 int flagFirstParam = 0; //Bandera utilizada para manejar la cantidad de parametros por adelantado.
+int amountExternParams; //Contador de parametros para las invocaciones externas.
 
 //Main parameters
 int argumentsC;
 char **argumentsV;
-char **linkedFiles;
 //Target input
 char* actionIN = "";
 // abre el archivo a tratar (entrada)
@@ -51,9 +51,9 @@ int openInput(char* name)
     yyin = fopen(name,"r");
     if(yyin == NULL)
     {
-        printf("Archivo o Argumentos Invalidos.\n");
-        printf("Modo de Uso:\n\t");
-        printf("./c-tds [-target parsear | verCI | interprete | assembler | compilar] archivo_entrada [archivo_externo]* [-o nombre_salida]\n");
+        printf("Archivo y/o Argumentos Invalidos.\n");
+        printf("Modo de Uso:\n");
+        printf("\t./c-tds [-target parsear | verCI | interprete | assembler | compilar] archivo_entrada [archivo_externo]+ [-o nombre_salida]\n");
         return EXIT_FAILURE;
     }
     return EXIT_SUCCESS;
@@ -66,7 +66,7 @@ int validateArgs(char* argv[],int argc)
     {
        printf("Faltan Argumentos\n");
        printf("Modo de Uso:\n\t");
-       printf("./c-tds [-target parsear | verCI | interprete | assembler | compilar] archivo_entrada [archivo_externo]* [-o nombre_salida]\n");
+       printf("./c-tds [-target parsear | verCI | interprete | assembler | compilar] archivo_entrada [archivo_externo]+ [-o nombre_salida]\n");
         return 0;
     }
     // Analizo los comandos de entrada
@@ -81,7 +81,7 @@ int validateArgs(char* argv[],int argc)
             {
                 printf("Faltan Argumentos\n");
                 printf("Modo de Uso:\t");
-                printf("./c-tds [-target parsear | verCI | interprete | assembler | compilar] archivo_entrada [archivo_externo]* [-o nombre_salida]\n");
+                printf("./c-tds [-target parsear | verCI | interprete | assembler | compilar] archivo_entrada [archivo_externo]+ [-o nombre_salida]\n");
                 return 0;
             }
             // Compruebo etapa de compilacion
@@ -105,9 +105,11 @@ int validateArgs(char* argv[],int argc)
                 int index;
                 int pos_punto;
                 for(index = length-1;index>0;index--)
-                {
-                    if(entrada[index] == '.'){ pos_punto = index; break;}
-                }
+                    if(entrada[index] == '.')
+                    {
+                        pos_punto = index;
+                        break;
+                    }
                 char* extension = calloc(sizeof(char)*(length-pos_punto),sizeof(char));
                 int j = 0;
                 for(index = pos_punto+1;index<length;index++)
@@ -124,19 +126,18 @@ int validateArgs(char* argv[],int argc)
         }
         // Compruebo argumento "nombre de salida"
         if(strcmp(argv[i],"-o") == 0)
-        {
             if(i == argc-1)
             {
                 printf("Argumento de Salida Incorrecto\n");
                 return 0;
             }
-        }
     }
     return 1;
 }
 
 void initializeStructures()
 {
+    amountExternParams = 0;
     errorQ = initializeQueue();
     symbolsTable = initializeSymbolsTable(); 
     lcode3d = initLCode3D();
@@ -153,23 +154,20 @@ void initializeStructures()
     lcode3d = initLCode3D();
 }
 
-void compile(char *mainFile, char **linked_files, int size)
+void compile(char *mainFile, char **linkedFiles, int size)
 {
     initAssembler(listmlabel, lcode3d, returnStack, fileName);
     char** args = malloc(sizeof(char*)* (3 + size));
-    //linkedFiles = linked_files;
     args[0] = "gcc";
     args[1] = mainFile;
     args[1] = strcat(args[1], ".s");
-    if(linked_files != NULL)
+    if(linkedFiles != NULL)
     {
         int i;
         for(i=0;i<size;i++)
-        {
-            args[2+i] = linked_files[i];
-        }
+            args[2+i] = linkedFiles[i];
     }
-    args[5+size] = NULL;
+    //args[5+size] = NULL;
     pid_t child_pid = fork();
     if(child_pid == 0) 
     {
@@ -180,13 +178,15 @@ void compile(char *mainFile, char **linked_files, int size)
         printf("Comandos Incorrectos\n");
         exit(0);
     }
-    printf("Borrando Assembler Temporal\n");
+    //printf("Borrando Assembler Temporal\n");
+    //mainFile = args[1];
     //remove(mainFile);
     printf("Termino Compilacion GCC\n");               
 }
 
 // Calcula el nombre del archivo de entrada sin extension ni ruta
-char* getName(char* file){
+char* getName(char* file)
+{
     int length = strlen(file);
     int i;
     int pos_punto = 0;
@@ -213,75 +213,82 @@ int main(int argc,char **argv)
 { 
     argumentsC = argc;
     argumentsV = argv;
-    char** linked_files;
-    int inicio;
-    int fin;
     initializeStructures();
     if(validateArgs(argv,argc) == 0) 
         return EXIT_FAILURE;
     else if(strcmp(argv[1],"-target") == 0)
     {
-        // Avanzo hasta el target
-        char* target = argv[2];
-        char* file_in = argv[3];
-        fileName = getName(file_in);
-        // Abro archivo entrada
-        if(openInput(file_in) == EXIT_FAILURE)
+        // Obtengo el nombre del archivo.
+        fileName = getName(argv[3]);
+        // Abro archivo de entrada.
+        if(openInput(argv[3]) == EXIT_FAILURE)
             return EXIT_FAILURE;
-        // Parsea la entrada
-        actionIN = target;
+        // Parsea la entrada y asigno el target global.
+        actionIN = argv[2];
         yyparse();
     }
     else
     {
         flagTarget = 0;
-        char* file_in = argv[1];
-        fileName = getName(file_in);
-        // Abro archivo entrada
-        if(openInput(file_in) == EXIT_FAILURE)
+        // Obtengo el nombre del archivo.
+        fileName = getName(argv[1]);
+        // Abro archivo de entrada.
+        if(openInput(argv[1]) == EXIT_FAILURE)
             return EXIT_FAILURE;
-        // Parsea la entrada
+        // Parsea la entrada y utilizo por defecto el target "compilar".
         actionIN = "compilar";
         yyparse();
     }
 }
 
-finalize()
+//Al finalizar el parseo verifico si hubo errores, de lo contrario realizo la accion correspondiente al target.
+void finalize()
 {
     if ((*errorQ).size > 0)
         printErrorList(errorQ);
     else
     {
-        int i,j = 0;
-        int inicio = 3;
-        int fin = argumentsC;
-        linkedFiles = malloc(sizeof(char*)*(fin-inicio));
         if(strcmp(actionIN,"parsear") == 0)
-            printf("Codigo parseado correctamente.\n");
+            printf("Codigo parseado correctamente.\n"); //Unicamente informa que el codigo se parsea correctamente.
         else if(strcmp(actionIN,"verCI") == 0)
         {
             printf("Codigo intermedio:\n");
-            // show the list of code 3D
-            show3DCode(lcode3d);
+            show3DCode(lcode3d); //Muestro el codigo 3D por terminal.
         }
         else if(strcmp(actionIN,"interprete") == 0)
         {
-            printf("Codigo interpretado:\n");
-            initInterpreter(listmlabel, lcode3d); // The interpreter in this version is not working.
+            printf("Interpretando codigo:\n");
+            initInterpreter(listmlabel, lcode3d); //Llamo al interprete del codigo de entrada.
         }
         else if(strcmp(actionIN,"assembler") == 0)
-            initAssembler(listmlabel, lcode3d, returnStack, fileName);
+            initAssembler(listmlabel, lcode3d, returnStack, fileName); //Llamo al generador del codigo assembler y lo genero.
         else if(strcmp(actionIN,"compilar") == 0)
         {
-            if((flagTarget=0 && argumentsC >= 3) || (flagTarget && argumentsC>=5))
-                for(i = inicio;i<fin;i++){
+            int i, j, inicio = 0;
+            int fin = argumentsC;
+            if(flagTarget==0 && argumentsC >= 3)
+            {
+                inicio = 3;
+                j = 0;
+                char **linkedFiles = malloc(sizeof(char*)*(fin-inicio));
+                for(i = inicio; i < fin; i++){
+                    linkedFiles[j] = argumentsV[i];
+                    j++;
+            }
+            compile(fileName, linkedFiles, fin-inicio); //Genero el codigo assembler y lo compilo para generar el ejecutable.
+            }
+           if (flagTarget==1 && argumentsC>=5)
+           {
+                inicio = 5;
+                j = 0;
+                char **linkedFiles = malloc(sizeof(char*)*(fin-inicio));
+                for(i = inicio; i < fin; i++){
                     linkedFiles[j] = argumentsV[i];
                     j++;
                 }
-            compile(fileName, linkedFiles, fin-inicio);
+            compile(fileName, linkedFiles, fin-inicio); //Genero el codigo assembler y lo compilo para generar el ejecutable.
+           }
         }
-        else
-            compile(fileName, linkedFiles, fin-inicio);
     }
 }
 
@@ -295,7 +302,6 @@ char* newLabelName(char* msg)
     return labelName;
 }
 
-
 int yydebug = 1;
 
 int yyerror (char *str)
@@ -304,8 +310,7 @@ int yyerror (char *str)
     deleteAllErrors(errorQ);
     if (strcmp(str, "syntax error") == 0)
         printf("%s\n",toString("Error GRAMATICO.","",""));
-    else
-        if (strcmp(str, "incorrecto") != 0)
+    else if (strcmp(str, "incorrecto") != 0)
             printf("%s\n","Error DESCONOCIDO.");
     return 0;
 }
@@ -322,10 +327,9 @@ int yywrap()
     Attribute *at;
 }
 
-
 %start program
 
-/* %token<stringValue> es solo para tokens */
+/* %token<stringValue> utilizado para definir el tipo de los tokens devueltos desde Lex*/
 %token<stringValue> FLOAT INTEGER BOOLEAN INTW FLOATW BOOLEANW ID PLUSEQUAL MINUSEQUAL STRING
 %token EQUAL DISTINCT GEQUAL LEQUAL ORR ANDD 
 %token BREAK IF CONTINUE ELSE RETURNN WHILE CLASS FOR VOID EXTERNINVK PRINTT
@@ -333,15 +337,13 @@ int yywrap()
 %left '+' '-'
 %left '*' '/'
 %left '%'
-%type<at> expression conjunction inequality comparison relation term factor primary method_call location factor1
+%type<at> expression conjunction inequality comparison relation term factor primary method_call location factor1 arg
 %type<stringValue> assig_op typevoid
-/* %type<at> es solo para no-terminales */
+/* %type<at> para definir los tipos de los no-terminales */
 
 %%      /*  beginning  of  rules  section  */
 
-
 /* ------------------- PROGRAM -------------------- */
-
 program       :    CLASS ID '{' '}'{finalize();}
               |    CLASS ID '{' {pushLevel(symbolsTable);} 
                                 body 
@@ -349,7 +351,7 @@ program       :    CLASS ID '{' '}'{finalize();}
                                 popLevel(symbolsTable);
                                 finalize();} '}' 
               ;
-body          :    fields_decls method_decl |    fields_decls
+body          :    fields_decls method_decl 
               |    method_decl
               ;
 
@@ -361,15 +363,14 @@ fields        :    field
               |    fields ',' field
               ;
 
-field         :    ID			{pushElement(errorQ, symbolsTable, createVariable($1, vaType));}
+field         :    ID {pushElement(errorQ, symbolsTable, createVariable($1, vaType));}
               |    ID '[' INTEGER {if (atoi($3) <= 0) 
                                     {	insertError(errorQ,toString("Error en definicion del arreglo \"",$1,"\". El tamaño del arreglo debe ser un entero mayor que 0."));
                                         pushElement(errorQ, symbolsTable, createArray($1, vaType, 10)); /* Array size of 10 in case of error */
                                     }
                                     else
                                         pushElement(errorQ, symbolsTable, createArray($1, vaType, atoi($3)));
-                                }
-                        ']'	
+                                } ']'	
               ;
 
 type          :		INTW		{vaType = Int; mType = RetInt;} 
@@ -378,72 +379,72 @@ type          :		INTW		{vaType = Int; mType = RetInt;}
               ;
 
 method_decl   :     type ID {
-                                pushOffset(offsetsVar, getGlobalVarOffset());/////////////////////////////////
-								resetGlobalVarOffset();////////////////////////////
-								lastDefMethod=$2; 
-                                pushElement(errorQ,symbolsTable,createMethod($2,mType)); 
-                                pushLevel(symbolsTable);
-                                returns = 0;
-                                add_CodeLabel(lcode3d, newCode(LABEL), $2); // Mark to Label of Init of Method
-                                push(maxMethodOffset, intToString(codeSize(lcode3d)));
-                                insert_MethodL(listmlabel, $2, $2);
+                        pushOffset(offsetsVar, getGlobalVarOffset());/////////////////////////////////
+                        resetGlobalVarOffset();////////////////////////////
+                        lastDefMethod=$2; 
+                        pushElement(errorQ,symbolsTable,createMethod($2,mType)); 
+                        pushLevel(symbolsTable);
+                        returns = 0;
+                        add_CodeLabel(lcode3d, newCode(LABEL), $2); // Mark to Label of Init of Method
+                        push(maxMethodOffset, intToString(codeSize(lcode3d)));
+                        insert_MethodL(listmlabel, $2, $2);
                     } param block {
-                                int pos = atoi(pop(maxMethodOffset));
-                                set_code_int(lcode3d, pos, 2, getGlobalVarOffset());
-								setGlobalVarOffset(popOffset(offsetsVar));//////////////////////////////////////////
-                                if(returns==0) insertError(errorQ,toString("El metodo \"",$2,"\" debe tener al menos un return."));
-                                popLevel(symbolsTable);
+                        int pos = atoi(pop(maxMethodOffset));
+                        set_code_int(lcode3d, pos, 2, getGlobalVarOffset());
+                        setGlobalVarOffset(popOffset(offsetsVar));//////////////////////////////////////////
+                        if(returns==0) insertError(errorQ,toString("El metodo \"",$2,"\" debe tener al menos un return."));
+                        popLevel(symbolsTable);
                     }
               |		method_decl type ID {
-								pushOffset(offsetsVar, getGlobalVarOffset());////////////////////////////
-								resetGlobalVarOffset();////////////////////////////
-                                lastDefMethod=$3; 
-                                pushElement(errorQ,symbolsTable,createMethod($3,mType)); 
-                                pushLevel(symbolsTable);
-                                returns = 0;
-                                add_CodeLabel(lcode3d, newCode(LABEL), $3); // Mark to Label of Init of Method
-                                push(maxMethodOffset, intToString(codeSize(lcode3d)));
-                                insert_MethodL(listmlabel, $3, $3);
+                        pushOffset(offsetsVar, getGlobalVarOffset());////////////////////////////
+                        resetGlobalVarOffset();////////////////////////////
+                        lastDefMethod=$3; 
+                        pushElement(errorQ,symbolsTable,createMethod($3,mType)); 
+                        pushLevel(symbolsTable);
+                        returns = 0;
+                        add_CodeLabel(lcode3d, newCode(LABEL), $3); // Mark to Label of Init of Method
+                        push(maxMethodOffset, intToString(codeSize(lcode3d)));
+                        insert_MethodL(listmlabel, $3, $3);
                     } param block {
-                                int pos = atoi(pop(maxMethodOffset));
-                                set_code_int(lcode3d, pos, 2, getGlobalVarOffset());
-								setGlobalVarOffset(popOffset(offsetsVar));//////////////////////////////////////////
-                                if(returns==0) insertError(errorQ,toString("El metodo \"",$3,"\" debe tener al menos un return."));
-                                popLevel(symbolsTable);
+                        int pos = atoi(pop(maxMethodOffset));
+                        set_code_int(lcode3d, pos, 2, getGlobalVarOffset());
+                        setGlobalVarOffset(popOffset(offsetsVar));//////////////////////////////////////////
+                        if(returns==0) insertError(errorQ,toString("El metodo \"",$3,"\" debe tener al menos un return."));
+                        popLevel(symbolsTable);
                     }
               |     VOID ID {
-			  					pushOffset(offsetsVar, getGlobalVarOffset());////////////////////////////
-								resetGlobalVarOffset();////////////////////////////
-                                lastDefMethod=$2; 
-                                pushElement(errorQ,symbolsTable,createMethod($2,RetVoid)); 
-                                pushLevel(symbolsTable);
-                                returns = 0;
-                                add_CodeLabel(lcode3d, newCode(LABEL), $2); // Mark to Label of Init of Method
-                                push(maxMethodOffset, intToString(codeSize(lcode3d)));
-                                insert_MethodL(listmlabel, $2, $2);
+                        pushOffset(offsetsVar, getGlobalVarOffset());////////////////////////////
+                        resetGlobalVarOffset();////////////////////////////
+                        lastDefMethod=$2; 
+                        pushElement(errorQ,symbolsTable,createMethod($2,RetVoid)); 
+                        pushLevel(symbolsTable);
+                        returns = 0;
+                        add_CodeLabel(lcode3d, newCode(LABEL), $2); // Mark to Label of Init of Method
+                        push(maxMethodOffset, intToString(codeSize(lcode3d)));
+                        insert_MethodL(listmlabel, $2, $2);
                     } param block {
-                                int pos = atoi(pop(maxMethodOffset));
-                                set_code_int(lcode3d, pos, 2, getGlobalVarOffset());
-								setGlobalVarOffset(popOffset(offsetsVar));//////////////////////////////////////////
-                                if(returns==0) insertError(errorQ,toString("El metodo \"",$2,"\" debe tener al menos un return."));
-                                popLevel(symbolsTable);
+                        int pos = atoi(pop(maxMethodOffset));
+                        set_code_int(lcode3d, pos, 2, getGlobalVarOffset());
+                        setGlobalVarOffset(popOffset(offsetsVar));//////////////////////////////////////////
+                        if(returns==0) insertError(errorQ,toString("El metodo \"",$2,"\" debe tener al menos un return."));
+                        popLevel(symbolsTable);
                     }
               |	    method_decl VOID ID {
-								pushOffset(offsetsVar, getGlobalVarOffset());////////////////////////////
-								resetGlobalVarOffset();////////////////////////////
-                                lastDefMethod=$3; 
-                                pushElement(errorQ,symbolsTable,createMethod($3,RetVoid)); 
-                                pushLevel(symbolsTable);
-                                returns = 0;
-                                add_CodeLabel(lcode3d, newCode(LABEL), $3); // Mark to Label of Init of Method
-                                push(maxMethodOffset, intToString(codeSize(lcode3d)));
-                                insert_MethodL(listmlabel, $3, $3);
+                        pushOffset(offsetsVar, getGlobalVarOffset());////////////////////////////
+                        resetGlobalVarOffset();////////////////////////////
+                        lastDefMethod=$3; 
+                        pushElement(errorQ,symbolsTable,createMethod($3,RetVoid)); 
+                        pushLevel(symbolsTable);
+                        returns = 0;
+                        add_CodeLabel(lcode3d, newCode(LABEL), $3); // Mark to Label of Init of Method
+                        push(maxMethodOffset, intToString(codeSize(lcode3d)));
+                        insert_MethodL(listmlabel, $3, $3);
                     } param block {
-                                int pos = atoi(pop(maxMethodOffset));
-                                set_code_int(lcode3d, pos, 2, getGlobalVarOffset());
-								setGlobalVarOffset(popOffset(offsetsVar));//////////////////////////////////////////
-                                if(returns==0) insertError(errorQ,toString("El metodo \"",$3,"\" debe tener al menos un return."));
-                                popLevel(symbolsTable);
+                        int pos = atoi(pop(maxMethodOffset));
+                        set_code_int(lcode3d, pos, 2, getGlobalVarOffset());
+                        setGlobalVarOffset(popOffset(offsetsVar));//////////////////////////////////////////
+                        if(returns==0) insertError(errorQ,toString("El metodo \"",$3,"\" debe tener al menos un return."));
+                        popLevel(symbolsTable);
                     }
               ;
 
@@ -558,14 +559,14 @@ assig_op      :    '=' {$$ = "=";}
 /* -------------------- CONDITIONALS AND CICLES ------------------------------ */
 
 conditional   :     IF '(' {
-                            add_CodeLabel(lcode3d, newCode(LABEL), newLabelName("if"));
-                        } expression { 
-                            controlType(errorQ,$4,Bool,"if",1);
-                            char *elseLabel = newLabelName("else");
-                            add_CodeLabelCond(lcode3d, newCode(GOTO_LABEL_COND), $4, elseLabel); 
-                            push(labelsCYC, newLabelName("end_if"));
-                            push(labelsCYC, elseLabel);
-                        } ')' block optional 
+                        add_CodeLabel(lcode3d, newCode(LABEL), newLabelName("if"));
+                    } expression { 
+                        controlType(errorQ,$4,Bool,"if",1);
+                        char *elseLabel = newLabelName("else");
+                        add_CodeLabelCond(lcode3d, newCode(GOTO_LABEL_COND), $4, elseLabel); 
+                        push(labelsCYC, newLabelName("end_if"));
+                        push(labelsCYC, elseLabel);
+                    } ')' block optional 
               ;
 
 optional	  :		{
@@ -584,40 +585,40 @@ optional	  :		{
               ;
                                 
 iteration     :    WHILE {
-                                char *whileLabel = newLabelName("while"); 
-                                add_CodeLabel(lcode3d, newCode(LABEL), whileLabel); // label of While
-                                push(labelsWhile, whileLabel);
-                                push(labelsWhile, intToString(codeSize(lcode3d)));
+                        char *whileLabel = newLabelName("while"); 
+                        add_CodeLabel(lcode3d, newCode(LABEL), whileLabel); // label of While
+                        push(labelsWhile, whileLabel);
+                        push(labelsWhile, intToString(codeSize(lcode3d)));
                     } 
                    expression { 
-                                char *endWhile = newLabelName("end_while");
-                                char *pos = pop(labelsWhile);
-                                char *whileLabel = pop(labelsWhile);
-                                push(labelsWhile, endWhile);
-                                push(labelsWhile, whileLabel); 
-                                push(labelsWhile, pos);
-                                controlType(errorQ,$3,Bool,"while",1);
-                                add_CodeLabelCond(lcode3d, newCode(GOTO_LABEL_COND), $3, endWhile); // Go to label of Expression
+                        char *endWhile = newLabelName("end_while");
+                        char *pos = pop(labelsWhile);
+                        char *whileLabel = pop(labelsWhile);
+                        push(labelsWhile, endWhile);
+                        push(labelsWhile, whileLabel); 
+                        push(labelsWhile, pos);
+                        controlType(errorQ,$3,Bool,"while",1);
+                        add_CodeLabelCond(lcode3d, newCode(GOTO_LABEL_COND), $3, endWhile); // Go to label of Expression
                     } block {							
-                            add_code(lcode3d, get_code(lcode3d, atoi(pop(labelsWhile))+1));
-                            add_CodeLabel(lcode3d, newCode(GOTO_LABEL), pop(labelsWhile)); // Go to label of while
-                            add_CodeLabel(lcode3d, newCode(LABEL), pop(labelsWhile)); // label_end of while
+                        add_code(lcode3d, get_code(lcode3d, atoi(pop(labelsWhile))+1));
+                        add_CodeLabel(lcode3d, newCode(GOTO_LABEL), pop(labelsWhile)); // Go to label of while
+                        add_CodeLabel(lcode3d, newCode(LABEL), pop(labelsWhile)); // label_end of while
                     }
               |    FOR ID {
                         if (getAttributeType(getVariableAttribute(errorQ,symbolsTable,$2)) != Int)
                             insertError(errorQ,toString("El identificador \"", $2, "\" no pertenece a una variable de tipo \"int\""));
                         /* It musn't have the same treatment that while? */
                     } '=' expression ',' expression {
-                                    controlType(errorQ,$5,Int,"for",2); controlType(errorQ,$7,Int,"for",3); 
-                                    char *forLabel = newLabelName("for");
-                                    char *endLabel = newLabelName("end_for");
-                                    push(labelsFor, endLabel);
-                                    push(labelsFor, forLabel);
-                                    push(labelsFor, intToString(codeSize(lcode3d)));
-                                    add_Assignation(lcode3d, $5, getVariableAttribute(errorQ, symbolsTable, $2));
-                                    Attribute *res = returnMinorComparison(errorQ, lcode3d, getVariableAttribute(errorQ, symbolsTable, $2), $7);
-                                    add_CodeLabel(lcode3d, newCode(LABEL), forLabel);
-                                    add_CodeLabelCond(lcode3d, newCode(GOTO_LABEL_COND), res, endLabel); // Go to label of Expression
+                            controlType(errorQ,$5,Int,"for",2); controlType(errorQ,$7,Int,"for",3); 
+                            char *forLabel = newLabelName("for");
+                            char *endLabel = newLabelName("end_for");
+                            push(labelsFor, endLabel);
+                            push(labelsFor, forLabel);
+                            push(labelsFor, intToString(codeSize(lcode3d)));
+                            add_Assignation(lcode3d, $5, getVariableAttribute(errorQ, symbolsTable, $2));
+                            Attribute *res = returnMinorComparison(errorQ, lcode3d, getVariableAttribute(errorQ, symbolsTable, $2), $7);
+                            add_CodeLabel(lcode3d, newCode(LABEL), forLabel);
+                            add_CodeLabelCond(lcode3d, newCode(GOTO_LABEL_COND), res, endLabel); // Go to label of Expression
                     } block {
                             controlAssignation(errorQ,lcode3d,getVariableAttribute(errorQ,symbolsTable,$2),"+=",returnValue(lcode3d,Int,"1"));
                             add_code(lcode3d, get_code(lcode3d, atoi(pop(labelsFor))+1));
@@ -635,10 +636,10 @@ location      :    ID {$$ = getVariableAttribute(errorQ, symbolsTable, $1);}
               ;
 
 method_call   :	   ID '(' ')' {
-                                cantParams=0; 
-                                lastCalledMethod=$1; 
-                                add_CodeLabel(lcode3d, newCode(GOTO_METHOD), get_Label(listmlabel, $1)); //Go to char of Init of Method
-                                $$ = checkAndGetMethodRetAttribute(errorQ,symbolsTable,lcode3d,$1,0);
+                        cantParams=0; 
+                        lastCalledMethod=$1; 
+                        add_CodeLabel(lcode3d, newCode(GOTO_METHOD), get_Label(listmlabel, $1)); //Go to char of Init of Method
+                        $$ = checkAndGetMethodRetAttribute(errorQ,symbolsTable,lcode3d,$1,0);
                     }
 
 				|    ID '(' {if (searchIdInSymbolsTable(errorQ,symbolsTable,$1) == NULL) 
@@ -667,66 +668,67 @@ method_call   :	   ID '(' ')' {
                     } 
 
 				|    EXTERNINVK '(' STRING ',' typevoid ')' {
-                                                            Attribute* res;
-                                                            if (mType != RetVoid) 
-                                                                res = createVariable("",mType);
-                                                            else
-                                                                res = createVariable((char*) getVariableName(),Int);
-                                                            char token[2] = "\"";
-                                                            add_CodeExternInvk(lcode3d, newCode(EXTERN_INVK), strtok($3, token), $5);
-                                                            $$ = res;
-                                                            }
+                        Attribute* res;
+                        if (mType != RetVoid) 
+                            res = createVariable("",mType);
+                        else
+                            res = createVariable((char*) getVariableName(),Int);
+                        char token[2] = "\"";
+                        add_CodeExternInvk(lcode3d, newCode(EXTERN_INVK), strtok($3, token), $5);
+                        $$ = res;
+                    }
 				|    EXTERNINVK '(' STRING ',' typevoid ',' externinvk_arg ')' {
-                                                                                Attribute* res;
-                                                                                if (mType != RetVoid) 
-                                                                                    res = createVariable("",mType);
-                                                                                else
-                                                                                    res = createVariable((char*) getVariableName(),Int);
-                                                                                char token[2] = "\"";
-                                                                                add_CodeExternInvk(lcode3d, newCode(EXTERN_INVK), strtok($3, token), $5);
-                                                                                $$ = res;
-                                                                                }
+                        amountExternParams = 0;
+                        Attribute* res;
+                        if (mType != RetVoid) 
+                            res = createVariable("",mType);
+                        else
+                            res = createVariable((char*) getVariableName(),Int);
+                        char token[2] = "\"";
+                        add_CodeExternInvk(lcode3d, newCode(EXTERN_INVK), strtok($3, token), $5);
+                        $$ = res;
+                    }
 				;
 
 expression_aux:    expression {
-                                if (idNotFound != True)
-                                {
-                                    correctParamBC(errorQ,symbolsTable,lcode3d,$1,lastCalledMethod,cantParams); 
-                                    if (flagFirstParam == 0)
-                                        flagFirstParam = codeSize(lcode3d);
-                                    cantParams++;
-                                }
+                        if (idNotFound != True)
+                        {
+                            correctParamBC(errorQ,symbolsTable,lcode3d,$1,lastCalledMethod,cantParams); 
+                            if (flagFirstParam == 0)
+                                flagFirstParam = codeSize(lcode3d);
+                            cantParams++;
+                        }
                     }
               |    expression {
-                                if (idNotFound != True)
-                                {
-                                    correctParamIC(errorQ,symbolsTable,lcode3d,$1,lastCalledMethod,cantParams); 
-                                     if (flagFirstParam == 0)
-                                         flagFirstParam = codeSize(lcode3d);
-                                    cantParams++;
-                                } 
-                    } ',' expression_aux 
+                        if (idNotFound != True)
+                        {
+                            correctParamIC(errorQ,symbolsTable,lcode3d,$1,lastCalledMethod,cantParams); 
+                                if (flagFirstParam == 0)
+                                    flagFirstParam = codeSize(lcode3d);
+                            cantParams++;
+                        } 
+                   } ',' expression_aux 
               ;
 
 typevoid      :    type {switch (mType)
-                            {
-                                case RetInt: $$=strdup("int");
-                                             break;
-                                case RetFloat: $$=strdup("float");
-                                             break;
-                                case RetBool: $$=strdup("bool");
-                                             break;
-                            } 
-                        }
+                        {
+                            case RetInt: $$=strdup("int");
+                                            break;
+                            case RetFloat: $$=strdup("float");
+                                            break;
+                            case RetBool: $$=strdup("bool");
+                                            break;
+                        } 
+                   }
               |    VOID {mType = RetVoid; $$=strdup("void");} 
               ;
 
-externinvk_arg:    arg                           
-              |    arg ',' externinvk_arg
+externinvk_arg:    arg                    {amountExternParams++; externParamAssign(lcode3d, $1, amountExternParams);}
+              |    externinvk_arg ',' arg {amountExternParams++; externParamAssign(lcode3d, $3, amountExternParams);}
               ;
 
-arg           :    expression
-              |    STRING                     
+arg           :    expression {$$ = $1;}
+              |    STRING     {$$ = $1;}
               ;
 
 expression    :    conjunction					{$$ = $1;}                             
@@ -752,12 +754,12 @@ relation      :    term                 {$$ = $1;}
               |    term LEQUAL term     {$$ = returnLEqualComparison(errorQ, lcode3d, $1, $3);}
               ;
 
-term          :    factor1			{$$ = $1;}
-              |    factor1 '+' term	{$$ = returnAdd(errorQ, lcode3d, $1, $3);}
-              |    factor1 '-' term	{$$ = returnSub(errorQ, lcode3d, $1, $3);}
+term          :    factor1			    {$$ = $1;}
+              |    factor1 '+' term	    {$$ = returnAdd(errorQ, lcode3d, $1, $3);}
+              |    factor1 '-' term	    {$$ = returnSub(errorQ, lcode3d, $1, $3);}
               ;
 
-factor1       :    factor			{$$ = $1;}
+factor1       :    factor			    {$$ = $1;}
               |    factor '*' factor1	{$$ = returnMult(errorQ, lcode3d, $1, $3);}
               |    factor '/' factor1	{$$ = returnDiv(errorQ, lcode3d, $1, $3);}
               |    factor '%' factor1	{$$ = returnMod(errorQ, lcode3d, $1, $3);}
@@ -773,15 +775,13 @@ primary       :    INTEGER			{$$ = returnValue(lcode3d, Int, $1);}
               |    BOOLEAN          {$$ = returnValue(lcode3d, Bool, $1);}
               |    ID				{$$ = getVariableAttribute(errorQ,symbolsTable,$1);}
               |    ID '[' expression ']'  {$$ = checkArrayPos(errorQ,symbolsTable,lcode3d,$1,$3);}
-              |    '(' expression ')'  {$$ = $2;}
-              |    method_call      {
-                                        if (methodReturnType(errorQ,symbolsTable,lastCalledMethod) == RetVoid)
-                                        {	insertError(errorQ,toString("El metodo \"",lastCalledMethod,"\" no puede ser usado en una expresion ya que retorna void."));
-                                            $$ = createVariable("",Int); /* creamos variables int por defecto ------------------------------- */
-                                        }
-                                        else $$ = $1;
-                                        lastCalledMethod=popString(methodsIDStack);
-                                    }
+              |    '(' expression ')' {$$ = $2;}
+              |    method_call      { if (methodReturnType(errorQ,symbolsTable,lastCalledMethod) == RetVoid)
+                                      {	insertError(errorQ,toString("El metodo \"",lastCalledMethod,"\" no puede ser usado en una expresion ya que retorna void."));
+                                          $$ = createVariable("",Int); /* creamos variables int por defecto para que podamos seguir parseando el codigo */
+                                      }
+                                      else $$ = $1;
+                                      lastCalledMethod=popString(methodsIDStack); }
               ;
 
 /* ------------------------- END OF EXPRESSIONS ------------------------------- */

@@ -61,6 +61,9 @@
 
 /******************************** EXTERNAL OPERATIONS *****************************/
 #define EXTERN_INVK  43
+#define EXTERN_PARAM_ASSIGN_BOOL  44
+#define EXTERN_PARAM_ASSIGN_FLOAT  45
+#define EXTERN_PARAM_ASSIGN_INT  46
 
 /**Returns the respective code of an ID */
 char* getCodeByID(int ID);

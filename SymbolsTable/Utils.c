@@ -256,6 +256,16 @@ void correctParamIC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, LCode3D *lcode
         }
 }
 
+void externParamAssign(LCode3D *lcode3d, Attribute *param, unsigned char paramNumber)
+{
+    if (getAttributeType(param) == Float)
+        addParamExternInvk(lcode3d, newCode(EXTERN_PARAM_ASSIGN_FLOAT), param, paramNumber);
+    if (getAttributeType(param) == Int)
+        addParamExternInvk(lcode3d, newCode(EXTERN_PARAM_ASSIGN_INT), param, paramNumber); 
+    if (getAttributeType(param) == Bool)
+        addParamExternInvk(lcode3d, newCode(EXTERN_PARAM_ASSIGN_BOOL), param, paramNumber); 
+}
+
 /* Insert an error message if the attribute "attr" isn't a variable of type "type" */
 /* Return 1 if ocurred one error, or 0 if all type is ok*/
 unsigned char controlType(ErrorsQueue *eq, Attribute *attr, PrimitiveType type, char *operation, int numberOfExpression)

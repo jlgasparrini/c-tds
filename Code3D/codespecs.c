@@ -53,6 +53,9 @@ char* getCodeByID(int ID)
         case NOT : return "NOT";
         
         case EXTERN_INVK : return "EXTERNINVK";
+        case EXTERN_PARAM_ASSIGN_BOOL : return "EXTERN_PARAM_ASSIGN_BOOL";
+        case EXTERN_PARAM_ASSIGN_FLOAT : return "EXTERN_PARAM_ASSIGN_FLOAT";
+        case EXTERN_PARAM_ASSIGN_INT : return "EXTERN_PARAM_ASSIGN_INT";
     }
     return "NULL!";
 }

@@ -7,6 +7,8 @@ class helloWorld{
         int f;
         i = 1;
 
+        //Testeando el operador ">"
+
         if (1>2){
             print 1;
         }
@@ -14,6 +16,24 @@ class helloWorld{
             print 2; //<-.- POR ACA!!!
         }
 
+        if (2>2){
+            print 1;
+        }
+        else{ 
+            print 2; //<-.- POR ACA!!!
+        }
+
+        if (2>1){
+            print 1; //<-.- POR ACA!!!
+        }
+        else{
+            print 222222;
+        }
+
+        //Testeando el operador "<"
+        j = 6;
+        f = 2;
+       
         if (2<2){
             print 1;
         }
@@ -21,15 +41,6 @@ class helloWorld{
             print 2; //<-.- POR ACA!!!
         }
         
-        if (2>2){
-            print 1;
-        }
-        else{ 
-            print 2; //<-.- POR ACA!!!
-        }
-        j = 6;
-        f = 2;
-       
         if (1>=2){
             print 1;
         }
