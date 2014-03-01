@@ -85,14 +85,14 @@ char* offsetArray(Code3D* code, int param, char* reg)
 void load_Const_Translate(FILE* file, Code3D* code)
 {
     if (!isFloat(code, 1))
-        writeCodeInFile(file, translate("movq", value(code, 1), offset(code, 2)));
+        writeCodeInFile(file, translate("movl", value(code, 1), offset(code, 2)));
     else
     {
         fValue.real = getFloat(code, 1);
         fprintf(file, "\tmov $0x");
         fprintf(file, "%x",fValue.entero);
         fprintf(file, ", %rax\n");
-        writeCodeInFile(file, translate("movq", "%rax", offset(code, 2)));
+        writeCodeInFile(file, translate("movl", "%eax", offset(code, 2)));
     }
 }
 
@@ -301,62 +301,62 @@ void translateDivInt(FILE* file, Code3D* code)
 /**"GREATER_INT %s %s %s\n" */
 void greater_IntTranslate(FILE* file, Code3D* code)
 {
-    writeCodeInFile(file, translate("movq", offset(code,1), "%rax"));
-    writeCodeInFile(file, translate("cmp", offset(code,2), "%rax"));
+    writeCodeInFile(file, translate("movl", offset(code,1), "%eax"));
+    writeCodeInFile(file, translate("cmp", offset(code,2), "%eax"));
     writeCodeInFile(file, translate("setg", "%al", ""));
-    writeCodeInFile(file, translate("movzbq", "%al", "%rax"));
-    writeCodeInFile(file, translate("movq", "%rax", offset(code,3))); 
+    writeCodeInFile(file, translate("movzbl", "%al", "%eax"));
+    writeCodeInFile(file, translate("movl", "%eax", offset(code,3))); 
 }
 
 /*-----------------------------------------------------------------------*/
 /**"GREATER_ EQ_INT %s %s %s\n" */
 void greater_Eq_IntTranslate(FILE* file, Code3D* code)
 {
-    writeCodeInFile(file, translate("movq", offset(code,1), "%rax"));
-    writeCodeInFile(file, translate("cmp", offset(code,2), "%rax"));
+    writeCodeInFile(file, translate("movl", offset(code,1), "%eax"));
+    writeCodeInFile(file, translate("cmp", offset(code,2), "%eax"));
     writeCodeInFile(file, translate("setge", "%al", ""));
-    writeCodeInFile(file, translate("movzbq", "%al", "%rax"));
-    writeCodeInFile(file, translate("movq", "%rax", offset(code,3))); 
+    writeCodeInFile(file, translate("movzbl", "%al", "%eax"));
+    writeCodeInFile(file, translate("movl", "%eax", offset(code,3))); 
 }
 
 /* Puts in the file the translation of the LESSER_INT action */
 void translateLesserInt(FILE* file, Code3D* code)
 {
-    writeCodeInFile(file, translate("movq", offset(code,1), "%rax"));
-    writeCodeInFile(file, translate("cmp", offset(code,2), "%rax"));
+    writeCodeInFile(file, translate("movl", offset(code,1), "%eax"));
+    writeCodeInFile(file, translate("cmp", offset(code,2), "%eax"));
     writeCodeInFile(file, translate("setl", "%al", ""));
-    writeCodeInFile(file, translate("movzbq", "%al", "%rax"));
-    writeCodeInFile(file, translate("movq", "%rax", offset(code,3))); 
+    writeCodeInFile(file, translate("movzbl", "%al", "%eax"));
+    writeCodeInFile(file, translate("movl", "%eax", offset(code,3))); 
 }
 
 /* Puts in the file the translation of the LESSER_EQ_INT action */
 void translateLesserOrEqualInt(FILE* file, Code3D* code)
 {
-    writeCodeInFile(file, translate("movq", offset(code,1), "%rax"));
-    writeCodeInFile(file, translate("cmp", offset(code,2), "%rax"));
+    writeCodeInFile(file, translate("movl", offset(code,1), "%eax"));
+    writeCodeInFile(file, translate("cmp", offset(code,2), "%eax"));
     writeCodeInFile(file, translate("setle", "%al", ""));
-    writeCodeInFile(file, translate("movzbq", "%al", "%rax"));
-    writeCodeInFile(file, translate("movq", "%rax", offset(code,3))); 
+    writeCodeInFile(file, translate("movzbl", "%al", "%eax"));
+    writeCodeInFile(file, translate("movl", "%eax", offset(code,3))); 
 }
 
 /* Puts in the file the translation of the EQ_INT action */
 void translateEqualInt(FILE* file, Code3D* code)
 {
-    writeCodeInFile(file, translate("movq", offset(code,1), "%rax"));
-    writeCodeInFile(file, translate("cmp", offset(code,2) ,"%rax"));
+    writeCodeInFile(file, translate("movl", offset(code,1), "%eax"));
+    writeCodeInFile(file, translate("cmp", offset(code,2) ,"%eax"));
     writeCodeInFile(file, translate("sete", "%al", ""));
-    writeCodeInFile(file, translate("movzbq", "%al", "%rax"));
-    writeCodeInFile(file, translate("movq", "%rax", offset(code,3))); 
+    writeCodeInFile(file, translate("movzbl", "%al", "%eax"));
+    writeCodeInFile(file, translate("movl", "%eax", offset(code,3))); 
 }
 
 /* Puts in the file the translation of the DIST_INT action */
 void translateDistinctInt(FILE* file, Code3D* code)
 {
-    writeCodeInFile(file, translate("movq", offset(code,1), "%rax"));
-    writeCodeInFile(file, translate("cmp", offset(code,2) ,"%rax"));
+    writeCodeInFile(file, translate("movl", offset(code,1), "%eax"));
+    writeCodeInFile(file, translate("cmp", offset(code,2) ,"%eax"));
     writeCodeInFile(file, translate("setne", "%al", ""));
-    writeCodeInFile(file, translate("movzbq", "%al", "%rax"));
-    writeCodeInFile(file, translate("movq", "%rax", offset(code,3))); 
+    writeCodeInFile(file, translate("movzbl", "%al", "%eax"));
+    writeCodeInFile(file, translate("movl", "%eax", offset(code,3))); 
 }
 
 /********************************************************************************************/

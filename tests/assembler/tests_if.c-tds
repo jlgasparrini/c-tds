@@ -1,139 +1,288 @@
 class helloWorld{
-    void main()
-    {
-        //El siguiente programa deberia de arrojar por pantalla:
-        int i;
-        int j;
-        int f;
-        i = 1;
+  void main()
+  {
+    //Esta bateria de tests seran correctos sii el valor impreso es positivo.
+    int i;
+    int j;
+    int f;
+    i = 1;
 
-        //Testeando el operador ">"
+    //Testeando el operador ">"
 
-        if (1>2){
-            print 1;
-        }
-        else{ 
-            print 2; //<-.- POR ACA!!!
-        }
+    if (1>2){
+      print -1;
+    }
+    else{ 
+      print 1; //<-.- POR ACA!!!
+    }
 
-        if (2>2){
-            print 1;
-        }
-        else{ 
-            print 2; //<-.- POR ACA!!!
-        }
+    if (2>2){
+      print -2;
+    }
+    else{ 
+      print 2; //<-.- POR ACA!!!
+    }
 
-        if (2>1){
-            print 1; //<-.- POR ACA!!!
+    if (2>1){
+      print 3; //<-.- POR ACA!!!
+    }
+    else{
+      print -3;
+    }
+
+    /////////////////////////////////
+    //Testeando el operador "<"
+
+    if (1<2){
+      print 4;//<-.- POR ACA!!!
+    }
+    else{ 
+      print -4; 
+    }
+
+    if (2<2){
+      print -5;
+    }
+    else{ 
+      print 5; //<-.- POR ACA!!!
+    }
+
+    if (2<1){
+      print -6; 
+    }
+    else{
+      print 6;//<-.- POR ACA!!!
+    }
+
+    /////////////////////////////////
+    //Testeando el operador ">="
+
+    if (1>=2){
+      print -7;
+    }
+    else{ 
+      print 7; //<-.- POR ACA!!!
+    }
+
+    if (2>=2){
+      print 8;//<-.- POR ACA!!!
+    }
+    else{ 
+      print -8; 
+    }
+
+    if (2>=1){
+      print 9; //<-.- POR ACA!!!
+    }
+    else{
+      print -9;
+    }
+
+    /////////////////////////////////
+    //Testeando el operador "<="
+
+    if (1<=2){
+      print 10;//<-.- POR ACA!!!
+    }
+    else{ 
+      print -10; 
+    }
+
+    if (2<=2){
+      print 11;//<-.- POR ACA!!!
+    }
+    else{ 
+      print -11; 
+    }
+
+    if (2<=1){
+      print -12; 
+    }
+    else{
+      print 12;//<-.- POR ACA!!!
+    }
+
+
+    /////////////////////////////////
+    //Testeando el operador "=="
+
+    if (1==2){
+      print -13;
+    }
+    else{ 
+      print 13; //<-.- POR ACA!!!
+    }
+
+    if (2==2){
+      print 14;//<-.- POR ACA!!!
+    }
+    else{ 
+      print -14; 
+    }
+
+    if (2==1){
+      print -15; 
+    }
+    else{
+      print 15;//<-.- POR ACA!!!
+    }
+
+    /////////////////////////////////
+    //Testeando el operador "!="
+
+    if (1!=2){
+      print 16;//<-.- POR ACA!!!
+    }
+    else{ 
+      print -16; 
+    }
+
+    if (2!=2){
+      print -17;
+    }
+    else{ 
+      print 17; //<-.- POR ACA!!!
+    }
+
+    if (2!=1){
+      print 18; //<-.- POR ACA!!!
+    }
+    else{
+      print -18;
+    }
+
+
+    /////////////////////////////////
+    //Testeando el operador "!" junto con "=="
+
+    if (!(1==2)){
+      print 19;//<-.- POR ACA!!!
+    }
+    else{ 
+      print -19; 
+    }
+
+    if (!(2==2)){
+      print -20;
+    }
+    else{ 
+      print 20; //<-.- POR ACA!!!
+    }
+
+    if (!(2==1)){
+      print 21; //<-.- POR ACA!!!
+    }
+    else{
+      print -21;
+    }
+
+    /////////////////////////////////
+    // Testeo masivo de operaciones booleanas
+    /////////////////////////////////
+    //---------- Ahora testeamos if's anidados -----------//
+    //Si imprime 11 funciona correctamente el anidamiento....
+    f = 2;
+    j = 6;
+
+    if (f <= j){
+      if (j>= f){
+        if (j<f){
+          print -22;
         }
         else{
-            print 222222;
+          print 22;
         }
-
-        //Testeando el operador "<"
-        j = 6;
-        f = 2;
-       
-        if (2<2){
-            print 1;
-        }
-        else{ 
-            print 2; //<-.- POR ACA!!!
-        }
-        
-        if (1>=2){
-            print 1;
-        }
-        else{ 
-            print 2; //<-.- POR ACA!!!
-        }
-       
-        if (2<=1){
-            print 1;
-        }
-        else{ 
-            print 2; //<-.- POR ACA!!!
-        }
-
-        if (f>j){
-            print 1;
-        }
-        else{ 
-            print 2; //<-.- POR ACA!!!
-        }
-       
-        if (j<f){
-            print 1;
-        }
-        else{ 
-            print 2; //<-.- POR ACA!!!
-        }
-       
-        j = 100;
-        f = 10;
-       
-        if (j<=f){
-            print 1;
-        }
-        else{ 
-            print 2; //<-.- POR ACA!!!
-        }
-       
-        if (j>=f){
-            print 1; //<-.- POR ACA!!!
-        }
-        else{ 
-            print 2;
-        }
-        f = j;
-       
-        if (j<=f){
-            print 1; //<-.- POR ACA!!!
-        }
-        else{ 
-            print 2;
-        }
-       
-        if (j>=f){
-            print 1; //<-.- POR ACA!!!
-        }
-        else{ 
-            print 2;
-        }
-       
-        //---------- Ahora testeamos if's anidados -----------//
-        //Si imprime 11 funciona correctamente el anidamiento....
-        if (f <= j){
-            if (j>= f){
-                if (j<f){
-                    print 130;
-                }
-                else{
-                    print 11;
-                }
-            }    
-            else{
-                print 321;
-            }
-        }
-        //------------ Ahora para estos ifs se deberia arrojar por pantalla.... :
-        //12
-        //14
-        //9
-        i = 3;
-        j = 7;
-        if (i == j){
-            print 7;
-        }
-        else {
-            print 12;
-            if (i != j){
-                print 14;
-            }
-        }
-        if (i != j){
-            print 9;
-        }
-        return;
+      }    
+      else{
+        print -22;
+      }
     }
+
+    if ((f <= j) && (j>= f)) {
+      if (j<f){
+        print -23;
+      }
+      else{
+        print 23;
+      }
+    }    
+    else{
+      print -23;
+    }
+
+
+    if ((f >= j) || (j<= f) && true) {
+      if (j<f){
+        print -24;
+      }
+      else{
+        print -24;
+      }
+    }    
+    else{
+      print 24;
+    }
+
+    if ((f >= j) || (j<= f) || 100!=100 || 90==100 || true) {
+      if (j<f){
+        print -25;
+      }
+      else{
+        print 25;
+      }
+    }    
+    else{
+      print -25;
+    }
+
+    if ((f >= j) || (j<= f) || 100!=100 || 90==100 || false) {
+      if (j<f){
+        print -26;
+      }
+      else{
+        print -26;
+      }
+    }    
+    else{
+      print 26;
+    }
+
+    if ((f >= j) || (j<= f) || 100!=100 || 90==100 || (3+5*2==13)) {
+      if (false || true || false){
+        print 27;
+      }
+      else{
+        print -27;
+      }
+    }    
+    else{
+      print -27;
+    }
+
+    if (2>2){
+      print -28;
+    }
+
+    if (2<2){
+      print -29;
+    }
+
+    if (2>=2){
+      print 30;
+    }
+
+    if (2<=2){
+      print 31;
+    }
+
+    if (true){
+      print 33;
+    }
+
+    if (false){
+      print -34;
+    }
+
+    return;
+  }
 }
