@@ -2,6 +2,7 @@
 
 int nameLabelCount = 0;
 int auxParam = 1;
+int print_count = 0;
 
 /*-----------------------------------------------------------------------*/
 /**Metodo para la obtencion del valor de una constante*/  
@@ -166,10 +167,15 @@ void printOperation(FILE *file, Code3D *code)
     }
     if (getAttributeType(getAttribute(code, 1)) == Bool)
     {
-        if (getBoolVal((*(*code).param1).val.attri) == True)
-            writeCodeInFile(file, translate("movq", concat("$", ".BOOL_TRUE"), "%rdi"));
-        if (getBoolVal((*(*code).param1).val.attri) == False)
-            writeCodeInFile(file, translate("movq", concat("$", ".BOOL_FALSE"), "%rdi"));
+        int count = intToString(print_count);
+        writeCodeInFile(file, translate("cmp", "$0", offset(code, 1)));
+        writeCodeInFile(file, translate("jz", concat("label_bool_condition_of_print", count), ""));
+        writeCodeInFile(file, translate("movq", concat("$", ".BOOL_TRUE"), "%rdi"));
+        writeCodeInFile(file, translate("jmp", concat("end_label_bool_condition_of_print", count), ""));
+        writeCodeInFile(file, concat(concat("label_bool_condition_of_print", count), ":\n"));
+        writeCodeInFile(file, translate("movq", concat("$", ".BOOL_FALSE"), "%rdi"));
+        writeCodeInFile(file, concat(concat("end_label_bool_condition_of_print", count), ":\n"));
+        print_count = print_count + 1;
     }
     writeCodeInFile(file, translate("movq", "$0", "%rax"));
     writeCodeInFile(file, translate("call", "printf", ""));

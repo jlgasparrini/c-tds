@@ -1,7 +1,21 @@
 class math {
-
-  main() {
-
-
+  boolean test;
+  float r;
+  int j;
+  void main() {
+    int pep;
+    pep = 2 * 2 + 4;
+    test = 8 == pep;
+    if (test){
+      print 8 == pep;
+      print 8 <= pep;
+      print 8 >= pep;
+    }
+    if (!(!test)){
+      print 8 != pep;
+      print 8 < pep;
+      print 8 > pep;
+    }
+    return;
   }
 }

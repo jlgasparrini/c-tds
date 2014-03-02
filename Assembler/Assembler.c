@@ -170,6 +170,7 @@ int generateOperation(int position)
             translateIntExternParam(file, code);
             break;
     }
+    writeCodeInFile(file, "\n");
 }
 
 /* Initializes the assembly engine and run */
