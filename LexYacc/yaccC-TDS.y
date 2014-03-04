@@ -171,7 +171,7 @@ void compile(char *mainFile, char **linkedFiles, int size)
     pid_t child_pid = fork();
     if(child_pid == 0) 
     {
-        printf("Generando ejecutable.\n");
+        printf("Generando ejecutable.  Si no hay error presione ENTER para continuar.\n");
         // Ejecuto comando Compilacion C
         execvp(args[0],args);    
         // si execvp retorna, es porque fallo

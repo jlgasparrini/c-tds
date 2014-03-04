@@ -1,0 +1,52 @@
+class test_externinvk{
+
+  void main(){
+
+    //Invocacion externa sin parametros
+    externinvk("pepe", void);
+    
+
+    ///////////LOGICOS!
+
+    //Invocacion externa con un parametro booleano.
+    externinvk("bool_value", void, true);
+
+    //Invocacion externa con un parametro booleano.
+    externinvk("bool_value", void, false);
+
+    //Invocacion externa con varios parametros booleanos.
+    externinvk("bool_six_values", void, true, true, false, false, false, true);
+
+    //Invocacion externa con varios parametros booleanos.
+    externinvk("bool_ten_values", void, false, false, false, true, true, true, true, true, true, false);
+
+    ///////////ENTEROS!
+
+    //Invocacion externa con un parametro entero.
+    externinvk("int_number", void, 25);
+
+    //Invocacion externa con varios parametros enteros.
+    externinvk("int_six_numbers", void, 9, 7, 5, 3, 1, 0);
+
+    //Invocacion externa con varios parametros enteros.
+    externinvk("int_ten_numbers", void, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+
+    ///////////FLOTANTES!
+
+    //Invocacion externa con un parametro flotante.
+    externinvk("float_number", void, 25.0);
+
+    //Invocacion externa con varios parametros flotantes.
+    externinvk("float_six_numbers", void, 9.1, 7.2, 5.3, 3.4, 1.5, 0.6);
+
+    //Invocacion externa con varios parametros flotantes.
+    externinvk("float_ten_numbers", void, 1.9, 2.8, 3.7, 4.6, 5.5, 6.4, 7.3, 8.2, 9.1, 10.09);
+
+    ///////////////////////VER SI ESTO LO PERMITE NUESTRO LENGUAJE!!!!!!!!!!!!!!!
+    //Invocacion externa con un parametro cadena.
+    //externinvk("string_function", void, "Hello C-TDS");
+
+    return ;
+  }
+
+}

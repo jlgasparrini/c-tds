@@ -3,6 +3,7 @@
 int nameLabelCount = 0;
 int auxParam = 1;
 int print_count = 0;
+int extern_offset = 0;
 
 /*-----------------------------------------------------------------------*/
 /**Metodo para la obtencion del valor de una constante*/  
@@ -74,6 +75,17 @@ char* offset(Code3D* code, int param)
     return concat (result, "(%rbp)");
 }
 
+/**Metodo para la obtencion del offset de un numero dado. Utilizado para las invocaciones externas.*/
+char* offset_num(int offset)
+{
+    char *result = (char*) malloc(sizeof(char));/* CHECK OUT THIS CASE BECAUSE sizeof(char) ONLY STORES MEMORY FOR ONLY ONE CHARACTER! */
+    result =intToString(offset);
+    if (offset == 0)
+      return "(%rsp)";
+    else
+      return concat (result, "(%rsp)");
+}
+
 /**Metodo para la obtencion del offset de un arreglo*/
 char* offsetArray(Code3D* code, int param, char* reg)
 {
@@ -113,7 +125,7 @@ void translateGotoLabelCondition(FILE* file, Code3D* code)
 /* Puts in the file the translation of the RETURN action */
 void translateReturn(FILE* file, Code3D* code)
 {
-    writeCodeInFile(file, translate("movq", "$0", "%rax"));
+    writeCodeInFile(file, translate("movl", "$0", "%eax"));
     writeCodeInFile(file, translate("leave","",""));
     writeCodeInFile(file, translate("ret","",""));
 }
@@ -495,6 +507,7 @@ void translateMinusFloat(FILE* file, Code3D* code)
 /* Puts in the file the translation of the EXTERNINVK action */
 void translateExternInvk(FILE* file, Code3D* code)
 {
+    writeCodeInFile(file, "\tmovl	$0, %eax\n");
     writeCodeInFile(file, translate("call", getLabel(code, 1), ""));
 }
 
@@ -515,25 +528,45 @@ void translateIntExternParam(FILE *file, Code3D *code)
         case 6: writeCodeInFile(file, translate("movl", offset(code, 1), "%r9d"));
                 break;
     }
+    if (getInt(code, 2) > 6)
+    {
+      writeCodeInFile(file, translate("movl", offset(code, 1), "%eax"));
+      writeCodeInFile(file, translate("movl", "%eax", offset_num(extern_offset)));
+      extern_offset = extern_offset + 8;
+    }
+    else
+      extern_offset = 0;
 }
 
 void translateFloatExternParam(FILE *file, Code3D *code)
 {
     switch (getInt(code, 2))
     {
-        case 1: writeCodeInFile(file, translate("movl", offset(code, 1), "%edi"));
+        case 1: writeCodeInFile(file, translate("movsd", offset(code, 1), "%xmm0"));
                 break;
-        case 2: writeCodeInFile(file, translate("movl", offset(code, 1), "%esi"));
+        case 2: writeCodeInFile(file, translate("movsd", offset(code, 1), "%xmm1"));
                 break;
-        case 3: writeCodeInFile(file, translate("movl", offset(code, 1), "%edx"));
+        case 3: writeCodeInFile(file, translate("movsd", offset(code, 1), "%xmm2"));
                 break;
-        case 4: writeCodeInFile(file, translate("movl", offset(code, 1), "%ecx"));
+        case 4: writeCodeInFile(file, translate("movsd", offset(code, 1), "%xmm3"));
                 break;
-        case 5: writeCodeInFile(file, translate("movl", offset(code, 1), "%r8d"));
+        case 5: writeCodeInFile(file, translate("movsd", offset(code, 1), "%xmm4"));
                 break;
-        case 6: writeCodeInFile(file, translate("movl", offset(code, 1), "%r9d"));
+        case 6: writeCodeInFile(file, translate("movsd", offset(code, 1), "%xmm5"));
+                break;
+        case 7: writeCodeInFile(file, translate("movsd", offset(code, 1), "%xmm6"));
+                break;
+        case 8: writeCodeInFile(file, translate("movsd", offset(code, 1), "%xmm7"));
                 break;
     }
+    if (getInt(code, 2) > 6)
+    {
+      writeCodeInFile(file, translate("movq", offset(code, 1), "%rax"));
+      writeCodeInFile(file, translate("movq", "%rax", offset_num(extern_offset)));
+      extern_offset = extern_offset + 8;
+    }
+    else
+      extern_offset = 0;
 }
 
 void translateBoolExternParam(FILE *file, Code3D *code)
