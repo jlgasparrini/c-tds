@@ -1,24 +1,23 @@
-
-
+#!/bin/bash
 # Script for compile all project.
-
-echo   Compilando lexer....
-cd ..
-cd LexYacc
+echo
+echo "Compiling Lex File..."
+cd src/LexYacc/
 lex lexC-TDS.l
 echo
-echo   Compilando parser....
+echo "Compiling Yacc File..."
 yacc -d yaccC-TDS.y
 echo
-echo   Compilando c....
-cd ..
-gcc -w -o c-tds LexYacc/lex.yy.c LexYacc/y.tab.c SymbolsTable/SymbolsTable.c SymbolsTable/LinkedList.c SymbolsTable/Utils.c SymbolsTable/Attribute.c ErrorsQueue/ErrorsQueue.c SymbolsTable/StringStack.c Code3D/nodec3d.c Code3D/code3d.c Code3D/codespecs.c Code3D/gencode3d.c Code3D/listc3d.c Stack/stack.c Stack/linknode.c ListMethod/genlistml.c ListMethod/listml.c ListMethod/nodeml.c ListMethod/methodl.c Interpreter/Interpreter.c Assembler/Assembler.c Assembler/Translate.c Stack/stackOffset.c Stack/linknodeOffset.c 
+echo "Compiling source code..."
+cd ../../src/
+gcc -w -o c-tds LexYacc/*.c SymbolsTable/*.c ErrorsQueue/*.c Code3D/*.c Stack/*.c ListMethod/*.c Interpreter/*.c Assembler/*.c
 echo 
-echo   Fin de compilacion.          #Presione ENTER para terminar.
-rm LexYacc/lex.yy.c
-rm LexYacc/y.tab.c 
-rm LexYacc/y.tab.h
-
-#read
-#clear
+echo "Compilation finished...   c-tds compiler generated succesfully."
+# Clean all unnecessary files.
+rm src/LexYacc/*.c
+rm src/LexYacc/*.h
+echo
+echo "Press any key to continue..."
+read
+clear
 exit 0
