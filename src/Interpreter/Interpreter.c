@@ -310,7 +310,7 @@ int searchByMethodLabel(char* label)
  * param pos: position in the list of 3 directions code of the label "main".
  * Executes the method "main".
  */ 
-void runMain(int pos)
+void RunMain(int pos)
 {
     while (pos < codeSize(codeList))
         pos = runOperation(pos);
@@ -321,11 +321,11 @@ void runMain(int pos)
  * param codeL: list with the 3 directions code.
  * Initializes the interpreter and runs it.
  */
-void initInterpreter(ListMLabel *labelL, LCode3D *codeL)
+void InitInterpreter(ListMLabel *labelL, LCode3D *codeL)
 {
     labelList = labelL;
     codeList = codeL;
     methodsCallStack = initializeSS();
     pushString(methodsCallStack, intToString(codeSize(codeL)));
-    runMain(searchByMethodLabel("main"));
+    RunMain(searchByMethodLabel("main"));
 }

@@ -12,6 +12,6 @@
 #include "Translate.h"
 
 /* Initializes the interpreter and runs it */
-void initAssembler(ListMLabel *labelL, LCode3D *codeL, Stack *stack, char* fileName);
+void InitAssembler(ListMLabel *labelL, LCode3D *codeL, Stack *stack, char* fileName);
 
 #endif

@@ -1,0 +1,5 @@
+No se autoincrementaba el label for.
+La condicion del label for debia ser por menor no por distinto.
+Se encontro un error un el yacc al generar el codigo de 3 direcciones(no se saltaba correctamente al label del inicio de un while).
+Al correr los casos de tests se solucionaron los segmentation fault.
+
