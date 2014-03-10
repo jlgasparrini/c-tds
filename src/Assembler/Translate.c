@@ -4,6 +4,7 @@ int nameLabelCount = 0;
 int auxParam = 1;
 int print_count = 0;
 int extern_offset = 0;
+bool any_goto_method = false;
 
 /*-----------------------------------------------------------------------*/
 /**Metodo para la obtencion del valor de una constante*/  
@@ -133,7 +134,7 @@ void translateReturn(FILE* file, Code3D* code)
 /* Puts in the file the translation of the RETURN_EXPR action */
 void translateReturnExpression(FILE* file, Code3D* code)
 {
-  writeCodeInFile(file, translate("movq", offset(code,1), "%rax"));
+  writeCodeInFile(file, translate("movl", offset(code,1), "%eax"));
   writeCodeInFile(file, translate("leave","",""));
   writeCodeInFile(file, translate("ret","",""));
 }
@@ -141,17 +142,17 @@ void translateReturnExpression(FILE* file, Code3D* code)
 /* Puts in the file the translation of the MINUS_INT action */
 void translateOr(FILE* file, Code3D* code)
 {
-  writeCodeInFile(file, translate("movq", offset(code,1), "%rax"));
-  writeCodeInFile(file, translate("or", offset(code,2), "%rax"));
-  writeCodeInFile(file, translate("movq", "%rax", offset(code,3)));
+  writeCodeInFile(file, translate("movl", offset(code,1), "%eax"));
+  writeCodeInFile(file, translate("or", offset(code,2), "%eax"));
+  writeCodeInFile(file, translate("movl", "%eax", offset(code,3)));
 }
 
 /* Puts in the file the translation of the MINUS_INT action */
 void translateAnd(FILE* file, Code3D* code)
 {
-  writeCodeInFile(file, translate("movq", offset(code,1), "%rax"));
-  writeCodeInFile(file, translate("and", offset(code,2), "%rax"));
-  writeCodeInFile(file, translate("movq", "%rax", offset(code,3)));
+  writeCodeInFile(file, translate("movl", offset(code,1), "%eax"));
+  writeCodeInFile(file, translate("and", offset(code,2), "%eax"));
+  writeCodeInFile(file, translate("movl", "%eax", offset(code,3)));
 }
 
 /* Puts in the file the translation of the MINUS_INT action */
@@ -159,8 +160,8 @@ void translateNot(FILE* file, Code3D* code)
 {
   writeCodeInFile(file, translate("cmpl", "$1", offset(code,1)));
   writeCodeInFile(file, translate("setne", "%al", ""));
-  writeCodeInFile(file, translate("movzbq", "%al", "%rax"));
-  writeCodeInFile(file, translate("movq", "%rax", offset(code, 2)));
+  writeCodeInFile(file, translate("movzbl", "%al", "%eax"));
+  writeCodeInFile(file, translate("movl", "%eax", offset(code, 2)));
 }
 
 /* Puts in the file the translation of the PRINT action */
@@ -237,6 +238,7 @@ void translateLoadArray(FILE *file, Code3D *code)
 void goTo_Method (FILE* file, Code3D* code)
 {
   writeCodeInFile(file, translate("call", getLabel(code,1), ""));
+  any_goto_method = true;
 }
 
 /********************************************************************************************/
@@ -246,8 +248,12 @@ void goTo_Method (FILE* file, Code3D* code)
 /* Puts in the file the translation of the ASSIGNATION_INT action */
 void translateAssignationInt(FILE* file, Code3D* code)
 {
-  writeCodeInFile(file, translate("movq", offset(code,1), "%rax"));
-  writeCodeInFile(file, translate("movq", "%rax", offset(code,2)));
+  if (!any_goto_method)
+  {
+    writeCodeInFile(file, translate("movl", offset(code,1), "%eax"));
+    any_goto_method = false;
+  }
+  writeCodeInFile(file, translate("movl", "%eax", offset(code,2)));
 }
 
 /* Puts in the file the translation of the PARAM_ASSIGN_INT action */

@@ -1,6 +1,7 @@
 //Parser.
 %{
-  #include <stdio.h> #include <ctype.h>
+  #include <stdio.h>
+  #include <ctype.h>
   #include <string.h>
   #include <stdlib.h>
   #include <unistd.h>
@@ -8,7 +9,7 @@
   #include "../SymbolsTable/Utils.h"
   #include "../Stack/stack.h"
   #include "../Stack/stackOffset.h"
-  #include "../ListMethod/genlistml.h" 
+  #include "../ListMethod/genlistml.h"
 
   extern FILE *yyin;
   SymbolsTable *symbols_table;	// Symbols Table Definition.
@@ -92,20 +93,20 @@
         if(strcmp(argv[i+1],"parse")  && strcmp(argv[i+1],"show")  
           && strcmp(argv[i+1],"interpreter")  && strcmp(argv[i+1],"assembly")  && strcmp(argv[i+1],"compile") )
         {
-          printf("Error en los argumentos");
-          printf("\tSolo se permite: -target parse | show | interpreter | assembly | compile\n");
+          printf("Arguments error");
+          printf("\tOnly allowed: -target parse | show | interpreter | assembly | compile\n");
           return 0;  
         }
         else 
         {
-          // Compruebo valides archivo entrada .c-tds y .ctds
+          // Check extension files. Only allowed .ctds or .c-tds
           char* entrada = argv[i + 2];
           int length = strlen(entrada);
           if(length < 6)
           {
             printf("Invalid input file.\n");
             return 0;  
-          }                
+          }
           int index;
           int pos_punto;
           for(index = length - 1; index > 0; index--)
@@ -124,7 +125,7 @@
           if(strcmp(extension, "ctds")  && strcmp(extension, "c-tds") )
           {
             printf("Invalid file extension, use: .c-tds || .ctds\n");
-            return 0;  
+            return 0;
           }
         }
       }
@@ -143,9 +144,9 @@
   {
       amount_extern_params = 0;
       error_q = initializeQueue();
-      symbols_table = initializeSymbolsTable(); 
+      symbols_table = initializeSymbolsTable();
       l_code3d = initLCode3D();
-      params_stack = initializeSS(); 
+      params_stack = initializeSS();
       methods_id_stack = initializeSS();
       labels_CYC = newStack();
       labels_while = newStack();
@@ -186,7 +187,7 @@
     //  while (wait(&status) != child_pid);
     //  printf("Deleting temporary assembly.\n");
     //  remove(main_file);
-    //  printf("Finished compilation.\n");               
+    //  printf("Finished compilation.\n");
     //}
   }
   

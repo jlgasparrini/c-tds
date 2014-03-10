@@ -1,5 +1,13 @@
 #!/bin/bash
 # Script for compile all project.
+LexYacc="../src/LexYacc/*.c"
+SymbolsTable="../src/SymbolsTable/*.c"
+ErrorsQueue="../src/ErrorsQueue/*.c"
+Code3D="../src/Code3D/*.c"
+Stack="../src/Stack/*.c"
+ListMethod="../src/ListMethod/*.c"
+Interpreter="../src/Interpreter/*.c"
+Assembler="../src/Assembler/*.c"
 echo
 echo "Compiling Lex File..."
 cd src/LexYacc/
@@ -9,15 +17,15 @@ echo "Compiling Yacc File..."
 yacc -d yaccC-TDS.y
 echo
 echo "Compiling source code..."
-cd ../../src/
-gcc -w -o c-tds LexYacc/*.c SymbolsTable/*.c ErrorsQueue/*.c Code3D/*.c Stack/*.c ListMethod/*.c Interpreter/*.c Assembler/*.c
+cd ../../bin/
+gcc -w -o c-tds $LexYacc $SymbolsTable $ErrorsQueue $Code3D $Stack $ListMethod $Interpreter $Assembler
 echo 
 echo "Compilation finished...   c-tds compiler generated succesfully."
 # Clean all unnecessary files.
-rm src/LexYacc/*.c
-rm src/LexYacc/*.h
+rm $LexYacc
+rm ../src/LexYacc/*.h
 echo
-echo "Press any key to continue..."
+echo "Press ENTER key to continue..."
 read
 clear
 exit 0
