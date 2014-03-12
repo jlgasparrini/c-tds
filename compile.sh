@@ -8,6 +8,7 @@ Stack="../src/Stack/*.c"
 ListMethod="../src/ListMethod/*.c"
 Interpreter="../src/Interpreter/*.c"
 Assembler="../src/Assembler/*.c"
+Libs="../src/lib/*.c"
 echo
 echo "Compiling Lex File..."
 cd src/LexYacc/

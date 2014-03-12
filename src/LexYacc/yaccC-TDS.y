@@ -48,7 +48,9 @@
   int arguments_c;
   char **arguments_v;
   //Target input
+  char* output_name = "a.out";
   char* action_input = "";
+  bool executable = false;
 
   // abre el archivo a tratar (entrada)
   int OpenInput(char* name)
@@ -131,11 +133,14 @@
       }
       // Check the argument "output name".
       if(strcmp(argv[i], "-o") == 0)
+      {
+        output_name = argv[i];
         if(i == argc - 1)
         {
           printf("Incorrect output name.\n");
           return 0;
         }
+      }
     }
     return 1;
   }
@@ -163,7 +168,10 @@
   {
     InitAssembler(list_meth_label, l_code3d, return_stack, file_name);
     char** args = malloc(sizeof(char*)* (6 + size));
-    args[0] = "gcc";
+    if (executable)
+      args[0] = "gcc";
+    else
+      args[0] = "gcc -c";
     args[1] = main_file;
     args[1] = strcat(args[1], ".s");
     int i;
@@ -171,16 +179,11 @@
       for(i=0;i<size;i++)
         args[2+i] = linked_files[i];
     int status;
+    if (executable)
+      printf("Built executable file %s\n", output_name);
     pid_t child_pid = fork();
     if (child_pid == 0) 
-    {
-      printf("Built executable file.");
-      // Execute GCC compilation command.
-      execvp(args[0], args);    
-      // Fail iff execvp return.
-      printf("Incorrect commands.\n");
-      exit(0);
-    }
+      execvp(args[0], args);    // Execute GCC compilation command.
     /**** We can't delete temporary assembly ****/
     //else
     //{
@@ -244,6 +247,7 @@
         return EXIT_FAILURE;
       // Parse the input and by default load set target with "compile".
       action_input = "compile";
+      executable = true;
       yyparse();
     }
   }
@@ -256,21 +260,28 @@
     else
     {
       if(strcmp(action_input,"parse") == 0)
-        printf("Code parsed correctly.\n"); //Unicamente informa que el codigo se parsea correctamente.
+        printf("Parsing code...\n");
       else if(strcmp(action_input,"show") == 0)
       {
-        printf("Intermediate code:\n");
+        printf("Showing the three-address code...");
         show3DCode(l_code3d); //Muestro el codigo 3D por terminal.
+        printf("Intermediate code generated.\n");
       }
       else if(strcmp(action_input,"interpreter") == 0)
       {
-        printf("Interpreting code:\n");
+        printf("Interpreting code...\n");
         InitInterpreter(list_meth_label, l_code3d); //Llamo al interpreter del codigo de entrada.
+        printf("Interpretation finish.\n");
       }
       else if(strcmp(action_input,"assembly") == 0)
+      {
+        printf("Generating assembly code...\n");
         InitAssembler(list_meth_label, l_code3d, return_stack, file_name); //Llamo al generador del codigo assembly y lo genero.
+        printf("Assembly code generated. File's name: %s\n", file_name);
+      }
       else if(strcmp(action_input,"compile") == 0)
       {
+        printf("Compiling code...\n");
         int i, j, start = 0;
         int end = arguments_c;
         if(flag_target==0 && arguments_c >= 2)
@@ -296,6 +307,7 @@
           //Genero el codigo assembly y lo compilo para generar el ejecutable.
           compile(file_name, linked_files, end - start);
         }
+        printf("Compilation finished.\n");
       }
     }
   }
