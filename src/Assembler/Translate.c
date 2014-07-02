@@ -238,7 +238,8 @@ void translateLoadArray(FILE *file, Code3D *code)
 void goTo_Method (FILE* file, Code3D* code)
 {
   writeCodeInFile(file, translate("call", getLabel(code,1), ""));
-  any_goto_method = true;
+  /*   DEBO   PREGUNTAR   SI   EL TIPO DE RETORNO DEL METODO ESif DISSTINTO DE VOID!    */
+    any_goto_method = true;
 }
 
 /********************************************************************************************/
@@ -289,7 +290,7 @@ void add_Int_Translate(FILE* file, Code3D* code)
 void mult_Int_Translate(FILE* file, Code3D* code)
 {
   writeCodeInFile(file, translate("movq", offset(code, 1), "%rax"));
-  writeCodeInFile(file, translate("imul", offset(code, 2) ,"%rax"));
+  writeCodeInFile(file, translate("imulq", offset(code, 2) ,"%rax"));
   writeCodeInFile(file, translate("movq", "%rax", offset(code, 3)));
 }
 
@@ -298,7 +299,7 @@ void translateMinusInt(FILE* file, Code3D* code)
 {
   writeCodeInFile(file, translate("movq", offset(code,2), "%rax"));
   writeCodeInFile(file, translate("movq", offset(code,1), "%r10"));
-  writeCodeInFile(file, translate("sub", "%rax", "%r10"));
+  writeCodeInFile(file, translate("subq", "%rax", "%r10"));
   writeCodeInFile(file, translate("movq", "%r10", offset(code,3)));
 }
 

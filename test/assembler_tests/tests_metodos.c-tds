@@ -1,5 +1,5 @@
 class test_metodos{
-   float c;
+   int c;
 
    void alo(int x){
       x= x + 1;
@@ -17,7 +17,7 @@ class test_metodos{
    void main(){
         int y;
         y = 7;
-        c = 8.0;
+        c = 8;
         print y;
         y = alo2(y);
         print y;

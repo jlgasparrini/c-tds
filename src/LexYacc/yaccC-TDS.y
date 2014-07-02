@@ -4,9 +4,9 @@
   #include <ctype.h>
   #include <string.h>
   #include <stdlib.h>
-  #include <unistd.h>
   #include "../SymbolsTable/StringStack.h"
   #include "../SymbolsTable/Utils.h"
+  #include <unistd.h>
   #include "../Stack/stack.h"
   #include "../Stack/stackOffset.h"
   #include "../ListMethod/genlistml.h"
@@ -178,7 +178,6 @@
     if(linked_files != NULL)
       for(i=0;i<size;i++)
         args[2+i] = linked_files[i];
-    int status;
     if (executable)
       printf("Built executable file %s\n", output_name);
     pid_t child_pid = fork();
