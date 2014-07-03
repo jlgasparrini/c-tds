@@ -4,8 +4,8 @@
 #include <string.h>
 #include "Utils.h"
 
+#define temp ".temp"
 unsigned int numberOfVariable = 0;
-char *temp = ".temp";
 
 /* Creates a name for a temporary variable */
 char* getVariableName()

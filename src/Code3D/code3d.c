@@ -146,14 +146,11 @@ float getFloat(Code3D *code, int param) {
 /**Metodo para obtener el parametro Booleano de un Codigo 3D*/
 bool getBool(Code3D *code, int param) {
     if (param == 1)
-        if (code->param1->val.boolAttri)
-            return 1;
+        return code->param1->val.boolAttri;
     if (param == 2)
-        if (code->param2->val.boolAttri)
-            return 1;
+        return code->param2->val.boolAttri;
     if (param == 3)
-        if (code->param3->val.boolAttri)
-            return 1;
+        return code->param3->val.boolAttri;
     return 0;
 }
 
