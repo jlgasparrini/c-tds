@@ -4,12 +4,12 @@
   #include <ctype.h>
   #include <string.h>
   #include <stdlib.h>
-  #include <unistd.h>
   #include "../SymbolsTable/StringStack.h"
   #include "../SymbolsTable/Utils.h"
+  #include <unistd.h>
   #include "../Stack/stack.h"
   #include "../Stack/stackOffset.h"
-  #include "../ListMethod/genlistml.h" 
+  #include "../ListMethod/genlistml.h"
 
   extern FILE *yyin;
   SymbolsTable *symbols_table;	// Symbols Table Definition.
@@ -55,7 +55,9 @@
   int arguments_c;
   char **arguments_v;
   //Target input
+  char* output_name = "a.out";
   char* action_input = "";
+  bool executable = false;
 
   // abre el archivo a tratar (entrada)
   int openInput(char* name)
@@ -100,20 +102,20 @@
         if(strcmp(argv[i+1],"parse")  && strcmp(argv[i+1],"show")  
           && strcmp(argv[i+1],"interpreter")  && strcmp(argv[i+1],"assembly")  && strcmp(argv[i+1],"compile") )
         {
-          printf("Error en los argumentos");
-          printf("\tSolo se permite: -target parse | show | interpreter | assembly | compile\n");
+          printf("Arguments error");
+          printf("\tOnly allowed: -target parse | show | interpreter | assembly | compile\n");
           return 0;  
         }
         else 
         {
-          // Compruebo validez archivo entrada .c-tds y .ctds
+          // Check extension files. Only allowed .ctds or .c-tds
           char* entrada = argv[i + 2];
           int length = strlen(entrada);
           if(length < 6)
           {
             printf("Invalid input file.\n");
             return 0;  
-          }                
+          }
           int index;
           int pos_punto;
           for(index = length - 1; index > 0; index--)
@@ -132,17 +134,20 @@
           if(strcmp(extension, "ctds")  && strcmp(extension, "c-tds") )
           {
             printf("Invalid file extension, use: .c-tds || .ctds\n");
-            return 0;  
+            return 0;
           }
         }
       }
       // Check the argument "output name".
       if(strcmp(argv[i], "-o") == 0)
+      {
+        output_name = argv[i];
         if(i == argc - 1)
         {
           printf("Incorrect output name.\n");
           return 0;
         }
+      }
     }
     return 1;
   }
@@ -151,9 +156,9 @@
   {
       amount_extern_params = 0;
       error_q = initializeQueue();
-      symbols_table = initializeSymbolsTable(); 
+      symbols_table = initializeSymbolsTable();
       l_code3d = initLCode3D();
-      params_stack = initializeSS(); 
+      params_stack = initializeSS();
       methods_id_stack = initializeSS();
       labels_CYC = newStack();
       labels_while = newStack();
@@ -170,31 +175,28 @@
   {
     InitAssembler(list_meth_label, l_code3d, return_stack, file_name);
     char** args = malloc(sizeof(char*)* (6 + size));
-    args[0] = "gcc";
+    if (executable)
+      args[0] = "gcc";
+    else
+      args[0] = "gcc -c";
     args[1] = main_file;
     args[1] = strcat(args[1], ".s");
     int i;
     if(linked_files != NULL)
       for(i=0;i<size;i++)
         args[2+i] = linked_files[i];
-    int status;
+    if (executable)
+      printf("Built executable file %s\n", output_name);
     pid_t child_pid = fork();
     if (child_pid == 0) 
-    {
-      printf("Built executable file.");
-      // Execute GCC compilation command.
-      execvp(args[0], args);    
-      // Fail iff execvp return.
-      printf("Incorrect commands.\n");
-      exit(0);
-    }
+      execvp(args[0], args);    // Execute GCC compilation command.
     /**** We can't delete temporary assembly ****/
     //else
     //{
     //  while (wait(&status) != child_pid);
     //  printf("Deleting temporary assembly.\n");
     //  remove(main_file);
-    //  printf("Finished compilation.\n");               
+    //  printf("Finished compilation.\n");
     //}
   }
   
@@ -251,6 +253,7 @@
         return EXIT_FAILURE;
       // Parse the input and by default load set target with "compile".
       action_input = "compile";
+      executable = true;
       yyparse();
     }
   }
@@ -263,21 +266,28 @@
     else
     {
       if(strcmp(action_input,"parse") == 0)
-        printf("Code parsed correctly.\n"); //Unicamente informa que el codigo se parsea correctamente.
+        printf("Parsing code...\n");
       else if(strcmp(action_input,"show") == 0)
       {
-        printf("Intermediate code:\n");
+        printf("Showing the three-address code...");
         show3DCode(l_code3d); //Muestro el codigo 3D por terminal.
+        printf("Intermediate code generated.\n");
       }
       else if(strcmp(action_input,"interpreter") == 0)
       {
-        printf("Interpreting code:\n");
+        printf("Interpreting code...\n");
         InitInterpreter(list_meth_label, l_code3d); //Llamo al interpreter del codigo de entrada.
+        printf("Interpretation finish.\n");
       }
       else if(strcmp(action_input,"assembly") == 0)
+      {
+        printf("Generating assembly code...\n");
         InitAssembler(list_meth_label, l_code3d, return_stack, file_name); //Llamo al generador del codigo assembly y lo genero.
+        printf("Assembly code generated. File's name: %s\n", file_name);
+      }
       else if(strcmp(action_input,"compile") == 0)
       {
+        printf("Compiling code...\n");
         int i, j, start = 0;
         int end = arguments_c;
         if(flag_target==0 && arguments_c >= 2)
@@ -303,6 +313,7 @@
           //Genero el codigo assembly y lo compilo para generar el ejecutable.
           compile(file_name, linked_files, end - start);
         }
+        printf("Compilation finished.\n");
       }
     }
   }
