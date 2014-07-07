@@ -7,7 +7,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "Assembler.h"
-#include "../Code3D/codespecs.h"
+#include "../code_3d/operations_code.h"
 
 FILE *file;
 ListMLabel *labelList;
@@ -27,37 +27,37 @@ int generateOperation(int position)
     case LOAD_CONST:
       load_Const_Translate(file, code);
       break;
-    case LOAD_ARRAY: 
+    case LOAD_ARRAY:
       translateLoadArray(file, code);
       break;
     case PRINT:
       printOperation(file, code);
-      break;			
-    case RETURN: 
+      break;
+    case RETURN:
       translateReturn(file, code);
       break;
     case RETURN_EXPR:
       translateReturnExpression(file, code);
       break;
-    case LABEL: 
+    case LABEL:
       writeLabel(file, labelList, code);
       break;
-    case GOTO_LABEL: 
+    case GOTO_LABEL:
       translateGotoLabel(file, code);
       break;
     case GOTO_LABEL_COND:
       translateGotoLabelCondition(file, code);
       break;
-    case GOTO_METHOD: 
+    case GOTO_METHOD:
       goTo_Method(file, code);
       break;
-      /********************************* INT OPERATIONS **********************************/		
-    case ASSIGNATION_INT: 
-      translateAssignationInt(file, code); 
+      /********************************* INT OPERATIONS **********************************/
+    case ASSIGNATION_INT:
+      translateAssignationInt(file, code);
       break;
     case PARAM_ASSIGN_INT:
       translateParamAssignInt(file, code);
-      break;	
+      break;
     case MINUS_INT:
       translateMinusInt(file, code);
       break;
@@ -81,20 +81,20 @@ int generateOperation(int position)
       break;
     case DIST_INT:
       translateDistinctInt(file, code);
-      break;	
+      break;
     case GREATER_INT:
       greater_IntTranslate(file, code);
       break;
-    case LOWER_INT: 
+    case LOWER_INT:
       translateLesserInt(file, code);
-      break;		
+      break;
     case GEQ_INT:
       greater_Eq_IntTranslate(file, code);
       break;
     case LEQ_INT:
       translateLesserOrEqualInt(file, code);
       break;
-      /********************************* FLOAT OPERATIONS ******************************/			
+      /********************************* FLOAT OPERATIONS ******************************/
     case ASSIGNATION_FLOAT:
       assignation_FloatTranslate(file, code);
       break;
@@ -113,7 +113,7 @@ int generateOperation(int position)
     case DIV_FLOAT:
       translateDivFloat(file, code);
       break;
-    case NEG_FLOAT: 
+    case NEG_FLOAT:
       neg_Float_Translate(file, code);
       break;
     case EQ_FLOAT:
@@ -125,7 +125,7 @@ int generateOperation(int position)
     case GREATER_FLOAT:
       greater_FloatTranslate(file, code);
       break;
-    case LOWER_FLOAT: 
+    case LOWER_FLOAT:
       translateLesserFloat(file, code);
       break;
     case GEQ_FLOAT:
@@ -153,7 +153,7 @@ int generateOperation(int position)
     case AND:
       translateAnd(file, code);
       break;
-    case NOT: 
+    case NOT:
       translateNot(file, code);
       break;
       /********************************* EXTERNAL OPERATIONS ******************************/
@@ -196,7 +196,7 @@ void InitAssembler(ListMLabel *labelL, LCode3D *codeL, Stack *stack, char* nameO
   size = codeSize(codeL);
   int i = 0;
   while (i < size)
-  {       
+  {
     generateOperation(i);
     i++;
   }

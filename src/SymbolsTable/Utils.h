@@ -3,8 +3,8 @@
 
 #include "SymbolsTable.h"
 #include "../ErrorsQueue/ErrorsQueue.h"
-#include "../Code3D/gencode3d.h"
-#include "../Code3D/codespecs.h"
+#include "../code_3d/gencode3d.h"
+#include "../code_3d/operations_code.h"
 
 /* Returns an attribute of ID "id" and Variable structure. Otherwise returns NULL */
 Attribute* getVariableAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id);
@@ -30,11 +30,11 @@ unsigned int digitAmount(int value);
 /* Returns the string representation of the int "value" */
 char* intToString(int value);
 
-/* Checks if the type parameter in "paramSize" position of the method's parameters is equal to the type of "var" 
+/* Checks if the type parameter in "paramSize" position of the method's parameters is equal to the type of "var"
    and the amount of params are equal. */
 void correctParamBC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, LCode3D *lcode3d, Attribute *attr, char* lastCalledMethod, unsigned char paramSize);
 
-/* Checks if if the type parameter in "paramSize" position of the method's parameters is equal to the type of "var" 
+/* Checks if if the type parameter in "paramSize" position of the method's parameters is equal to the type of "var"
    and paramSize <= than the amount of parameters of the method. */
 void correctParamIC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, LCode3D *lcode3d, Attribute *attr, char* lastCalledMethod, unsigned char paramSize);
 

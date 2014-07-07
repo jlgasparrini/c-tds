@@ -1,4 +1,4 @@
-/************************************************************************
+/*
 *Define la estructura de los codigos de 3 direcciones y funciones      *
 *asociadas                                                              *
 *                                                                       *
@@ -7,10 +7,10 @@
 * parametro1     :   primer parametro del comando                       *
 * parametro2     :   segundo parametro del comando                      *
 * parametro3     :   tercer parametro del comando                       *
-************************************************************************/
+*/
 
-#ifndef CODE3D_H
-#define CODE3D_H
+#ifndef CODE_3D_H
+#define CODE_3D_H
 
 #include "../SymbolsTable/Attribute.h"
 #include <stdbool.h>
@@ -33,7 +33,7 @@ typedef union {
 
 typedef struct {
     int   type; // -1 : null, 0 : Attribute, 1 : label, 2 : Integer, 3 : Float, 4 : Bool
-    Value val; 
+    Value val;
 } Param;
 
 typedef struct {

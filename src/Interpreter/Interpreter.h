@@ -6,7 +6,7 @@
 #define INTERPRETER_H
 
 #include "../ListMethod/genlistml.h"
-#include "../Code3D/gencode3d.h"
+#include "../code_3d/gencode3d.h"
 
 /* Initializes the interpreter and runs it */
 void InitInterpreter(ListMLabel *labelL, LCode3D *codeL);

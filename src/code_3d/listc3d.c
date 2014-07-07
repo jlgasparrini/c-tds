@@ -24,7 +24,7 @@ Code3D* get_listC3D(ListC3D *list, int index) {
             i++;
         }
         return (Code3D*) getInfo_nodeC3D(runner);
-    } 
+    }
 	return NULL; /* This case was added to ensure that this method always return something */
 }
 
@@ -32,7 +32,7 @@ Code3D* get_listC3D(ListC3D *list, int index) {
 int size_listC3D(ListC3D *list) {
     return (*list).size;
 }
-    
+
 void set_listC3D_int(ListC3D *list,int index,int param, int numb)
 {
     NodeC3D *runner = (*list).init;
@@ -43,7 +43,7 @@ void set_listC3D_int(ListC3D *list,int index,int param, int numb)
             i++;
         }
         setInt(runner->info, param, numb);
-    } 
+    }
 }
 
 /**Metodo para que agrega un Codigo 3D en una posicion en la lista*/
@@ -94,9 +94,9 @@ int searchByLabel(ListC3D *list, char* label)
 {
     NodeC3D *runner = (*list).init;
     int i = 0;
-    while (i < size_listC3D(list)) 
+    while (i < size_listC3D(list))
     {
-        if (strcmp(getCodeByID(getCommand(runner->info)),"LABEL") == 0 && strcmp(getLabel((*runner).info, 1), label) == 0)
+        if (strcmp(get_operation_by_id(getCommand(runner->info)),"LABEL") == 0 && strcmp(getLabel((*runner).info, 1), label) == 0)
             return i;
         runner = (NodeC3D*) getNext_NodeC3D(runner);
         i++;

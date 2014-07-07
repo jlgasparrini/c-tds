@@ -8,7 +8,7 @@
 #ifndef NODEC3D_H
 #define NODEC3D_H
 
-#include "code3d.h"
+#include "code_3d.h"
 
 typedef struct NC3D {
     Code3D *info;

@@ -1,15 +1,12 @@
-/**************************************************************************************                                                                   *
-*Este header define constantes que indican los distintos comandos usados, 			  *
-*cada comando tiene definido que va en cada parametro           					  *
-**************************************************************************************/
+/*
+ * MISSING DOCUMENTATION!
+*/
 
-#ifndef CODE_SPECS_H
-#define CODE_SPECS_H
-
-#include "code3d.h"
+#ifndef OPERATIONS_CODE_H
+#define OPERATIONS_CODE_H
 
 /********************************* GENERAL OPERATIONS ******************************/
-#define LOAD_CONST         0 
+#define LOAD_CONST         0
 #define LOAD_ARRAY         1
 #define PRINT              2
 #define RETURN             3
@@ -20,13 +17,13 @@
 #define GOTO_METHOD        8
 
 /********************************* INT OPERATIONS **********************************/
-#define ASSIGNATION_INT    9 
+#define ASSIGNATION_INT    9
 #define PARAM_ASSIGN_INT   10
-#define MINUS_INT          11 
-#define ADD_INT            12 
-#define MULT_INT           13 
-#define DIV_INT            14 
-#define MOD_INT            15 
+#define MINUS_INT          11
+#define ADD_INT            12
+#define MULT_INT           13
+#define DIV_INT            14
+#define MOD_INT            15
 #define NEG_INT            16
 #define EQ_INT	           17
 #define DIST_INT           18
@@ -36,7 +33,7 @@
 #define LEQ_INT            22
 
 /********************************* FLOAT OPERATIONS ******************************/
-#define ASSIGNATION_FLOAT  23 
+#define ASSIGNATION_FLOAT  23
 #define PARAM_ASSIGN_FLOAT 24
 #define MINUS_FLOAT	       25
 #define ADD_FLOAT          26
@@ -51,7 +48,7 @@
 #define LEQ_FLOAT          35
 
 /********************************* BOOLEAN OPERATIONS ******************************/
-#define ASSIGNATION_BOOL   36 
+#define ASSIGNATION_BOOL   36
 #define PARAM_ASSIGN_BOOL  37
 #define EQ_BOOL            38
 #define DIST_BOOL          39
@@ -60,14 +57,12 @@
 #define NOT                42
 
 /******************************** EXTERNAL OPERATIONS *****************************/
-#define EXTERN_INVK  43
+#define EXTERN_INVK               43
 #define EXTERN_PARAM_ASSIGN_BOOL  44
-#define EXTERN_PARAM_ASSIGN_FLOAT  45
-#define EXTERN_PARAM_ASSIGN_INT  46
+#define EXTERN_PARAM_ASSIGN_FLOAT 45
+#define EXTERN_PARAM_ASSIGN_INT   46
 
-/**Returns the respective code of an ID */
-char* getCodeByID(int ID);
-/**Returns the respective type of attribute according to the type */
-char* getTypeByID(int type);
+/* Returns the respective string operation of an ID */
+char* get_operation_by_id(int);
 
 #endif

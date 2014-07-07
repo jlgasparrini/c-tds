@@ -1,15 +1,15 @@
 #!/bin/bash
 
 # Source code
-LexYacc="../src/LexYacc/*.c"
-SymbolsTable="../src/SymbolsTable/*.c"
-ErrorsQueue="../src/ErrorsQueue/*.c"
-Code3D="../src/Code3D/*.c"
-Stack="../src/Stack/*.c"
-ListMethod="../src/ListMethod/*.c"
-Interpreter="../src/Interpreter/*.c"
-Assembler="../src/Assembler/*.c"
-Libs="../src/lib/*.c"
+lex_yacc="../src/LexYacc/*.c"
+symbols_table="../src/SymbolsTable/*.c"
+errors_queue="../src/ErrorsQueue/*.c"
+code_3d="../src/code_3d/*.c"
+stack="../src/Stack/*.c"
+list_method="../src/ListMethod/*.c"
+interpreter="../src/Interpreter/*.c"
+assembler="../src/Assembler/*.c"
+libs="../src/lib/*.c"
 
 # Compile lex and yacc files
 echo
@@ -24,16 +24,14 @@ yacc -d yaccC-TDS.y
 echo
 echo "Compiling source code..."
 cd ../../bin/
-if gcc -o c-tds $LexYacc $SymbolsTable $ErrorsQueue $Code3D $Stack $ListMethod $Interpreter $Assembler; then
-  echo 
+if gcc -o c-tds $lex_yacc $symbols_table $errors_queue $code_3d $stack $list_method $interpreter $assembler; then
   echo "Compilation finished...   c-tds compiler generated in bin/c-tds succesfully."
+  # Clean all unnecessary files.
+  rm $lex_yacc
+  rm ../src/LexYacc/*.h
 else
   echo
   echo "Failure. Error to compile c-tds compiler."
 fi
-
-# Clean all unnecessary files.
-rm $LexYacc
-rm ../src/LexYacc/*.h
 
 exit 0

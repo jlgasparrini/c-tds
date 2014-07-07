@@ -5,7 +5,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "../ListMethod/genlistml.h"
-#include "../Code3D/gencode3d.h"
+#include "../code_3d/gencode3d.h"
 #include "../SymbolsTable/Utils.h"
 typedef union{
     int entero;

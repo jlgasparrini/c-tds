@@ -5,10 +5,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "gencode3d.h"
-#include "codespecs.h"
+#include "operations_code.h"
 
 /**Constructor de la Lista de Codigos 3D*/
-LCode3D* initLCode3D() 
+LCode3D* initLCode3D()
 {
     LCode3D *new = (LCode3D*) malloc(sizeof(LCode3D));
     (*new).codes = newListC3D();
@@ -16,7 +16,7 @@ LCode3D* initLCode3D()
 }
 
 /**Metodo que agrega un Codigo 3D a la lista*/
-void add_code(LCode3D *lcode3d, Code3D *code) 
+void add_code(LCode3D *lcode3d, Code3D *code)
 {
 	add_listC3D((*lcode3d).codes, code, size_listC3D((*lcode3d).codes));
 }
@@ -28,11 +28,11 @@ Code3D* get_code(LCode3D *lcode3d, int index)
 }
 
 /**Metodo de retorna el tamaño de la Lista*/
-int codeSize(LCode3D *lcode3d) 
+int codeSize(LCode3D *lcode3d)
 {
     return size_listC3D((*lcode3d).codes);
 }
-                                
+
 void set_code_int(LCode3D *lcode3d,int index,int param, int numb)
 {
     set_listC3D_int(lcode3d->codes,index, param, numb);
@@ -57,11 +57,11 @@ void add_Assignation(LCode3D *lcode3d, Attribute *attri1, Attribute *attriRes)
 {
     Code3D *code;
     if (getAttributeType(attri1) == Int)
-        code = newCode(ASSIGNATION_INT);  
+        code = newCode(ASSIGNATION_INT);
     if (getAttributeType(attri1) == Float)
-        code = newCode(ASSIGNATION_FLOAT);  
+        code = newCode(ASSIGNATION_FLOAT);
     if (getAttributeType(attri1) == Bool)
-        code = newCode(ASSIGNATION_BOOL);  
+        code = newCode(ASSIGNATION_BOOL);
 	setCode2D(code, attri1, attriRes);
 	add_code(lcode3d, code);
 }
