@@ -15,12 +15,14 @@ StVariable createStVariable(PrimitiveType type)
 {
 	StVariable var; 
 	var.type = type;
-	if (type == Int)
-		var.value.intVal = 0;
-	if (type == Float)
-		var.value.floatVal = 0.0;
-	if (type == Bool)
-		var.value.boolVal = False;
+  switch (type) {
+    case Int: var.value.intVal = 0;
+              break;
+    case Float: var.value.floatVal = 0.0;
+                break;
+    case Bool: var.value.boolVal = False;
+               break;
+  }
 	return var;
 }
 
@@ -28,12 +30,12 @@ StVariable createStVariable(PrimitiveType type)
 Attribute* createVariable(char *id, PrimitiveType type)
 {
 	Attribute *attr = (Attribute*) malloc (sizeof(Attribute)); 
-	(*attr).type = Variable;
-	(*attr).decl.variable = (StVariable*) malloc (sizeof(StVariable));
-	*(*attr).decl.variable = createStVariable(type);
-	(*(*attr).decl.variable).id = strdup(id);
-	(*(*attr).decl.variable).offset = getGlobalVarOffset();
-    decreaseVarOffset();
+	attr->type = Variable;
+	attr->decl.variable = (StVariable*) malloc (sizeof(StVariable));
+	*attr->decl.variable = createStVariable(type);
+	attr->decl.variable->id = strdup(id);
+	attr->decl.variable->offset = getGlobalVarOffset();
+  decreaseVarOffset();
 	return attr;
 }
 
@@ -60,11 +62,11 @@ Attribute* createArray(char *id, PrimitiveType type, unsigned int length)
 Attribute* createMethod(char *id, ReturnType type)
 {
 	Attribute *attr = (Attribute*) malloc (sizeof(Attribute)); 
-	(*attr).type = Method;
-	(*attr).decl.method.id = strdup(id);
-	(*attr).decl.method.type = type; 
-	(*attr).decl.method.paramSize = 0;
-	(*attr).decl.method.parameters = NULL;
+	attr->type = Method;
+	attr->decl.method.id = strdup(id);
+	attr->decl.method.type = type; 
+	attr->decl.method.paramSize = 0;
+	attr->decl.method.parameters = NULL;
 	return attr;
 }
 
@@ -72,18 +74,16 @@ Attribute* createMethod(char *id, ReturnType type)
 	Returns a pointer to the attribute if the parameter was created successful. Returns NULL otherwise. */
 Attribute* createParameter(Attribute *attr, unsigned int pos, char *id, PrimitiveType type)
 {
-	if (attr != NULL && (*attr).type == Method)
+	if (attr != NULL && attr->type == Method)
 	{
 		StVariable **auxParameters = (StVariable**) realloc ((*attr).decl.method.parameters, (pos+1)*sizeof(StVariable*));
-        // ver por que funciona de las dos maneras
-		//StVariable **auxParameters = (StVariable**) realloc ((*attr).decl.method.parameters, (pos+1)*sizeof(StVariable));
 		if (auxParameters != NULL)
 		{
-			(*attr).decl.method.parameters = auxParameters;
+			attr->decl.method.parameters = auxParameters;
 			Attribute *aux = createVariable(id, type);
 			(*(*aux).decl.variable).offset = globalParamOffset-4;;
 			globalParamOffset += 4;
-            (*attr).decl.method.parameters[pos] = (StVariable*) malloc(sizeof(StVariable));
+      (*attr).decl.method.parameters[pos] = (StVariable*) malloc(sizeof(StVariable));
 			(*attr).decl.method.parameters[pos] = (*aux).decl.variable;
 			return aux;
 		}
@@ -101,37 +101,36 @@ void setAmountOfParameters(Attribute *attr, unsigned int amount)
 /* Sets the value of the variable that contains "attr" with the respective "value" */
 void setVariableValue(Attribute *attr, PrimitiveType type, char *value)
 {
-	if (type == Int)
-		setIntVal(attr,atoi(value));
-	if (type == Float)
-		setFloatVal(attr,atof(value));
-	if (type == Bool)
-	{
-		if (strcmp(value, "false") == 0)
-			setBoolVal(attr,False);
-		if (strcmp(value, "true") == 0)
-			setBoolVal(attr,True);
-	}
+  switch (type) {
+    case Int:	setIntVal(attr,atoi(value));
+              break;
+    case Float:	setFloatVal(attr,atof(value));
+                break;
+    case Bool:	if (strcmp(value, "false") == 0)
+                    setBoolVal(attr,False);
+             		if (strcmp(value, "true") == 0)
+               			setBoolVal(attr,True);
+                break;
+  }
 }
 
 /* Returns the ID of the specified attribute */
 char* getID(Attribute *attr)
 {
-	if ((*attr).type == Variable)
-		return (*(*attr).decl.variable).id;
-	if ((*attr).type == Method)
-		return (*attr).decl.method.id;
-	if ((*attr).type == Array)
-		return (*attr).decl.array.id;
+  switch (attr->type) {
+    case Variable: return (*(*attr).decl.variable).id;
+    case Method: return (*attr).decl.method.id;
+	  case Array:	return (*attr).decl.array.id;
+  }
 }
 
 /* Returns the intVal of the attribute */
 int getIntVal(Attribute *attr)
 {
-	if ((*attr).type == Variable)
-		return (*(*attr).decl.variable).value.intVal;
-	if ((*attr).type == Method)
-		return (*attr).decl.method.returnValue.intVal;
+  switch (attr->type) {
+    case Variable: return (*(*attr).decl.variable).value.intVal;
+    case Method: return (*attr).decl.method.returnValue.intVal;
+  }
 }
 
 /* Returns the floatVal of the attribute */

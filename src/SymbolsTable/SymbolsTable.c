@@ -37,9 +37,9 @@ void pushLevel(SymbolsTable *aSymbolsTable)
 	if (newLevel)
     {
         (*newLevel).list = initialize();
-		(*newLevel).next = (*aSymbolsTable).top;  
-		(*aSymbolsTable).top = newLevel;
-		(*aSymbolsTable).currentLevel++;     
+		    (*newLevel).next = (*aSymbolsTable).top;  
+		    (*aSymbolsTable).top = newLevel;
+		    (*aSymbolsTable).currentLevel++;     
     } 
     else
         printf("%s\n",toString("SymbolsTable: pushLevel Warning: Error al reservar espacio en memoria.","",""));

@@ -23,6 +23,13 @@
   ReturnType method_type;	// Return type of the method
   char *last_def_method, *last_called_method = "";/* Name of the last defined method (last_def_method) and the last called method (last_called_method) */
   Boolean id_not_found;
+
+  static inline void setUpMethodCreation(char *name, ReturnType type) {
+    last_def_method = name; 
+    pushElement(error_q, symbols_table, createMethod(name, type)); 
+    pushLevel(symbols_table);
+    returns = 0;
+  }
   
   // Variables used for 3D code
   LCode3D *l_code3d;
@@ -53,27 +60,27 @@
   bool executable = false;
 
   // abre el archivo a tratar (entrada)
-  int OpenInput(char* name)
+  int openInput(char* name)
   {
     yyin = fopen(name,"r");
     if(yyin == NULL)
     {
       printf("File and / or arguments invalid.\n");
       printf("Use mode:\n");
-      printf("\t./c-tds [-target parse | show | interpreter | assembly | compile] input [extern_file]+ [-o output_name]\n");
+      printf("\t./c-tds [-target (parse | show | interpreter | assembly | compile)] input [extern_file]+ [-o output_name]\n");
       return EXIT_FAILURE;
     }
     return EXIT_SUCCESS;
   }
   
-  int ValidateArgs(char* argv[],int argc)
+  int validateArgs(char* argv[],int argc)
   {
     // Debe ingresar argumentos
     if(argc == 1)
     {
        printf("Few arguments.\n");
        printf("Use mode:\n\t");
-       printf("./c-tds [-target parse | show | interpreter | assembly | compile] input [extern_file]+ [-o output_name]\n");
+       printf("./c-tds [-target (parse | show | interpreter | assembly | compile)] input [extern_file]+ [-o output_name]\n");
        return 0;
     }
     // Analizo los comandos de entrada
@@ -145,7 +152,7 @@
     return 1;
   }
   
-  void InitializeStructures()
+  void initializeStructures()
   {
       amount_extern_params = 0;
       error_q = initializeQueue();
@@ -194,7 +201,7 @@
   }
   
   // Get only filename without extension or path.
-  char* GetName(char* file)
+  char* getName(char* file)
   {
     int length = strlen(file);
     int i;
@@ -222,15 +229,15 @@
   { 
     arguments_c = argc;
     arguments_v = argv;
-    InitializeStructures();
-    if(ValidateArgs(argv, argc) == 0) 
+    initializeStructures();
+    if(validateArgs(argv, argc) == 0) 
       return EXIT_FAILURE;
     else if(strcmp(argv[1], "-target") == 0)
     {
       // Get file name.
-      file_name = GetName(argv[3]);
+      file_name = getName(argv[3]);
       // Open input file.
-      if(OpenInput(argv[3]) == EXIT_FAILURE)
+      if(openInput(argv[3]) == EXIT_FAILURE)
         return EXIT_FAILURE;
       // Parse the input and load target.
       action_input = argv[2];
@@ -240,9 +247,9 @@
     {
       flag_target = 0;
       // Obtengo el nombre del archivo.
-      file_name = GetName(argv[1]);
+      file_name = getName(argv[1]);
       // Abro archivo de entrada.
-      if(OpenInput(argv[1]) == EXIT_FAILURE)
+      if(openInput(argv[1]) == EXIT_FAILURE)
         return EXIT_FAILURE;
       // Parse the input and by default load set target with "compile".
       action_input = "compile";
@@ -363,12 +370,12 @@
 %%      /*  beginning  of  rules  section  */
 
 /* ------------------- PROGRAM -------------------- */
-program       :    CLASS ID '{' '}'{finalize();}
+program       :    CLASS ID '{' '}' {finalize();}
               |    CLASS ID '{' {pushLevel(symbols_table);} 
-                                body 
-                                {checkMain(error_q,symbols_table);
-                                popLevel(symbols_table);
-                                finalize();} '}' 
+                   body {checkMain(error_q,symbols_table);
+                         popLevel(symbols_table);
+                         finalize();} 
+                   '}' 
               ;
 body          :    fields_decls method_decl 
               |    method_decl
@@ -389,21 +396,19 @@ field         :    ID {pushElement(error_q, symbols_table, createVariable($1, va
                                     }
                                     else
                                         pushElement(error_q, symbols_table, createArray($1, var_type, atoi($3)));
-                                } ']'	
+                                  } 
+                   ']'	
               ;
 
-type          :		INT_WORD		{var_type = Int; method_type = RetInt;} 
-              |		FLOAT_WORD		{var_type = Float; method_type = RetFloat;}
-              |		BOOLEAN_WORD	{var_type = Bool; method_type = RetBool;}
+type          :		INT_WORD		 {var_type = Int; method_type = RetInt;} 
+              |		FLOAT_WORD	 {var_type = Float; method_type = RetFloat;}
+              |		BOOLEAN_WORD {var_type = Bool; method_type = RetBool;}
               ;
 
 method_decl   :     type ID {
                         pushOffset(offsets_var, getGlobalVarOffset());/////////////////////////////////
                         resetGlobalVarOffset();////////////////////////////
-                        last_def_method=$2; 
-                        pushElement(error_q,symbols_table,createMethod($2,method_type)); 
-                        pushLevel(symbols_table);
-                        returns = 0;
+                        setUpMethodCreation($2, method_type);
                         add_CodeLabel(l_code3d, newCode(LABEL), $2); // Mark to Label of Init of Method
                         push(max_method_offset, intToString(codeSize(l_code3d)));
                         insert_MethodL(list_meth_label, $2, $2);
@@ -415,83 +420,74 @@ method_decl   :     type ID {
                         popLevel(symbols_table);
                     }
               |		method_decl type ID {
-                        pushOffset(offsets_var, getGlobalVarOffset());////////////////////////////
-                        resetGlobalVarOffset();////////////////////////////
-                        last_def_method=$3; 
-                        pushElement(error_q,symbols_table,createMethod($3,method_type)); 
-                        pushLevel(symbols_table);
-                        returns = 0;
+                        pushOffset(offsets_var, getGlobalVarOffset());
+                        resetGlobalVarOffset();
+                        setUpMethodCreation($3, method_type);
                         add_CodeLabel(l_code3d, newCode(LABEL), $3); // Mark to Label of Init of Method
                         push(max_method_offset, intToString(codeSize(l_code3d)));
                         insert_MethodL(list_meth_label, $3, $3);
                     } param block {
                         int pos = atoi(pop(max_method_offset));
                         set_code_int(l_code3d, pos, 2, getGlobalVarOffset());
-                        setGlobalVarOffset(popOffset(offsets_var));//////////////////////////////////////////
+                        setGlobalVarOffset(popOffset(offsets_var));
                         if(returns==0) insertError(error_q,toString("El metodo \"",$3,"\" debe tener al menos un return."));
                         popLevel(symbols_table);
                     }
               |     VOID ID {
-                        pushOffset(offsets_var, getGlobalVarOffset());////////////////////////////
-                        resetGlobalVarOffset();////////////////////////////
-                        last_def_method=$2; 
-                        pushElement(error_q,symbols_table,createMethod($2,RetVoid)); 
-                        pushLevel(symbols_table);
-                        returns = 0;
+                        pushOffset(offsets_var, getGlobalVarOffset());
+                        resetGlobalVarOffset();
+                        setUpMethodCreation($2, RetVoid);
                         add_CodeLabel(l_code3d, newCode(LABEL), $2); // Mark to Label of Init of Method
                         push(max_method_offset, intToString(codeSize(l_code3d)));
                         insert_MethodL(list_meth_label, $2, $2);
                     } param block {
                         int pos = atoi(pop(max_method_offset));
                         set_code_int(l_code3d, pos, 2, getGlobalVarOffset());
-                        setGlobalVarOffset(popOffset(offsets_var));//////////////////////////////////////////
+                        setGlobalVarOffset(popOffset(offsets_var));
                         if(returns==0) insertError(error_q,toString("El metodo \"",$2,"\" debe tener al menos un return."));
                         popLevel(symbols_table);
                     }
               |	    method_decl VOID ID {
-                        pushOffset(offsets_var, getGlobalVarOffset());////////////////////////////
-                        resetGlobalVarOffset();////////////////////////////
-                        last_def_method=$3; 
-                        pushElement(error_q,symbols_table,createMethod($3,RetVoid)); 
-                        pushLevel(symbols_table);
-                        returns = 0;
+                        pushOffset(offsets_var, getGlobalVarOffset());
+                        resetGlobalVarOffset();
+                        setUpMethodCreation($3, RetVoid);
                         add_CodeLabel(l_code3d, newCode(LABEL), $3); // Mark to Label of Init of Method
                         push(max_method_offset, intToString(codeSize(l_code3d)));
                         insert_MethodL(list_meth_label, $3, $3);
                     } param block {
                         int pos = atoi(pop(max_method_offset));
                         set_code_int(l_code3d, pos, 2, getGlobalVarOffset());
-                        setGlobalVarOffset(popOffset(offsets_var));//////////////////////////////////////////
+                        setGlobalVarOffset(popOffset(offsets_var));
                         if(returns==0) insertError(error_q,toString("El metodo \"",$3,"\" debe tener al menos un return."));
                         popLevel(symbols_table);
                     }
               ;
 
-param		  :    '(' {cant_params = 0; setAmountOfParameters(searchIdInSymbolsTable(error_q,symbols_table,last_def_method),0);} ')' 
+param		      :    '(' {cant_params = 0; setAmountOfParameters(searchIdInSymbolsTable(error_q,symbols_table,last_def_method),0);} ')' 
               |    '(' {if (strcmp(last_def_method,"main") == 0)
                             insertError(error_q,toString("El metodo \"main\" no debe contener parametros.","",""));
                         cant_params = 0;
-						pushOffset(offsets_param, getGlobalParamOffset());////////////////////////////
-						resetGlobalParamOffset();////////////////////////////
+						            pushOffset(offsets_param, getGlobalParamOffset());////////////////////////////
+						            resetGlobalParamOffset();////////////////////////////
                         }
                     parameters {
                                 setAmountOfParameters(searchIdInSymbolsTable(error_q,symbols_table,last_def_method),cant_params);
-								setGlobalParamOffset(popOffset(offsets_param));/////////////////////////////////////
+								                setGlobalParamOffset(popOffset(offsets_param));/////////////////////////////////////
                                }
                     ')'
               ;
 
 parameters    :		type ID {
-                                Attribute *aux = createParameter(searchIdInSymbolsTable(error_q,symbols_table,last_def_method),cant_params,$2,var_type);
-                                if (aux != NULL) {pushElement(error_q,symbols_table,aux); cant_params++;}
-                                else insertError(error_q,toString("El identificador \"",$2,"\" no puede contener parametros/esa cantidad de parametros."));
-                            }
+                           Attribute *aux = createParameter(searchIdInSymbolsTable(error_q,symbols_table,last_def_method),cant_params,$2,var_type);
+                           if (aux != NULL) {pushElement(error_q,symbols_table,aux); cant_params++;}
+                           else insertError(error_q,toString("El identificador \"",$2,"\" no puede contener parametros/esa cantidad de parametros."));
+                          }
 
               |		type ID {
-                                Attribute *aux = createParameter(searchIdInSymbolsTable(error_q,symbols_table,last_def_method),cant_params,$2,var_type);
-                                if (aux != NULL) {pushElement(error_q,symbols_table,aux); cant_params++;}
-                                else insertError(error_q,toString("El identificador \"",$2,"\" no puede contener parametros/esa cantidad de parametros."));
-                            }
+                           Attribute *aux = createParameter(searchIdInSymbolsTable(error_q,symbols_table,last_def_method),cant_params,$2,var_type);
+                           if (aux != NULL) {pushElement(error_q,symbols_table,aux); cant_params++;}
+                           else insertError(error_q,toString("El identificador \"",$2,"\" no puede contener parametros/esa cantidad de parametros."));
+                          }
                             ',' parameters 
               ;
 
