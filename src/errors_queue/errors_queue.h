@@ -1,18 +1,18 @@
 /*
  * A errors queue header.
  */
- 
-#ifndef ErrorsQueue_H
-#define ErrorsQueue_H
+
+#ifndef ERRORS_QUEUE_H
+#define ERRORS_QUEUE_H
 
 /* Node of the queue. */
-typedef struct E 
+typedef struct E
 {
     char *error;
     /* Pointer of the next node. */
     struct E *next;
 } ErrorNode;
- 
+
 /* Define type ErrorsQueue. */
 typedef struct
 {
@@ -25,7 +25,7 @@ typedef struct
     int size;
 } ErrorsQueue;
 
-/* Returns an initialized queue. */ 
+/* Returns an initialized queue. */
 ErrorsQueue* initializeQueue();
 
 /* Returns the string formed by putting together all the parameters */
@@ -33,7 +33,7 @@ char* toString(char *init, char *id, char *message);
 
 /* Insert an element in the end of the queue "q". */
 void insertError(ErrorsQueue *eq, char *message);
- 
+
 /* Delete all the elements of the queue. */
 void deleteAllErrors(ErrorsQueue *eq);
 

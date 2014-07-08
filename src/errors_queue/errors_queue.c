@@ -2,16 +2,16 @@
  * An errors queue implementation.
  */
 
-#include "ErrorsQueue.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "errors_queue.h"
 #include "../SymbolsTable/Utils.h"
 
 extern line_numb;
 extern column_numb;
 
-/* Returns an initialized queue. */ 
+/* Returns an initialized queue. */
 ErrorsQueue* initializeQueue()
 {
   ErrorsQueue *aux = (ErrorsQueue*) malloc(sizeof(ErrorsQueue));
@@ -23,10 +23,10 @@ ErrorsQueue* initializeQueue()
 
 /* Returns the string formed by putting together all the parameters */
 char* toString(char *init, char *id, char *message)
-{																						   
+{
   char* msg = (char*) malloc ((strlen(init)+strlen(id)+strlen(message)+strlen(" Error en linea: ")+digitAmount(line_numb)+strlen(".")+digitAmount(column_numb))*sizeof(char));
-  strcat(msg,init);  
-  strcat(msg,id); 
+  strcat(msg,init);
+  strcat(msg,id);
   strcat(msg,message);
   strcat(msg," Error en linea: ");
   char *numero = (char*) malloc (digitAmount(line_numb)*sizeof(char));
@@ -54,7 +54,7 @@ void insertError(ErrorsQueue *eq, char* message)
     {
       (*eq).firstIN = newErrorNode;
       (*eq).lastIN = newErrorNode;
-    } 
+    }
     else
     {
       (*(*eq).lastIN).next = newErrorNode;
@@ -62,7 +62,7 @@ void insertError(ErrorsQueue *eq, char* message)
     }
     (*eq).size++;
   }
-  else 
+  else
   {
     printf("ErrorsQueue.c: insert ERROR: No se puede reservar espacio en memoria.");
   }
@@ -75,7 +75,7 @@ void deleteAllErrors(ErrorsQueue *eq)
   int i = 0;
   while (i < (*eq).size)
   {
-    aux = (*eq).firstIN; 
+    aux = (*eq).firstIN;
     (*eq).firstIN = (*aux).next;
     free(aux);
     i++;
@@ -92,7 +92,7 @@ void printErrorList(ErrorsQueue *eq)
     printf("Sin errores semanticos al compilar.\n");
   else
   {
-    ErrorNode *aux = (*eq).firstIN; 
+    ErrorNode *aux = (*eq).firstIN;
     int i = 0;
     if ((*eq).size == 1)
       printf("-- %d error semantico al compilar:\n",(*eq).size);

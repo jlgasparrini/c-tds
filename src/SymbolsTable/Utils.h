@@ -6,7 +6,7 @@
 #define Utils_H
 
 #include "SymbolsTable.h"
-#include "../errors_queue/ErrorsQueue.h"
+#include "../errors_queue/errors_queue.h"
 #include "../code_3d/gencode3d.h"
 #include "../code_3d/operations_code.h"
 

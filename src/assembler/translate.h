@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "../ListMethod/genlistml.h"
+#include "../method_list/genlistml.h"
 #include "../code_3d/gencode3d.h"
 #include "../SymbolsTable/Utils.h"
 typedef union{

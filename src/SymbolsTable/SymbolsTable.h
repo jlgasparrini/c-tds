@@ -8,7 +8,7 @@
 #define SymbolsTable_H
 
 #include "LinkedList.h"
-#include "../errors_queue/ErrorsQueue.h"
+#include "../errors_queue/errors_queue.h"
 
 typedef struct SNode
 {

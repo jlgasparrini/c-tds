@@ -1,5 +1,7 @@
-//Parser.
 %{
+  /*
+   *  MISSING DOCUMENTATION!
+   */
   #include <stdio.h>
   #include <ctype.h>
   #include <string.h>
@@ -7,9 +9,9 @@
   #include "../SymbolsTable/StringStack.h"
   #include "../SymbolsTable/Utils.h"
   #include <unistd.h>
-  #include "../Stack/stack.h"
-  #include "../Stack/stackOffset.h"
-  #include "../ListMethod/genlistml.h"
+  #include "../stack/stack.h"
+  #include "../stack/stackOffset.h"
+  #include "../method_list/genlistml.h"
 
   extern FILE *yyin;
   SymbolsTable *symbols_table;	// Symbols Table Definition.
@@ -25,17 +27,17 @@
   Boolean id_not_found;
 
   static inline void setUpMethodCreation(char *name, ReturnType type) {
-    last_def_method = name; 
-    pushElement(error_q, symbols_table, createMethod(name, type)); 
+    last_def_method = name;
+    pushElement(error_q, symbols_table, createMethod(name, type));
     pushLevel(symbols_table);
     returns = 0;
   }
-  
+
   // Variables used for 3D code
   LCode3D *l_code3d;
   char *label_ID = "label_%d_";
   int label_count = 0;
-  
+
   Stack *labels_CYC;
   Stack *labels_while;
   Stack *labels_for;
@@ -44,13 +46,13 @@
   StackOffset *offsets_var;
   StackOffset *offsets_param;
   ListMLabel *list_meth_label;
-  
+
   //Assembly
   char* file_name; //String para almacenar el nombre del archivo sin extension.
   int flag_target = 1; //Bandera utilizada para manejar si en la linea de entrada de mis argumentos, tengo un "-target".
   int flag_first_param = 0; //Bandera utilizada para manejar la cantidad de parametros por adelantado.
   int amount_extern_params; //Contador de parametros para las invocaciones externas.
-  
+
   //Main parameters
   int arguments_c;
   char **arguments_v;
@@ -72,7 +74,7 @@
     }
     return EXIT_SUCCESS;
   }
-  
+
   int validateArgs(char* argv[],int argc)
   {
     // Debe ingresar argumentos
@@ -99,14 +101,14 @@
           return 0;
         }
         // Compruebo etapa de compilacion
-        if(strcmp(argv[i+1],"parse")  && strcmp(argv[i+1],"show")  
+        if(strcmp(argv[i+1],"parse")  && strcmp(argv[i+1],"show")
           && strcmp(argv[i+1],"interpreter")  && strcmp(argv[i+1],"assembly")  && strcmp(argv[i+1],"compile") )
         {
           printf("Arguments error");
           printf("\tOnly allowed: -target parse | show | interpreter | assembly | compile\n");
-          return 0;  
+          return 0;
         }
-        else 
+        else
         {
           // Check extension files. Only allowed .ctds or .c-tds
           char* entrada = argv[i + 2];
@@ -114,7 +116,7 @@
           if(length < 6)
           {
             printf("Invalid input file.\n");
-            return 0;  
+            return 0;
           }
           int index;
           int pos_punto;
@@ -151,7 +153,7 @@
     }
     return 1;
   }
-  
+
   void initializeStructures()
   {
       amount_extern_params = 0;
@@ -170,7 +172,7 @@
       list_meth_label = initL();
       l_code3d = initLCode3D();
   }
-  
+
   void compile(char *main_file, char **linked_files, int size)
   {
     InitAssembler(list_meth_label, l_code3d, return_stack, file_name);
@@ -188,7 +190,7 @@
     if (executable)
       printf("Built executable file %s\n", output_name);
     pid_t child_pid = fork();
-    if (child_pid == 0) 
+    if (child_pid == 0)
       execvp(args[0], args);    // Execute GCC compilation command.
     /**** We can't delete temporary assembly ****/
     //else
@@ -199,7 +201,7 @@
     //  printf("Finished compilation.\n");
     //}
   }
-  
+
   // Get only filename without extension or path.
   char* getName(char* file)
   {
@@ -223,14 +225,14 @@
       res[i - pos_barra -1] = file[i];
     return strdup(res);
   }
-  
-  
+
+
   int main(int argc,char **argv)
-  { 
+  {
     arguments_c = argc;
     arguments_v = argv;
     initializeStructures();
-    if(validateArgs(argv, argc) == 0) 
+    if(validateArgs(argv, argc) == 0)
       return EXIT_FAILURE;
     else if(strcmp(argv[1], "-target") == 0)
     {
@@ -257,7 +259,7 @@
       yyparse();
     }
   }
-  
+
   //Al finalizar el parseo verifico si hubo errores, de lo contrario realizo la accion correspondiente al target.
   void finalize()
   {
@@ -317,9 +319,9 @@
       }
     }
   }
-  
+
   /*Create new Label*/
-  char* newLabelName(char* msg) 
+  char* newLabelName(char* msg)
   {
     char *labelName = malloc(sizeof(char)*(digitAmount(label_count)+strlen("%d_label_")+strlen(msg)));
     sprintf(labelName, label_ID, label_count);
@@ -327,9 +329,9 @@
     label_count++;
     return labelName;
   }
-  
+
   int yydebug = 1;
-  
+
   int yyerror (char *str)
   {
     printErrorList(error_q);
@@ -340,11 +342,11 @@
       printf("%s\n","Unknow error.");
     return 0;
   }
-  
+
   int yywrap()
   {
     return 1;
-  } 
+  }
 %}
 
 %union
@@ -357,7 +359,7 @@
 
 /* %token<string_value> utilizado para definir el tipo de los tokens devueltos desde Lex*/
 %token<string_value> FLOAT INTEGER BOOLEAN INT_WORD FLOAT_WORD BOOLEAN_WORD ID PLUSEQUAL MINUSEQUAL STRING
-%token EQUAL DISTINCT GEQUAL LEQUAL ORR ANDD 
+%token EQUAL DISTINCT GEQUAL LEQUAL ORR ANDD
 %token BREAK IF CONTINUE ELSE RETURNN WHILE CLASS FOR VOID EXTERNINVK PRINTT
 %nonassoc '<' '>' EQUAL DISTINCT GEQUAL LEQUAL
 %left '+' '-'
@@ -371,18 +373,18 @@
 
 /* ------------------- PROGRAM -------------------- */
 program       :    CLASS ID '{' '}' {finalize();}
-              |    CLASS ID '{' {pushLevel(symbols_table);} 
+              |    CLASS ID '{' {pushLevel(symbols_table);}
                    body {checkMain(error_q,symbols_table);
                          popLevel(symbols_table);
-                         finalize();} 
-                   '}' 
+                         finalize();}
+                   '}'
               ;
-body          :    fields_decls method_decl 
+body          :    fields_decls method_decl
               |    method_decl
               ;
 
-fields_decls  :    type fields ';' 			
-              |    fields_decls type fields ';' 	
+fields_decls  :    type fields ';'
+              |    fields_decls type fields ';'
               ;
 
 fields        :    field
@@ -390,17 +392,17 @@ fields        :    field
               ;
 
 field         :    ID {pushElement(error_q, symbols_table, createVariable($1, var_type));}
-              |    ID '[' INTEGER {if (atoi($3) <= 0) 
+              |    ID '[' INTEGER {if (atoi($3) <= 0)
                                     {	insertError(error_q,toString("Error en definicion del arreglo \"",$1,"\". El tamaño del arreglo debe ser un entero mayor que 0."));
                                         pushElement(error_q, symbols_table, createArray($1, var_type, 10)); /* Array size of 10 in case of error */
                                     }
                                     else
                                         pushElement(error_q, symbols_table, createArray($1, var_type, atoi($3)));
-                                  } 
-                   ']'	
+                                  }
+                   ']'
               ;
 
-type          :		INT_WORD		 {var_type = Int; method_type = RetInt;} 
+type          :		INT_WORD		 {var_type = Int; method_type = RetInt;}
               |		FLOAT_WORD	 {var_type = Float; method_type = RetFloat;}
               |		BOOLEAN_WORD {var_type = Bool; method_type = RetBool;}
               ;
@@ -463,7 +465,7 @@ method_decl   :     type ID {
                     }
               ;
 
-param		      :    '(' {cant_params = 0; setAmountOfParameters(searchIdInSymbolsTable(error_q,symbols_table,last_def_method),0);} ')' 
+param		      :    '(' {cant_params = 0; setAmountOfParameters(searchIdInSymbolsTable(error_q,symbols_table,last_def_method),0);} ')'
               |    '(' {if (strcmp(last_def_method,"main") == 0)
                             insertError(error_q,toString("El metodo \"main\" no debe contener parametros.","",""));
                         cant_params = 0;
@@ -488,16 +490,16 @@ parameters    :		type ID {
                            if (aux != NULL) {pushElement(error_q,symbols_table,aux); cant_params++;}
                            else insertError(error_q,toString("El identificador \"",$2,"\" no puede contener parametros/esa cantidad de parametros."));
                           }
-                            ',' parameters 
+                            ',' parameters
               ;
 
 block         :    '{' '}'
-              |    '{' codeBlock '}' 
+              |    '{' codeBlock '}'
               ;
 
-codeBlock     :    fields_decls statements 
+codeBlock     :    fields_decls statements
               |    statements
-              |    fields_decls 
+              |    fields_decls
               ;
 
 statements    :    statement
@@ -508,9 +510,9 @@ statements    :    statement
 
 /* -------------------- STATEMENTS ------------------------------- */
 
-statement     :    conditional 
-              |    iteration 
-              |    action ';'     
+statement     :    conditional
+              |    iteration
+              |    action ';'
               |    {pushLevel(symbols_table);} block {popLevel(symbols_table);}
               |    PRINTT expression ';' {add_Print(l_code3d, newCode(PRINT), $2);}
               ;
@@ -535,28 +537,28 @@ action        :
                                 char *posLabel = pop(labels_while); //Label of End of While
                                 add_CodeLabel(l_code3d, newCode(GOTO_LABEL), peek(labels_while)); //Go to char of Init of While
                                 push(labels_while, posLabel);
-                            } 
+                            }
                     }
               |	   RETURNN {
-                            returns++; 
+                            returns++;
                             if ((id_not_found == False) && (checkReturn(error_q,symbols_table,last_def_method) == 0))
                             {
                                 Code3D *ret = newCode(RETURN);
                                 setCodeLabel(ret, "   -   ");  /* Label "    -    " is added because there are no arguments */
                                 add_code(l_code3d, ret);
                             }
-                    }   
-              |	   RETURNN expression {
-                                    returns++; 									
-                                    if (id_not_found == False && checkReturnExpression(error_q,symbols_table,last_def_method,$2) == 0)
-                                    { 
-                                        Code3D *ret = newCode(RETURN_EXPR);
-                                        setCode2D(ret, $2, searchIdInSymbolsTable(error_q,symbols_table,last_def_method)); 
-                                        add_code(l_code3d, ret);  
-                                    }                           
                     }
-              |    asignation 
-              |    method_call                        
+              |	   RETURNN expression {
+                                    returns++;
+                                    if (id_not_found == False && checkReturnExpression(error_q,symbols_table,last_def_method,$2) == 0)
+                                    {
+                                        Code3D *ret = newCode(RETURN_EXPR);
+                                        setCode2D(ret, $2, searchIdInSymbolsTable(error_q,symbols_table,last_def_method));
+                                        add_code(l_code3d, ret);
+                                    }
+                    }
+              |    asignation
+              |    method_call
               ;
 
 asignation    :     location assig_op expression {
@@ -564,7 +566,7 @@ asignation    :     location assig_op expression {
                     }
               ;
 
-assig_op      :    '=' {$$ = "=";} 
+assig_op      :    '=' {$$ = "=";}
               |    PLUSEQUAL {$$ = "+=";}
               |    MINUSEQUAL {$$ = "-=";}
               ;
@@ -575,13 +577,13 @@ assig_op      :    '=' {$$ = "=";}
 
 conditional   :     IF '(' {
                         add_CodeLabel(l_code3d, newCode(LABEL), newLabelName("if"));
-                    } expression { 
+                    } expression {
                         controlType(error_q,$4,Bool,"if",1);
                         char *elseLabel = newLabelName("else");
-                        add_CodeLabelCond(l_code3d, newCode(GOTO_LABEL_COND), $4, elseLabel); 
+                        add_CodeLabelCond(l_code3d, newCode(GOTO_LABEL_COND), $4, elseLabel);
                         push(labels_CYC, newLabelName("end_if"));
                         push(labels_CYC, elseLabel);
-                    } ')' block optional 
+                    } ')' block optional
               ;
 
 optional	  :		{
@@ -592,29 +594,29 @@ optional	  :		{
                         char* elseLabel = pop(labels_CYC);
                         add_CodeLabel(l_code3d, newCode(GOTO_LABEL), peek(labels_CYC)); //Go to char of Else
                         add_CodeLabel(l_code3d, newCode(LABEL), elseLabel); // Mark to char of Else
-                    } block {	
+                    } block {
                         char* aux = pop(labels_CYC);
                         add_CodeLabel(l_code3d, newCode(LABEL), aux); // Mark to char of End
                         push(return_stack, aux);
                     }
               ;
-                                
+
 iteration     :    WHILE {
-                        char *whileLabel = newLabelName("while"); 
+                        char *whileLabel = newLabelName("while");
                         add_CodeLabel(l_code3d, newCode(LABEL), whileLabel); // label of While
                         push(labels_while, whileLabel);
                         push(labels_while, intToString(codeSize(l_code3d)));
-                    } 
-                   expression { 
+                    }
+                   expression {
                         char *endWhile = newLabelName("end_while");
                         char *pos = pop(labels_while);
                         char *whileLabel = pop(labels_while);
                         push(labels_while, endWhile);
-                        push(labels_while, whileLabel); 
+                        push(labels_while, whileLabel);
                         push(labels_while, pos);
                         controlType(error_q,$3,Bool,"while",1);
                         add_CodeLabelCond(l_code3d, newCode(GOTO_LABEL_COND), $3, endWhile); // Go to label of Expression
-                    } block {							
+                    } block {
                         add_code(l_code3d, get_code(l_code3d, atoi(pop(labels_while))+1));
                         add_CodeLabel(l_code3d, newCode(GOTO_LABEL), pop(labels_while)); // Go to label of while
                         add_CodeLabel(l_code3d, newCode(LABEL), pop(labels_while)); // label_end of while
@@ -624,7 +626,7 @@ iteration     :    WHILE {
                             insertError(error_q,toString("El identificador \"", $2, "\" no pertenece a una variable de tipo \"int\""));
                         /* It musn't have the same treatment that while? */
                     } '=' expression ',' expression {
-                            controlType(error_q,$5,Int,"for",2); controlType(error_q,$7,Int,"for",3); 
+                            controlType(error_q,$5,Int,"for",2); controlType(error_q,$7,Int,"for",3);
                             char *forLabel = newLabelName("for");
                             char *endLabel = newLabelName("end_for");
                             push(labels_for, endLabel);
@@ -640,7 +642,7 @@ iteration     :    WHILE {
                             add_CodeLabel(l_code3d, newCode(GOTO_LABEL), pop(labels_for)); // Go to label of For
                             add_CodeLabel(l_code3d, newCode(LABEL), pop(labels_for)); // label_end of For
                     }
-              ;                                                               
+              ;
 
 /* -------------------- END OF CONDITIONALS AND CICLES ------------------------------- */
 
@@ -651,18 +653,18 @@ location      :    ID {$$ = getVariableAttribute(error_q, symbols_table, $1);}
               ;
 
 method_call   :	   ID '(' ')' {
-                        cant_params=0; 
-                        last_called_method=$1; 
+                        cant_params=0;
+                        last_called_method=$1;
                         add_CodeLabel(l_code3d, newCode(GOTO_METHOD), get_Label(list_meth_label, $1)); //Go to char of Init of Method
                         $$ = checkAndGetMethodRetAttribute(error_q,symbols_table,l_code3d,$1,0);
                     }
 
-				|    ID '(' {if (searchIdInSymbolsTable(error_q,symbols_table,$1) == NULL) 
-                                id_not_found = True; 
+				|    ID '(' {if (searchIdInSymbolsTable(error_q,symbols_table,$1) == NULL)
+                                id_not_found = True;
                             else
                             {
                                 pushString(params_stack,intToString(cant_params));
-                                cant_params=0;								
+                                cant_params=0;
                                 pushString(methods_id_stack,last_called_method);
                                 last_called_method = $1;
                             }
@@ -671,20 +673,20 @@ method_call   :	   ID '(' ')' {
                             {
                                 set_code_int(l_code3d, flag_first_param, 3, cant_params);
                                 flag_first_param = 0;
-                                add_CodeLabel(l_code3d, newCode(GOTO_METHOD), get_Label(list_meth_label, $1)); //Go to char of Init of Method 
-                                $$ = checkAndGetMethodRetAttribute(error_q,symbols_table,l_code3d,$1,cant_params); 
+                                add_CodeLabel(l_code3d, newCode(GOTO_METHOD), get_Label(list_meth_label, $1)); //Go to char of Init of Method
+                                $$ = checkAndGetMethodRetAttribute(error_q,symbols_table,l_code3d,$1,cant_params);
                                 cant_params=atoi(popString(params_stack));
                             }
                             else
                             {
-                                $$ = createVariable((char*) getVariableName(),Int); 
+                                $$ = createVariable((char*) getVariableName(),Int);
                                 id_not_found = False;
                             }
-                    } 
+                    }
 
 				|    EXTERNINVK '(' STRING ',' typevoid ')' {
                         Attribute* res;
-                        if (method_type != RetVoid) 
+                        if (method_type != RetVoid)
                             res = createVariable("",method_type);
                         else
                             res = createVariable((char*) getVariableName(),Int);
@@ -695,7 +697,7 @@ method_call   :	   ID '(' ')' {
 				|    EXTERNINVK '(' STRING ',' typevoid ',' externinvk_arg ')' {
                         amount_extern_params = 0;
                         Attribute* res;
-                        if (method_type != RetVoid) 
+                        if (method_type != RetVoid)
                             res = createVariable("",method_type);
                         else
                             res = createVariable((char*) getVariableName(),Int);
@@ -708,7 +710,7 @@ method_call   :	   ID '(' ')' {
 expression_aux:    expression {
                         if (id_not_found != True)
                         {
-                            correctParamBC(error_q,symbols_table,l_code3d,$1,last_called_method,cant_params); 
+                            correctParamBC(error_q,symbols_table,l_code3d,$1,last_called_method,cant_params);
                             if (flag_first_param == 0)
                                 flag_first_param = codeSize(l_code3d);
                             cant_params++;
@@ -717,12 +719,12 @@ expression_aux:    expression {
               |    expression {
                         if (id_not_found != True)
                         {
-                            correctParamIC(error_q,symbols_table,l_code3d,$1,last_called_method,cant_params); 
+                            correctParamIC(error_q,symbols_table,l_code3d,$1,last_called_method,cant_params);
                                 if (flag_first_param == 0)
                                     flag_first_param = codeSize(l_code3d);
                             cant_params++;
-                        } 
-                   } ',' expression_aux 
+                        }
+                   } ',' expression_aux
               ;
 
 typevoid      :    type {switch (method_type)
@@ -733,9 +735,9 @@ typevoid      :    type {switch (method_type)
                                             break;
                             case RetBool: $$=strdup("bool");
                                             break;
-                        } 
+                        }
                    }
-              |    VOID {method_type = RetVoid; $$=strdup("void");} 
+              |    VOID {method_type = RetVoid; $$=strdup("void");}
               ;
 
 externinvk_arg:    arg                    {amount_extern_params++; externParamAssign(l_code3d, $1, amount_extern_params);}
@@ -746,19 +748,19 @@ arg           :    expression {$$ = $1;}
               |    STRING     {$$ = $1;}
               ;
 
-expression    :    conjunction					{$$ = $1;}                             
+expression    :    conjunction					{$$ = $1;}
               |    expression ORR conjunction	{$$ = returnOr(error_q, l_code3d, $1, $3);}
               ;
 
-conjunction   :    inequality                   {$$ = $1;}                                
+conjunction   :    inequality                   {$$ = $1;}
               |    conjunction ANDD inequality	{$$ = returnAnd(error_q, l_code3d, $1, $3);}
               ;
 
-inequality    :    comparison                       {$$ = $1;}                             
+inequality    :    comparison                       {$$ = $1;}
               |    inequality DISTINCT comparison   {$$ = returnDistinct(error_q, l_code3d, $1, $3);}
               ;
 
-comparison    :    relation                   {$$ = $1;} 
+comparison    :    relation                   {$$ = $1;}
               |    relation EQUAL relation    {$$ = returnEqual(error_q, l_code3d, $1, $3);}
               ;
 
@@ -780,7 +782,7 @@ factor1       :    factor			    {$$ = $1;}
               |    factor '%' factor1	{$$ = returnMod(error_q, l_code3d, $1, $3);}
               ;
 
-factor        :    primary		{$$ = $1;}  
+factor        :    primary		{$$ = $1;}
               |    '!' factor	{$$ = returnNot(error_q, l_code3d, $2);}
               |    '-' factor	{$$ = returnNeg(error_q, l_code3d, $2);}
               ;
