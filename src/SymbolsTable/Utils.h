@@ -1,8 +1,12 @@
+/*
+ * MISSING DOCUMENTATION!
+*/
+
 #ifndef Utils_H
 #define Utils_H
 
 #include "SymbolsTable.h"
-#include "../ErrorsQueue/ErrorsQueue.h"
+#include "../errors_queue/ErrorsQueue.h"
 #include "../code_3d/gencode3d.h"
 #include "../code_3d/operations_code.h"
 

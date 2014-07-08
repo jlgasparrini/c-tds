@@ -1,22 +1,29 @@
-/**********************************************************************
- *Implementacion Codigo de 3 Direcciones                               *
- **********************************************************************/
+/*
+ * Code 3d implementation.
+ */
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include "code_3d.h"
 
-/**Constructor de Codigo 3D*/
+#define CODE_NULL    -1
+#define CODE_ATTRI    0
+#define CODE_LABEL    1
+#define CODE_INT      2
+#define CODE_FLOAT    3
+#define CODE_BOOL     4
+
+/* Code 3d constructor. */
 Code3D* newCode(int comm)
 {
     Code3D *new = (Code3D*) malloc(sizeof(Code3D));
     (*new).param1 = (Param*) malloc(sizeof(Param));
     (*new).param2 = (Param*) malloc(sizeof(Param));
     (*new).param3 = (Param*) malloc(sizeof(Param));
-	(*new).param1->type = CodeNULL;
-	(*new).param2->type = CodeNULL;
-	(*new).param3->type = CodeNULL;
+	(*new).param1->type = CODE_NULL;
+	(*new).param2->type = CODE_NULL;
+	(*new).param3->type = CODE_NULL;
     (*new).command = comm;
     return new;
 }
@@ -31,11 +38,11 @@ int getCommand(Code3D *code)
 bool isInt(Code3D *code, int param)
 {
     if (param == 1)
-        return code->param1->type == CodeINT;
+        return code->param1->type == CODE_INT;
     if (param == 2)
-        return code->param2->type == CodeINT;
+        return code->param2->type == CODE_INT;
     if (param == 3)
-        return code->param3->type == CodeINT;
+        return code->param3->type == CODE_INT;
 	return 0;
 }
 
@@ -43,11 +50,11 @@ bool isInt(Code3D *code, int param)
 bool isFloat(Code3D *code, int param)
 {
     if (param == 1)
-        return code->param1->type == CodeFLOAT;
+        return code->param1->type == CODE_FLOAT;
     if (param == 2)
-        return code->param2->type == CodeFLOAT;
+        return code->param2->type == CODE_FLOAT;
     if (param == 3)
-        return code->param3->type == CodeFLOAT;
+        return code->param3->type == CODE_FLOAT;
     return 0;
 }
 
@@ -55,11 +62,11 @@ bool isFloat(Code3D *code, int param)
 bool isBool(Code3D *code, int param)
 {
     if (param == 1)
-        return code->param1->type == CodeBOOL;
+        return code->param1->type == CODE_BOOL;
     if (param == 2)
-        return code->param2->type == CodeBOOL;
+        return code->param2->type == CODE_BOOL;
     if (param == 3)
-        return code->param3->type == CodeBOOL;
+        return code->param3->type == CODE_BOOL;
     return 0;
 }
 
@@ -67,11 +74,11 @@ bool isBool(Code3D *code, int param)
 bool isLabel(Code3D *code, int param)
 {
     if (param == 1)
-        return code->param1->type == CodeLABEL;
+        return code->param1->type == CODE_LABEL;
     if (param == 2)
-        return code->param2->type == CodeLABEL;
+        return code->param2->type == CODE_LABEL;
     if (param == 3)
-        return code->param3->type == CodeLABEL;
+        return code->param3->type == CODE_LABEL;
     return 0;
 }
 
@@ -79,11 +86,11 @@ bool isLabel(Code3D *code, int param)
 bool isAttribute(Code3D *code, int param)
 {
     if (param == 1)
-        return code->param1->type == CodeATTRI;
+        return code->param1->type == CODE_ATTRI;
     if (param == 2)
-        return code->param2->type == CodeATTRI;
+        return code->param2->type == CODE_ATTRI;
     if (param == 3)
-        return code->param3->type == CodeATTRI;
+        return code->param3->type == CODE_ATTRI;
     return 0;
 }
 
@@ -91,11 +98,11 @@ bool isAttribute(Code3D *code, int param)
 bool isNull(Code3D *code, int param)
 {
     if (param == 1)
-        return code->param1->type == CodeNULL;
+        return code->param1->type == CODE_NULL;
     if (param == 2)
-        return code->param2->type == CodeNULL;
+        return code->param2->type == CODE_NULL;
     if (param == 3)
-        return code->param3->type == CodeNULL;
+        return code->param3->type == CODE_NULL;
     return 1;
 }
 
@@ -159,17 +166,17 @@ void setBool(Code3D *code, int param, bool boolAttri)
 {
     if (param == 1)
     {
-        code->param1->type = CodeBOOL;
+        code->param1->type = CODE_BOOL;
         code->param1->val.boolAttri = boolAttri;
     }
     else if (param == 2)
     {
-        code->param2->type = CodeBOOL;
+        code->param2->type = CODE_BOOL;
         code->param2->val.boolAttri = boolAttri;
     }
     else if (param == 3)
     {
-        code->param3->type = CodeBOOL;
+        code->param3->type = CODE_BOOL;
         code->param3->val.boolAttri = boolAttri;
     }
 }
@@ -179,17 +186,17 @@ void setFloat(Code3D *code, int param, float floatAttri)
 {
     if (param == 1)
     {
-        code->param1->type = CodeFLOAT;
+        code->param1->type = CODE_FLOAT;
         code->param1->val.floatAttri = floatAttri;
     }
     else if (param == 2)
     {
-        code->param2->type = CodeFLOAT;
+        code->param2->type = CODE_FLOAT;
         code->param2->val.floatAttri = floatAttri;
     }
     else if (param == 3)
     {
-        code->param3->type = CodeFLOAT;
+        code->param3->type = CODE_FLOAT;
         code->param3->val.floatAttri = floatAttri;
     }
 }
@@ -199,17 +206,17 @@ void setInt(Code3D *code, int param, int intAttri)
 {
     if (param == 1)
     {
-        code->param1->type = CodeINT;
+        code->param1->type = CODE_INT;
         code->param1->val.intAttri = intAttri;
     }
     else if (param == 2)
     {
-        code->param2->type = CodeINT;
+        code->param2->type = CODE_INT;
         code->param2->val.intAttri = intAttri;
     }
     else if (param == 3)
     {
-        code->param3->type = CodeINT;
+        code->param3->type = CODE_INT;
         code->param3->val.intAttri = intAttri;
     }
 }
@@ -219,17 +226,17 @@ void setLabel(Code3D *code, int param, char *label)
 {
     if (param == 1)
 	{
-        code->param1->type = CodeLABEL;
+        code->param1->type = CODE_LABEL;
         code->param1->val.label = strdup(label);
     }
 	if (param == 2)
 	{
-        code->param2->type = CodeLABEL;
+        code->param2->type = CODE_LABEL;
         code->param2->val.label = strdup(label);
     }
 	if (param == 3)
 	{
-        code->param3->type = CodeLABEL;
+        code->param3->type = CODE_LABEL;
         code->param3->val.label = strdup(label);
 	}
 }
@@ -239,17 +246,17 @@ void setAttribute(Code3D *code, int param, Attribute *attri)
 {
     if (param == 1)
     {
-        code->param1->type = CodeATTRI;
+        code->param1->type = CODE_ATTRI;
         code->param1->val.attri = attri;
     }
     if (param == 2)
     {
-        code->param2->type = CodeATTRI;
+        code->param2->type = CODE_ATTRI;
         code->param2->val.attri = attri;
     }
     if (param == 3)
     {
-        code->param3->type = CodeATTRI;
+        code->param3->type = CODE_ATTRI;
         code->param3->val.attri = attri;
     }
 }
@@ -257,11 +264,11 @@ void setAttribute(Code3D *code, int param, Attribute *attri)
 /**Metodo para setear el parametro en Null de un Codigo 3D*/
 void setNull(Code3D *code, int param) {
     if (param == 1)
-        code->param1->type = CodeNULL;
+        code->param1->type = CODE_NULL;
 	if (param == 2)
-        code->param2->type = CodeNULL;
+        code->param2->type = CODE_NULL;
     if (param == 3)
-        code->param3->type = CodeNULL;
+        code->param3->type = CODE_NULL;
 }
 
 /**Metodo para setear los parametros de un Label en el Codigo 3D*/

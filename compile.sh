@@ -3,12 +3,12 @@
 # Source code
 lex_yacc="../src/LexYacc/*.c"
 symbols_table="../src/SymbolsTable/*.c"
-errors_queue="../src/ErrorsQueue/*.c"
+errors_queue="../src/errors_queue/*.c"
 code_3d="../src/code_3d/*.c"
 stack="../src/Stack/*.c"
 list_method="../src/ListMethod/*.c"
 interpreter="../src/Interpreter/*.c"
-assembler="../src/Assembler/*.c"
+assembler="../src/assembler/*.c"
 libs="../src/lib/*.c"
 
 # Compile lex and yacc files

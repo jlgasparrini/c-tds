@@ -1,4 +1,3 @@
-
 /*
  * Assembly Code Generator
  */
@@ -9,9 +8,9 @@
 #include "../ListMethod/genlistml.h"
 #include "../code_3d/gencode3d.h"
 #include "../Stack/stack.h"
-#include "Translate.h"
+#include "translate.h"
 
-/* Initializes the interpreter and runs it */
+/* Initializes the assembly generator and writes it */
 void InitAssembler(ListMLabel *labelL, LCode3D *codeL, Stack *stack, char* fileName);
 
 #endif

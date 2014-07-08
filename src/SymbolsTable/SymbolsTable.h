@@ -1,6 +1,6 @@
 /**
 * HEADER
-* 
+*
 * Contiene una estructura similar a una PILA con métodos para operarla
 */
 
@@ -8,13 +8,13 @@
 #define SymbolsTable_H
 
 #include "LinkedList.h"
-#include "../ErrorsQueue/ErrorsQueue.h"
- 
-typedef struct SNode  
+#include "../errors_queue/ErrorsQueue.h"
+
+typedef struct SNode
 {
 	/* Reference to a list. */
 	LinkedList *list;
-	/* Reference to the next node of the SymbolsTable */	
+	/* Reference to the next node of the SymbolsTable */
 	struct SNode *next;
 } SymbolsTableNode;
 
@@ -35,16 +35,16 @@ void pushElement(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attribute *at);
 
 /* Insert a new level in the SymbolsTable. */
 void pushLevel(SymbolsTable *aSymbolsTable);
- 
+
 /* Remove the entire current level of the SymbolsTable. */
 void popLevel(SymbolsTable *aSymbolsTable);
 
 /* Searches for the element in all levels of the SymbolsTable. */
 Attribute* searchIdInSymbolsTable(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char *id);
 
-/* Searches for the id in the current level of the SymbolsTable. */ 
-Attribute* searchIdInLevel(SymbolsTable *aSymbolsTable, char *id); 
- 
+/* Searches for the id in the current level of the SymbolsTable. */
+Attribute* searchIdInLevel(SymbolsTable *aSymbolsTable, char *id);
+
 /* Print the elements the SymbolsTable. */
 void SymbolsTable_print(SymbolsTable *aSymbolsTable);
 

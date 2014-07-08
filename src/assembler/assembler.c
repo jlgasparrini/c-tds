@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "Assembler.h"
+#include "assembler.h"
 #include "../code_3d/operations_code.h"
 
 FILE *file;

@@ -1,12 +1,11 @@
 /*
-*Define la estructura de los codigos de 3 direcciones y funciones      *
-*asociadas                                                              *
-*                                                                       *
-*Una codigo va a tener :                                              *
-* comando   	 :   identificador del comando 		                    *
-* parametro1     :   primer parametro del comando                       *
-* parametro2     :   segundo parametro del comando                      *
-* parametro3     :   tercer parametro del comando                       *
+* Struct for code three directions and respective functions.
+*
+* A code have:
+*   command :   id of command
+*   param1  :   first param command
+*   param2  :   second param command
+*   param3  :   third param command
 */
 
 #ifndef CODE_3D_H
@@ -14,14 +13,6 @@
 
 #include "../SymbolsTable/Attribute.h"
 #include <stdbool.h>
-
-
-#define CodeNULL    -1
-#define CodeATTRI    0
-#define CodeLABEL    1
-#define CodeINT      2
-#define CodeFLOAT    3
-#define CodeBOOL     4
 
 typedef union {
     int         intAttri;
@@ -44,12 +35,10 @@ typedef struct {
 } Code3D;
 
 
-/**Constructor de un Codigo*/
-
+/* 3d code constructor. */
 Code3D* newCode(int comm);
 
-/**Funciones de Acceso a un Codigo*/
-
+/* Functions for management 3d code */
 int getCommand(Code3D *code);
 bool isInt(Code3D *code, int param);
 bool isFloat(Code3D *code, int param);
