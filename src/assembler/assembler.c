@@ -1,7 +1,7 @@
-
 /*
  * The assembly generator.
  */
+
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
@@ -10,195 +10,193 @@
 #include "../code_3d/operations_code.h"
 
 FILE *file;
-ListMLabel *labelList;
-LCode3D *codeList;
-Stack *returnStack;
-int size;
+ListMLabel *label_list;
+LCode3D *code_list;
+Stack *return_stack;
 
-// Given the position, I run that operation from the codeList
+// Given the position, I run that operation from the code_list
 // also this function return the next position of operation to execute!
-int generateOperation(int position)
+static int generate_operation(int position)
 {
-  Code3D*	code = get_code(codeList,position);
-  switch ((*code).command)
+  Code3D*	code = get_code(code_list, position);
+  switch (code->command)
   {
-    /********************************* GENERAL OPERATIONS ******************************/
-    /* LOAD_CONST */
+    /* GENERAL OPERATIONS */
     case LOAD_CONST:
-      load_Const_Translate(file, code);
+      load_const_translate(file, code);
       break;
     case LOAD_ARRAY:
-      translateLoadArray(file, code);
+      translate_load_array(file, code);
       break;
     case PRINT:
-      printOperation(file, code);
+      print_operation(file, code);
       break;
     case RETURN:
-      translateReturn(file, code);
+      translate_return(file, code);
       break;
     case RETURN_EXPR:
-      translateReturnExpression(file, code);
+      translate_return_expression(file, code);
       break;
     case LABEL:
-      writeLabel(file, labelList, code);
+      write_label(file, label_list, code);
       break;
     case GOTO_LABEL:
-      translateGotoLabel(file, code);
+      translate_goto_label(file, code);
       break;
     case GOTO_LABEL_COND:
-      translateGotoLabelCondition(file, code);
+      translate_goto_label_condition(file, code);
       break;
     case GOTO_METHOD:
-      goTo_Method(file, code);
+      goto_method(file, code);
       break;
-      /********************************* INT OPERATIONS **********************************/
+
+    /* INT OPERATIONS */
     case ASSIGNATION_INT:
-      translateAssignationInt(file, code);
+      translate_assignation_int(file, code);
       break;
     case PARAM_ASSIGN_INT:
-      translateParamAssignInt(file, code);
+      translate_param_assign_int(file, code);
       break;
     case MINUS_INT:
-      translateMinusInt(file, code);
+      translate_minus_int(file, code);
       break;
     case ADD_INT:
-      add_Int_Translate(file, code);
+      add_int_translate(file, code);
       break;
     case MULT_INT:
-      mult_Int_Translate(file, code);
+      mult_int_translate(file, code);
       break;
     case DIV_INT:
-      translateDivInt(file, code);
+      translate_div_int(file, code);
       break;
     case MOD_INT:
-      translateModInt(file, code);
+      translate_mod_int(file, code);
       break;
     case NEG_INT:
-      neg_Int_Translate(file, code);
+      neg_int_translate(file, code);
       break;
     case EQ_INT:
-      translateEqualInt(file, code);
+      translate_equal_int(file, code);
       break;
     case DIST_INT:
-      translateDistinctInt(file, code);
+      translate_distinct_int(file, code);
       break;
     case GREATER_INT:
-      greater_IntTranslate(file, code);
+      greater_int_translate(file, code);
       break;
     case LOWER_INT:
-      translateLesserInt(file, code);
+      translate_lesser_int(file, code);
       break;
     case GEQ_INT:
-      greater_Eq_IntTranslate(file, code);
+      greater_eq_int_translate(file, code);
       break;
     case LEQ_INT:
-      translateLesserOrEqualInt(file, code);
+      translate_lesser_or_equal_int(file, code);
       break;
-      /********************************* FLOAT OPERATIONS ******************************/
+
+    /* FLOAT OPERATIONS */
     case ASSIGNATION_FLOAT:
-      assignation_FloatTranslate(file, code);
+      assignation_float_translate(file, code);
       break;
     case PARAM_ASSIGN_FLOAT:
-      translateParamAssignFloat(file, code);
+      translate_param_assign_float(file, code);
       break;
     case MINUS_FLOAT:
-      translateMinusFloat(file, code);
+      translate_minus_float(file, code);
       break;
     case ADD_FLOAT:
-      translateAddFloat(file, code);
+      translate_add_float(file, code);
       break;
     case MULT_FLOAT:
-      translateMultFloat(file, code);
+      translate_mult_float(file, code);
       break;
     case DIV_FLOAT:
-      translateDivFloat(file, code);
+      translate_div_float(file, code);
       break;
     case NEG_FLOAT:
-      neg_Float_Translate(file, code);
+      neg_float_translate(file, code);
       break;
     case EQ_FLOAT:
-      eq_FloatTranslate(file, code);
+      eq_float_translate(file, code);
       break;
     case DIST_FLOAT:
-      dist_FloatTranslate(file, code);
+      dist_float_translate(file, code);
       break;
     case GREATER_FLOAT:
-      greater_FloatTranslate(file, code);
+      greater_float_translate(file, code);
       break;
     case LOWER_FLOAT:
-      translateLesserFloat(file, code);
+      translate_lesser_float(file, code);
       break;
     case GEQ_FLOAT:
-      greater_Eq_FloatTranslate(file, code);
+      greater_eq_float_translate(file, code);
       break;
     case LEQ_FLOAT:
-      translateLesserOrEqualFloat(file, code);
+      translate_lesser_or_equal_float(file, code);
       break;
-      /********************************* BOOLEAN OPERATIONS ******************************/
+
+    /* BOOLEAN OPERATIONS */
     case ASSIGNATION_BOOL:
-      translateAssignationInt(file, code);
+      translate_assignation_int(file, code);
       break;
     case PARAM_ASSIGN_BOOL:
-      translateParamAssignInt(file, code);
+      translate_param_assign_int(file, code);
       break;
     case EQ_BOOL:
-      translateEqualInt(file, code);
+      translate_equal_int(file, code);
       break;
     case DIST_BOOL:
-      translateDistinctInt(file, code);
+      translate_distinct_int(file, code);
       break;
     case OR:
-      translateOr(file, code);
+      translate_or(file, code);
       break;
     case AND:
-      translateAnd(file, code);
+      translate_and(file, code);
       break;
     case NOT:
-      translateNot(file, code);
+      translate_not(file, code);
       break;
-      /********************************* EXTERNAL OPERATIONS ******************************/
+
+    /* EXTERNAL OPERATIONS */
     case EXTERN_INVK:
-      translateExternInvk(file, code);
+      translate_externinvk(file, code);
       break;
     case EXTERN_PARAM_ASSIGN_BOOL:
-      translateIntExternParam(file, code);
+      translate_int_extern_param(file, code);
       break;
     case EXTERN_PARAM_ASSIGN_FLOAT:
-      translateFloatExternParam(file, code);
+      translate_float_extern_param(file, code);
       break;
     case EXTERN_PARAM_ASSIGN_INT:
-      translateIntExternParam(file, code);
+      translate_int_extern_param(file, code);
       break;
   }
-  writeCodeInFile(file, "\n");
+  write_code_in_file(file, "\n");
 }
 
 /* Initializes the assembly engine and run */
-void InitAssembler(ListMLabel *labelL, LCode3D *codeL, Stack *stack, char* nameOfFile)
+void init_assembler(ListMLabel *label_list, LCode3D *code_list, Stack *stack, char* name_of_file)
 {
   //Initialize file.
-  char *fileName = concat(nameOfFile, ".s");
-  file = fopen(fileName,"w");
-  writeCodeInFile(file, translate(".file", concat(concat("\"", concat(nameOfFile, ".s")), "\""), ""));
-  writeCodeInFile(file, translate(".global", "main", ""));
-  writeCodeInFile(file, translate(".type", "main", "@function"));
-  writeCodeInFile(file, ".INT:\n");
-  writeCodeInFile(file, translate(".string", "\"Print. El valor entero es: %d \\n\"", ""));
-  writeCodeInFile(file, ".FLOAT:\n");
-  writeCodeInFile(file, translate(".string", "\"Print. El valor flotante es: %f \\n\"", ""));
-  writeCodeInFile(file, ".BOOL_TRUE:\n");
-  writeCodeInFile(file, translate(".string", "\"Print. El valor booleano es: True \\n\"", ""));
-  writeCodeInFile(file, ".BOOL_FALSE:\n");
-  writeCodeInFile(file, translate(".string", "\"Print. El valor booleano es: False \\n\"", ""));
-  labelList = labelL;
-  codeList = codeL;
-  returnStack = stack;
-  size = codeSize(codeL);
-  int i = 0;
-  while (i < size)
-  {
-    generateOperation(i);
-    i++;
-  }
-  writeNegFloat(file);
+  char *file_name = concat(name_of_file, ".s");
+  file = fopen(file_name, "w");
+  write_code_in_file(file, translate(".file", concat(concat("\"", file_name), "\""), ""));
+  write_code_in_file(file, translate(".global", "main", ""));
+  write_code_in_file(file, translate(".type", "main", "@function"));
+  write_code_in_file(file, ".INT:\n");
+  write_code_in_file(file, translate(".string", "\"Print. El valor entero es: %d \\n\"", ""));
+  write_code_in_file(file, ".FLOAT:\n");
+  write_code_in_file(file, translate(".string", "\"Print. El valor flotante es: %f \\n\"", ""));
+  write_code_in_file(file, ".BOOL_TRUE:\n");
+  write_code_in_file(file, translate(".string", "\"Print. El valor booleano es: True \\n\"", ""));
+  write_code_in_file(file, ".BOOL_FALSE:\n");
+  write_code_in_file(file, translate(".string", "\"Print. El valor booleano es: False \\n\"", ""));
+  label_list = label_list;
+  code_list = code_list;
+  return_stack = stack;
+  int index;
+  for (index = 0; index < codeSize(code_list); index++)
+    generate_operation(index);
+  write_neg_float(file);
 }

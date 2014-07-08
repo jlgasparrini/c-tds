@@ -1,3 +1,4 @@
+/* Functions for translation to assembly code */
 #ifndef Translate_H
 #define Translate_H
 
@@ -7,6 +8,7 @@
 #include "../method_list/genlistml.h"
 #include "../code_3d/gencode3d.h"
 #include "../SymbolsTable/Utils.h"
+
 typedef union{
     int entero;
     float real;
@@ -14,61 +16,60 @@ typedef union{
 
 FloatValue fValue;
 
-/* Writing methods */
-char* concat(char* str1, char* str2);
-void writeCodeInFile(FILE* file, char* code);
-char* translate(char* operation, char* code1, char* code2);
+/* Returns the respective operation in assembly code */
+char* translate(char*, char*, char*);
 
-/* Methods for translation to assembly code */
-void load_Const_Translate(FILE* file, Code3D* code);
-void translateGotoLabel(FILE* file, Code3D* code);
-void translateGotoLabelCondition(FILE* file, Code3D* code);
-void translateReturn(FILE* file, Code3D* code);
-void translateReturnExpression(FILE* file, Code3D* code);
-void translateOr(FILE* file, Code3D* code);
-void translateAnd(FILE* file, Code3D* code);
-void translateNot(FILE* file, Code3D* code);
-void printOperation(FILE *file, Code3D *code);
-void writeLabel(FILE *file, ListMLabel *labelList, Code3D *code);
-void translateLoadArray(FILE *file, Code3D *code);
-void goTo_Method (FILE* file, Code3D* code);
+/* BASIC OPERATIONS TREATEMENT */
+void load_const_translate(FILE*, Code3D*);
+void translate_goto_label(FILE*, Code3D*);
+void translate_goto_label_condition(FILE*, Code3D*);
+void translate_return(FILE*, Code3D*);
+void translate_return_expression(FILE*, Code3D*);
+void translate_or(FILE*, Code3D*);
+void translate_and(FILE*, Code3D*);
+void translate_not(FILE*, Code3D*);
+void print_operation(FILE*, Code3D*);
+void write_label(FILE*, ListMLabel*, Code3D*);
+void translate_load_array(FILE*, Code3D*);
+void goto_method (FILE*, Code3D*);
 
-/********************************************************************************************/
-/********************************* INT OPERATIONS TREATEMENT ********************************/
-/********************************************************************************************/
-void translateAssignationInt(FILE* file, Code3D* code);
-void translateParamAssignInt(FILE *file, Code3D *code);
-void neg_Int_Translate(FILE* file, Code3D* code);
-void add_Int_Translate(FILE* file, Code3D* code);
-void mult_Int_Translate(FILE* file, Code3D* code);
-void greater_IntTranslate(FILE* file, Code3D* code);
-void greater_Eq_IntTranslate(FILE* file, Code3D* code);
-void translateMinusInt(FILE* file, Code3D* code);
-void translateModInt(FILE* file, Code3D* code);
-void translateDivInt(FILE* file, Code3D* code);
-void translateLesserInt(FILE* file, Code3D* code);
-void translateLesserOrEqualInt(FILE* file, Code3D* code);
-void translateEqualInt(FILE* file, Code3D* code);
-void translateDistinctInt(FILE* file, Code3D* code);
+/* INT OPERATIONS TREATEMENT */
+void translate_assignation_int(FILE*, Code3D*);
+void translate_param_assign_int(FILE*, Code3D*);
+void neg_int_translate(FILE*, Code3D*);
+void add_int_translate(FILE*, Code3D*);
+void mult_int_translate(FILE*, Code3D*);
+void greater_int_translate(FILE*, Code3D*);
+void greater_eq_int_translate(FILE*, Code3D*);
+void translate_minus_int(FILE*, Code3D*);
+void translate_mod_int(FILE*, Code3D*);
+void translate_div_int(FILE*, Code3D*);
+void translate_lesser_int(FILE*, Code3D*);
+void translate_lesser_or_equal_int(FILE*, Code3D*);
+void translate_equal_int(FILE*, Code3D*);
+void translate_distinct_int(FILE*, Code3D*);
 
-/********************************************************************************************/
-/********************************* FLOAT OPERATIONS TREATEMENT ******************************/
-/********************************************************************************************/
-void assignation_FloatTranslate(FILE* file, Code3D* code);
-void translateParamAssignFloat(FILE *file, Code3D *code);
-void neg_Float_Translate(FILE* file, Code3D* code);
-void eq_FloatTranslate(FILE* file, Code3D* code);
-void dist_FloatTranslate(FILE* file, Code3D* code);
-void greater_FloatTranslate(FILE* file, Code3D* code);
-void greater_Eq_FloatTranslate(FILE* file, Code3D* code);
-void translateLesserOrEqualFloat(FILE *file, Code3D* code);
-void translateLesserFloat(FILE *file, Code3D* code);
-void translateDivFloat(FILE* file, Code3D* code);
-void translateMultFloat(FILE* file, Code3D* code);
-void translateAddFloat(FILE* file, Code3D* code);
-void translateMinusFloat(FILE* file, Code3D* code);
-void writeFloatNumbers(FILE* file);
+/* FLOAT OPERATIONS TREATEMENT */
+void assignation_float_translate(FILE*, Code3D*);
+void translate_param_assign_float(FILE*, Code3D*);
+void neg_float_translate(FILE*, Code3D*);
+void eq_float_translate(FILE*, Code3D*);
+void dist_float_translate(FILE*, Code3D*);
+void greater_float_translate(FILE*, Code3D*);
+void greater_eq_float_translate(FILE*, Code3D*);
+void translate_lesser_or_equal_float(FILE*, Code3D*);
+void translate_lesser_float(FILE*, Code3D*);
+void translate_div_float(FILE*, Code3D*);
+void translate_mult_float(FILE*, Code3D*);
+void translate_add_float(FILE*, Code3D*);
+void translate_minus_float(FILE*, Code3D*);
 
-/**************************** EXTERNAL OPERATIONS **********************************/
-void translateExternInvk(FILE* file, Code3D* code);
+/* EXTERN INVOCATIONS OPERATIONS */
+void translate_externinvk(FILE*, Code3D*);
+void translate_int_extern_param(FILE*, Code3D*);
+void translate_float_extern_param(FILE*, Code3D*);
+void translate_bool_extern_param(FILE*, Code3D*);
+
+void write_neg_float(FILE* file);
+
 #endif

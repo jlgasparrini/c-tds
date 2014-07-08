@@ -175,7 +175,7 @@
 
   void compile(char *main_file, char **linked_files, int size)
   {
-    InitAssembler(list_meth_label, l_code3d, return_stack, file_name);
+    init_assembler(list_meth_label, l_code3d, return_stack, file_name);
     char** args = malloc(sizeof(char*)* (6 + size));
     if (executable)
       args[0] = "gcc";
@@ -263,7 +263,7 @@
   //Al finalizar el parseo verifico si hubo errores, de lo contrario realizo la accion correspondiente al target.
   void finalize()
   {
-    if ((*error_q).size > 0)
+    if (error_q->size > 0)
       printErrorList(error_q);
     else
     {
@@ -284,7 +284,7 @@
       else if(strcmp(action_input,"assembly") == 0)
       {
         printf("Generating assembly code...\n");
-        InitAssembler(list_meth_label, l_code3d, return_stack, file_name); //Llamo al generador del codigo assembly y lo genero.
+        init_assembler(list_meth_label, l_code3d, return_stack, file_name); //Llamo al generador del codigo assembly y lo genero.
         printf("Assembly code generated. File's name: %s\n", file_name);
       }
       else if(strcmp(action_input,"compile") == 0)
