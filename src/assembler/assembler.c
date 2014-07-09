@@ -179,7 +179,7 @@ static int generate_operation(int position)
 void init_assembler(ListMLabel *label_list, LCode3D *code_list, Stack *stack, char* name_of_file)
 {
   //Initialize file.
-  char *file_name = concat(name_of_file, ".s");
+  char* file_name = concat(name_of_file, ".s");
   file = fopen(file_name, "w");
   write_code_in_file(file, translate(".file", concat(concat("\"", file_name), "\""), ""));
   write_code_in_file(file, translate(".global", "main", ""));

@@ -161,7 +161,7 @@ void print_operation(FILE *file, Code3D *code)
   }
   if (getAttributeType(getAttribute(code, 1)) == Bool)
   {
-    int count = intToString(print_count);
+    char* count = intToString(print_count);
     write_code_in_file(file, translate("cmp", "$0", offset(code, 1)));
     write_code_in_file(file, translate("jz", concat("label_bool_condition_of_print", count), ""));
     write_code_in_file(file, translate("movq", concat("$", ".BOOL_TRUE"), "%rdi"));

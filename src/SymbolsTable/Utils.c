@@ -179,8 +179,7 @@ char* intToString(int value)
 /* Returns the string representation of the float "value" */
 char* floatToString(float value)
 {
-
-    char aux[100];
+    char *aux = (char*) malloc (sizeof(char)*100);
     sprintf(aux, "%f", value);
     return aux;
 }

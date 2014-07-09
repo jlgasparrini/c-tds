@@ -18,16 +18,16 @@ typedef struct NodeStackOffset {
 /*constructores*/
 
 NodeStackOffset* newLinkNodeOffset_empty();
-NodeStackOffset* newLinkNodeOffset_info(int info);
-NodeStackOffset* newLinkNodeOffset_info_next(int info, NodeStackOffset *next);
+NodeStackOffset* newLinkNodeOffset_info(int);
+NodeStackOffset* newLinkNodeOffset_info_next(int, NodeStackOffset*);
 
 /*lectura de informacion*/
 
-int getInfo_linkNodeOffset(NodeStackOffset *node);
-NodeStackOffset* getNext_linkNodeOffset(NodeStackOffset *node);
+int getInfo_linkNodeOffset(NodeStackOffset*);
+NodeStackOffset* getNext_linkNodeOffset(NodeStackOffset*);
 
 /*escritura de informacion*/
-void setInfo_linkNodeOffset(NodeStackOffset *node, int info);
-void setNext_linkNodeOffset(NodeStackOffset *node, NodeStackOffset *next);
+void setInfo_linkNodeOffset(NodeStackOffset*, int);
+void setNext_linkNodeOffset(NodeStackOffset*, NodeStackOffset*);
 
 #endif

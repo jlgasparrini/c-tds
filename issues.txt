@@ -1,0 +1,32 @@
+-- Fix all warnings...
+
+-- doc/Manual.odt is missing!
+
+-- doc/Informe.odt needs upgrade
+
+-- Missing documentation on files:
+     code_3d/operations_code.c
+     code_3d/operations_code.h
+
+     symbols_table/utils.c
+     symbols_table/utils.c
+
+     lex_yacc/yacc_c-tds.y
+
+     assembler/translate.c
+     assembler/translate.h
+
+-- Check translations on files:
+     code_3d/code_3d.c
+     code_3d/code_3d.c
+
+-- Code refactorizations:
+     Two spaces for indent code.
+     Not follow the camelCase syntax. Simply use snake_case.
+     Don't use * for pointer navigation, use -> it's more simple.
+     On headers files not write name of var params.
+     UPPERCASE for constants.
+     PascalCase syntax only for types name.
+     Use representative names for variables and types. DON'T USE "aux" variables.
+
+-- Finally, check the documentation and add new functionalities (Optimization)
