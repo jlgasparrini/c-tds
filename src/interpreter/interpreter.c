@@ -290,7 +290,7 @@ static void run_main(int pos)
  * param code_l: list with the 3 directions code.
  * Initializes the interpreter and runs it.
  */
-void InitInterpreter(ListMLabel *label_l, LCode3D *code_l)
+void init_interpreter(ListMLabel *label_l, LCode3D *code_l)
 {
   label_list = label_l;
   code_list = code_l;

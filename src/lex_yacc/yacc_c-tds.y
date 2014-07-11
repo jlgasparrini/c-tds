@@ -157,7 +157,7 @@
   void initializeStructures()
   {
       amount_extern_params = 0;
-      error_q = initializeQueue();
+      error_q = initialize_queue();
       symbols_table = initializeSymbolsTable();
       l_code3d = initLCode3D();
       params_stack = initializeSS();
@@ -268,7 +268,7 @@
     else
     {
       if(strcmp(action_input,"parse") == 0)
-        printf("Parsing code...\n");
+        printf("Parse finished.\n");
       else if(strcmp(action_input,"show") == 0)
       {
         printf("Showing the three-address code...");
@@ -278,7 +278,7 @@
       else if(strcmp(action_input,"interpreter") == 0)
       {
         printf("Interpreting code...\n");
-        InitInterpreter(list_meth_label, l_code3d); //Llamo al interpreter del codigo de entrada.
+        init_interpreter(list_meth_label, l_code3d); //Llamo al interpreter del codigo de entrada.
         printf("Interpretation finish.\n");
       }
       else if(strcmp(action_input,"assembly") == 0)
@@ -335,9 +335,9 @@
   int yyerror (char *str)
   {
     printErrorList(error_q);
-    deleteAllErrors(error_q);
+    delete_all_errors(error_q);
     if (strcmp(str, "syntax error") == 0)
-      printf("%s\n",toString("GRAMATICAL Error.","",""));
+      printf("%s\n",to_string("Gramatical error.","",""));
     else
       printf("%s\n","Unknow error.");
     return 0;
@@ -394,7 +394,7 @@ fields:  field
 
 field:  ID { pushElement(error_q, symbols_table, createVariable($1, var_type)); }
      |  ID '[' INTEGER { if (atoi($3) <= 0)
-                       {   insertError(error_q,toString("Error en definicion del arreglo \"",$1,"\". El tamaño del arreglo debe ser un entero mayor que 0."));
+                       {   insert_error(error_q,to_string("Error en definicion del arreglo \"",$1,"\". El tamaño del arreglo debe ser un entero mayor que 0."));
                            pushElement(error_q, symbols_table, createArray($1, var_type, 10)); /* Array size of 10 in case of error */
                        }
                          else
@@ -419,7 +419,7 @@ method_decl:  type ID {
                         int pos = atoi(pop(max_method_offset));
                         set_code_int(l_code3d, pos, 2, getGlobalVarOffset());
                         setGlobalVarOffset(popOffset(offsets_var));//////////////////////////////////////////
-                        if(returns==0) insertError(error_q,toString("El metodo \"",$2,"\" debe tener al menos un return."));
+                        if(returns==0) insert_error(error_q,to_string("El metodo \"",$2,"\" debe tener al menos un return."));
                         popLevel(symbols_table);
                       }
            |		method_decl type ID {
@@ -433,7 +433,7 @@ method_decl:  type ID {
                         int pos = atoi(pop(max_method_offset));
                         set_code_int(l_code3d, pos, 2, getGlobalVarOffset());
                         setGlobalVarOffset(popOffset(offsets_var));
-                        if(returns==0) insertError(error_q,toString("El metodo \"",$3,"\" debe tener al menos un return."));
+                        if(returns==0) insert_error(error_q,to_string("El metodo \"",$3,"\" debe tener al menos un return."));
                         popLevel(symbols_table);
                     }
            |     VOID ID {
@@ -447,7 +447,7 @@ method_decl:  type ID {
                       int pos = atoi(pop(max_method_offset));
                       set_code_int(l_code3d, pos, 2, getGlobalVarOffset());
                       setGlobalVarOffset(popOffset(offsets_var));
-                      if(returns==0) insertError(error_q,toString("El metodo \"",$2,"\" debe tener al menos un return."));
+                      if(returns==0) insert_error(error_q,to_string("El metodo \"",$2,"\" debe tener al menos un return."));
                       popLevel(symbols_table);
                   }
            |  method_decl VOID ID {
@@ -461,14 +461,14 @@ method_decl:  type ID {
                 int pos = atoi(pop(max_method_offset));
                 set_code_int(l_code3d, pos, 2, getGlobalVarOffset());
                 setGlobalVarOffset(popOffset(offsets_var));
-                if(returns==0) insertError(error_q,toString("El metodo \"",$3,"\" debe tener al menos un return."));
+                if(returns==0) insert_error(error_q,to_string("El metodo \"",$3,"\" debe tener al menos un return."));
                 popLevel(symbols_table);
               }
            ;
 
 param		      :    '(' {cant_params = 0; setAmountOfParameters(searchIdInSymbolsTable(error_q,symbols_table,last_def_method),0);} ')'
               |    '(' {if (strcmp(last_def_method,"main") == 0)
-                            insertError(error_q,toString("El metodo \"main\" no debe contener parametros.","",""));
+                            insert_error(error_q,to_string("El metodo \"main\" no debe contener parametros.","",""));
                         cant_params = 0;
 						            pushOffset(offsets_param, getGlobalParamOffset());////////////////////////////
 						            resetGlobalParamOffset();////////////////////////////
@@ -483,13 +483,13 @@ param		      :    '(' {cant_params = 0; setAmountOfParameters(searchIdInSymbolsT
 parameters    :		type ID {
                            Attribute *aux = createParameter(searchIdInSymbolsTable(error_q,symbols_table,last_def_method),cant_params,$2,var_type);
                            if (aux != NULL) {pushElement(error_q,symbols_table,aux); cant_params++;}
-                           else insertError(error_q,toString("El identificador \"",$2,"\" no puede contener parametros/esa cantidad de parametros."));
+                           else insert_error(error_q,to_string("El identificador \"",$2,"\" no puede contener parametros/esa cantidad de parametros."));
                           }
 
               |		type ID {
                            Attribute *aux = createParameter(searchIdInSymbolsTable(error_q,symbols_table,last_def_method),cant_params,$2,var_type);
                            if (aux != NULL) {pushElement(error_q,symbols_table,aux); cant_params++;}
-                           else insertError(error_q,toString("El identificador \"",$2,"\" no puede contener parametros/esa cantidad de parametros."));
+                           else insert_error(error_q,to_string("El identificador \"",$2,"\" no puede contener parametros/esa cantidad de parametros."));
                           }
                             ',' parameters
               ;
@@ -521,7 +521,7 @@ statement     :    conditional
 action        :
               |    BREAK {
                             if (isEmpty(labels_while) && isEmpty(labels_for))
-                                insertError(error_q,toString("Error. Solo se puede usar la sentencia \"break\" dentro de un ciclo.","",""));
+                                insert_error(error_q,to_string("Error. Solo se puede usar la sentencia \"break\" dentro de un ciclo.","",""));
                             else{
                                 char* aux = pop(labels_while);
                                 char* aux2 = pop(labels_while);
@@ -532,7 +532,7 @@ action        :
                     }
               |    CONTINUE {
                             if (isEmpty(labels_while) && isEmpty(labels_for))
-                                insertError(error_q,toString("Error. Solo se puede usar la sentencia \"continue\" dentro de un ciclo.","",""));
+                                insert_error(error_q,to_string("Error. Solo se puede usar la sentencia \"continue\" dentro de un ciclo.","",""));
                             else
                             {
                                 char *posLabel = pop(labels_while); //Label of End of While
@@ -624,7 +624,7 @@ iteration     :    WHILE {
                     }
               |    FOR ID {
                         if (getAttributeType(getVariableAttribute(error_q,symbols_table,$2)) != Int)
-                            insertError(error_q,toString("El identificador \"", $2, "\" no pertenece a una variable de tipo \"int\""));
+                            insert_error(error_q,to_string("El identificador \"", $2, "\" no pertenece a una variable de tipo \"int\""));
                         /* It musn't have the same treatment that while? */
                     } '=' expression ',' expression {
                             controlType(error_q,$5,Int,"for",2); controlType(error_q,$7,Int,"for",3);
@@ -795,7 +795,7 @@ primary       :    INTEGER			{$$ = returnValue(l_code3d, Int, $1);}
               |    ID '[' expression ']'  {$$ = checkArrayPos(error_q,symbols_table,l_code3d,$1,$3);}
               |    '(' expression ')' {$$ = $2;}
               |    method_call      { if (methodReturnType(error_q,symbols_table,last_called_method) == RetVoid)
-                                      {	insertError(error_q,toString("El metodo \"",last_called_method,"\" no puede ser usado en una expresion ya que retorna void."));
+                                      {	insert_error(error_q,to_string("El metodo \"",last_called_method,"\" no puede ser usado en una expresion ya que retorna void."));
                                           $$ = createVariable("",Int); /* creamos variables int por defecto para que podamos seguir parseando el codigo */
                                       }
                                       else $$ = $1;

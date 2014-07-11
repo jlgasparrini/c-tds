@@ -12,96 +12,94 @@ extern line_numb;
 extern column_numb;
 
 /* Returns an initialized queue. */
-ErrorsQueue* initializeQueue()
+ErrorsQueue* initialize_queue()
 {
-  ErrorsQueue *aux = (ErrorsQueue*) malloc(sizeof(ErrorsQueue));
-  (*aux).firstIN = NULL;
-  (*aux).lastIN = NULL;
-  (*aux).size = 0;
-  return aux;
+  ErrorsQueue* new_queue = (ErrorsQueue*) malloc(sizeof(ErrorsQueue));
+  new_queue->firstIN = NULL;
+  new_queue->lastIN = NULL;
+  new_queue->size = 0;
+  return new_queue;
 }
 
 /* Returns the string formed by putting together all the parameters */
-char* toString(char *init, char *id, char *message)
+char* to_string(char *init, char *id, char *message)
 {
-  char* msg = (char*) malloc ((strlen(init)+strlen(id)+strlen(message)+strlen(" Error en linea: ")+digitAmount(line_numb)+strlen(".")+digitAmount(column_numb))*sizeof(char));
-  strcat(msg,init);
-  strcat(msg,id);
-  strcat(msg,message);
-  strcat(msg," Error en linea: ");
-  char *numero = (char*) malloc (digitAmount(line_numb)*sizeof(char));
+  char* error_msg = " Error in line: ";
+  int length_msg = strlen(init) + strlen(id) + strlen(message) + strlen(error_msg);
+  length_msg += digitAmount(line_numb) + strlen(".") + digitAmount(column_numb);
+  char* msg = (char*) malloc(length_msg * sizeof(char));
+  strcat(msg, init);
+  strcat(msg, id);
+  strcat(msg, message);
+  strcat(msg, error_msg);
+  char *numero = (char*) malloc(digitAmount(line_numb) * sizeof(char));
   sprintf(numero, "%d", line_numb);
-  strcat(msg,numero);
-  //	free(numero);
-  strcat(msg,".");
-  numero = (char*) malloc (digitAmount(column_numb)*sizeof(char));
+  strcat(msg, numero);
+  strcat(msg, ".");
+  numero = (char*) malloc(digitAmount(column_numb) * sizeof(char));
   sprintf(numero, "%d", column_numb);
-  strcat(msg,numero);
-  //	free(numero);
+  strcat(msg, numero);
   return msg;
 }
 
 /* Insert an element in the end of the queue "q". */
-void insertError(ErrorsQueue *eq, char* message)
+void insert_error(ErrorsQueue *eq, char* message)
 {
-  ErrorNode *newErrorNode;
-  if (newErrorNode = (ErrorNode*) malloc(sizeof(ErrorNode)))
+  ErrorNode *new_error_node;
+  if (new_error_node = (ErrorNode*) malloc(sizeof(ErrorNode)))
   {
-    (*newErrorNode).error = message;
-    (*newErrorNode).next = NULL;
-
-    if ((*eq).size == 0)
+    new_error_node->error = message;
+    new_error_node->next = NULL;
+    if (eq->size == 0)
     {
-      (*eq).firstIN = newErrorNode;
-      (*eq).lastIN = newErrorNode;
+      eq->firstIN = new_error_node;
+      eq->lastIN = new_error_node;
     }
     else
     {
-      (*(*eq).lastIN).next = newErrorNode;
-      (*eq).lastIN = newErrorNode;
+      eq->lastIN->next = new_error_node;
+      eq->lastIN = new_error_node;
     }
-    (*eq).size++;
+    eq->size++;
   }
   else
-  {
-    printf("ErrorsQueue.c: insert ERROR: No se puede reservar espacio en memoria.");
-  }
+    printf("ErrorsQueue.c: insert ERROR: Can't reserve memory space.");
 }
 
 /* Delete all the elements of the queue. */
-void deleteAllErrors(ErrorsQueue *eq)
+void delete_all_errors(ErrorsQueue *eq)
 {
-  ErrorNode *aux;
+  ErrorNode *new_error_node;
   int i = 0;
-  while (i < (*eq).size)
+  while (i < eq->size)
   {
-    aux = (*eq).firstIN;
-    (*eq).firstIN = (*aux).next;
-    free(aux);
+    new_error_node = eq->firstIN;
+    eq->firstIN = new_error_node->next;
+    free(new_error_node);
     i++;
   }
-  (*eq).firstIN = NULL;
-  (*eq).lastIN = NULL;
-  (*eq).size = 0;
+  eq->firstIN = NULL;
+  eq->lastIN = NULL;
+  eq->size = 0;
 }
 
 /* Print in display the elements of the queue. */
 void printErrorList(ErrorsQueue *eq)
 {
-  if ((*eq).size == 0)
-    printf("Sin errores semanticos al compilar.\n");
+  if (eq->size == 0)
+    printf("No semantics errors to compile.\n");
   else
   {
-    ErrorNode *aux = (*eq).firstIN;
+    ErrorNode *current_error_node = eq->firstIN;
     int i = 0;
-    if ((*eq).size == 1)
-      printf("-- %d error semantico al compilar:\n",(*eq).size);
+    if (eq->size == 1)
+      printf("-- %d semantic error to compile:\n",eq->size);
     else
-      printf("-- %d errores semanticos al compilar:\n",(*eq).size);
-    while (i < (*eq).size)
+      printf("-- %d semantic error to compile:\n",eq->size);
+    while (i < eq->size)
     {
-      printf("%d- %s\n", i+1, (*aux).error);
-      aux = (*aux).next;
+      printf("%d- %s\n", i+1, current_error_node->error);
+      current_error_node = current_error_node->next;
       i++;
     }
   }

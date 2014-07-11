@@ -1,5 +1,5 @@
 /*
- * A errors queue header.
+ * Header errors queue.
  */
 
 #ifndef ERRORS_QUEUE_H
@@ -8,36 +8,27 @@
 /* Node of the queue. */
 typedef struct E
 {
-    char *error;
-    /* Pointer of the next node. */
-    struct E *next;
+  char *error;
+  struct E *next; /* Pointer of the next node. */
 } ErrorNode;
 
 /* Define type ErrorsQueue. */
 typedef struct
 {
-    /* Pointer to first nodes of my queue. */
-    ErrorNode *firstIN;
-    /* Pointer to last nodes of my queue. */
-    ErrorNode *lastIN;
-
-    /* Size of the queue. */
-    int size;
+  ErrorNode *firstIN; /* Pointer to first nodes of my queue. */
+  ErrorNode *lastIN; /* Pointer to last nodes of my queue. */
+  int size; /* Size of the queue. */
 } ErrorsQueue;
 
 /* Returns an initialized queue. */
-ErrorsQueue* initializeQueue();
-
+ErrorsQueue* initialize_queue();
 /* Returns the string formed by putting together all the parameters */
-char* toString(char *init, char *id, char *message);
-
+char* to_string(char*, char*, char*);
 /* Insert an element in the end of the queue "q". */
-void insertError(ErrorsQueue *eq, char *message);
-
+void insert_error(ErrorsQueue*, char*);
 /* Delete all the elements of the queue. */
-void deleteAllErrors(ErrorsQueue *eq);
-
+void delete_all_errors(ErrorsQueue*);
 /* Print in display the elements of the list. */
-void printErrorList(ErrorsQueue *eq);
+void printErrorList(ErrorsQueue*);
 
 #endif
