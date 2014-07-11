@@ -261,7 +261,7 @@
   }
 
   //Al finalizar el parseo verifico si hubo errores, de lo contrario realizo la accion correspondiente al target.
-  void finalize()
+  void parser_finalized()
   {
     if (error_q->size > 0)
       printErrorList(error_q);
@@ -372,56 +372,57 @@
 %%      /*  beginning  of  rules  section  */
 
 /* ------------------- PROGRAM -------------------- */
-program       :    CLASS ID '{' '}' {finalize();}
-              |    CLASS ID '{' {pushLevel(symbols_table);}
-                   body {checkMain(error_q,symbols_table);
-                         popLevel(symbols_table);
-                         finalize();}
-                   '}'
-              ;
-body          :    fields_decls method_decl
-              |    method_decl
-              ;
+program:  CLASS ID '{' '}' { parser_finalized(); }
+       |  CLASS ID '{' { pushLevel(symbols_table); }
+          body {
+            checkMain(error_q,symbols_table);
+            popLevel(symbols_table);
+            parser_finalized(); }
+          '}'
+       ;
+body:  fields_decls method_decl
+    |  method_decl
+    ;
 
-fields_decls  :    type fields ';'
-              |    fields_decls type fields ';'
-              ;
+fields_decls:  type fields ';'
+            |  fields_decls type fields ';'
+            ;
 
-fields        :    field
-              |    fields ',' field
-              ;
+fields:  field
+      |  fields ',' field
+      ;
 
-field         :    ID {pushElement(error_q, symbols_table, createVariable($1, var_type));}
-              |    ID '[' INTEGER {if (atoi($3) <= 0)
-                                    {	insertError(error_q,toString("Error en definicion del arreglo \"",$1,"\". El tamaño del arreglo debe ser un entero mayor que 0."));
-                                        pushElement(error_q, symbols_table, createArray($1, var_type, 10)); /* Array size of 10 in case of error */
-                                    }
-                                    else
-                                        pushElement(error_q, symbols_table, createArray($1, var_type, atoi($3)));
-                                  }
-                   ']'
-              ;
+field:  ID { pushElement(error_q, symbols_table, createVariable($1, var_type)); }
+     |  ID '[' INTEGER { if (atoi($3) <= 0)
+                       {   insertError(error_q,toString("Error en definicion del arreglo \"",$1,"\". El tamaño del arreglo debe ser un entero mayor que 0."));
+                           pushElement(error_q, symbols_table, createArray($1, var_type, 10)); /* Array size of 10 in case of error */
+                       }
+                         else
+                           pushElement(error_q, symbols_table, createArray($1, var_type, atoi($3)));
+                       }
+           ']'
+     ;
 
-type          :		INT_WORD		 {var_type = Int; method_type = RetInt;}
-              |		FLOAT_WORD	 {var_type = Float; method_type = RetFloat;}
-              |		BOOLEAN_WORD {var_type = Bool; method_type = RetBool;}
-              ;
+type:  INT_WORD		 {var_type = Int; method_type = RetInt;}
+    |  FLOAT_WORD	 {var_type = Float; method_type = RetFloat;}
+    |  BOOLEAN_WORD {var_type = Bool; method_type = RetBool;}
+    ;
 
-method_decl   :     type ID {
+method_decl:  type ID {
                         pushOffset(offsets_var, getGlobalVarOffset());/////////////////////////////////
                         resetGlobalVarOffset();////////////////////////////
                         setUpMethodCreation($2, method_type);
                         add_CodeLabel(l_code3d, newCode(LABEL), $2); // Mark to Label of Init of Method
                         push(max_method_offset, intToString(codeSize(l_code3d)));
                         insert_MethodL(list_meth_label, $2, $2);
-                    } param block {
+                      } param block {
                         int pos = atoi(pop(max_method_offset));
                         set_code_int(l_code3d, pos, 2, getGlobalVarOffset());
                         setGlobalVarOffset(popOffset(offsets_var));//////////////////////////////////////////
                         if(returns==0) insertError(error_q,toString("El metodo \"",$2,"\" debe tener al menos un return."));
                         popLevel(symbols_table);
-                    }
-              |		method_decl type ID {
+                      }
+           |		method_decl type ID {
                         pushOffset(offsets_var, getGlobalVarOffset());
                         resetGlobalVarOffset();
                         setUpMethodCreation($3, method_type);
@@ -435,35 +436,35 @@ method_decl   :     type ID {
                         if(returns==0) insertError(error_q,toString("El metodo \"",$3,"\" debe tener al menos un return."));
                         popLevel(symbols_table);
                     }
-              |     VOID ID {
-                        pushOffset(offsets_var, getGlobalVarOffset());
-                        resetGlobalVarOffset();
-                        setUpMethodCreation($2, RetVoid);
-                        add_CodeLabel(l_code3d, newCode(LABEL), $2); // Mark to Label of Init of Method
-                        push(max_method_offset, intToString(codeSize(l_code3d)));
-                        insert_MethodL(list_meth_label, $2, $2);
-                    } param block {
-                        int pos = atoi(pop(max_method_offset));
-                        set_code_int(l_code3d, pos, 2, getGlobalVarOffset());
-                        setGlobalVarOffset(popOffset(offsets_var));
-                        if(returns==0) insertError(error_q,toString("El metodo \"",$2,"\" debe tener al menos un return."));
-                        popLevel(symbols_table);
-                    }
-              |	    method_decl VOID ID {
-                        pushOffset(offsets_var, getGlobalVarOffset());
-                        resetGlobalVarOffset();
-                        setUpMethodCreation($3, RetVoid);
-                        add_CodeLabel(l_code3d, newCode(LABEL), $3); // Mark to Label of Init of Method
-                        push(max_method_offset, intToString(codeSize(l_code3d)));
-                        insert_MethodL(list_meth_label, $3, $3);
-                    } param block {
-                        int pos = atoi(pop(max_method_offset));
-                        set_code_int(l_code3d, pos, 2, getGlobalVarOffset());
-                        setGlobalVarOffset(popOffset(offsets_var));
-                        if(returns==0) insertError(error_q,toString("El metodo \"",$3,"\" debe tener al menos un return."));
-                        popLevel(symbols_table);
-                    }
-              ;
+           |     VOID ID {
+                      pushOffset(offsets_var, getGlobalVarOffset());
+                      resetGlobalVarOffset();
+                      setUpMethodCreation($2, RetVoid);
+                      add_CodeLabel(l_code3d, newCode(LABEL), $2); // Mark to Label of Init of Method
+                      push(max_method_offset, intToString(codeSize(l_code3d)));
+                      insert_MethodL(list_meth_label, $2, $2);
+                  } param block {
+                      int pos = atoi(pop(max_method_offset));
+                      set_code_int(l_code3d, pos, 2, getGlobalVarOffset());
+                      setGlobalVarOffset(popOffset(offsets_var));
+                      if(returns==0) insertError(error_q,toString("El metodo \"",$2,"\" debe tener al menos un return."));
+                      popLevel(symbols_table);
+                  }
+           |  method_decl VOID ID {
+                pushOffset(offsets_var, getGlobalVarOffset());
+                resetGlobalVarOffset();
+                setUpMethodCreation($3, RetVoid);
+                add_CodeLabel(l_code3d, newCode(LABEL), $3); // Mark to Label of Init of Method
+                push(max_method_offset, intToString(codeSize(l_code3d)));
+                insert_MethodL(list_meth_label, $3, $3);
+              } param block {
+                int pos = atoi(pop(max_method_offset));
+                set_code_int(l_code3d, pos, 2, getGlobalVarOffset());
+                setGlobalVarOffset(popOffset(offsets_var));
+                if(returns==0) insertError(error_q,toString("El metodo \"",$3,"\" debe tener al menos un return."));
+                popLevel(symbols_table);
+              }
+           ;
 
 param		      :    '(' {cant_params = 0; setAmountOfParameters(searchIdInSymbolsTable(error_q,symbols_table,last_def_method),0);} ')'
               |    '(' {if (strcmp(last_def_method,"main") == 0)

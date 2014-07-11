@@ -19,7 +19,7 @@ NodeStackOffset* newLinkNodeOffset_empty()
 NodeStackOffset* newLinkNodeOffset_info(int info)
 {
   NodeStackOffset *new = newLinkNodeOffset_empty();
-  *new->info = info;
+  new->info = &info;
   return new;
 }
 
@@ -46,7 +46,7 @@ NodeStackOffset* getNext_linkNodeOffset(NodeStackOffset *node)
 /**Metodo que setea el campo info de un nodo dado*/
 void setInfo_linkNodeOffset(NodeStackOffset *node, int info)
 {
-  *node->info = info;
+  node->info = &info;
 }
 
 /**Metodo que setea el campo next de un nodo dado*/

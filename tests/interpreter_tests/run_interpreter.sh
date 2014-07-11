@@ -1,37 +1,30 @@
 #!/bin/bash
-
-#
-#                           ******************                           
-#*****************************     test     ****************************************
-#**                         ******************                                    **
-#**                                                                               **
-#**Descripcion : Script que corre los casos de prueba definidos en la carpeta     **
-#**              tests. cada test tiene su propio main.                          **
-#**                                                                               **
-#***********************************************************************************   
+#*****************************     Tests     ********************************
+#**                                                                        **
+#** Description: This script run all tests case for check that interpreter **
+#** it's working correctly.                                                **
+#**              tests. cada test tiene su propio main.                    **
+#**                                                                        **
+#****************************************************************************
 echo "*********************************************************************************** "
-echo "**                                                                               ** " 
-echo "**                            Corriendo Interprete . . .                         ** "                
 echo "**                                                                               ** "
+echo "**                            Running interpreter tests . . .                    ** "
 echo "**                                                                               ** "
 echo "*********************************************************************************** "
-echo "     " 
-echo "     " 
+echo "     "
+echo "     "
 
-comp="../c-tds"
+compiler="../../bin/c-tds -target interpreter"
 
-#files=`ls ../tests/interprete/*.c-tds`
-files=`ls ../tests/test-interprete/*.c-tds`
+# tests files.
+files=`ls *.c-tds`
 
-for file in $files ; do 
-	echo "---------------- Test $file ... -------------------" 
-        ./$comp $file 
-	echo "---------------------------------------------------" 
-        echo "  "
-        echo "  "
+for each_file in $files; do
+	echo "---------------- Test $each_file ... --------------"
+        ./$compiler $each_file
+	echo "---------------------------------------------------"
+        echo
+        echo
 done
 
-echo Press ENTER to continue.
-read
 exit 0
-
