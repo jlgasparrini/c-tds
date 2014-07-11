@@ -27,7 +27,7 @@ class test_arreglos {
     print B[0];
     print C[2];
     print C[3];
-    //externinvk("printf", int ,"hola");
+    externinvk("printf", int ,"hola");
     return 1;
   }
 }

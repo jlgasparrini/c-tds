@@ -158,7 +158,7 @@ static int generate_operation(int position)
       translate_not(file, code);
       break;
 
-    /* EXTERNAL OPERATIONS */
+    /* EXTERNAL INVOCATIONS OPERATIONS */
     case EXTERN_INVK:
       translate_externinvk(file, code);
       break;

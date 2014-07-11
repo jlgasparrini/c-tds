@@ -12,6 +12,12 @@ ListMLabel *label_list;
 LCode3D *code_list;
 StringStack *methods_call_stack;
 
+/* Show warnings on interpreter for externinvk senteces.*/
+static void warning_externinvk()
+{
+  printf("WARNING! the externinvk sentences are ignored on interpreter mode.\n");
+}
+
 /*
  * param position: position in the 3D list of the 3 directions code that must be interpreted.
  * Interprets the 3 direccions code
@@ -23,7 +29,6 @@ static int run_operation(int position)
   switch (code->command)
   {
     /* GENERAL OPERATIONS TREATEMENT */
-
     case LOAD_CONST:
       if (getAttributeType(getAttribute(code, 2)) == Int)
         setIntVal(getAttribute(code, 2), code->param1->val.intAttri);
@@ -41,7 +46,6 @@ static int run_operation(int position)
       getAttribute(code, 3)->decl.variable = &getAttribute(code, 2)->decl.array.arrayValues[getIntVal(getAttribute(code, 1))];
       return position + 1;
 
-      /* PRINT */
     case PRINT:
       if (getAttributeType(getAttribute(code, 1)) == Int)
         printf("Print. El valor entero es: %d\n", getIntVal(getAttribute(code, 1)));
@@ -85,7 +89,7 @@ static int run_operation(int position)
       pushString(methods_call_stack, intToString(position + 1));
       return searchByLabel(code_list->codes, getLabel(code, 1));
 
-      /*INT OPERATIONS TREATEMENT */
+    /*INT OPERATIONS TREATEMENT */
     case ASSIGNATION_INT:
       setIntVal(getAttribute(code, 2), getIntVal(getAttribute(code, 1)));
       return position + 1;
@@ -142,109 +146,100 @@ static int run_operation(int position)
       setBoolVal(getAttribute(code, 3), getIntVal(getAttribute(code, 1)) <= getIntVal(getAttribute(code, 2)));
       return position + 1;
 
-      /* FLOAT OPERATIONS TREATEMENT */
-
-      /* ASSIGNATION_FLOAT */
-    case 23:
+    /* FLOAT OPERATIONS TREATEMENT */
+    case ASSIGNATION_FLOAT:
       setFloatVal(getAttribute(code, 2), getFloatVal(getAttribute(code, 1)));
       return position + 1;
 
-      /* PARAM_ASSIGN_FLOAT */
-    case 24:
+    case PARAM_ASSIGN_FLOAT:
       setFloatVal(getAttribute(code, 2), getFloatVal(getAttribute(code, 1)));
       return position + 1;
 
-      /* MINUS_FLOAT */
-    case 25:
+    case MINUS_FLOAT:
       setFloatVal(getAttribute(code, 3), getFloatVal(getAttribute(code, 1)) - getFloatVal(getAttribute(code, 2)));
       return position + 1;
 
-      /* ADD_FLOAT */
-    case 26:
+    case ADD_FLOAT:
       setFloatVal(getAttribute(code, 3), getFloatVal(getAttribute(code, 1)) + getFloatVal(getAttribute(code, 2)));
       return position + 1;
 
-      /* MULT_FLOAT */
-    case 27:
+    case MULT_FLOAT:
       setFloatVal(getAttribute(code, 3), getFloatVal(getAttribute(code, 1)) * getFloatVal(getAttribute(code, 2)));
       return position + 1;
 
-      /* DIV_FLOAT */
-    case 28:
+    case DIV_FLOAT:
       setFloatVal(getAttribute(code, 3), ((float) getFloatVal(getAttribute(code, 1))) / (float) getFloatVal(getAttribute(code, 2)));
       return position + 1;
 
-      /* NEG_FLOAT */
-    case 29:
+    case NEG_FLOAT:
       setFloatVal(getAttribute(code, 2), -getFloatVal(getAttribute(code, 1)));
       return position + 1;
 
-      /* EQ_FLOAT */
-    case 30:
+    case EQ_FLOAT:
       setBoolVal(getAttribute(code, 3), getFloatVal(getAttribute(code, 1)) == getFloatVal(getAttribute(code, 2)));
       return position + 1;
 
-      /* DIST_FLOAT */
-    case 31:
+    case DIST_FLOAT:
       setBoolVal(getAttribute(code, 3), getFloatVal(getAttribute(code, 1)) != getFloatVal(getAttribute(code, 2)));
       return position + 1;
 
-      /* GREATER_FLOAT */
-    case 32:
+    case GREATER_FLOAT:
       setBoolVal(getAttribute(code, 3), getFloatVal(getAttribute(code, 1)) > getFloatVal(getAttribute(code, 2)));
       return position + 1;
 
-      /* LOWER_FLOAT */
-    case 33:
+    case LOWER_FLOAT:
       setBoolVal(getAttribute(code, 3), getFloatVal(getAttribute(code, 1)) < getFloatVal(getAttribute(code, 2)));
       return position + 1;
 
-      /* GEQ_FLOAT */
-    case 34:
+    case GEQ_FLOAT:
       setBoolVal(getAttribute(code, 3), getFloatVal(getAttribute(code, 1)) >= getFloatVal(getAttribute(code, 2)));
       return position + 1;
 
-      /* LEQ_FLOAT */
-    case 35:
+    case LEQ_FLOAT:
       setBoolVal(getAttribute(code, 3), getFloatVal(getAttribute(code, 1)) <= getFloatVal(getAttribute(code, 2)));
       return position + 1;
 
-
-      /* BOOLEAN OPERATIONS TREATEMENT */
-
-      /* ASSIGNATION_BOOL */
-    case 36:
+    /* BOOLEAN OPERATIONS TREATEMENT */
+    case ASSIGNATION_BOOL:
       setBoolVal(getAttribute(code, 2), getBoolVal(getAttribute(code, 1)));
       return position + 1;
 
-      /* PARAM_ASSIGN_BOOL */
-    case 37:
+    case PARAM_ASSIGN_BOOL:
       setBoolVal(getAttribute(code, 2), getBoolVal(getAttribute(code, 1)));
       return position + 1;
 
-      /* EQ_BOOL */
-    case 38:
+    case EQ_BOOL:
       setBoolVal(getAttribute(code, 3), getBoolVal(getAttribute(code, 1)) == getBoolVal(getAttribute(code, 2)));
       return position + 1;
 
-      /* DIST_BOOL */
-    case 39:
+    case DIST_BOOL:
       setBoolVal(getAttribute(code, 3), getBoolVal(getAttribute(code, 1)) != getBoolVal(getAttribute(code, 2)));
       return position + 1;
 
-      /* OR */
-    case 40:
+    case OR:
       setBoolVal(getAttribute(code, 3), getBoolVal(getAttribute(code, 1)) || getBoolVal(getAttribute(code, 2)));
       return position + 1;
 
-      /* AND */
-    case 41:
+    case AND:
       setBoolVal(getAttribute(code, 3), getBoolVal(getAttribute(code, 1)) && getBoolVal(getAttribute(code, 2)));
       return position + 1;
 
-      /* NOT */
-    case 42:
+    case NOT:
       setBoolVal(getAttribute(code, 2), !getBoolVal(getAttribute(code, 1)));
+      return position + 1;
+
+    /* EXTERNAL INVOCATIONS OPERATIONS */
+    case EXTERN_INVK:
+      warning_externinvk();
+      return position + 1;
+    case EXTERN_PARAM_ASSIGN_BOOL:
+      warning_externinvk();
+      return position + 1;
+    case EXTERN_PARAM_ASSIGN_FLOAT:
+      warning_externinvk();
+      return position + 1;
+    case EXTERN_PARAM_ASSIGN_INT:
+      warning_externinvk();
       return position + 1;
   }
 }
