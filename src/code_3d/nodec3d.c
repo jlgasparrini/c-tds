@@ -34,7 +34,7 @@ Code3D* getInfo_nodeC3D(NodeC3D *node) {
 }
 
 /**Metodo que retorna el campo next de un Nodo*/
-NodeC3D* getNext_NodeC3D(NodeC3D *node) {
+NodeC3D* getNext_nodeC3D(NodeC3D *node) {
     return (*node).next;
 }
 

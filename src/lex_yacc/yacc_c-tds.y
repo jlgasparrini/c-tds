@@ -12,6 +12,9 @@
   #include "../stack/stack.h"
   #include "../stack/stackOffset.h"
   #include "../method_list/genlistml.h"
+  #include "../assembler/assembler.h"
+  #include "../interpreter/interpreter.h"
+  #include "../code_3d/gencode3d.h"
 
   extern FILE *yyin;
   SymbolsTable *symbols_table;	// Symbols Table Definition.
@@ -257,6 +260,7 @@
       executable = true;
       yyparse();
     }
+    return 0;
   }
 
   //Al finalizar el parseo verifico si hubo errores, de lo contrario realizo la accion correspondiente al target.
@@ -734,6 +738,8 @@ typevoid      :    type {switch (method_type)
                             case RetFloat: $$=strdup("float");
                                             break;
                             case RetBool: $$=strdup("bool");
+                                            break;
+                            case RetVoid: $$=strdup("void");
                                             break;
                         }
                    }

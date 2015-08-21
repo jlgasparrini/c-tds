@@ -238,7 +238,7 @@ void translate_assignation_int(FILE* file, Code3D* code)
 /* Puts in the file the translation of the PARAM_ASSIGN_INT action */
 void translate_param_assign_int(FILE *file, Code3D *code)
 {
-  if (getInt(code, 3) != 0)
+  if (getInt(code, 3) != NULL)
     write_code_in_file(file, translate("subq", concat("$", intToString(getInt(code, 3)*4)), "%rsp"));
   write_code_in_file(file, translate("movq", offset(code, 1), "%rax"));
   write_code_in_file(file, translate("movq", "%rax", concat(intToString(auxParam*4), "(%rsp)")));
@@ -376,7 +376,7 @@ void assignation_float_translate(FILE* file, Code3D* code)
 /* Puts in the file the translation of the PARAM_ASSIGN_FLOAT action */
 void translate_param_assign_float(FILE *file, Code3D *code)
 {
-  if (getInt(code, 3) != 0)
+  if (getInt(code, 3) != NULL)
     write_code_in_file(file, translate("subq", concat("$", intToString(getInt(code, 3)*4)), "%rsp"));
   write_code_in_file(file, translate("movss", offset(code, 1), "%xmm0"));
   write_code_in_file(file, translate("movq", "%rax", concat(intToString(auxParam*4), "(%rsp)")));

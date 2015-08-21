@@ -22,6 +22,9 @@ void add_code(LCode3D *lcode3d, Code3D *code);
 Code3D* get_code(LCode3D *lcode3d, int index);
 int codeSize(LCode3D *lcode3d);
 
+/**/
+void set_code_int(LCode3D *lcode3d,int index,int param, int numb);
+
 /** Funciones de Escritura de la Lista de un Codigo Concreto*/
 void add_CodeLabel(LCode3D *lcode3d, Code3D *code, char *label);
 void add_CodeLabelCond(LCode3D *lcode3d, Code3D *code, Attribute *attri1, char *labelJumpTo);
@@ -29,6 +32,9 @@ void add_CodeLabelCond(LCode3D *lcode3d, Code3D *code, Attribute *attri1, char *
 void add_Assignation(LCode3D *lcode3d, Attribute *attri1,  Attribute *attriRes);
 void add_Print(LCode3D *lcode3d, Code3D *code, Attribute *attr);
 void add_MethodCall(LCode3D *lcode3d, Code3D *code,  Attribute *attri1, Attribute *attriRes);
+
+void add_CodeExternInvk(LCode3D *lcode3d, Code3D *code,char *label,  char* type);
+void addParamExternInvk(LCode3D *lcode3d, Code3D *code, Attribute *attr, int paramNumber);
 
 /**Funcion de Borrado de un Codigo de la Lista*/
 void delete_code(LCode3D *lcode3d, int index);

@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "code_3d.h"
+#include "operations_code.h"
 
 #define CODE_NULL    -1
 #define CODE_ATTRI    0
@@ -334,7 +335,7 @@ void showCode(Code3D *code, int param)
 //Muestro el codigo intermedio de manera correcta.
 void toString3DC(Code3D *code)
 {
-  printf("   %s   |   ", get_operation_by_id(getCommand(code)));
+  printf("   %s   |   ", (char*) get_operation_by_id(getCommand(code)));
   if (isNull(code, 3))
   {
     if (isNull(code, 2))

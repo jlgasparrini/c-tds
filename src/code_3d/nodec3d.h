@@ -18,18 +18,16 @@ typedef struct NC3D {
 /*funciones publicas para manipular Nodes*/
 
 /*constructores*/
-
 NodeC3D* newNodeC3D_empty();
 NodeC3D* newNodeC3D_info(Code3D *info);
 NodeC3D* newNodeC3D_info_next(Code3D *info, NodeC3D *next);
 
 /*lectura de informacion*/
-
 Code3D* getInfo_nodeC3D(NodeC3D *node);
-NodeC3D* getNext_NodeC3D(NodeC3D *node);
+NodeC3D* getNext_nodeC3D(NodeC3D *node);
 
 /*escritura de informacion*/
-void setInfo_NodeC3D(NodeC3D *node, Code3D *info);
-void setNext_NodeC3D(NodeC3D *node, NodeC3D *next);
+void setInfo_nodeC3D(NodeC3D *node, Code3D *info);
+void setNext_nodeC3D(NodeC3D *node, NodeC3D *next);
 
 #endif

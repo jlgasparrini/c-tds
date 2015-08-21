@@ -8,8 +8,8 @@
 #include "errors_queue.h"
 #include "../SymbolsTable/Utils.h"
 
-extern line_numb;
-extern column_numb;
+extern int line_numb;
+extern int column_numb;
 
 /* Returns an initialized queue. */
 ErrorsQueue* initialize_queue()
@@ -46,7 +46,7 @@ char* to_string(char *init, char *id, char *message)
 void insert_error(ErrorsQueue *eq, char* message)
 {
   ErrorNode *new_error_node;
-  if (new_error_node = (ErrorNode*) malloc(sizeof(ErrorNode)))
+  if ((new_error_node = (ErrorNode*) malloc(sizeof(ErrorNode))))
   {
     new_error_node->error = message;
     new_error_node->next = NULL;
