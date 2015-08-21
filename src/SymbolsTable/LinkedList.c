@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "LinkedList.h"
+#include "string.h"
 
 /* Returns an initialized linked list. */ 
 LinkedList* initialize()
@@ -20,7 +21,7 @@ LinkedList* initialize()
 void insert(LinkedList *l, Attribute *attribute)
 {
     Node *newNode;
-    if (newNode = (Node*) malloc(sizeof(Node))) 
+    if ((newNode = (Node*) malloc(sizeof(Node)))) 
     {
         (*newNode).data = attribute;
         (*newNode).next = (*l).first;
@@ -61,7 +62,6 @@ Attribute* search(LinkedList *l, char *id)
 /* Return Attribute* of the last defined method in the list. Return NULL if there isn't a method defined */
 Attribute* getLastDefinedMethod(LinkedList *l)
 {
-	Attribute *auxAttr = NULL;
 	Node *auxNode = (*l).first;
     int i;
     for (i = 0; i < (*l).size; i++)

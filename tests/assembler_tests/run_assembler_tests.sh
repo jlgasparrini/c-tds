@@ -19,9 +19,9 @@ echo "**************************************************************************
 echo "     " 
 echo "     " 
 
-comp="../c-tds"
+comp="../../bin/c-tds"
 
-files=`ls ../tests/assembler/*.c-tds`
+files=`ls *.c-tds`
 for file in $files ; do 
 	echo "---------------- Test $file ... -------------------" 
         ./$comp $file -o $file

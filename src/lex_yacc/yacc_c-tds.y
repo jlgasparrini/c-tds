@@ -220,7 +220,6 @@
       }
     }
     char* res = malloc(sizeof(char)* (pos_punto - pos_barra - 1));
-    int j = 0;
     for(i = pos_barra + 1; i < pos_punto; i++)
       res[i - pos_barra -1] = file[i];
     return strdup(res);

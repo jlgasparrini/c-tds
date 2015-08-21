@@ -64,7 +64,6 @@ void printCorrectOrder(StringStack *s)
 /* Prints the stack in the inverse order */
 void printInverseOrder(StringStack *s)
 {
-	int i;
 	StringStack *aux = initializeSS();
 	while ((*s).size > 0)
 		pushString(aux,popString(s));

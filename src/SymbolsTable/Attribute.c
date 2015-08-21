@@ -15,14 +15,14 @@ StVariable createStVariable(PrimitiveType type)
 {
 	StVariable var; 
 	var.type = type;
-  switch (type) {
-    case Int: var.value.intVal = 0;
-              break;
-    case Float: var.value.floatVal = 0.0;
-                break;
-    case Bool: var.value.boolVal = False;
-               break;
-  }
+	switch (type) {
+	    case Int: var.value.intVal = 0;
+	              break;
+	    case Float: var.value.floatVal = 0.0;
+	                break;
+	    case Bool: var.value.boolVal = False;
+	               break;
+  	}
 	return var;
 }
 
@@ -35,7 +35,7 @@ Attribute* createVariable(char *id, PrimitiveType type)
 	*attr->decl.variable = createStVariable(type);
 	attr->decl.variable->id = strdup(id);
 	attr->decl.variable->offset = getGlobalVarOffset();
-  decreaseVarOffset();
+  	decreaseVarOffset();
 	return attr;
 }
 
@@ -43,16 +43,16 @@ Attribute* createVariable(char *id, PrimitiveType type)
 Attribute* createArray(char *id, PrimitiveType type, unsigned int length)
 {
 	Attribute *attr = (Attribute*) malloc (sizeof(Attribute)); 
-	(*attr).type = Array;
-	(*attr).decl.array.id = strdup(id);
-	(*attr).decl.array.type = type; 
-	(*attr).decl.array.length = length;
-	(*attr).decl.array.arrayValues = (StVariable*) malloc (length*sizeof(StVariable)); /* creates the necessary memory for the array */
+	attr->type = Array;
+	attr->decl.array.id = strdup(id);
+	attr->decl.array.type = type; 
+	attr->decl.array.length = length;
+	attr->decl.array.arrayValues = (StVariable*) malloc (length*sizeof(StVariable)); /* creates the necessary memory for the array */
 	int i;
 	for(i = 0; i < length; i++)
 	{	// Initializes all the values of the array
-		(*attr).decl.array.arrayValues[i] = createStVariable(type);
-        (*attr).decl.array.arrayValues[i].offset = getGlobalVarOffset();
+		attr->decl.array.arrayValues[i] = createStVariable(type);
+        attr->decl.array.arrayValues[i].offset = getGlobalVarOffset();
         decreaseVarOffset();
 	}
 	return attr;
@@ -76,15 +76,15 @@ Attribute* createParameter(Attribute *attr, unsigned int pos, char *id, Primitiv
 {
 	if (attr != NULL && attr->type == Method)
 	{
-		StVariable **auxParameters = (StVariable**) realloc ((*attr).decl.method.parameters, (pos+1)*sizeof(StVariable*));
+		StVariable **auxParameters = (StVariable**) realloc (attr->decl.method.parameters, (pos+1)*sizeof(StVariable*));
 		if (auxParameters != NULL)
 		{
 			attr->decl.method.parameters = auxParameters;
 			Attribute *aux = createVariable(id, type);
-			(*(*aux).decl.variable).offset = globalParamOffset-4;;
+			aux->decl.variable->offset = globalParamOffset-4;;
 			globalParamOffset += 4;
-      (*attr).decl.method.parameters[pos] = (StVariable*) malloc(sizeof(StVariable));
-			(*attr).decl.method.parameters[pos] = (*aux).decl.variable;
+      attr->decl.method.parameters[pos] = (StVariable*) malloc(sizeof(StVariable));
+			attr->decl.method.parameters[pos] = aux->decl.variable;
 			return aux;
 		}
 	}
@@ -94,8 +94,8 @@ Attribute* createParameter(Attribute *attr, unsigned int pos, char *id, Primitiv
 /* Sets the amount of parameters that will have the method attr */
 void setAmountOfParameters(Attribute *attr, unsigned int amount)
 {
-    if ((*attr).type == Method)
-		(*attr).decl.method.paramSize = amount;
+    if (attr->type == Method)
+		attr->decl.method.paramSize = amount;
 }
 
 /* Sets the value of the variable that contains "attr" with the respective "value" */
@@ -118,9 +118,10 @@ void setVariableValue(Attribute *attr, PrimitiveType type, char *value)
 char* getID(Attribute *attr)
 {
   switch (attr->type) {
-    case Variable: return (*(*attr).decl.variable).id;
-    case Method: return (*attr).decl.method.id;
-	  case Array:	return (*attr).decl.array.id;
+    case Variable: return attr->decl.variable->id;
+    case Method: return attr->decl.method.id;
+	case Array:	return attr->decl.array.id;
+	default: return NULL;
   }
 }
 
@@ -128,102 +129,105 @@ char* getID(Attribute *attr)
 int getIntVal(Attribute *attr)
 {
   switch (attr->type) {
-    case Variable: return (*(*attr).decl.variable).value.intVal;
-    case Method: return (*attr).decl.method.returnValue.intVal;
+    case Variable: return attr->decl.variable->value.intVal;
+    case Method: return attr->decl.method.returnValue.intVal;
+    default: return -1;
   }
 }
 
 /* Returns the floatVal of the attribute */
 float getFloatVal(Attribute *attr)
 {
-	if ((*attr).type == Variable)
-		return (*(*attr).decl.variable).value.floatVal;
-	if ((*attr).type == Method)
-		return (*attr).decl.method.returnValue.floatVal;
+	if (attr->type == Variable)
+		return attr->decl.variable->value.floatVal;
+	if (attr->type == Method)
+		return attr->decl.method.returnValue.floatVal;
+	return -1;
 }
 
 /* Returns the boolVal of the attribute */
 Boolean getBoolVal(Attribute *attr)
 {
-	if ((*attr).type == Variable)
-		return (*(*attr).decl.variable).value.boolVal;
-	if ((*attr).type == Method)
-		return (*attr).decl.method.returnValue.boolVal;
+	if (attr->type == Variable)
+		return attr->decl.variable->value.boolVal;
+	if (attr->type == Method)
+		return attr->decl.method.returnValue.boolVal;
+	return False;
 }
 
 /* Returns the intVal of the array attribute in the "pos" position */
 int getArrayIntVal(Attribute *attr, unsigned int pos)
 {
-	return (*attr).decl.array.arrayValues[pos].value.intVal;
+	return attr->decl.array.arrayValues[pos].value.intVal;
 }
 
 /* Returns the floatVal of the array attribute in the "pos" position */
 float getArrayFloatVal(Attribute *attr, unsigned int pos)
 {
-	return (*attr).decl.array.arrayValues[pos].value.floatVal;
+	return attr->decl.array.arrayValues[pos].value.floatVal;
 }
 
 /* Returns the boolVal of the array attribute in the "pos" position */
 Boolean getArrayBoolVal(Attribute *attr, unsigned int pos)
 {
-	return (*attr).decl.array.arrayValues[pos].value.boolVal;
+	return attr->decl.array.arrayValues[pos].value.boolVal;
 }
 
 /* Returns the offset of the variable */
 int getOffsetVal(Attribute *attr)
 {
-	return (*(*attr).decl.variable).offset;
+	return attr->decl.variable->offset;
 }
 
 /* Returns the offset of the array -the last position's offset- */
 int getOffsetArray(Attribute *attr)
 {
-	return (*attr).decl.array.arrayValues[ (*attr).decl.array.length - 1 ].offset;
+	return attr->decl.array.arrayValues[ attr->decl.array.length - 1 ].offset;
 }
 
 /* Sets the intVal of the attribute */
 void setIntVal(Attribute *attr, int value)
 {
-	if ((*attr).type == Variable)
-		(*(*attr).decl.variable).value.intVal = value;
-	if ((*attr).type == Method)
-		(*attr).decl.method.returnValue.intVal = value;
+	if (attr->type == Variable)
+		attr->decl.variable->value.intVal = value;
+	if (attr->type == Method)
+		attr->decl.method.returnValue.intVal = value;
 }
 
 /* Sets the floatVal of the attribute */
 void setFloatVal(Attribute *attr, float value)
 {
-	if ((*attr).type == Variable)
-		(*(*attr).decl.variable).value.floatVal = value;
-	if ((*attr).type == Method)
-		(*attr).decl.method.returnValue.floatVal = value;
+	if (attr->type == Variable)
+		attr->decl.variable->value.floatVal = value;
+	if (attr->type == Method)
+		attr->decl.method.returnValue.floatVal = value;
 }
 
 /* Sets the boolVal of the attribute */
 void setBoolVal(Attribute *attr, Boolean value)
 {
-	if ((*attr).type == Variable)
-		(*(*attr).decl.variable).value.boolVal = value;
-	if ((*attr).type == Method)
-		(*attr).decl.method.returnValue.boolVal = value;
+	if (attr->type == Variable)
+		attr->decl.variable->value.boolVal = value;
+	if (attr->type == Method)
+		attr->decl.method.returnValue.boolVal = value;
 }
 
 /* Sets the intVal of the array attribute in the "pos" position */
 void setArrayIntVal(Attribute *attr, unsigned int pos, int value)
 {
-	(*attr).decl.array.arrayValues[pos].value.intVal = value;
+	attr->decl.array.arrayValues[pos].value.intVal = value;
 }
 
 /* Sets the floatVal of the array attribute in the "pos" position */
 void setArrayFloatVal(Attribute *attr, unsigned int pos, float value)
 {
-	(*attr).decl.array.arrayValues[pos].value.floatVal = value;
+	attr->decl.array.arrayValues[pos].value.floatVal = value;
 }
 
 /* Sets the boolVal of the array attribute in the "pos" position */
 void setArrayBoolVal(Attribute *attr, unsigned int pos, Boolean value)
 {
-	(*attr).decl.array.arrayValues[pos].value.boolVal = value;
+	attr->decl.array.arrayValues[pos].value.boolVal = value;
 }
 
 /* Returns the global variable offset of the class */
@@ -280,5 +284,5 @@ void resetGlobalParamOffset()
  * Return 2 if it's an array */
 StructureType getStructureType(Attribute *attr)
 {
-    return (*attr).type;
+    return attr->type;
 }
