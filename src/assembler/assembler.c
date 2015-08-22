@@ -7,6 +7,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "assembler.h"
+#include "../lib/assembler_utils.h"
 #include "../code_3d/operations_code.h"
 
 FILE *file;
@@ -16,7 +17,8 @@ Stack *return_stack;
 
 // Given the position, I run that operation from the code_list
 // also this function return the next position of operation to execute!
-static int generate_operation(int position)
+//static int generate_operation(int position)
+static void generate_operation(int position)
 {
   Code3D*	code = get_code(code_list, position);
   switch (code->command)

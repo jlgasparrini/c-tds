@@ -126,10 +126,12 @@ ReturnType methodReturnType(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* 
 {
     Attribute *attr = searchIdInSymbolsTable(eq, aSymbolsTable, id);
     if(attr != NULL)
+    {
         if(getStructureType(attr) != Method)
             insert_error(eq, to_string("El identificador \"", id, "\" no corresponde a un metodo."));
         else
             return getAttributeType(attr);
+    }
     return RetInt; /* retorno por defecto el tipo int */
 }
 
@@ -142,6 +144,7 @@ ReturnType getAttributeType(Attribute *attr)
         return (*attr).decl.array.type;
     if(getStructureType(attr) == Method)
         return (*attr).decl.method.type;
+    return RetInt;
 }
 
 /* Returns the string corresponding to "type" */
@@ -191,6 +194,7 @@ void correctParamBC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, LCode3D *lcode
 {
     Attribute *aux = searchIdInSymbolsTable(eq, aSymbolsTable, lastCalledMethod);
     if(aux != NULL)
+    {
         if(getStructureType(aux) != Method)
             insert_error(eq, to_string("El identificador \"", lastCalledMethod, "\" no corresponde a un metodo."));
         else
@@ -229,6 +233,7 @@ void correctParamBC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, LCode3D *lcode
                 else
                     insert_error(eq,to_string("Error en llamada al metodo \"", lastCalledMethod, "\". Se tiene mayor cantidad de parametros que en su declaracion."));
         }
+    }
 }
 
 /* Returns 0 if the type parameter in "paramSize" position of the method's parameters is equal to the type of "var"
@@ -238,6 +243,7 @@ void correctParamIC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, LCode3D *lcode
 {
     Attribute *aux = searchIdInSymbolsTable(eq, aSymbolsTable, lastCalledMethod);
     if(aux != NULL)
+    {
         if(getStructureType(aux) != Method)
             insert_error(eq, to_string("El identificador \"", lastCalledMethod, "\" no corresponde a un metodo."));
         else
@@ -257,6 +263,7 @@ void correctParamIC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, LCode3D *lcode
                 }
             }
         }
+    }
 }
 
 void externParamAssign(LCode3D *lcode3d, Attribute *param, unsigned char paramNumber)
@@ -273,7 +280,8 @@ void externParamAssign(LCode3D *lcode3d, Attribute *param, unsigned char paramNu
 /* Return 1 if ocurred one error, or 0 if all type is ok*/
 unsigned char controlType(ErrorsQueue *eq, Attribute *attr, PrimitiveType type, char *operation, int numberOfExpression)
 {
-    if (getAttributeType(attr) != type){
+    if (getAttributeType(attr) != type)
+    {
         if (numberOfExpression == 1)
         {
             char* f = (char*) malloc ((strlen("La expresion de la sentencia \"")+strlen(operation)+strlen("\" no es del tipo \""))*sizeof(char));

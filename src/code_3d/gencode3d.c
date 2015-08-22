@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include "gencode3d.h"
 #include "operations_code.h"
+#include "../SymbolsTable/Utils.h"
 
 /**Constructor de la Lista de Codigos 3D*/
 LCode3D* initLCode3D()

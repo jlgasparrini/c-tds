@@ -3,6 +3,7 @@
  */
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "interpreter.h"
 #include "../SymbolsTable/StringStack.h"
@@ -241,6 +242,8 @@ static int run_operation(int position)
     case EXTERN_PARAM_ASSIGN_INT:
       warning_externinvk();
       return position + 1;
+    default:
+      return position;
   }
 }
 
@@ -252,7 +255,7 @@ static int run_operation(int position)
 static int search_by_method_label(char* label)
 {
   char *auxLabel = get_Label(label_list, label);
-  if (auxLabel == "NULL")
+  if (strcmp(auxLabel, "NULL") == 0)
     printf("ERROR: LABEL no encontrado!    %s  encontrado. \n", auxLabel);
   else
   {

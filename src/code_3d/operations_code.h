@@ -63,6 +63,6 @@
 #define EXTERN_PARAM_ASSIGN_INT   46
 
 /* Returns the respective string operation of an ID */
-char* get_operation_by_id(int);
+char* get_operation_by_id(int id);
 
 #endif

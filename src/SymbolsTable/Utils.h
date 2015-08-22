@@ -10,6 +10,9 @@
 #include "../code_3d/gencode3d.h"
 #include "../code_3d/operations_code.h"
 
+/* Creates a name for a temporary variable */
+char* getVariableName();
+
 /* Returns an attribute of ID "id" and Variable structure. Otherwise returns NULL */
 Attribute* getVariableAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id);
 
@@ -41,6 +44,9 @@ void correctParamBC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, LCode3D *lcode
 /* Checks if if the type parameter in "paramSize" position of the method's parameters is equal to the type of "var"
    and paramSize <= than the amount of parameters of the method. */
 void correctParamIC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, LCode3D *lcode3d, Attribute *attr, char* lastCalledMethod, unsigned char paramSize);
+
+/**/
+void externParamAssign(LCode3D *lcode3d, Attribute *param, unsigned char paramNumber);
 
 /* Insert an error message if the attribute "attr" isn't a variable of type "type" */
 /* Return 1 if ocurred one error, or 0 if all type is ok*/
