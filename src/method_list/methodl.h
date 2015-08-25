@@ -24,12 +24,12 @@ MethodL* newMethodL(char *id_method, char *label_method);
 /**Funciones de Acceso a un Codigo*/
 
 char* getIdMethod(MethodL *methodl);
-char* getLabelMethod(MethodL *methodl);
+char* get_labelMethod(MethodL *methodl);
 
 /**Funciones de Escritura de un Codigo*/
 
 void setIdMethod(MethodL *methodl, char *id_method);
-void setLabelMethod(MethodL *methodl, char *label_method);
+void set_labelMethod(MethodL *methodl, char *label_method);
 
 
 void toStringMethodL(MethodL *methodl);

@@ -8,7 +8,7 @@
 #include "StringStack.h"
 
 /* Returns an initialized StringStack. */ 
-StringStack* initializeSS()
+StringStack* initialize_string_stack()
 {
     StringStack *stack = (StringStack*) malloc (sizeof(StringStack));
     stack->first = NULL;
@@ -17,7 +17,7 @@ StringStack* initializeSS()
 }
 
 /* Insert an element in the stack "s". */
-void pushString(StringStack *s, char *value)
+void push_string(StringStack *s, char *value)
 {
     SNode *newNode = (SNode*) malloc (sizeof(SNode));
     if (newNode)
@@ -32,7 +32,7 @@ void pushString(StringStack *s, char *value)
 }
 
 /* Return the value of the last pushed string in the stack "s". */
-char* popString(StringStack *s)
+char* pop_string(StringStack *s)
 {
     if (s->size > 0)
     {
@@ -47,7 +47,7 @@ char* popString(StringStack *s)
 }
 
 /* Return the top string of the stack "s". */
-char* topString(StringStack *s)
+char* top_string(StringStack *s)
 {
     if (s->size > 0)
         return s->first->val;
@@ -55,21 +55,21 @@ char* topString(StringStack *s)
 }
 
 /* Prints the stack in the correct order */
-void printCorrectOrder(StringStack *s)
+void print_correct_order(StringStack *s)
 {
 	while (s->size > 0)
-		printf("%s",popString(s));	
+		printf("%s",pop_string(s));	
 }
 
 /* Prints the stack in the inverse order */
-void printInverseOrder(StringStack *s)
+void print_inverse_order(StringStack *s)
 {
-	StringStack *aux = initializeSS();
+	StringStack *aux = initialize_string_stack();
 	while (s->size > 0)
-		pushString(aux,popString(s));
+		push_string(aux,pop_string(s));
 	while (aux->size > 0)
 	{
-		printf("%s",topString(aux));	
-		pushString(s,popString(aux));
+		printf("%s",top_string(aux));	
+		push_string(s,pop_string(aux));
 	}
 }

@@ -41,7 +41,7 @@ void set_listC3D_int(ListC3D *list,int index,int param, int numb)
         int i;
         for (i = 0; i < index - 1; i++)
             runner = getNext_nodeC3D(runner);
-        setInt(runner->info, param, numb);
+        set_int(runner->info, param, numb);
     }
 }
 
@@ -90,7 +90,7 @@ int searchByLabel(ListC3D *list, char* label)
     int i;
     for (i = 0; i < size_listC3D(list); i++)
     {
-        if (strcmp((char*) get_operation_by_id(getCommand(runner->info)),"LABEL") == 0 && strcmp(getLabel((*runner).info, 1), label) == 0)
+        if (strcmp((char*) get_operation_by_id(get_command(runner->info)),"LABEL") == 0 && strcmp(get_label((*runner).info, 1), label) == 0)
             return i;
         runner = getNext_nodeC3D(runner);
     }

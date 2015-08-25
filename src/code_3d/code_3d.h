@@ -36,39 +36,39 @@ typedef struct {
 
 
 /* 3d code constructor. */
-Code3D* newCode(int comm);
+Code3D* new_ode(int comm);
 
 /* Functions for management 3d code */
-int getCommand(Code3D *code);
-bool isInt(Code3D *code, int param);
-bool isFloat(Code3D *code, int param);
-bool isBool(Code3D *code, int param);
-bool isLabel(Code3D *code, int param);
-bool isAttribute(Code3D *code, int param);
-bool isNull(Code3D *code, int param);
-char* getLabel(Code3D *code, int param);
-Attribute* getAttribute(Code3D *code, int param);
-int getInt(Code3D *code, int param);
-float getFloat(Code3D *code, int param);
-bool getBool(Code3D *code, int param);
+int get_command(Code3D *code);
+bool is_int(Code3D *code, int param);
+bool is_float(Code3D *code, int param);
+bool is_bool(Code3D *code, int param);
+bool is_label(Code3D *code, int param);
+bool is_attribute(Code3D *code, int param);
+bool is_null(Code3D *code, int param);
+char* get_label(Code3D *code, int param);
+Attribute* get_attribute(Code3D *code, int param);
+int get_int(Code3D *code, int param);
+float get_float(Code3D *code, int param);
+bool get_bool(Code3D *code, int param);
 
 /**Funciones de Escritura de un Codigo*/
 
-void setBool(Code3D *code, int param, bool boolAttri);
-void setFloat(Code3D *code, int param, float floatAttri);
-void setInt(Code3D *code, int param, int intAttri);
-void setLabel(Code3D *code, int param, char *label);
-void setAttribute(Code3D *code, int param, Attribute *attri);
-void setNull(Code3D *code, int param);
+void set_bool(Code3D *code, int param, bool boolAttri);
+void set_float(Code3D *code, int param, float floatAttri);
+void set_int(Code3D *code, int param, int intAttri);
+void set_label(Code3D *code, int param, char *label);
+void set_attribute(Code3D *code, int param, Attribute *attri);
+void set_null(Code3D *code, int param);
 
 /** Funciones de Escritura de un Codigo Concreto*/
 
-void setCodeLabel(Code3D *code, char *label);
-void setCodeLabelCond(Code3D *code, Attribute *attri1, char *labelJumpTo);
-void setCode3D(Code3D *code, Attribute *attri1, Attribute *attri2, Attribute *attriRes);
-void setCode2D(Code3D *code, Attribute *attri1, Attribute *attriRes);
-void setCode1D(Code3D *code, Attribute *attri1);
+void set_code_label(Code3D *code, char *label);
+void set_code_label_cond(Code3D *code, Attribute *attri1, char *labelJumpTo);
+void set_c3D(Code3D *code, Attribute *attri1, Attribute *attri2, Attribute *attriRes);
+void set_c2D(Code3D *code, Attribute *attri1, Attribute *attriRes);
+void set_c1D(Code3D *code, Attribute *attri1);
 
-void toString3DC(Code3D *code);
+void to_string_c3D(Code3D *code);
 
 #endif

@@ -26,17 +26,17 @@ char* to_string(char *init, char *id, char *message)
 {
   char* error_msg = " Error in line: ";
   int length_msg = strlen(init) + strlen(id) + strlen(message) + strlen(error_msg);
-  length_msg += digitAmount(line_numb) + strlen(".") + digitAmount(column_numb);
+  length_msg += digit_amount(line_numb) + strlen(".") + digit_amount(column_numb);
   char* msg = (char*) malloc(length_msg * sizeof(char));
   strcat(msg, init);
   strcat(msg, id);
   strcat(msg, message);
   strcat(msg, error_msg);
-  char *numero = (char*) malloc(digitAmount(line_numb) * sizeof(char));
+  char *numero = (char*) malloc(digit_amount(line_numb) * sizeof(char));
   sprintf(numero, "%d", line_numb);
   strcat(msg, numero);
   strcat(msg, ".");
-  numero = (char*) malloc(digitAmount(column_numb) * sizeof(char));
+  numero = (char*) malloc(digit_amount(column_numb) * sizeof(char));
   sprintf(numero, "%d", column_numb);
   strcat(msg, numero);
   return msg;

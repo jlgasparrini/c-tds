@@ -102,7 +102,7 @@ void init_assembler(ListMLabel *ext_label_list, LCode3D *ext_code_list, char* na
   label_list = ext_label_list;
   code_list = ext_code_list;
   int index;
-  for (index = 0; index < codeSize(code_list); index++)
+  for (index = 0; index < code_size(code_list); index++)
     generate_operation(index);
   write_neg_float(file);
 }

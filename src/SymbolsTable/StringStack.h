@@ -23,21 +23,21 @@ typedef struct
 } StringStack;
 
 /* Returns an initialized StringStack. */ 
-StringStack* initializeSS();
+StringStack* initialize_string_stack();
 
 /* Insert an element in the stack "s". */
-void pushString(StringStack *s, char *value);
+void push_string(StringStack *s, char *value);
 
 /* Return and removes the value of the last pushed string in the stack "s". */
-char* popString(StringStack *s);
+char* pop_string(StringStack *s);
 
 /* Return the top string of the stack "s". */
-char* topString(StringStack *s);
+char* top_string(StringStack *s);
 
 /* Prints the stack in the correct order */
-void printCorrectOrder(StringStack *s);
+void print_correct_order(StringStack *s);
 
 /* Prints the stack in the inverse order */
-void printInverseOrder(StringStack *s);
+void print_inverse_order(StringStack *s);
 
 #endif

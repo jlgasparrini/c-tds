@@ -31,8 +31,8 @@
 
   static inline void setUpMethodCreation(char *name, ReturnType type) {
     last_def_method = name;
-    pushElement(error_q, symbols_table, create_method(name, type));
-    pushLevel(symbols_table);
+    push_element(error_q, symbols_table, create_method(name, type));
+    push_level(symbols_table);
     returns = 0;
   }
 
@@ -161,10 +161,10 @@
   {
       amount_extern_params = 0;
       error_q = initialize_queue();
-      symbols_table = initializeSymbolsTable();
-      l_code3d = initLCode3D();
-      params_stack = initializeSS();
-      methods_id_stack = initializeSS();
+      symbols_table = initialize_symbols_table();
+      l_code3d = init_list_c3D();
+      params_stack = initialize_string_stack();
+      methods_id_stack = initialize_string_stack();
       labels_CYC = newStack();
       labels_while = newStack();
       return_stack = newStack();
@@ -173,7 +173,7 @@
       offsets_var = newStackOffset();
       offsets_param = newStackOffset();
       list_meth_label = initL();
-      l_code3d = initLCode3D();
+      l_code3d = init_list_c3D();
   }
 
   void compile(char *main_file, char **linked_files, int size)
@@ -275,7 +275,7 @@
       else if(strcmp(action_input,"show") == 0)
       {
         printf("Showing the three-address code...");
-        show3DCode(l_code3d); //Muestro el codigo 3D por terminal.
+        show_c3D(l_code3d); //Muestro el codigo 3D por terminal.
         printf("Intermediate code generated.\n");
       }
       else if(strcmp(action_input,"interpreter") == 0)
@@ -326,7 +326,7 @@
   /*Create new Label*/
   char* newLabelName(char* msg)
   {
-    char *labelName = malloc(sizeof(char)*(digitAmount(label_count)+strlen("%d_label_")+strlen(msg)));
+    char *labelName = malloc(sizeof(char)*(digit_amount(label_count)+strlen("%d_label_")+strlen(msg)));
     sprintf(labelName, label_ID, label_count);
     strcat(labelName,msg);
     label_count++;
@@ -376,10 +376,10 @@
 
 /* ------------------- PROGRAM -------------------- */
 program:  CLASS ID '{' '}' { parser_finalized(); }
-       |  CLASS ID '{' { pushLevel(symbols_table); }
+       |  CLASS ID '{' { push_level(symbols_table); }
           body {
-            checkMain(error_q,symbols_table);
-            popLevel(symbols_table);
+            check_main(error_q,symbols_table);
+            pop_level(symbols_table);
             parser_finalized(); }
           '}'
        ;
@@ -395,13 +395,13 @@ fields:  field
       |  fields ',' field
       ;
 
-field:  ID { pushElement(error_q, symbols_table, create_variable($1, var_type)); }
+field:  ID { push_element(error_q, symbols_table, create_variable($1, var_type)); }
      |  ID '[' INTEGER { if (atoi($3) <= 0)
                        {   insert_error(error_q,to_string("Error en definicion del arreglo \"",$1,"\". El tamaño del arreglo debe ser un entero mayor que 0."));
-                           pushElement(error_q, symbols_table, create_array($1, var_type, 10)); /* Array size of 10 in case of error */
+                           push_element(error_q, symbols_table, create_array($1, var_type, 10)); /* Array size of 10 in case of error */
                        }
                          else
-                           pushElement(error_q, symbols_table, create_array($1, var_type, atoi($3)));
+                           push_element(error_q, symbols_table, create_array($1, var_type, atoi($3)));
                        }
            ']'
      ;
@@ -415,61 +415,61 @@ method_decl:  type ID {
                         pushOffset(offsets_var, get_global_var_offset());/////////////////////////////////
                         reset_global_var_offset();////////////////////////////
                         setUpMethodCreation($2, method_type);
-                        add_CodeLabel(l_code3d, newCode(LABEL), $2); // Mark to Label of Init of Method
-                        push(max_method_offset, intToString(codeSize(l_code3d)));
+                        add_code_label(l_code3d, new_ode(LABEL), $2); // Mark to Label of Init of Method
+                        push(max_method_offset, int_to_string(code_size(l_code3d)));
                         insert_MethodL(list_meth_label, $2, $2);
                       } param block {
                         int pos = atoi(pop(max_method_offset));
                         set_code_int(l_code3d, pos, 2, get_global_var_offset());
                         set_global_var_offset(popOffset(offsets_var));//////////////////////////////////////////
                         if(returns==0) insert_error(error_q,to_string("El metodo \"",$2,"\" debe tener al menos un return."));
-                        popLevel(symbols_table);
+                        pop_level(symbols_table);
                       }
            |		method_decl type ID {
                         pushOffset(offsets_var, get_global_var_offset());
                         reset_global_var_offset();
                         setUpMethodCreation($3, method_type);
-                        add_CodeLabel(l_code3d, newCode(LABEL), $3); // Mark to Label of Init of Method
-                        push(max_method_offset, intToString(codeSize(l_code3d)));
+                        add_code_label(l_code3d, new_ode(LABEL), $3); // Mark to Label of Init of Method
+                        push(max_method_offset, int_to_string(code_size(l_code3d)));
                         insert_MethodL(list_meth_label, $3, $3);
                     } param block {
                         int pos = atoi(pop(max_method_offset));
                         set_code_int(l_code3d, pos, 2, get_global_var_offset());
                         set_global_var_offset(popOffset(offsets_var));
                         if(returns==0) insert_error(error_q,to_string("El metodo \"",$3,"\" debe tener al menos un return."));
-                        popLevel(symbols_table);
+                        pop_level(symbols_table);
                     }
            |     VOID ID {
                       pushOffset(offsets_var, get_global_var_offset());
                       reset_global_var_offset();
                       setUpMethodCreation($2, RetVoid);
-                      add_CodeLabel(l_code3d, newCode(LABEL), $2); // Mark to Label of Init of Method
-                      push(max_method_offset, intToString(codeSize(l_code3d)));
+                      add_code_label(l_code3d, new_ode(LABEL), $2); // Mark to Label of Init of Method
+                      push(max_method_offset, int_to_string(code_size(l_code3d)));
                       insert_MethodL(list_meth_label, $2, $2);
                   } param block {
                       int pos = atoi(pop(max_method_offset));
                       set_code_int(l_code3d, pos, 2, get_global_var_offset());
                       set_global_var_offset(popOffset(offsets_var));
                       if(returns==0) insert_error(error_q,to_string("El metodo \"",$2,"\" debe tener al menos un return."));
-                      popLevel(symbols_table);
+                      pop_level(symbols_table);
                   }
            |  method_decl VOID ID {
                 pushOffset(offsets_var, get_global_var_offset());
                 reset_global_var_offset();
                 setUpMethodCreation($3, RetVoid);
-                add_CodeLabel(l_code3d, newCode(LABEL), $3); // Mark to Label of Init of Method
-                push(max_method_offset, intToString(codeSize(l_code3d)));
+                add_code_label(l_code3d, new_ode(LABEL), $3); // Mark to Label of Init of Method
+                push(max_method_offset, int_to_string(code_size(l_code3d)));
                 insert_MethodL(list_meth_label, $3, $3);
               } param block {
                 int pos = atoi(pop(max_method_offset));
                 set_code_int(l_code3d, pos, 2, get_global_var_offset());
                 set_global_var_offset(popOffset(offsets_var));
                 if(returns==0) insert_error(error_q,to_string("El metodo \"",$3,"\" debe tener al menos un return."));
-                popLevel(symbols_table);
+                pop_level(symbols_table);
               }
            ;
 
-param		      :    '(' {cant_params = 0; set_amount_of_parameters(searchIdInSymbolsTable(error_q,symbols_table,last_def_method),0);} ')'
+param		      :    '(' {cant_params = 0; set_amount_of_parameters(search_id_in_symbols_table(error_q,symbols_table,last_def_method),0);} ')'
               |    '(' {if (strcmp(last_def_method,"main") == 0)
                             insert_error(error_q,to_string("El metodo \"main\" no debe contener parametros.","",""));
                         cant_params = 0;
@@ -477,21 +477,21 @@ param		      :    '(' {cant_params = 0; set_amount_of_parameters(searchIdInSymbo
 						            reset_global_param_offset();////////////////////////////
                         }
                     parameters {
-                                set_amount_of_parameters(searchIdInSymbolsTable(error_q,symbols_table,last_def_method),cant_params);
+                                set_amount_of_parameters(search_id_in_symbols_table(error_q,symbols_table,last_def_method),cant_params);
 								                set_global_param_offset(popOffset(offsets_param));/////////////////////////////////////
                                }
                     ')'
               ;
 
 parameters    :		type ID {
-                           Attribute *aux = create_parameter(searchIdInSymbolsTable(error_q,symbols_table,last_def_method),cant_params,$2,var_type);
-                           if (aux != NULL) {pushElement(error_q,symbols_table,aux); cant_params++;}
+                           Attribute *aux = create_parameter(search_id_in_symbols_table(error_q,symbols_table,last_def_method),cant_params,$2,var_type);
+                           if (aux != NULL) {push_element(error_q,symbols_table,aux); cant_params++;}
                            else insert_error(error_q,to_string("El identificador \"",$2,"\" no puede contener parametros/esa cantidad de parametros."));
                           }
 
               |		type ID {
-                           Attribute *aux = create_parameter(searchIdInSymbolsTable(error_q,symbols_table,last_def_method),cant_params,$2,var_type);
-                           if (aux != NULL) {pushElement(error_q,symbols_table,aux); cant_params++;}
+                           Attribute *aux = create_parameter(search_id_in_symbols_table(error_q,symbols_table,last_def_method),cant_params,$2,var_type);
+                           if (aux != NULL) {push_element(error_q,symbols_table,aux); cant_params++;}
                            else insert_error(error_q,to_string("El identificador \"",$2,"\" no puede contener parametros/esa cantidad de parametros."));
                           }
                             ',' parameters
@@ -517,8 +517,8 @@ statements    :    statement
 statement     :    conditional
               |    iteration
               |    action ';'
-              |    {pushLevel(symbols_table);} block {popLevel(symbols_table);}
-              |    PRINTT expression ';' {add_Print(l_code3d, newCode(PRINT), $2);}
+              |    {push_level(symbols_table);} block {pop_level(symbols_table);}
+              |    PRINTT expression ';' {add_print(l_code3d, new_ode(PRINT), $2);}
               ;
 
 action        :
@@ -528,7 +528,7 @@ action        :
                             else{
                                 char* aux = pop(labels_while);
                                 char* aux2 = pop(labels_while);
-                                add_CodeLabel(l_code3d, newCode(GOTO_LABEL), peek(labels_while)); //Go to char of End of While
+                                add_code_label(l_code3d, new_ode(GOTO_LABEL), peek(labels_while)); //Go to char of End of While
                                 push(labels_while, aux2);
                                 push(labels_while, aux);
                                 }
@@ -539,25 +539,25 @@ action        :
                             else
                             {
                                 char *posLabel = pop(labels_while); //Label of End of While
-                                add_CodeLabel(l_code3d, newCode(GOTO_LABEL), peek(labels_while)); //Go to char of Init of While
+                                add_code_label(l_code3d, new_ode(GOTO_LABEL), peek(labels_while)); //Go to char of Init of While
                                 push(labels_while, posLabel);
                             }
                     }
               |	   RETURNN {
                             returns++;
-                            if ((id_not_found == False) && (checkReturn(error_q,symbols_table,last_def_method) == 0))
+                            if ((id_not_found == False) && (check_return(error_q,symbols_table,last_def_method) == 0))
                             {
-                                Code3D *ret = newCode(RETURN);
-                                setCodeLabel(ret, "   -   ");  /* Label "    -    " is added because there are no arguments */
+                                Code3D *ret = new_ode(RETURN);
+                                set_code_label(ret, "   -   ");  /* Label "    -    " is added because there are no arguments */
                                 add_code(l_code3d, ret);
                             }
                     }
               |	   RETURNN expression {
                                     returns++;
-                                    if (id_not_found == False && checkReturnExpression(error_q,symbols_table,last_def_method,$2) == 0)
+                                    if (id_not_found == False && check_return_expression(error_q,symbols_table,last_def_method,$2) == 0)
                                     {
-                                        Code3D *ret = newCode(RETURN_EXPR);
-                                        setCode2D(ret, $2, searchIdInSymbolsTable(error_q,symbols_table,last_def_method));
+                                        Code3D *ret = new_ode(RETURN_EXPR);
+                                        set_c2D(ret, $2, search_id_in_symbols_table(error_q,symbols_table,last_def_method));
                                         add_code(l_code3d, ret);
                                     }
                     }
@@ -566,7 +566,7 @@ action        :
               ;
 
 asignation    :     location assig_op expression {
-                        controlAssignation(error_q,l_code3d,$1,$2,$3);
+                        control_assignation(error_q,l_code3d,$1,$2,$3);
                     }
               ;
 
@@ -580,36 +580,36 @@ assig_op      :    '=' {$$ = "=";}
 /* -------------------- CONDITIONALS AND CICLES ------------------------------ */
 
 conditional   :     IF '(' {
-                        add_CodeLabel(l_code3d, newCode(LABEL), newLabelName("if"));
+                        add_code_label(l_code3d, new_ode(LABEL), newLabelName("if"));
                     } expression {
-                        controlType(error_q,$4,Bool,"if",1);
+                        control_type(error_q,$4,Bool,"if",1);
                         char *elseLabel = newLabelName("else");
-                        add_CodeLabelCond(l_code3d, newCode(GOTO_LABEL_COND), $4, elseLabel);
+                        add_code_label_cond(l_code3d, new_ode(GOTO_LABEL_COND), $4, elseLabel);
                         push(labels_CYC, newLabelName("end_if"));
                         push(labels_CYC, elseLabel);
                     } ')' block optional
               ;
 
 optional	  :		{
-                        add_CodeLabel(l_code3d, newCode(LABEL), pop(labels_CYC)); // Mark to char of End
+                        add_code_label(l_code3d, new_ode(LABEL), pop(labels_CYC)); // Mark to char of End
                         push(return_stack, pop(labels_CYC));
                     }
               |	   	ELSE {
                         char* elseLabel = pop(labels_CYC);
-                        add_CodeLabel(l_code3d, newCode(GOTO_LABEL), peek(labels_CYC)); //Go to char of Else
-                        add_CodeLabel(l_code3d, newCode(LABEL), elseLabel); // Mark to char of Else
+                        add_code_label(l_code3d, new_ode(GOTO_LABEL), peek(labels_CYC)); //Go to char of Else
+                        add_code_label(l_code3d, new_ode(LABEL), elseLabel); // Mark to char of Else
                     } block {
                         char* aux = pop(labels_CYC);
-                        add_CodeLabel(l_code3d, newCode(LABEL), aux); // Mark to char of End
+                        add_code_label(l_code3d, new_ode(LABEL), aux); // Mark to char of End
                         push(return_stack, aux);
                     }
               ;
 
 iteration     :    WHILE {
                         char *whileLabel = newLabelName("while");
-                        add_CodeLabel(l_code3d, newCode(LABEL), whileLabel); // label of While
+                        add_code_label(l_code3d, new_ode(LABEL), whileLabel); // label of While
                         push(labels_while, whileLabel);
-                        push(labels_while, intToString(codeSize(l_code3d)));
+                        push(labels_while, int_to_string(code_size(l_code3d)));
                     }
                    expression {
                         char *endWhile = newLabelName("end_while");
@@ -618,33 +618,33 @@ iteration     :    WHILE {
                         push(labels_while, endWhile);
                         push(labels_while, whileLabel);
                         push(labels_while, pos);
-                        controlType(error_q,$3,Bool,"while",1);
-                        add_CodeLabelCond(l_code3d, newCode(GOTO_LABEL_COND), $3, endWhile); // Go to label of Expression
+                        control_type(error_q,$3,Bool,"while",1);
+                        add_code_label_cond(l_code3d, new_ode(GOTO_LABEL_COND), $3, endWhile); // Go to label of Expression
                     } block {
                         add_code(l_code3d, get_code(l_code3d, atoi(pop(labels_while))+1));
-                        add_CodeLabel(l_code3d, newCode(GOTO_LABEL), pop(labels_while)); // Go to label of while
-                        add_CodeLabel(l_code3d, newCode(LABEL), pop(labels_while)); // label_end of while
+                        add_code_label(l_code3d, new_ode(GOTO_LABEL), pop(labels_while)); // Go to label of while
+                        add_code_label(l_code3d, new_ode(LABEL), pop(labels_while)); // label_end of while
                     }
               |    FOR ID {
-                        if (get_attribute_type(getVariableAttribute(error_q,symbols_table,$2)) != Int)
+                        if (get_attribute_type(get_variable_attribute(error_q,symbols_table,$2)) != Int)
                             insert_error(error_q,to_string("El identificador \"", $2, "\" no pertenece a una variable de tipo \"int\""));
                         /* It musn't have the same treatment that while? */
                     } '=' expression ',' expression {
-                            controlType(error_q,$5,Int,"for",2); controlType(error_q,$7,Int,"for",3);
+                            control_type(error_q,$5,Int,"for",2); control_type(error_q,$7,Int,"for",3);
                             char *forLabel = newLabelName("for");
                             char *endLabel = newLabelName("end_for");
                             push(labels_for, endLabel);
                             push(labels_for, forLabel);
-                            push(labels_for, intToString(codeSize(l_code3d)));
-                            add_Assignation(l_code3d, $5, getVariableAttribute(error_q, symbols_table, $2));
-                            Attribute *res = returnMinorComparison(error_q, l_code3d, getVariableAttribute(error_q, symbols_table, $2), $7);
-                            add_CodeLabel(l_code3d, newCode(LABEL), forLabel);
-                            add_CodeLabelCond(l_code3d, newCode(GOTO_LABEL_COND), res, endLabel); // Go to label of Expression
+                            push(labels_for, int_to_string(code_size(l_code3d)));
+                            add_assignation(l_code3d, $5, get_variable_attribute(error_q, symbols_table, $2));
+                            Attribute *res = return_minor_comparison(error_q, l_code3d, get_variable_attribute(error_q, symbols_table, $2), $7);
+                            add_code_label(l_code3d, new_ode(LABEL), forLabel);
+                            add_code_label_cond(l_code3d, new_ode(GOTO_LABEL_COND), res, endLabel); // Go to label of Expression
                     } block {
-                            controlAssignation(error_q,l_code3d,getVariableAttribute(error_q,symbols_table,$2),"+=",returnValue(l_code3d,Int,"1"));
+                            control_assignation(error_q,l_code3d,get_variable_attribute(error_q,symbols_table,$2),"+=",return_value(l_code3d,Int,"1"));
                             add_code(l_code3d, get_code(l_code3d, atoi(pop(labels_for))+1));
-                            add_CodeLabel(l_code3d, newCode(GOTO_LABEL), pop(labels_for)); // Go to label of For
-                            add_CodeLabel(l_code3d, newCode(LABEL), pop(labels_for)); // label_end of For
+                            add_code_label(l_code3d, new_ode(GOTO_LABEL), pop(labels_for)); // Go to label of For
+                            add_code_label(l_code3d, new_ode(LABEL), pop(labels_for)); // label_end of For
                     }
               ;
 
@@ -652,24 +652,24 @@ iteration     :    WHILE {
 
 /* -------------------- EXPRESSIONS ------------------------------- */
 
-location      :    ID {$$ = getVariableAttribute(error_q, symbols_table, $1);}
-              |    ID '[' expression ']' {$$ = checkArrayPos(error_q,symbols_table,l_code3d,$1,$3);}
+location      :    ID {$$ = get_variable_attribute(error_q, symbols_table, $1);}
+              |    ID '[' expression ']' {$$ = check_array_pos(error_q,symbols_table,l_code3d,$1,$3);}
               ;
 
 method_call   :	   ID '(' ')' {
                         cant_params=0;
                         last_called_method=$1;
-                        add_CodeLabel(l_code3d, newCode(GOTO_METHOD), get_Label(list_meth_label, $1)); //Go to char of Init of Method
-                        $$ = checkAndGetMethodRetAttribute(error_q,symbols_table,l_code3d,$1,0);
+                        add_code_label(l_code3d, new_ode(GOTO_METHOD), get_Label(list_meth_label, $1)); //Go to char of Init of Method
+                        $$ = check_get_method_ret_attribute(error_q,symbols_table,l_code3d,$1,0);
                     }
 
-				|    ID '(' {if (searchIdInSymbolsTable(error_q,symbols_table,$1) == NULL)
+				|    ID '(' {if (search_id_in_symbols_table(error_q,symbols_table,$1) == NULL)
                                 id_not_found = True;
                             else
                             {
-                                pushString(params_stack,intToString(cant_params));
+                                push_string(params_stack,int_to_string(cant_params));
                                 cant_params=0;
-                                pushString(methods_id_stack,last_called_method);
+                                push_string(methods_id_stack,last_called_method);
                                 last_called_method = $1;
                             }
                     } expression_aux ')' {
@@ -677,13 +677,13 @@ method_call   :	   ID '(' ')' {
                             {
                                 set_code_int(l_code3d, flag_first_param, 3, cant_params);
                                 flag_first_param = 0;
-                                add_CodeLabel(l_code3d, newCode(GOTO_METHOD), get_Label(list_meth_label, $1)); //Go to char of Init of Method
-                                $$ = checkAndGetMethodRetAttribute(error_q,symbols_table,l_code3d,$1,cant_params);
-                                cant_params=atoi(popString(params_stack));
+                                add_code_label(l_code3d, new_ode(GOTO_METHOD), get_Label(list_meth_label, $1)); //Go to char of Init of Method
+                                $$ = check_get_method_ret_attribute(error_q,symbols_table,l_code3d,$1,cant_params);
+                                cant_params=atoi(pop_string(params_stack));
                             }
                             else
                             {
-                                $$ = create_variable((char*) getVariableName(),Int);
+                                $$ = create_variable((char*) get_variable_name(),Int);
                                 id_not_found = False;
                             }
                     }
@@ -694,9 +694,9 @@ method_call   :	   ID '(' ')' {
                         if (method_type != RetVoid)
                             res = create_variable("",method_type);
                         else
-                            res = create_variable((char*) getVariableName(),Int);
+                            res = create_variable((char*) get_variable_name(),Int);
                         char token[2] = "\"";
-                        add_CodeExternInvk(l_code3d, newCode(EXTERN_INVK), strtok($3, token), $5);
+                        add_code_externinvk(l_code3d, new_ode(EXTERN_INVK), strtok($3, token), $5);
                         $$ = res;
                     }
 				|    EXTERNINVK '(' STRING ',' typevoid ',' { amount_extern_params = 0; } externinvk_arg ')' {
@@ -705,9 +705,9 @@ method_call   :	   ID '(' ')' {
                         if (method_type != RetVoid)
                             res = create_variable("",method_type);
                         else
-                            res = create_variable((char*) getVariableName(),Int);
+                            res = create_variable((char*) get_variable_name(),Int);
                         char token[2] = "\"";
-                        add_CodeExternInvk(l_code3d, newCode(EXTERN_INVK), strtok($3, token), $5);
+                        add_code_externinvk(l_code3d, new_ode(EXTERN_INVK), strtok($3, token), $5);
                         $$ = res;
                     }
 				;
@@ -715,18 +715,18 @@ method_call   :	   ID '(' ')' {
 expression_aux:    expression {
                         if (id_not_found != True)
                         {
-                            correctParamBC(error_q,symbols_table,l_code3d,$1,last_called_method,cant_params);
+                            correct_param_base_case(error_q,symbols_table,l_code3d,$1,last_called_method,cant_params);
                             if (flag_first_param == 0)
-                                flag_first_param = codeSize(l_code3d);
+                                flag_first_param = code_size(l_code3d);
                             cant_params++;
                         }
                     }
               |    expression {
                         if (id_not_found != True)
                         {
-                            correctParamIC(error_q,symbols_table,l_code3d,$1,last_called_method,cant_params);
+                            correct_param_inductive_case(error_q,symbols_table,l_code3d,$1,last_called_method,cant_params);
                                 if (flag_first_param == 0)
-                                    flag_first_param = codeSize(l_code3d);
+                                    flag_first_param = code_size(l_code3d);
                             cant_params++;
                         }
                    } ',' expression_aux
@@ -747,8 +747,8 @@ typevoid      :    type {switch (method_type)
               |    VOID {method_type = RetVoid; $$=strdup("void");}
               ;
 
-externinvk_arg:    arg                    {amount_extern_params++; externParamAssign(l_code3d, $1, amount_extern_params);}
-              |    externinvk_arg ',' arg {amount_extern_params++; externParamAssign(l_code3d, $3, amount_extern_params);}
+externinvk_arg:    arg                    {amount_extern_params++; extern_param_assign(l_code3d, $1, amount_extern_params);}
+              |    externinvk_arg ',' arg {amount_extern_params++; extern_param_assign(l_code3d, $3, amount_extern_params);}
               ;
 
 arg           :    expression {$$ = $1;}
@@ -756,56 +756,56 @@ arg           :    expression {$$ = $1;}
               ;
 
 expression    :    conjunction					{$$ = $1;}
-              |    expression ORR conjunction	{$$ = returnOr(error_q, l_code3d, $1, $3);}
+              |    expression ORR conjunction	{$$ = return_or(error_q, l_code3d, $1, $3);}
               ;
 
 conjunction   :    inequality                   {$$ = $1;}
-              |    conjunction ANDD inequality	{$$ = returnAnd(error_q, l_code3d, $1, $3);}
+              |    conjunction ANDD inequality	{$$ = return_and(error_q, l_code3d, $1, $3);}
               ;
 
 inequality    :    comparison                       {$$ = $1;}
-              |    inequality DISTINCT comparison   {$$ = returnDistinct(error_q, l_code3d, $1, $3);}
+              |    inequality DISTINCT comparison   {$$ = return_distinct(error_q, l_code3d, $1, $3);}
               ;
 
 comparison    :    relation                   {$$ = $1;}
-              |    relation EQUAL relation    {$$ = returnEqual(error_q, l_code3d, $1, $3);}
+              |    relation EQUAL relation    {$$ = return_equal(error_q, l_code3d, $1, $3);}
               ;
 
 relation      :    term                 {$$ = $1;}
-              |    term '<' term        {$$ = returnMinorComparison(error_q, l_code3d, $1, $3);}
-              |    term '>' term        {$$ = returnMajorComparison(error_q, l_code3d, $1, $3);}
-              |    term GEQUAL term     {$$ = returnGEqualComparison(error_q, l_code3d, $1, $3);}
-              |    term LEQUAL term     {$$ = returnLEqualComparison(error_q, l_code3d, $1, $3);}
+              |    term '<' term        {$$ = return_minor_comparison(error_q, l_code3d, $1, $3);}
+              |    term '>' term        {$$ = return_major_comparison(error_q, l_code3d, $1, $3);}
+              |    term GEQUAL term     {$$ = return_g_equal_comparison(error_q, l_code3d, $1, $3);}
+              |    term LEQUAL term     {$$ = return_l_equal_comparison(error_q, l_code3d, $1, $3);}
               ;
 
 term          :    factor1			    {$$ = $1;}
-              |    factor1 '+' term	    {$$ = returnAdd(error_q, l_code3d, $1, $3);}
-              |    factor1 '-' term	    {$$ = returnSub(error_q, l_code3d, $1, $3);}
+              |    factor1 '+' term	    {$$ = return_add(error_q, l_code3d, $1, $3);}
+              |    factor1 '-' term	    {$$ = return_sub(error_q, l_code3d, $1, $3);}
               ;
 
 factor1       :    factor			    {$$ = $1;}
-              |    factor '*' factor1	{$$ = returnMult(error_q, l_code3d, $1, $3);}
-              |    factor '/' factor1	{$$ = returnDiv(error_q, l_code3d, $1, $3);}
-              |    factor '%' factor1	{$$ = returnMod(error_q, l_code3d, $1, $3);}
+              |    factor '*' factor1	{$$ = return_mult(error_q, l_code3d, $1, $3);}
+              |    factor '/' factor1	{$$ = return_div(error_q, l_code3d, $1, $3);}
+              |    factor '%' factor1	{$$ = return_mod(error_q, l_code3d, $1, $3);}
               ;
 
 factor        :    primary		{$$ = $1;}
-              |    '!' factor	{$$ = returnNot(error_q, l_code3d, $2);}
-              |    '-' factor	{$$ = returnNeg(error_q, l_code3d, $2);}
+              |    '!' factor	{$$ = return_not(error_q, l_code3d, $2);}
+              |    '-' factor	{$$ = return_neg(error_q, l_code3d, $2);}
               ;
 
-primary       :    INTEGER			{$$ = returnValue(l_code3d, Int, $1);}
-              |    FLOAT            {$$ = returnValue(l_code3d, Float, $1);}
-              |    BOOLEAN          {$$ = returnValue(l_code3d, Bool, $1);}
-              |    ID				{$$ = getVariableAttribute(error_q,symbols_table,$1);}
-              |    ID '[' expression ']'  {$$ = checkArrayPos(error_q,symbols_table,l_code3d,$1,$3);}
+primary       :    INTEGER			{$$ = return_value(l_code3d, Int, $1);}
+              |    FLOAT            {$$ = return_value(l_code3d, Float, $1);}
+              |    BOOLEAN          {$$ = return_value(l_code3d, Bool, $1);}
+              |    ID				{$$ = get_variable_attribute(error_q,symbols_table,$1);}
+              |    ID '[' expression ']'  {$$ = check_array_pos(error_q,symbols_table,l_code3d,$1,$3);}
               |    '(' expression ')' {$$ = $2;}
-              |    method_call      { if (methodReturnType(error_q,symbols_table,last_called_method) == RetVoid)
+              |    method_call      { if (method_return_type(error_q,symbols_table,last_called_method) == RetVoid)
                                       {	insert_error(error_q,to_string("El metodo \"",last_called_method,"\" no puede ser usado en una expresion ya que retorna void."));
                                           $$ = create_variable("",Int); /* creamos variables int por defecto para que podamos seguir parseando el codigo */
                                       }
                                       else $$ = $1;
-                                      last_called_method=popString(methods_id_stack); }
+                                      last_called_method=pop_string(methods_id_stack); }
               ;
 
 /* ------------------------- END OF EXPRESSIONS ------------------------------- */

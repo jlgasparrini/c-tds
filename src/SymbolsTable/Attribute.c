@@ -130,7 +130,7 @@ int get_int_val(Attribute *attr)
 {
   switch (attr->type) {
     case Variable: return attr->decl.variable->value.intVal;
-    case Method: return attr->decl.method.returnValue.intVal;
+    case Method: return attr->decl.method.return_value.intVal;
     default: return -1;
   }
 }
@@ -141,7 +141,7 @@ float get_float_val(Attribute *attr)
 	if (attr->type == Variable)
 		return attr->decl.variable->value.floatVal;
 	if (attr->type == Method)
-		return attr->decl.method.returnValue.floatVal;
+		return attr->decl.method.return_value.floatVal;
 	return -1;
 }
 
@@ -151,7 +151,7 @@ Boolean get_bool_val(Attribute *attr)
 	if (attr->type == Variable)
 		return attr->decl.variable->value.boolVal;
 	if (attr->type == Method)
-		return attr->decl.method.returnValue.boolVal;
+		return attr->decl.method.return_value.boolVal;
 	return False;
 }
 
@@ -191,7 +191,7 @@ void set_int_val(Attribute *attr, int value)
 	if (attr->type == Variable)
 		attr->decl.variable->value.intVal = value;
 	if (attr->type == Method)
-		attr->decl.method.returnValue.intVal = value;
+		attr->decl.method.return_value.intVal = value;
 }
 
 /* Sets the floatVal of the attribute */
@@ -200,7 +200,7 @@ void set_float_val(Attribute *attr, float value)
 	if (attr->type == Variable)
 		attr->decl.variable->value.floatVal = value;
 	if (attr->type == Method)
-		attr->decl.method.returnValue.floatVal = value;
+		attr->decl.method.return_value.floatVal = value;
 }
 
 /* Sets the boolVal of the attribute */
@@ -209,7 +209,7 @@ void set_bool_val(Attribute *attr, Boolean value)
 	if (attr->type == Variable)
 		attr->decl.variable->value.boolVal = value;
 	if (attr->type == Method)
-		attr->decl.method.returnValue.boolVal = value;
+		attr->decl.method.return_value.boolVal = value;
 }
 
 /* Sets the intVal of the array attribute in the "pos" position */

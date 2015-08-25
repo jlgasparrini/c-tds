@@ -51,7 +51,7 @@ Attribute* search(LinkedList *l, char *id)
 }
 
 /* Return Attribute* of the last defined method in the list. Return NULL if there isn't a method defined */
-Attribute* getLastDefinedMethod(LinkedList *l)
+Attribute* get_last_defined_method(LinkedList *l)
 {
 	Node *auxNode = l->first;
     int i;
@@ -65,7 +65,7 @@ Attribute* getLastDefinedMethod(LinkedList *l)
 }
 
 /* Delete all the elements of the list. */
-void deleteAll(LinkedList *l)
+void delete_all(LinkedList *l)
 {
     Node *aux;
     int i;
@@ -80,7 +80,7 @@ void deleteAll(LinkedList *l)
 }
 
 /* Prints the variable info that contains attr */
-void showVariableAttribute(Attribute *attr)
+void show_variable_attribute(Attribute *attr)
 {
 	printf(" type:.decl.variable:\n");
     switch (attr->decl.variable->type)
@@ -92,7 +92,7 @@ void showVariableAttribute(Attribute *attr)
 }
 
 /* Prints the method info that contains attr */
-void showMethodAttribute(Attribute *attr)
+void show_method_attribute(Attribute *attr)
 {
 	printf(" type:.decl.method\n");
     switch (attr->decl.method.type)
@@ -105,7 +105,7 @@ void showMethodAttribute(Attribute *attr)
 }
 
 /* Prints the array info that contains attr */
-void showArrayAttribute(Attribute *attr)
+void show_array_attribute(Attribute *attr)
 {
     printf("    type:.decl.array\n");
     switch (attr->decl.array.type)
@@ -128,9 +128,9 @@ void print_list(LinkedList *l)
     {
         switch (aux->data->type)
         {
-            case Variable:  showVariableAttribute(aux->data); break;
-            case Method:    showMethodAttribute(aux->data); break;
-            case Array:     showArrayAttribute(aux->data); break;
+            case Variable:  show_variable_attribute(aux->data); break;
+            case Method:    show_method_attribute(aux->data); break;
+            case Array:     show_array_attribute(aux->data); break;
         }
     }
 }
