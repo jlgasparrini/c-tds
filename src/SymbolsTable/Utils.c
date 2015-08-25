@@ -16,6 +16,7 @@ char* getVariableName()
 {
     char *name = (char*) malloc ((strlen(temp)+digitAmount(numberOfVariable))*sizeof(char));
     strcat(name,temp);
+    
     strcat(name,intToString(numberOfVariable));
     numberOfVariable++;
     return name;
@@ -50,12 +51,13 @@ Attribute* getMethodReturnAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable
             else
             {
                 Attribute *aux = createVariable(getVariableName(), getAttributeType(attr));
-                if (getAttributeType(attr) == Int)
-                    setIntVal(aux,getIntVal(attr));
-                if (getAttributeType(attr) == Float)
-                    setFloatVal(aux,getFloatVal(attr));
-                if (getAttributeType(attr) == Bool)
-                    setBoolVal(aux,getIntVal(attr));
+                switch (getAttributeType(attr))
+                {
+                    case Int:   setIntVal(aux,getIntVal(attr)); break;
+                    case Float: setFloatVal(aux,getFloatVal(attr)); break;
+                    case Bool:  setBoolVal(aux,getIntVal(attr)); break;
+                    default: break;
+                }
                 return aux;
             }
         }
@@ -77,12 +79,12 @@ void setMethodReturnAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char
                 insert_error(eq,to_string("El metodo \"", id,"\" retorna void, no puede setearse ningun atributo de retorno."));
             else
             {
-                if ((*value).type == Int)
-                    setIntVal(attr, (*value).value.intVal);
-                if ((*value).type == Float)
-                    setFloatVal(attr, (*value).value.floatVal);
-                if ((*value).type == Bool)
-                    setBoolVal(attr, (*value).value.boolVal);
+                switch (value->type)
+                {
+                    case Int:   setIntVal(attr, value->value.intVal); break;
+                    case Float: setFloatVal(attr, value->value.floatVal); break;
+                    case Bool:  setBoolVal(attr, value->value.boolVal); break;
+                }    
             }
         }
     }
@@ -98,7 +100,7 @@ Attribute* checkAndGetMethodRetAttribute(ErrorsQueue *eq, SymbolsTable *aSymbols
             insert_error(eq,to_string("El identificador \"", id,"\" no corresponde a un metodo."));
         else
         {
-            if ((*attr).decl.method.paramSize != paramSize)
+            if (attr->decl.method.paramSize != paramSize)
                 insert_error(eq,to_string("El metodo \"", id,"\" no contiene la cantidad correspondiente de parametros."));
             else
             {
@@ -116,7 +118,7 @@ Attribute* checkAndGetMethodRetAttribute(ErrorsQueue *eq, SymbolsTable *aSymbols
    Returns 1 otherwise */
 unsigned char correctParameterType(StVariable *var, Attribute *attr, unsigned char pos)
 {
-    if ((*var).type == (*attr).decl.method.parameters[pos]->type)
+    if (var->type == attr->decl.method.parameters[pos]->type)
         return 0;
     return 1;
 }
@@ -133,30 +135,6 @@ ReturnType methodReturnType(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* 
             return getAttributeType(attr);
     }
     return RetInt; /* retorno por defecto el tipo int */
-}
-
-/* Returns the type of the attribute, although it is a variable, array or method */
-ReturnType getAttributeType(Attribute *attr)
-{
-    if(getStructureType(attr) == Variable)
-        return (*(*attr).decl.variable).type;
-    if(getStructureType(attr) == Array)
-        return (*attr).decl.array.type;
-    if(getStructureType(attr) == Method)
-        return (*attr).decl.method.type;
-    return RetInt;
-}
-
-/* Returns the string corresponding to "type" */
-char* getType(PrimitiveType type)
-{
-    if (type == Int)
-        return "int";
-    if (type == Float)
-        return "float";
-    if (type == Bool)
-        return "boolean";
-    return "wrong type"; // This is returned when it's not a primitive type
 }
 
 /* Returns the amount of digits that has the int "value" */
@@ -199,36 +177,35 @@ void correctParamBC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, LCode3D *lcode
             insert_error(eq, to_string("El identificador \"", lastCalledMethod, "\" no corresponde a un metodo."));
         else
         {
-            if (paramSize+1 == (*aux).decl.method.paramSize)
+            if (paramSize+1 == aux->decl.method.paramSize)
             {
-                if (correctParameterType((*attr).decl.variable, aux, paramSize) == 0)
+                if (correctParameterType(attr->decl.variable, aux, paramSize) == 0)
                 {
                     Attribute *param = (Attribute*) malloc (sizeof(Attribute));
-                    param->decl.variable = (*aux).decl.method.parameters[paramSize]; // obtencion del parametro formal.
-                    if (getAttributeType(attr) == Float)
-                        add_MethodCall(lcode3d, newCode(PARAM_ASSIGN_FLOAT), attr, param);
-                    if (getAttributeType(attr) == Int)
-                        add_MethodCall(lcode3d, newCode(PARAM_ASSIGN_INT), attr, param);
-                    if (getAttributeType(attr) == Bool)
-                        add_MethodCall(lcode3d, newCode(PARAM_ASSIGN_BOOL), attr, param);
+                    param->decl.variable = aux->decl.method.parameters[paramSize]; // obtencion del parametro formal.
+                    switch (getAttributeType(attr))
+                    {
+                        case Int:   add_MethodCall(lcode3d, newCode(PARAM_ASSIGN_INT), attr, param); break;
+                        case Float: add_MethodCall(lcode3d, newCode(PARAM_ASSIGN_FLOAT), attr, param); break;
+                        case Bool:  add_MethodCall(lcode3d, newCode(PARAM_ASSIGN_BOOL), attr, param); break;
+                        default: break;
+                    }
                 }
                 else
                 {
                     char* number = (char*) malloc (digitAmount(paramSize+1)*sizeof(char));
                     sprintf(number,"%d",paramSize+1);
-                    char* f = (char*) malloc ((strlen("\". El ")+strlen(number)+strlen("° parametro no es del tipo \"")+strlen(getType((*aux).decl.method.parameters[paramSize]->type)+strlen("\".")))*sizeof(char));
+                    char* f = (char*) malloc ((strlen("\". El ")+strlen(number)+strlen("° parametro no es del tipo \"")+strlen(getType(aux->decl.method.parameters[paramSize]->type)+strlen("\".")))*sizeof(char));
                     strcat(f,"\". El ");
                     strcat(f, number);
                     strcat(f,"° parametro no es del tipo \"");
-                    strcat(f, getType((*aux).decl.method.parameters[paramSize]->type));
+                    strcat(f, getType(aux->decl.method.parameters[paramSize]->type));
                     strcat(f, "\".");
                     insert_error(eq,to_string("Error en llamada al metodo \"", lastCalledMethod, f));
-                    //	free(number);
-                    //	free(f);
                 }
             }
             else
-                if (paramSize < (*aux).decl.method.paramSize)
+                if (paramSize < aux->decl.method.paramSize)
                     insert_error(eq,to_string("Error en llamada al metodo \"", lastCalledMethod, "\". Se tiene menor cantidad de parametros que en su declaracion."));
                 else
                     insert_error(eq,to_string("Error en llamada al metodo \"", lastCalledMethod, "\". Se tiene mayor cantidad de parametros que en su declaracion."));
@@ -248,18 +225,19 @@ void correctParamIC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, LCode3D *lcode
             insert_error(eq, to_string("El identificador \"", lastCalledMethod, "\" no corresponde a un metodo."));
         else
         {
-            if (paramSize < (*aux).decl.method.paramSize)
+            if (paramSize < aux->decl.method.paramSize)
             {
-                if (correctParameterType((*attr).decl.variable, aux, paramSize) == 0)
+                if (correctParameterType(attr->decl.variable, aux, paramSize) == 0)
                 {
                     Attribute *param = (Attribute*) malloc (sizeof(Attribute));
-                    param->decl.variable = (*aux).decl.method.parameters[paramSize]; // obtencion del parametro formal.
-                    if (getAttributeType(attr) == Float)
-                        add_MethodCall(lcode3d, newCode(PARAM_ASSIGN_FLOAT), attr, param);
-                    if (getAttributeType(attr) == Int)
-                        add_MethodCall(lcode3d, newCode(PARAM_ASSIGN_INT), attr, param);
-                    if (getAttributeType(attr) == Bool)
-                        add_MethodCall(lcode3d, newCode(PARAM_ASSIGN_BOOL), attr, param);
+                    param->decl.variable = aux->decl.method.parameters[paramSize]; // obtencion del parametro formal.
+                    switch (getAttributeType(attr))
+                    {
+                        case Int:   add_MethodCall(lcode3d, newCode(PARAM_ASSIGN_INT), attr, param); break;
+                        case Float: add_MethodCall(lcode3d, newCode(PARAM_ASSIGN_FLOAT), attr, param); break;
+                        case Bool:  add_MethodCall(lcode3d, newCode(PARAM_ASSIGN_BOOL), attr, param); break;
+                        default: break;
+                    }
                 }
             }
         }
@@ -268,12 +246,13 @@ void correctParamIC(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, LCode3D *lcode
 
 void externParamAssign(LCode3D *lcode3d, Attribute *param, unsigned char paramNumber)
 {
-    if (getAttributeType(param) == Float)
-        addParamExternInvk(lcode3d, newCode(EXTERN_PARAM_ASSIGN_FLOAT), param, paramNumber);
-    if (getAttributeType(param) == Int)
-        addParamExternInvk(lcode3d, newCode(EXTERN_PARAM_ASSIGN_INT), param, paramNumber);
-    if (getAttributeType(param) == Bool)
-        addParamExternInvk(lcode3d, newCode(EXTERN_PARAM_ASSIGN_BOOL), param, paramNumber);
+    switch (getAttributeType(param))
+    {
+        case Int:   addParamExternInvk(lcode3d, newCode(EXTERN_PARAM_ASSIGN_INT), param, paramNumber); break;
+        case Float: addParamExternInvk(lcode3d, newCode(EXTERN_PARAM_ASSIGN_FLOAT), param, paramNumber); break;
+        case Bool:  addParamExternInvk(lcode3d, newCode(EXTERN_PARAM_ASSIGN_BOOL), param, paramNumber); break;
+        default: break;
+    }
 }
 
 /* Insert an error message if the attribute "attr" isn't a variable of type "type" */
@@ -361,7 +340,6 @@ unsigned char checkReturn(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* la
         strcat(msg, getType(rt));
         strcat(msg, "\".");
         insert_error(eq, to_string("El metodo \"", lastUsedMethod, msg));
-        //		free(msg);
         return 1;
     }
     return 0;
@@ -388,13 +366,10 @@ unsigned char checkReturnExpression(ErrorsQueue *eq, SymbolsTable *aSymbolsTable
             strcat(msg, "\".");
             insert_error(eq, to_string("El metodo \"", lastUsedMethod, msg));
             return 1;
-            //		free(msg);
         }
         else
-        {
             // assign the expression in attribute to the method return expression
-            setMethodReturnAttribute(eq,aSymbolsTable, lastUsedMethod, (*attr).decl.variable);
-        }
+            setMethodReturnAttribute(eq,aSymbolsTable, lastUsedMethod, attr->decl.variable);
     return 0;
 }
 
@@ -411,12 +386,12 @@ Attribute* checkArrayPos(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, LCode3D *
         {
             if (getAttributeType(attr) == Int)
             {
-                if (getIntVal(attr) >= 0 && getIntVal(attr) < (*aux).decl.array.length)
+                if (getIntVal(attr) >= 0 && getIntVal(attr) < aux->decl.array.length)
                 {
                     Attribute *variable = createVariable(getVariableName(), getAttributeType(aux));
                     increaseVarOffset();
                     (*(*variable).decl.variable).offset = getOffsetArray(aux) + (getIntVal(attr)*4);
-                   // (*(*variable).decl.variable).offset = (*aux).decl.array.arrayValues[getIntVal(attr)].offset;
+                   // (*(*variable).decl.variable).offset = aux->decl.array.arrayValues[getIntVal(attr)].offset;
                     Code3D *codeArrayValue = newCode(LOAD_ARRAY);
                     setAttribute(codeArrayValue, 1, attr);
                     setAttribute(codeArrayValue, 2, aux);
@@ -497,12 +472,13 @@ Attribute* returnDistinct(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, A
     {
         Attribute *aux = createVariable(getVariableName(), Bool);
         Code3D *codeDist;
-        if (getAttributeType(oper1) == Float)
-            codeDist = newCode(DIST_FLOAT);
-        if (getAttributeType(oper1) == Int)
-            codeDist = newCode(DIST_INT);
-        if (getAttributeType(oper1) == Bool)
-            codeDist = newCode(DIST_BOOL);
+        switch (getAttributeType(oper1))
+        {
+            case Int:   codeDist = newCode(DIST_INT); break;
+            case Float: codeDist = newCode(DIST_FLOAT); break;
+            case Bool:  codeDist = newCode(DIST_BOOL); break;
+            default: break;
+        }
         setCode3D(codeDist, oper1, oper2, aux);
         add_code(lcode3d, codeDist);
         return aux;
@@ -522,12 +498,13 @@ Attribute* returnEqual(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attr
     {
         Attribute *aux = createVariable(getVariableName(), Bool);
         Code3D *codeEqual;
-        if (getAttributeType(oper1) == Float)
-            codeEqual = newCode(EQ_FLOAT);
-        if (getAttributeType(oper1) == Int)
-            codeEqual = newCode(EQ_INT);
-        if (getAttributeType(oper1) == Bool)
-            codeEqual = newCode(EQ_BOOL);
+        switch (getAttributeType(oper1))
+        {
+            case Int:   codeEqual = newCode(EQ_INT); break;
+            case Float: codeEqual = newCode(EQ_FLOAT); break;
+            case Bool:  codeEqual = newCode(EQ_BOOL); break;
+            default: break;
+        }
         setCode3D(codeEqual, oper1, oper2, aux);
         add_code(lcode3d, codeEqual);
         return aux;
@@ -803,18 +780,16 @@ Attribute* returnValue(LCode3D *lcode3d, PrimitiveType type, char *oper1)
     setVariableValue(aux, type, oper1);
 
     Code3D *codeValue = newCode(LOAD_CONST);
-    if (type == Int)
-        setInt(codeValue, 1, atoi(oper1));
-    if (type == Float)
-        setFloat(codeValue, 1, atof(oper1));
-    if (type == Bool)
+    switch (type)
     {
-        if (strcmp(oper1, "false") == 0)
-            setBool(codeValue, 1, False);
-        if (strcmp(oper1, "true") == 0)
-            setBool(codeValue, 1, True);
+        case Int:   setInt(codeValue, 1, atoi(oper1)); break;
+        case Float: setFloat(codeValue, 1, atof(oper1)); break;
+        case Bool:  if (strcmp(oper1, "false") == 0)
+                        setBool(codeValue, 1, False);
+                    if (strcmp(oper1, "true") == 0)
+                        setBool(codeValue, 1, True);
+                    break;
     }
-
     setAttribute(codeValue, 2, aux);
     setNull(codeValue, 3);
     add_code(lcode3d, codeValue);

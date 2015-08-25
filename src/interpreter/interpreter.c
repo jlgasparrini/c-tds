@@ -37,7 +37,7 @@ static int run_operation(int position)
         setFloatVal(getAttribute(code, 2), code->param1->val.floatAttri);
       if (getAttributeType(getAttribute(code, 2)) == Bool)
         setBoolVal(getAttribute(code, 2), code->param1->val.boolAttri);
-      return position + 1;
+      break;
 
     case LOAD_ARRAY:
       /* parameter 1 of 3d code is the position of the array
@@ -45,7 +45,7 @@ static int run_operation(int position)
          parameter 3 is the resulting attribute.
          */
       getAttribute(code, 3)->decl.variable = &getAttribute(code, 2)->decl.array.arrayValues[getIntVal(getAttribute(code, 1))];
-      return position + 1;
+      break;
 
     case PRINT:
       if (getAttributeType(getAttribute(code, 1)) == Int)
@@ -59,7 +59,7 @@ static int run_operation(int position)
         if (getBoolVal(getAttribute(code, 1)) == False)
           printf("Print. El valor booleano es: false\n");
       }
-      return position + 1;
+      break;
 
     case RETURN:
       return atoi(popString(methods_call_stack));
@@ -74,177 +74,65 @@ static int run_operation(int position)
         setBoolVal(getAttribute(code, 2), getBoolVal(getAttribute(code, 1)));
       return atoi(popString(methods_call_stack));
 
-    case LABEL:
-      return position + 1;
+    case LABEL: break;
 
-    case GOTO_LABEL:
-      return searchByLabel(code_list->codes, getLabel(code, 1));
+    case GOTO_LABEL: return searchByLabel(code_list->codes, getLabel(code, 1));
 
-    case GOTO_LABEL_COND:
-      if (getBoolVal(getAttribute(code, 1)) == False)
-        return searchByLabel(code_list->codes,getLabel(code, 2));
-      return position + 1;
+    case GOTO_LABEL_COND: if (getBoolVal(getAttribute(code, 1)) == False)
+                            return searchByLabel(code_list->codes,getLabel(code, 2));
+                          break;
 
-    case GOTO_METHOD:
-      /* Save on the stack the place where treatment must continue after the method call */
-      pushString(methods_call_stack, intToString(position + 1));
-      return searchByLabel(code_list->codes, getLabel(code, 1));
+    /* Save on the stack the place where treatment must continue after the method call */
+    case GOTO_METHOD: pushString(methods_call_stack, intToString(position + 1)); 
+                      return searchByLabel(code_list->codes, getLabel(code, 1));
 
     /*INT OPERATIONS TREATEMENT */
-    case ASSIGNATION_INT:
-      setIntVal(getAttribute(code, 2), getIntVal(getAttribute(code, 1)));
-      return position + 1;
-
-    case PARAM_ASSIGN_INT:
-      setIntVal(getAttribute(code, 2), getIntVal(getAttribute(code, 1)));
-      return position + 1;
-
-    case MINUS_INT:
-      setIntVal(getAttribute(code, 3), getIntVal(getAttribute(code, 1)) - getIntVal(getAttribute(code, 2)));
-      return position + 1;
-
-    case ADD_INT:
-      setIntVal(getAttribute(code, 3), getIntVal(getAttribute(code, 1)) + getIntVal(getAttribute(code, 2)));
-      return position + 1;
-
-    case MULT_INT:
-      setIntVal(getAttribute(code, 3), getIntVal(getAttribute(code, 1)) * getIntVal(getAttribute(code, 2)));
-      return position + 1;
-
-    case DIV_INT:
-      setIntVal(getAttribute(code, 3), getIntVal(getAttribute(code, 1)) / getIntVal(getAttribute(code, 2)));
-      return position + 1;
-
-    case MOD_INT:
-      setIntVal(getAttribute(code, 3), getIntVal(getAttribute(code, 1)) % getIntVal(getAttribute(code, 2)));
-      return position + 1;
-
-    case NEG_INT:
-      setIntVal(getAttribute(code, 2), -getIntVal(getAttribute(code, 1)));
-      return position + 1;
-
-    case EQ_INT:
-      setBoolVal(getAttribute(code, 3), getIntVal(getAttribute(code, 1)) == getIntVal(getAttribute(code, 2)));
-      return position + 1;
-
-    case DIST_INT:
-      setBoolVal(getAttribute(code, 3), getIntVal(getAttribute(code, 1)) != getIntVal(getAttribute(code, 2)));
-      return position + 1;
-
-    case GREATER_INT:
-      setBoolVal(getAttribute(code, 3), getIntVal(getAttribute(code, 1)) > getIntVal(getAttribute(code, 2)));
-      return position + 1;
-
-    case LOWER_INT:
-      setBoolVal(getAttribute(code, 3), getIntVal(getAttribute(code, 1)) < getIntVal(getAttribute(code, 2)));
-      return position + 1;
-
-    case GEQ_INT:
-      setBoolVal(getAttribute(code, 3), getIntVal(getAttribute(code, 1)) >= getIntVal(getAttribute(code, 2)));
-      return position + 1;
-
-    case LEQ_INT:
-      setBoolVal(getAttribute(code, 3), getIntVal(getAttribute(code, 1)) <= getIntVal(getAttribute(code, 2)));
-      return position + 1;
+    case ASSIGNATION_INT:   setIntVal(getAttribute(code, 2), getIntVal(getAttribute(code, 1))); break;
+    case PARAM_ASSIGN_INT:  setIntVal(getAttribute(code, 2), getIntVal(getAttribute(code, 1))); break;
+    case MINUS_INT:         setIntVal(getAttribute(code, 3), getIntVal(getAttribute(code, 1)) - getIntVal(getAttribute(code, 2))); break;
+    case ADD_INT:           setIntVal(getAttribute(code, 3), getIntVal(getAttribute(code, 1)) + getIntVal(getAttribute(code, 2))); break;
+    case MULT_INT:          setIntVal(getAttribute(code, 3), getIntVal(getAttribute(code, 1)) * getIntVal(getAttribute(code, 2))); break;
+    case DIV_INT:           setIntVal(getAttribute(code, 3), getIntVal(getAttribute(code, 1)) / getIntVal(getAttribute(code, 2))); break;
+    case MOD_INT:           setIntVal(getAttribute(code, 3), getIntVal(getAttribute(code, 1)) % getIntVal(getAttribute(code, 2))); break;
+    case NEG_INT:           setIntVal(getAttribute(code, 2), -getIntVal(getAttribute(code, 1))); break;
+    case EQ_INT:            setBoolVal(getAttribute(code, 3), getIntVal(getAttribute(code, 1)) == getIntVal(getAttribute(code, 2))); break;
+    case DIST_INT:          setBoolVal(getAttribute(code, 3), getIntVal(getAttribute(code, 1)) != getIntVal(getAttribute(code, 2))); break;
+    case GREATER_INT:       setBoolVal(getAttribute(code, 3), getIntVal(getAttribute(code, 1)) > getIntVal(getAttribute(code, 2))); break;
+    case LOWER_INT:         setBoolVal(getAttribute(code, 3), getIntVal(getAttribute(code, 1)) < getIntVal(getAttribute(code, 2))); break;
+    case GEQ_INT:           setBoolVal(getAttribute(code, 3), getIntVal(getAttribute(code, 1)) >= getIntVal(getAttribute(code, 2))); break;
+    case LEQ_INT:           setBoolVal(getAttribute(code, 3), getIntVal(getAttribute(code, 1)) <= getIntVal(getAttribute(code, 2))); break;
 
     /* FLOAT OPERATIONS TREATEMENT */
-    case ASSIGNATION_FLOAT:
-      setFloatVal(getAttribute(code, 2), getFloatVal(getAttribute(code, 1)));
-      return position + 1;
-
-    case PARAM_ASSIGN_FLOAT:
-      setFloatVal(getAttribute(code, 2), getFloatVal(getAttribute(code, 1)));
-      return position + 1;
-
-    case MINUS_FLOAT:
-      setFloatVal(getAttribute(code, 3), getFloatVal(getAttribute(code, 1)) - getFloatVal(getAttribute(code, 2)));
-      return position + 1;
-
-    case ADD_FLOAT:
-      setFloatVal(getAttribute(code, 3), getFloatVal(getAttribute(code, 1)) + getFloatVal(getAttribute(code, 2)));
-      return position + 1;
-
-    case MULT_FLOAT:
-      setFloatVal(getAttribute(code, 3), getFloatVal(getAttribute(code, 1)) * getFloatVal(getAttribute(code, 2)));
-      return position + 1;
-
-    case DIV_FLOAT:
-      setFloatVal(getAttribute(code, 3), ((float) getFloatVal(getAttribute(code, 1))) / (float) getFloatVal(getAttribute(code, 2)));
-      return position + 1;
-
-    case NEG_FLOAT:
-      setFloatVal(getAttribute(code, 2), -getFloatVal(getAttribute(code, 1)));
-      return position + 1;
-
-    case EQ_FLOAT:
-      setBoolVal(getAttribute(code, 3), getFloatVal(getAttribute(code, 1)) == getFloatVal(getAttribute(code, 2)));
-      return position + 1;
-
-    case DIST_FLOAT:
-      setBoolVal(getAttribute(code, 3), getFloatVal(getAttribute(code, 1)) != getFloatVal(getAttribute(code, 2)));
-      return position + 1;
-
-    case GREATER_FLOAT:
-      setBoolVal(getAttribute(code, 3), getFloatVal(getAttribute(code, 1)) > getFloatVal(getAttribute(code, 2)));
-      return position + 1;
-
-    case LOWER_FLOAT:
-      setBoolVal(getAttribute(code, 3), getFloatVal(getAttribute(code, 1)) < getFloatVal(getAttribute(code, 2)));
-      return position + 1;
-
-    case GEQ_FLOAT:
-      setBoolVal(getAttribute(code, 3), getFloatVal(getAttribute(code, 1)) >= getFloatVal(getAttribute(code, 2)));
-      return position + 1;
-
-    case LEQ_FLOAT:
-      setBoolVal(getAttribute(code, 3), getFloatVal(getAttribute(code, 1)) <= getFloatVal(getAttribute(code, 2)));
-      return position + 1;
+    case ASSIGNATION_FLOAT:   setFloatVal(getAttribute(code, 2), getFloatVal(getAttribute(code, 1))); break;
+    case PARAM_ASSIGN_FLOAT:  setFloatVal(getAttribute(code, 2), getFloatVal(getAttribute(code, 1))); break;
+    case MINUS_FLOAT:         setFloatVal(getAttribute(code, 3), getFloatVal(getAttribute(code, 1)) - getFloatVal(getAttribute(code, 2))); break;
+    case ADD_FLOAT:           setFloatVal(getAttribute(code, 3), getFloatVal(getAttribute(code, 1)) + getFloatVal(getAttribute(code, 2))); break;
+    case MULT_FLOAT:          setFloatVal(getAttribute(code, 3), getFloatVal(getAttribute(code, 1)) * getFloatVal(getAttribute(code, 2))); break;
+    case DIV_FLOAT:           setFloatVal(getAttribute(code, 3), ((float) getFloatVal(getAttribute(code, 1))) / (float) getFloatVal(getAttribute(code, 2))); break;
+    case NEG_FLOAT:           setFloatVal(getAttribute(code, 2), -getFloatVal(getAttribute(code, 1))); break;
+    case EQ_FLOAT:            setBoolVal(getAttribute(code, 3), getFloatVal(getAttribute(code, 1)) == getFloatVal(getAttribute(code, 2))); break;
+    case DIST_FLOAT:          setBoolVal(getAttribute(code, 3), getFloatVal(getAttribute(code, 1)) != getFloatVal(getAttribute(code, 2))); break;
+    case GREATER_FLOAT:       setBoolVal(getAttribute(code, 3), getFloatVal(getAttribute(code, 1)) > getFloatVal(getAttribute(code, 2))); break;
+    case LOWER_FLOAT:         setBoolVal(getAttribute(code, 3), getFloatVal(getAttribute(code, 1)) < getFloatVal(getAttribute(code, 2))); break;
+    case GEQ_FLOAT:           setBoolVal(getAttribute(code, 3), getFloatVal(getAttribute(code, 1)) >= getFloatVal(getAttribute(code, 2))); break;
+    case LEQ_FLOAT:           setBoolVal(getAttribute(code, 3), getFloatVal(getAttribute(code, 1)) <= getFloatVal(getAttribute(code, 2))); break;
 
     /* BOOLEAN OPERATIONS TREATEMENT */
-    case ASSIGNATION_BOOL:
-      setBoolVal(getAttribute(code, 2), getBoolVal(getAttribute(code, 1)));
-      return position + 1;
-
-    case PARAM_ASSIGN_BOOL:
-      setBoolVal(getAttribute(code, 2), getBoolVal(getAttribute(code, 1)));
-      return position + 1;
-
-    case EQ_BOOL:
-      setBoolVal(getAttribute(code, 3), getBoolVal(getAttribute(code, 1)) == getBoolVal(getAttribute(code, 2)));
-      return position + 1;
-
-    case DIST_BOOL:
-      setBoolVal(getAttribute(code, 3), getBoolVal(getAttribute(code, 1)) != getBoolVal(getAttribute(code, 2)));
-      return position + 1;
-
-    case OR:
-      setBoolVal(getAttribute(code, 3), getBoolVal(getAttribute(code, 1)) || getBoolVal(getAttribute(code, 2)));
-      return position + 1;
-
-    case AND:
-      setBoolVal(getAttribute(code, 3), getBoolVal(getAttribute(code, 1)) && getBoolVal(getAttribute(code, 2)));
-      return position + 1;
-
-    case NOT:
-      setBoolVal(getAttribute(code, 2), !getBoolVal(getAttribute(code, 1)));
-      return position + 1;
+    case ASSIGNATION_BOOL:  setBoolVal(getAttribute(code, 2), getBoolVal(getAttribute(code, 1))); break;
+    case PARAM_ASSIGN_BOOL: setBoolVal(getAttribute(code, 2), getBoolVal(getAttribute(code, 1))); break;
+    case EQ_BOOL:           setBoolVal(getAttribute(code, 3), getBoolVal(getAttribute(code, 1)) == getBoolVal(getAttribute(code, 2))); break;
+    case DIST_BOOL:         setBoolVal(getAttribute(code, 3), getBoolVal(getAttribute(code, 1)) != getBoolVal(getAttribute(code, 2))); break;
+    case OR:                setBoolVal(getAttribute(code, 3), getBoolVal(getAttribute(code, 1)) || getBoolVal(getAttribute(code, 2))); break;
+    case AND:               setBoolVal(getAttribute(code, 3), getBoolVal(getAttribute(code, 1)) && getBoolVal(getAttribute(code, 2))); break;
+    case NOT:               setBoolVal(getAttribute(code, 2), !getBoolVal(getAttribute(code, 1))); break;
 
     /* EXTERNAL INVOCATIONS OPERATIONS */
-    case EXTERN_INVK:
-      warning_externinvk();
-      return position + 1;
-    case EXTERN_PARAM_ASSIGN_BOOL:
-      warning_externinvk();
-      return position + 1;
-    case EXTERN_PARAM_ASSIGN_FLOAT:
-      warning_externinvk();
-      return position + 1;
-    case EXTERN_PARAM_ASSIGN_INT:
-      warning_externinvk();
-      return position + 1;
-    default:
-      return position;
+    case EXTERN_INVK:               warning_externinvk(); break;
+    case EXTERN_PARAM_ASSIGN_BOOL:  warning_externinvk(); break;
+    case EXTERN_PARAM_ASSIGN_FLOAT: warning_externinvk(); break;
+    case EXTERN_PARAM_ASSIGN_INT:   warning_externinvk(); break;
   }
+  return position + 1;
 }
 
 /*

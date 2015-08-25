@@ -25,6 +25,8 @@ Code3D* get_listC3D(ListC3D *list, int index);
 /** Returns the size of the list */
 int size_listC3D(ListC3D *list);
 
+void set_listC3D_int(ListC3D *list,int index,int param, int numb);
+
 /** Inserts a new Code in the list at the position specified by "index" */
 void add_listC3D(ListC3D *list, Code3D *code, int index);
 

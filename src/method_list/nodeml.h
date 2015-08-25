@@ -19,7 +19,7 @@ typedef struct NML {
 
 /*constructores*/
 
-NodeML* newNodeML_empty();
+NodeML* newNodeML();
 NodeML* newNodeML_info(MethodL *info);
 NodeML* newNodeML_info_next(MethodL *info, NodeML *next);
 

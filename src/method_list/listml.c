@@ -7,15 +7,17 @@
 #include <string.h>
 #include "listml.h"
 
-ListML* newListML() {
-    ListML *new = (ListML*) malloc(sizeof(ListML));
-    (*new).init = NULL;
-    (*new).size = 0;
-    return new;
+ListML* newListML()
+{
+    ListML *list = (ListML*) malloc(sizeof(ListML));
+    list->init = NULL;
+    list->size = 0;
+    return list;
 }
 
-MethodL* get_listML(ListML *list, char *id_method) {
-    NodeML *runner = (*list).init;
+MethodL* get_listML(ListML *list, char *id_method)
+{
+    NodeML *runner = list->init;
     bool found = false;
     int i;
     for (i = 0; i < size_listML(list) && !found; i++) {
@@ -30,7 +32,7 @@ MethodL* get_listML(ListML *list, char *id_method) {
 }
 
 int size_listML(ListML *list) {
-    return (*list).size;
+    return list->size;
 }
 
 void add_listML(ListML *list, MethodL *elem, int index) 
@@ -38,40 +40,34 @@ void add_listML(ListML *list, MethodL *elem, int index)
     if ((index >= 0) && (index <= size_listML(list)))
 	{
         if (index == 0)
-            (*list).init = newNodeML_info_next(elem, (*list).init);        
+            list->init = newNodeML_info_next(elem, list->init);        
 		else 
 		{
-            int i = 0;
-            NodeML *runner = (*list).init;
-            while (i < (index - 1))
-			{
+            NodeML *runner = list->init;
+            int i;
+            for (i = 0; i < index - 1; i++)
                 runner = getNext_NodeML(runner);
-                i++;
-            }
             setNext_NodeML(runner, newNodeML_info_next(elem, getNext_NodeML(runner)));
         }
-        (*list).size++;
+        list->size++;
     }
 }
-
 
 void delete_listML(ListML *list, int index) {
     bool validIndex = (index >= 0) && (index < size_listML(list));
     if (validIndex) {
-        NodeML *runner = (*list).init;
-        NodeML *del = (*list).init;
+        NodeML *runner = list->init;
+        NodeML *del = list->init;
         if (index == 0) {
-            (*list).init = getNext_NodeML((*list).init);
+            list->init = getNext_NodeML(list->init);
         } else {
-            int i = 0;
-            while (i < (index - 1)) {
+            int i;
+            for (i = 0; i < index - 1; ++i)
                 runner = getNext_NodeML(runner);
-                i++;
-            }
             del = getNext_NodeML(runner);
-            setNext_NodeML(runner, getNext_NodeML(getNext_NodeML(runner)));
+            setNext_NodeML(runner, getNext_NodeML(del));
         }
         free(del);
-        (*list).size--;
+        list->size--;
     }
 }

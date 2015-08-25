@@ -18,7 +18,7 @@ typedef struct NC3D {
 /*funciones publicas para manipular Nodes*/
 
 /*constructores*/
-NodeC3D* newNodeC3D_empty();
+NodeC3D* newNodeC3D();
 NodeC3D* newNodeC3D_info(Code3D *info);
 NodeC3D* newNodeC3D_info_next(Code3D *info, NodeC3D *next);
 

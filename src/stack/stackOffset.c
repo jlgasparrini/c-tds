@@ -7,16 +7,16 @@
 /**Constructor de la Pila de Offsets*/
 StackOffset* newStackOffset()
 {
-    StackOffset *new = (StackOffset*) malloc(sizeof(StackOffset));
-    new->top = NULL;
-    return new;
+    StackOffset *stack = (StackOffset*) malloc(sizeof(StackOffset));
+    stack->top = NULL;
+    return stack;
 }
 
 /**Metodo que apila un Offset a la Pila*/
 void pushOffset(StackOffset *stack, int offset)
 {
-    NodeStackOffset *new = newLinkNodeOffset_info_next(offset, stack->top);
-    stack->top = new;
+    NodeStackOffset *st = newLinkNodeOffset_info_next(offset, stack->top);
+    stack->top = st;
 }
 
 /**Metodo para verificar si la Lista es Vacia*/
@@ -36,6 +36,5 @@ int popOffset(StackOffset *stack)
 /**Metodo que retorna el tope de la Pila sin desapilarlo*/
 int peekOffset(StackOffset *stack)
 {
-    int ret = getInfo_linkNodeOffset(stack->top);
-    return ret;
+    return getInfo_linkNodeOffset(stack->top);
 }

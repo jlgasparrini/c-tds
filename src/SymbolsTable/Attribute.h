@@ -143,6 +143,12 @@ void resetGlobalParamOffset();
  * Return 2 if it's an array */
 StructureType getStructureType(Attribute *attr);
 
+/* Returns the type of the attribute, although it is a variable, array or method */
+ReturnType getAttributeType(Attribute *attr);
+
+/* Returns the string corresponding to "type" */
+char* getType(PrimitiveType type);
+
 /* Decreases in 4 the offset for variables */
 void decreaseVarOffset();
 

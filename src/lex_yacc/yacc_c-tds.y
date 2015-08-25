@@ -178,7 +178,7 @@
 
   void compile(char *main_file, char **linked_files, int size)
   {
-    init_assembler(list_meth_label, l_code3d, return_stack, file_name);
+    init_assembler(list_meth_label, l_code3d, file_name);
     char** args = malloc(sizeof(char*)* (6 + size));
     if (executable)
       args[0] = "gcc";
@@ -287,7 +287,7 @@
       else if(strcmp(action_input,"assembly") == 0)
       {
         printf("Generating assembly code...\n");
-        init_assembler(list_meth_label, l_code3d, return_stack, file_name); //Llamo al generador del codigo assembly y lo genero.
+        init_assembler(list_meth_label, l_code3d, file_name); //Llamo al generador del codigo assembly y lo genero.
         printf("Assembly code generated. File's name: %s\n", file_name);
       }
       else if(strcmp(action_input,"compile") == 0)
@@ -689,6 +689,7 @@ method_call   :	   ID '(' ')' {
                     }
 
 				|    EXTERNINVK '(' STRING ',' typevoid ')' {
+                        amount_extern_params = 0;
                         Attribute* res;
                         if (method_type != RetVoid)
                             res = createVariable("",method_type);
@@ -698,7 +699,7 @@ method_call   :	   ID '(' ')' {
                         add_CodeExternInvk(l_code3d, newCode(EXTERN_INVK), strtok($3, token), $5);
                         $$ = res;
                     }
-				|    EXTERNINVK '(' STRING ',' typevoid ',' externinvk_arg ')' {
+				|    EXTERNINVK '(' STRING ',' typevoid ',' { amount_extern_params = 0; } externinvk_arg ')' {
                         amount_extern_params = 0;
                         Attribute* res;
                         if (method_type != RetVoid)

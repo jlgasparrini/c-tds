@@ -17,7 +17,7 @@ typedef struct NodeStack {
 
 /*constructores*/
 
-NodeStack* newLinkNode_empty();
+NodeStack* newLinkNode();
 NodeStack* newLinkNode_info(char *info);
 NodeStack* newLinkNode_info_next(char *info, NodeStack *next);
 

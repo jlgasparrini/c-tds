@@ -7,9 +7,8 @@
 
 #include "translate.h"
 #include "../code_3d/gencode3d.h"
-#include "../stack/stack.h"
 
 /* Initializes the assembly generator and writes it */
-void init_assembler(ListMLabel*, LCode3D*, Stack*, char*);
+void init_assembler(ListMLabel*, LCode3D*, char*);
 
 #endif

@@ -6,23 +6,24 @@
 #include <stdio.h>
 #include "nodeml.h"
 
-NodeML* newNodeML_empty() {
-    NodeML *new = (NodeML*) malloc(sizeof(NodeML));
-    new->info = NULL;
-    new->next = NULL;
-    return new;
+NodeML* newNodeML() {
+    NodeML *node = (NodeML*) malloc(sizeof(NodeML));
+    node->info = NULL;
+    node->next = NULL;
+    return node;
 }
 
 NodeML* newNodeML_info(MethodL *info) {
-    NodeML *new = newNodeML_empty();
-    new->info = info;
-    return new;
+    NodeML *node = newNodeML();
+    node->info = info;
+    return node;
 }
 
 NodeML* newNodeML_info_next(MethodL *info, NodeML *next) {
-    NodeML *new = newNodeML_info(info);
-    new->next = next;
-    return new;
+    NodeML *node = newNodeML();
+    node->info = info;
+    node->next = next;
+    return node;
 }
 
 MethodL* getInfo_NodeML(NodeML *node) {

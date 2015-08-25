@@ -15,8 +15,7 @@ typedef struct {
 ListMLabel* initL();
 
 void add_MethodL(ListMLabel *listmlabel, MethodL *methodl); 
-MethodL* get_MethodL(ListMLabel *listmlabel, char *id_method);
-int cantMethodL(ListMLabel *listmlabel);
+int size_MethodL(ListMLabel *listmlabel);
 void insert_MethodL(ListMLabel *listmlabel, char *id_method, char *label_method);
 char* get_Label(ListMLabel *listmlabel, char *id_method);
 

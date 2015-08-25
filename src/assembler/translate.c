@@ -179,9 +179,7 @@ void print_operation(FILE *file, Code3D *code)
 void write_label(FILE *file, ListMLabel *labelList, Code3D *code)
 {
   if (strcmp(get_Label(labelList, getLabel(code, 1)), "NULL") == 0)
-  {
     write_code_in_file(file, concat(getLabel(code,1), ":\n"));
-  }
   else
   {
     write_code_in_file(file, concat(getLabel(code,1), ":\n"));
@@ -501,18 +499,12 @@ void translate_int_extern_param(FILE *file, Code3D *code)
 {
   switch (getInt(code, 2))
   {
-    case 1: write_code_in_file(file, translate("movl", offset(code, 1), "%edi"));
-            break;
-    case 2: write_code_in_file(file, translate("movl", offset(code, 1), "%esi"));
-            break;
-    case 3: write_code_in_file(file, translate("movl", offset(code, 1), "%edx"));
-            break;
-    case 4: write_code_in_file(file, translate("movl", offset(code, 1), "%ecx"));
-            break;
-    case 5: write_code_in_file(file, translate("movl", offset(code, 1), "%r8d"));
-            break;
-    case 6: write_code_in_file(file, translate("movl", offset(code, 1), "%r9d"));
-            break;
+    case 1: write_code_in_file(file, translate("movl", offset(code, 1), "%edi")); break;
+    case 2: write_code_in_file(file, translate("movl", offset(code, 1), "%esi")); break;
+    case 3: write_code_in_file(file, translate("movl", offset(code, 1), "%edx")); break;
+    case 4: write_code_in_file(file, translate("movl", offset(code, 1), "%ecx")); break;
+    case 5: write_code_in_file(file, translate("movl", offset(code, 1), "%r8d")); break;
+    case 6: write_code_in_file(file, translate("movl", offset(code, 1), "%r9d")); break;
   }
   if (getInt(code, 2) > 6)
   {
@@ -528,22 +520,14 @@ void translate_float_extern_param(FILE *file, Code3D *code)
 {
   switch (getInt(code, 2))
   {
-    case 1: write_code_in_file(file, translate("movsd", offset(code, 1), "%xmm0"));
-            break;
-    case 2: write_code_in_file(file, translate("movsd", offset(code, 1), "%xmm1"));
-            break;
-    case 3: write_code_in_file(file, translate("movsd", offset(code, 1), "%xmm2"));
-            break;
-    case 4: write_code_in_file(file, translate("movsd", offset(code, 1), "%xmm3"));
-            break;
-    case 5: write_code_in_file(file, translate("movsd", offset(code, 1), "%xmm4"));
-            break;
-    case 6: write_code_in_file(file, translate("movsd", offset(code, 1), "%xmm5"));
-            break;
-    case 7: write_code_in_file(file, translate("movsd", offset(code, 1), "%xmm6"));
-            break;
-    case 8: write_code_in_file(file, translate("movsd", offset(code, 1), "%xmm7"));
-            break;
+    case 1: write_code_in_file(file, translate("movsd", offset(code, 1), "%xmm0")); break;
+    case 2: write_code_in_file(file, translate("movsd", offset(code, 1), "%xmm1")); break;
+    case 3: write_code_in_file(file, translate("movsd", offset(code, 1), "%xmm2")); break;
+    case 4: write_code_in_file(file, translate("movsd", offset(code, 1), "%xmm3")); break;
+    case 5: write_code_in_file(file, translate("movsd", offset(code, 1), "%xmm4")); break;
+    case 6: write_code_in_file(file, translate("movsd", offset(code, 1), "%xmm5")); break;
+    case 7: write_code_in_file(file, translate("movsd", offset(code, 1), "%xmm6")); break;
+    case 8: write_code_in_file(file, translate("movsd", offset(code, 1), "%xmm7")); break;
   }
   if (getInt(code, 2) > 6)
   {
@@ -559,18 +543,12 @@ void translate_bool_extern_param(FILE *file, Code3D *code)
 {
   switch (getInt(code, 2))
   {
-    case 1: write_code_in_file(file, translate("movl", offset(code, 1), "%edi"));
-            break;
-    case 2: write_code_in_file(file, translate("movl", offset(code, 1), "%esi"));
-            break;
-    case 3: write_code_in_file(file, translate("movl", offset(code, 1), "%edx"));
-            break;
-    case 4: write_code_in_file(file, translate("movl", offset(code, 1), "%ecx"));
-            break;
-    case 5: write_code_in_file(file, translate("movl", offset(code, 1), "%r8d"));
-            break;
-    case 6: write_code_in_file(file, translate("movl", offset(code, 1), "%r9d"));
-            break;
+    case 1: write_code_in_file(file, translate("movl", offset(code, 1), "%edi")); break;
+    case 2: write_code_in_file(file, translate("movl", offset(code, 1), "%esi")); break;
+    case 3: write_code_in_file(file, translate("movl", offset(code, 1), "%edx")); break;
+    case 4: write_code_in_file(file, translate("movl", offset(code, 1), "%ecx")); break;
+    case 5: write_code_in_file(file, translate("movl", offset(code, 1), "%r8d")); break;
+    case 6: write_code_in_file(file, translate("movl", offset(code, 1), "%r9d")); break;
   }
 }
 

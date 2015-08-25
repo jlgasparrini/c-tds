@@ -7,16 +7,16 @@
 /**Constructor de la Pila de Labels*/
 Stack* newStack() 
 {
-    Stack *new = (Stack*) malloc(sizeof(Stack));
-    new->top = NULL;
-    return new;
+    Stack *stack = (Stack*) malloc(sizeof(Stack));
+    stack->top = NULL;
+    return stack;
 }
 
 /**Metodo que apila un Label a la Pila*/
 void push(Stack *stack, char *label) 
 {
-    NodeStack *new = newLinkNode_info_next(label, stack->top);
-    stack->top = new;
+    NodeStack *node = newLinkNode_info_next(label, stack->top);
+    stack->top = node;
 }
 
 /**Metodo para verificar si la Lista es Vacia*/
@@ -36,6 +36,5 @@ char* pop(Stack *stack)
 /**Metodo que retorna el tope de la Pila sin desapilarlo*/
 char* peek(Stack *stack) 
 {
-    char *ret = getInfo_linkNode(stack->top);
-    return ret;
+    return getInfo_linkNode(stack->top);
 }

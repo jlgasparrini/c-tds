@@ -17,7 +17,7 @@ typedef struct NodeStackOffset {
 
 /*constructores*/
 
-NodeStackOffset* newLinkNodeOffset_empty();
+NodeStackOffset* newLinkNodeOffset();
 NodeStackOffset* newLinkNodeOffset_info(int);
 NodeStackOffset* newLinkNodeOffset_info_next(int, NodeStackOffset*);
 

@@ -7,28 +7,29 @@
 #include "linknodeOffset.h"
 
 /**Constructor de un Nodo de la Pila vacio*/
-NodeStackOffset* newLinkNodeOffset_empty()
+NodeStackOffset* newLinkNodeOffset()
 {
-  NodeStackOffset *new = (NodeStackOffset*) malloc(sizeof(NodeStackOffset));
-  new->info = NULL;
-  new->next = NULL;
-  return new;
+  NodeStackOffset *node = (NodeStackOffset*) malloc(sizeof(NodeStackOffset));
+  node->info = NULL;
+  node->next = NULL;
+  return node;
 }
 
 /**Constructor de un Nodo de la Pila con el campo info*/
 NodeStackOffset* newLinkNodeOffset_info(int info)
 {
-  NodeStackOffset *new = newLinkNodeOffset_empty();
-  new->info = &info;
-  return new;
+  NodeStackOffset *node = newLinkNodeOffset();
+  node->info = &info;
+  return node;
 }
 
 /**Constructor de un Nodo de la Pila con los campos info y next*/
 NodeStackOffset* newLinkNodeOffset_info_next(int info, NodeStackOffset *next)
 {
-  NodeStackOffset *new = newLinkNodeOffset_info(info);
-  new->next = next;
-  return new;
+  NodeStackOffset *node = newLinkNodeOffset();
+  node->info = &info;
+  node->next = next;
+  return node;
 }
 
 /**Metodo que retorna el campo info de un nodo dado*/

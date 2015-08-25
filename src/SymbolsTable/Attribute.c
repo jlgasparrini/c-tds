@@ -83,7 +83,7 @@ Attribute* createParameter(Attribute *attr, unsigned int pos, char *id, Primitiv
 			Attribute *aux = createVariable(id, type);
 			aux->decl.variable->offset = globalParamOffset-4;;
 			globalParamOffset += 4;
-      attr->decl.method.parameters[pos] = (StVariable*) malloc(sizeof(StVariable));
+      		attr->decl.method.parameters[pos] = (StVariable*) malloc(sizeof(StVariable));
 			attr->decl.method.parameters[pos] = aux->decl.variable;
 			return aux;
 		}
@@ -285,4 +285,28 @@ void resetGlobalParamOffset()
 StructureType getStructureType(Attribute *attr)
 {
     return attr->type;
+}
+
+/* Returns the type of the attribute, although it is a variable, array or method */
+ReturnType getAttributeType(Attribute *attr)
+{
+    switch (getStructureType(attr))
+    {
+        case Variable:  return attr->decl.variable->type;
+        case Array:     return attr->decl.array.type;
+        case Method:    return attr->decl.method.type;
+        default:        return RetInt;
+    }
+}
+
+/* Returns the string corresponding to "type" */
+char* getType(PrimitiveType type)
+{
+    switch (type)
+    {
+        case Int:   return "int";
+        case Float: return "float";
+        case Bool:  return "bool";
+        default:    return "wrong type"; // This is returned when it's not a primitive type
+    }
 }

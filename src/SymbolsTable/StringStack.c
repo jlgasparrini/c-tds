@@ -11,8 +11,8 @@
 StringStack* initializeSS()
 {
     StringStack *stack = (StringStack*) malloc (sizeof(StringStack));
-    (*stack).first = NULL;
-    (*stack).size = 0;
+    stack->first = NULL;
+    stack->size = 0;
     return stack;
 }
 
@@ -22,10 +22,10 @@ void pushString(StringStack *s, char *value)
     SNode *newNode = (SNode*) malloc (sizeof(SNode));
     if (newNode)
     {
-        (*newNode).val = strdup(value);
-        (*newNode).next = (*s).first;
-        (*s).first = newNode;
-        (*s).size++;
+        newNode->val = strdup(value);
+        newNode->next = s->first;
+        s->first = newNode;
+        s->size++;
     }
     else 
         printf("StringStack.h: insert ERROR: Can't reserve space in memory.");
@@ -34,13 +34,13 @@ void pushString(StringStack *s, char *value)
 /* Return the value of the last pushed string in the stack "s". */
 char* popString(StringStack *s)
 {
-    if ((*s).size > 0)
+    if (s->size > 0)
     {
-        SNode *auxNode = (*s).first;
-        char* auxVal = strdup((*auxNode).val);
-		(*s).first = (*auxNode).next;
+        SNode *auxNode = s->first;
+        char* auxVal = strdup(auxNode->val);
+		s->first = auxNode->next;
         free(auxNode);
-		(*s).size--;
+		s->size--;
         return auxVal;
     }
     return "";
@@ -49,15 +49,15 @@ char* popString(StringStack *s)
 /* Return the top string of the stack "s". */
 char* topString(StringStack *s)
 {
-    if ((*s).size > 0)
-        return (*(*s).first).val;
+    if (s->size > 0)
+        return s->first->val;
     return "";
 }
 
 /* Prints the stack in the correct order */
 void printCorrectOrder(StringStack *s)
 {
-	while ((*s).size > 0)
+	while (s->size > 0)
 		printf("%s",popString(s));	
 }
 
@@ -65,9 +65,9 @@ void printCorrectOrder(StringStack *s)
 void printInverseOrder(StringStack *s)
 {
 	StringStack *aux = initializeSS();
-	while ((*s).size > 0)
+	while (s->size > 0)
 		pushString(aux,popString(s));
-	while ((*aux).size > 0)
+	while (aux->size > 0)
 	{
 		printf("%s",topString(aux));	
 		pushString(s,popString(aux));
