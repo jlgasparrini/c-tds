@@ -18,8 +18,8 @@ void pushElement(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attribute *at)
 	{
         if (at!=NULL)
         {
-            if (searchIdInLevel(aSymbolsTable, getID(at)) != NULL)
-                insert_error(eq, to_string("El identificador \"", getID(at), "\" ya se encuentra en uso."));
+            if (searchIdInLevel(aSymbolsTable, get_id(at)) != NULL)
+                insert_error(eq, to_string("El identificador \"", get_id(at), "\" ya se encuentra en uso."));
             else
                 insert(aSymbolsTable->top->list, at);
         }

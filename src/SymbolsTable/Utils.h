@@ -29,7 +29,7 @@ void setMethodReturnAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char
 Attribute* checkAndGetMethodRetAttribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, LCode3D *lcode3d, char *id, unsigned char paramSize);
 
 /* Returns the type of the attribute, although it is a variable, array or method */
-ReturnType getAttributeType(Attribute *attr);
+ReturnType get_attribute_type(Attribute *attr);
 
 /* Returns the amount of digits that has the int "value" */
 unsigned int digitAmount(int value);

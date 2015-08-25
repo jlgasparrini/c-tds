@@ -43,7 +43,7 @@ Attribute* search(LinkedList *l, char *id)
     int i;
     for (i = 0; i < l->size; i++)
     {
-        if (strcmp(getID(auxNode->data), id) == 0)
+        if (strcmp(get_id(auxNode->data), id) == 0)
             return auxNode->data;
         auxNode = auxNode->next;
     }
@@ -85,9 +85,9 @@ void showVariableAttribute(Attribute *attr)
 	printf(" type:.decl.variable:\n");
     switch (attr->decl.variable->type)
     {
-        case Int:   printf("    int %s = %d;\n", getID(attr), getIntVal(attr)); break;
-        case Float: printf("    float %s = %f;\n", getID(attr), getFloatVal(attr)); break;
-        case Bool:  printf("    boolean %s = %d;\n", getID(attr), getBoolVal(attr)); break;
+        case Int:   printf("    int %s = %d;\n", get_id(attr), get_int_val(attr)); break;
+        case Float: printf("    float %s = %f;\n", get_id(attr), get_float_val(attr)); break;
+        case Bool:  printf("    boolean %s = %d;\n", get_id(attr), get_bool_val(attr)); break;
     }
 }
 
@@ -97,10 +97,10 @@ void showMethodAttribute(Attribute *attr)
 	printf(" type:.decl.method\n");
     switch (attr->decl.method.type)
     {
-        case RetInt:   printf("    int %s ();\n", getID(attr)); break;
-        case RetFloat: printf("    float %s ();\n", getID(attr)); break;
-        case RetBool:  printf("    boolean %s ();\n", getID(attr)); break;
-        case RetVoid:  printf("    void %s ();\n", getID(attr)); break;
+        case RetInt:   printf("    int %s ();\n", get_id(attr)); break;
+        case RetFloat: printf("    float %s ();\n", get_id(attr)); break;
+        case RetBool:  printf("    boolean %s ();\n", get_id(attr)); break;
+        case RetVoid:  printf("    void %s ();\n", get_id(attr)); break;
     }
 }
 
@@ -110,9 +110,9 @@ void showArrayAttribute(Attribute *attr)
     printf("    type:.decl.array\n");
     switch (attr->decl.array.type)
     {
-        case Int:   printf("    int %s [%d];\n", getID(attr), attr->decl.array.length); break;
-        case Float: printf("    float %s [%d];\n", getID(attr), attr->decl.array.length); break;
-        case Bool:  printf("    boolean %s [%d];\n", getID(attr), attr->decl.array.length); break;
+        case Int:   printf("    int %s [%d];\n", get_id(attr), attr->decl.array.length); break;
+        case Float: printf("    float %s [%d];\n", get_id(attr), attr->decl.array.length); break;
+        case Bool:  printf("    boolean %s [%d];\n", get_id(attr), attr->decl.array.length); break;
     }
 }
 

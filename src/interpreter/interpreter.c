@@ -31,12 +31,12 @@ static int run_operation(int position)
   {
     /* GENERAL OPERATIONS TREATEMENT */
     case LOAD_CONST:
-      if (getAttributeType(getAttribute(code, 2)) == Int)
-        setIntVal(getAttribute(code, 2), code->param1->val.intAttri);
-      if (getAttributeType(getAttribute(code, 2)) == Float)
-        setFloatVal(getAttribute(code, 2), code->param1->val.floatAttri);
-      if (getAttributeType(getAttribute(code, 2)) == Bool)
-        setBoolVal(getAttribute(code, 2), code->param1->val.boolAttri);
+      if (get_attribute_type(getAttribute(code, 2)) == Int)
+        set_int_val(getAttribute(code, 2), code->param1->val.intAttri);
+      if (get_attribute_type(getAttribute(code, 2)) == Float)
+        set_float_val(getAttribute(code, 2), code->param1->val.floatAttri);
+      if (get_attribute_type(getAttribute(code, 2)) == Bool)
+        set_bool_val(getAttribute(code, 2), code->param1->val.boolAttri);
       break;
 
     case LOAD_ARRAY:
@@ -44,19 +44,19 @@ static int run_operation(int position)
          parameter 2 is the array from which the number will be getted from.
          parameter 3 is the resulting attribute.
          */
-      getAttribute(code, 3)->decl.variable = &getAttribute(code, 2)->decl.array.arrayValues[getIntVal(getAttribute(code, 1))];
+      getAttribute(code, 3)->decl.variable = &getAttribute(code, 2)->decl.array.arrayValues[get_int_val(getAttribute(code, 1))];
       break;
 
     case PRINT:
-      if (getAttributeType(getAttribute(code, 1)) == Int)
-        printf("Print. El valor entero es: %d\n", getIntVal(getAttribute(code, 1)));
-      if (getAttributeType(getAttribute(code, 1)) == Float)
-        printf("Print. El valor flotante es: %f\n", getFloatVal(getAttribute(code, 1)));
-      if (getAttributeType(getAttribute(code, 1)) == Bool)
+      if (get_attribute_type(getAttribute(code, 1)) == Int)
+        printf("Print. El valor entero es: %d\n", get_int_val(getAttribute(code, 1)));
+      if (get_attribute_type(getAttribute(code, 1)) == Float)
+        printf("Print. El valor flotante es: %f\n", get_float_val(getAttribute(code, 1)));
+      if (get_attribute_type(getAttribute(code, 1)) == Bool)
       {
-        if (getBoolVal(getAttribute(code, 1)) == True)
+        if (get_bool_val(getAttribute(code, 1)) == True)
           printf("Print. El valor booleano es: true\n");
-        if (getBoolVal(getAttribute(code, 1)) == False)
+        if (get_bool_val(getAttribute(code, 1)) == False)
           printf("Print. El valor booleano es: false\n");
       }
       break;
@@ -66,19 +66,19 @@ static int run_operation(int position)
 
     case RETURN_EXPR:
       /* Link the expression obtained with the return value of the method */
-      if (getAttributeType(getAttribute(code, 2)) == Int)
-        setIntVal(getAttribute(code, 2), getIntVal(getAttribute(code, 1)));
-      if (getAttributeType(getAttribute(code, 2)) == Float)
-        setFloatVal(getAttribute(code, 2), getFloatVal(getAttribute(code, 1)));
-      if (getAttributeType(getAttribute(code, 2)) == Bool)
-        setBoolVal(getAttribute(code, 2), getBoolVal(getAttribute(code, 1)));
+      if (get_attribute_type(getAttribute(code, 2)) == Int)
+        set_int_val(getAttribute(code, 2), get_int_val(getAttribute(code, 1)));
+      if (get_attribute_type(getAttribute(code, 2)) == Float)
+        set_float_val(getAttribute(code, 2), get_float_val(getAttribute(code, 1)));
+      if (get_attribute_type(getAttribute(code, 2)) == Bool)
+        set_bool_val(getAttribute(code, 2), get_bool_val(getAttribute(code, 1)));
       return atoi(popString(methods_call_stack));
 
     case LABEL: break;
 
     case GOTO_LABEL: return searchByLabel(code_list->codes, getLabel(code, 1));
 
-    case GOTO_LABEL_COND: if (getBoolVal(getAttribute(code, 1)) == False)
+    case GOTO_LABEL_COND: if (get_bool_val(getAttribute(code, 1)) == False)
                             return searchByLabel(code_list->codes,getLabel(code, 2));
                           break;
 
@@ -87,44 +87,44 @@ static int run_operation(int position)
                       return searchByLabel(code_list->codes, getLabel(code, 1));
 
     /*INT OPERATIONS TREATEMENT */
-    case ASSIGNATION_INT:   setIntVal(getAttribute(code, 2), getIntVal(getAttribute(code, 1))); break;
-    case PARAM_ASSIGN_INT:  setIntVal(getAttribute(code, 2), getIntVal(getAttribute(code, 1))); break;
-    case MINUS_INT:         setIntVal(getAttribute(code, 3), getIntVal(getAttribute(code, 1)) - getIntVal(getAttribute(code, 2))); break;
-    case ADD_INT:           setIntVal(getAttribute(code, 3), getIntVal(getAttribute(code, 1)) + getIntVal(getAttribute(code, 2))); break;
-    case MULT_INT:          setIntVal(getAttribute(code, 3), getIntVal(getAttribute(code, 1)) * getIntVal(getAttribute(code, 2))); break;
-    case DIV_INT:           setIntVal(getAttribute(code, 3), getIntVal(getAttribute(code, 1)) / getIntVal(getAttribute(code, 2))); break;
-    case MOD_INT:           setIntVal(getAttribute(code, 3), getIntVal(getAttribute(code, 1)) % getIntVal(getAttribute(code, 2))); break;
-    case NEG_INT:           setIntVal(getAttribute(code, 2), -getIntVal(getAttribute(code, 1))); break;
-    case EQ_INT:            setBoolVal(getAttribute(code, 3), getIntVal(getAttribute(code, 1)) == getIntVal(getAttribute(code, 2))); break;
-    case DIST_INT:          setBoolVal(getAttribute(code, 3), getIntVal(getAttribute(code, 1)) != getIntVal(getAttribute(code, 2))); break;
-    case GREATER_INT:       setBoolVal(getAttribute(code, 3), getIntVal(getAttribute(code, 1)) > getIntVal(getAttribute(code, 2))); break;
-    case LOWER_INT:         setBoolVal(getAttribute(code, 3), getIntVal(getAttribute(code, 1)) < getIntVal(getAttribute(code, 2))); break;
-    case GEQ_INT:           setBoolVal(getAttribute(code, 3), getIntVal(getAttribute(code, 1)) >= getIntVal(getAttribute(code, 2))); break;
-    case LEQ_INT:           setBoolVal(getAttribute(code, 3), getIntVal(getAttribute(code, 1)) <= getIntVal(getAttribute(code, 2))); break;
+    case ASSIGNATION_INT:   set_int_val(getAttribute(code, 2), get_int_val(getAttribute(code, 1))); break;
+    case PARAM_ASSIGN_INT:  set_int_val(getAttribute(code, 2), get_int_val(getAttribute(code, 1))); break;
+    case MINUS_INT:         set_int_val(getAttribute(code, 3), get_int_val(getAttribute(code, 1)) - get_int_val(getAttribute(code, 2))); break;
+    case ADD_INT:           set_int_val(getAttribute(code, 3), get_int_val(getAttribute(code, 1)) + get_int_val(getAttribute(code, 2))); break;
+    case MULT_INT:          set_int_val(getAttribute(code, 3), get_int_val(getAttribute(code, 1)) * get_int_val(getAttribute(code, 2))); break;
+    case DIV_INT:           set_int_val(getAttribute(code, 3), get_int_val(getAttribute(code, 1)) / get_int_val(getAttribute(code, 2))); break;
+    case MOD_INT:           set_int_val(getAttribute(code, 3), get_int_val(getAttribute(code, 1)) % get_int_val(getAttribute(code, 2))); break;
+    case NEG_INT:           set_int_val(getAttribute(code, 2), -get_int_val(getAttribute(code, 1))); break;
+    case EQ_INT:            set_bool_val(getAttribute(code, 3), get_int_val(getAttribute(code, 1)) == get_int_val(getAttribute(code, 2))); break;
+    case DIST_INT:          set_bool_val(getAttribute(code, 3), get_int_val(getAttribute(code, 1)) != get_int_val(getAttribute(code, 2))); break;
+    case GREATER_INT:       set_bool_val(getAttribute(code, 3), get_int_val(getAttribute(code, 1)) > get_int_val(getAttribute(code, 2))); break;
+    case LOWER_INT:         set_bool_val(getAttribute(code, 3), get_int_val(getAttribute(code, 1)) < get_int_val(getAttribute(code, 2))); break;
+    case GEQ_INT:           set_bool_val(getAttribute(code, 3), get_int_val(getAttribute(code, 1)) >= get_int_val(getAttribute(code, 2))); break;
+    case LEQ_INT:           set_bool_val(getAttribute(code, 3), get_int_val(getAttribute(code, 1)) <= get_int_val(getAttribute(code, 2))); break;
 
     /* FLOAT OPERATIONS TREATEMENT */
-    case ASSIGNATION_FLOAT:   setFloatVal(getAttribute(code, 2), getFloatVal(getAttribute(code, 1))); break;
-    case PARAM_ASSIGN_FLOAT:  setFloatVal(getAttribute(code, 2), getFloatVal(getAttribute(code, 1))); break;
-    case MINUS_FLOAT:         setFloatVal(getAttribute(code, 3), getFloatVal(getAttribute(code, 1)) - getFloatVal(getAttribute(code, 2))); break;
-    case ADD_FLOAT:           setFloatVal(getAttribute(code, 3), getFloatVal(getAttribute(code, 1)) + getFloatVal(getAttribute(code, 2))); break;
-    case MULT_FLOAT:          setFloatVal(getAttribute(code, 3), getFloatVal(getAttribute(code, 1)) * getFloatVal(getAttribute(code, 2))); break;
-    case DIV_FLOAT:           setFloatVal(getAttribute(code, 3), ((float) getFloatVal(getAttribute(code, 1))) / (float) getFloatVal(getAttribute(code, 2))); break;
-    case NEG_FLOAT:           setFloatVal(getAttribute(code, 2), -getFloatVal(getAttribute(code, 1))); break;
-    case EQ_FLOAT:            setBoolVal(getAttribute(code, 3), getFloatVal(getAttribute(code, 1)) == getFloatVal(getAttribute(code, 2))); break;
-    case DIST_FLOAT:          setBoolVal(getAttribute(code, 3), getFloatVal(getAttribute(code, 1)) != getFloatVal(getAttribute(code, 2))); break;
-    case GREATER_FLOAT:       setBoolVal(getAttribute(code, 3), getFloatVal(getAttribute(code, 1)) > getFloatVal(getAttribute(code, 2))); break;
-    case LOWER_FLOAT:         setBoolVal(getAttribute(code, 3), getFloatVal(getAttribute(code, 1)) < getFloatVal(getAttribute(code, 2))); break;
-    case GEQ_FLOAT:           setBoolVal(getAttribute(code, 3), getFloatVal(getAttribute(code, 1)) >= getFloatVal(getAttribute(code, 2))); break;
-    case LEQ_FLOAT:           setBoolVal(getAttribute(code, 3), getFloatVal(getAttribute(code, 1)) <= getFloatVal(getAttribute(code, 2))); break;
+    case ASSIGNATION_FLOAT:   set_float_val(getAttribute(code, 2), get_float_val(getAttribute(code, 1))); break;
+    case PARAM_ASSIGN_FLOAT:  set_float_val(getAttribute(code, 2), get_float_val(getAttribute(code, 1))); break;
+    case MINUS_FLOAT:         set_float_val(getAttribute(code, 3), get_float_val(getAttribute(code, 1)) - get_float_val(getAttribute(code, 2))); break;
+    case ADD_FLOAT:           set_float_val(getAttribute(code, 3), get_float_val(getAttribute(code, 1)) + get_float_val(getAttribute(code, 2))); break;
+    case MULT_FLOAT:          set_float_val(getAttribute(code, 3), get_float_val(getAttribute(code, 1)) * get_float_val(getAttribute(code, 2))); break;
+    case DIV_FLOAT:           set_float_val(getAttribute(code, 3), ((float) get_float_val(getAttribute(code, 1))) / (float) get_float_val(getAttribute(code, 2))); break;
+    case NEG_FLOAT:           set_float_val(getAttribute(code, 2), -get_float_val(getAttribute(code, 1))); break;
+    case EQ_FLOAT:            set_bool_val(getAttribute(code, 3), get_float_val(getAttribute(code, 1)) == get_float_val(getAttribute(code, 2))); break;
+    case DIST_FLOAT:          set_bool_val(getAttribute(code, 3), get_float_val(getAttribute(code, 1)) != get_float_val(getAttribute(code, 2))); break;
+    case GREATER_FLOAT:       set_bool_val(getAttribute(code, 3), get_float_val(getAttribute(code, 1)) > get_float_val(getAttribute(code, 2))); break;
+    case LOWER_FLOAT:         set_bool_val(getAttribute(code, 3), get_float_val(getAttribute(code, 1)) < get_float_val(getAttribute(code, 2))); break;
+    case GEQ_FLOAT:           set_bool_val(getAttribute(code, 3), get_float_val(getAttribute(code, 1)) >= get_float_val(getAttribute(code, 2))); break;
+    case LEQ_FLOAT:           set_bool_val(getAttribute(code, 3), get_float_val(getAttribute(code, 1)) <= get_float_val(getAttribute(code, 2))); break;
 
     /* BOOLEAN OPERATIONS TREATEMENT */
-    case ASSIGNATION_BOOL:  setBoolVal(getAttribute(code, 2), getBoolVal(getAttribute(code, 1))); break;
-    case PARAM_ASSIGN_BOOL: setBoolVal(getAttribute(code, 2), getBoolVal(getAttribute(code, 1))); break;
-    case EQ_BOOL:           setBoolVal(getAttribute(code, 3), getBoolVal(getAttribute(code, 1)) == getBoolVal(getAttribute(code, 2))); break;
-    case DIST_BOOL:         setBoolVal(getAttribute(code, 3), getBoolVal(getAttribute(code, 1)) != getBoolVal(getAttribute(code, 2))); break;
-    case OR:                setBoolVal(getAttribute(code, 3), getBoolVal(getAttribute(code, 1)) || getBoolVal(getAttribute(code, 2))); break;
-    case AND:               setBoolVal(getAttribute(code, 3), getBoolVal(getAttribute(code, 1)) && getBoolVal(getAttribute(code, 2))); break;
-    case NOT:               setBoolVal(getAttribute(code, 2), !getBoolVal(getAttribute(code, 1))); break;
+    case ASSIGNATION_BOOL:  set_bool_val(getAttribute(code, 2), get_bool_val(getAttribute(code, 1))); break;
+    case PARAM_ASSIGN_BOOL: set_bool_val(getAttribute(code, 2), get_bool_val(getAttribute(code, 1))); break;
+    case EQ_BOOL:           set_bool_val(getAttribute(code, 3), get_bool_val(getAttribute(code, 1)) == get_bool_val(getAttribute(code, 2))); break;
+    case DIST_BOOL:         set_bool_val(getAttribute(code, 3), get_bool_val(getAttribute(code, 1)) != get_bool_val(getAttribute(code, 2))); break;
+    case OR:                set_bool_val(getAttribute(code, 3), get_bool_val(getAttribute(code, 1)) || get_bool_val(getAttribute(code, 2))); break;
+    case AND:               set_bool_val(getAttribute(code, 3), get_bool_val(getAttribute(code, 1)) && get_bool_val(getAttribute(code, 2))); break;
+    case NOT:               set_bool_val(getAttribute(code, 2), !get_bool_val(getAttribute(code, 1))); break;
 
     /* EXTERNAL INVOCATIONS OPERATIONS */
     case EXTERN_INVK:               warning_externinvk(); break;

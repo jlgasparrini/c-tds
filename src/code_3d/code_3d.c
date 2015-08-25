@@ -321,7 +321,7 @@ void showCode(Code3D *code, int param)
     if (isLabel(code, param))
       printf("%s   |  ", getLabel(code, param));
     if (isAttribute(code, param))
-      printf("%s   |  ", getID(getAttribute(code,param)));
+      printf("%s   |  ", get_id(getAttribute(code,param)));
   }
 }
 

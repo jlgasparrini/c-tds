@@ -57,7 +57,7 @@ void add_CodeLabelCond(LCode3D *lcode3d, Code3D *code, Attribute *attri1, char *
 void add_Assignation(LCode3D *lcode3d, Attribute *attri1, Attribute *attriRes)
 {
     Code3D *code;
-    switch (getAttributeType(attri1))
+    switch (get_attribute_type(attri1))
     {
         case Int:   code = newCode(ASSIGNATION_INT); break;
         case Float: code = newCode(ASSIGNATION_FLOAT); break;

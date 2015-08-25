@@ -53,7 +53,7 @@ char* translate(char* operation, char* code1, char* code2)
 char* offset(Code3D* code, int param)
 {
   char *result = (char*) malloc(sizeof(char));/* CHECK OUT THIS CASE BECAUSE sizeof(char) ONLY STORES MEMORY FOR ONLY ONE CHARACTER! */
-  result =intToString(getOffsetVal(getAttribute(code, param)));
+  result =intToString(get_offset_val(getAttribute(code, param)));
   return concat(result, "(%rbp)");
 }
 
@@ -71,7 +71,7 @@ char* offset_num(int offset)
 /* Return offset of an array */
 static char* offsetArray(Code3D* code, int param, char* reg)
 {
-  int offset = getOffsetArray(getAttribute(code, param));
+  int offset = get_offset_array(getAttribute(code, param));
   return concat(concat(concat(intToString(offset), "(%rbp,"), reg), ",4)");
 }
 
@@ -148,18 +148,18 @@ void translate_not(FILE* file, Code3D* code)
 /* Puts in the file the translation of the PRINT action */
 void print_operation(FILE *file, Code3D *code)
 {
-  if (getAttributeType(getAttribute(code, 1)) == Int)
+  if (get_attribute_type(getAttribute(code, 1)) == Int)
   {
     write_code_in_file(file, translate("movq", offset(code, 1), "%rsi"));
     write_code_in_file(file, translate("movq", concat("$", ".INT"), "%rdi"));
   }
-  if (getAttributeType(getAttribute(code, 1)) == Float)
+  if (get_attribute_type(getAttribute(code, 1)) == Float)
   {
     write_code_in_file(file, translate("movss", offset(code, 1), "%xmm0"));
     write_code_in_file(file, translate("cvtps2pd", "%xmm0", "%xmm0"));
     write_code_in_file(file, translate("movq", concat("$", ".FLOAT"), "%rdi"));
   }
-  if (getAttributeType(getAttribute(code, 1)) == Bool)
+  if (get_attribute_type(getAttribute(code, 1)) == Bool)
   {
     char* count = intToString(print_count);
     write_code_in_file(file, translate("cmp", "$0", offset(code, 1)));
@@ -200,7 +200,7 @@ void translate_load_array(FILE *file, Code3D *code)
    */
   write_code_in_file(file, translate("movq", offset(code,1), "%rax"));
 
-  if (getAttributeType(getAttribute(code, 2)) == Float)
+  if (get_attribute_type(getAttribute(code, 2)) == Float)
   {
     write_code_in_file(file, translate("movss", offsetArray(code,2,"%rax"), "%xmm0"));
     write_code_in_file(file, translate("movss", "%xmm0", offset(code,3)));

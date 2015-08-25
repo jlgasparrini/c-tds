@@ -31,7 +31,7 @@
 
   static inline void setUpMethodCreation(char *name, ReturnType type) {
     last_def_method = name;
-    pushElement(error_q, symbols_table, createMethod(name, type));
+    pushElement(error_q, symbols_table, create_method(name, type));
     pushLevel(symbols_table);
     returns = 0;
   }
@@ -395,13 +395,13 @@ fields:  field
       |  fields ',' field
       ;
 
-field:  ID { pushElement(error_q, symbols_table, createVariable($1, var_type)); }
+field:  ID { pushElement(error_q, symbols_table, create_variable($1, var_type)); }
      |  ID '[' INTEGER { if (atoi($3) <= 0)
                        {   insert_error(error_q,to_string("Error en definicion del arreglo \"",$1,"\". El tamaño del arreglo debe ser un entero mayor que 0."));
-                           pushElement(error_q, symbols_table, createArray($1, var_type, 10)); /* Array size of 10 in case of error */
+                           pushElement(error_q, symbols_table, create_array($1, var_type, 10)); /* Array size of 10 in case of error */
                        }
                          else
-                           pushElement(error_q, symbols_table, createArray($1, var_type, atoi($3)));
+                           pushElement(error_q, symbols_table, create_array($1, var_type, atoi($3)));
                        }
            ']'
      ;
@@ -412,85 +412,85 @@ type:  INT_WORD		 {var_type = Int; method_type = RetInt;}
     ;
 
 method_decl:  type ID {
-                        pushOffset(offsets_var, getGlobalVarOffset());/////////////////////////////////
-                        resetGlobalVarOffset();////////////////////////////
+                        pushOffset(offsets_var, get_global_var_offset());/////////////////////////////////
+                        reset_global_var_offset();////////////////////////////
                         setUpMethodCreation($2, method_type);
                         add_CodeLabel(l_code3d, newCode(LABEL), $2); // Mark to Label of Init of Method
                         push(max_method_offset, intToString(codeSize(l_code3d)));
                         insert_MethodL(list_meth_label, $2, $2);
                       } param block {
                         int pos = atoi(pop(max_method_offset));
-                        set_code_int(l_code3d, pos, 2, getGlobalVarOffset());
-                        setGlobalVarOffset(popOffset(offsets_var));//////////////////////////////////////////
+                        set_code_int(l_code3d, pos, 2, get_global_var_offset());
+                        set_global_var_offset(popOffset(offsets_var));//////////////////////////////////////////
                         if(returns==0) insert_error(error_q,to_string("El metodo \"",$2,"\" debe tener al menos un return."));
                         popLevel(symbols_table);
                       }
            |		method_decl type ID {
-                        pushOffset(offsets_var, getGlobalVarOffset());
-                        resetGlobalVarOffset();
+                        pushOffset(offsets_var, get_global_var_offset());
+                        reset_global_var_offset();
                         setUpMethodCreation($3, method_type);
                         add_CodeLabel(l_code3d, newCode(LABEL), $3); // Mark to Label of Init of Method
                         push(max_method_offset, intToString(codeSize(l_code3d)));
                         insert_MethodL(list_meth_label, $3, $3);
                     } param block {
                         int pos = atoi(pop(max_method_offset));
-                        set_code_int(l_code3d, pos, 2, getGlobalVarOffset());
-                        setGlobalVarOffset(popOffset(offsets_var));
+                        set_code_int(l_code3d, pos, 2, get_global_var_offset());
+                        set_global_var_offset(popOffset(offsets_var));
                         if(returns==0) insert_error(error_q,to_string("El metodo \"",$3,"\" debe tener al menos un return."));
                         popLevel(symbols_table);
                     }
            |     VOID ID {
-                      pushOffset(offsets_var, getGlobalVarOffset());
-                      resetGlobalVarOffset();
+                      pushOffset(offsets_var, get_global_var_offset());
+                      reset_global_var_offset();
                       setUpMethodCreation($2, RetVoid);
                       add_CodeLabel(l_code3d, newCode(LABEL), $2); // Mark to Label of Init of Method
                       push(max_method_offset, intToString(codeSize(l_code3d)));
                       insert_MethodL(list_meth_label, $2, $2);
                   } param block {
                       int pos = atoi(pop(max_method_offset));
-                      set_code_int(l_code3d, pos, 2, getGlobalVarOffset());
-                      setGlobalVarOffset(popOffset(offsets_var));
+                      set_code_int(l_code3d, pos, 2, get_global_var_offset());
+                      set_global_var_offset(popOffset(offsets_var));
                       if(returns==0) insert_error(error_q,to_string("El metodo \"",$2,"\" debe tener al menos un return."));
                       popLevel(symbols_table);
                   }
            |  method_decl VOID ID {
-                pushOffset(offsets_var, getGlobalVarOffset());
-                resetGlobalVarOffset();
+                pushOffset(offsets_var, get_global_var_offset());
+                reset_global_var_offset();
                 setUpMethodCreation($3, RetVoid);
                 add_CodeLabel(l_code3d, newCode(LABEL), $3); // Mark to Label of Init of Method
                 push(max_method_offset, intToString(codeSize(l_code3d)));
                 insert_MethodL(list_meth_label, $3, $3);
               } param block {
                 int pos = atoi(pop(max_method_offset));
-                set_code_int(l_code3d, pos, 2, getGlobalVarOffset());
-                setGlobalVarOffset(popOffset(offsets_var));
+                set_code_int(l_code3d, pos, 2, get_global_var_offset());
+                set_global_var_offset(popOffset(offsets_var));
                 if(returns==0) insert_error(error_q,to_string("El metodo \"",$3,"\" debe tener al menos un return."));
                 popLevel(symbols_table);
               }
            ;
 
-param		      :    '(' {cant_params = 0; setAmountOfParameters(searchIdInSymbolsTable(error_q,symbols_table,last_def_method),0);} ')'
+param		      :    '(' {cant_params = 0; set_amount_of_parameters(searchIdInSymbolsTable(error_q,symbols_table,last_def_method),0);} ')'
               |    '(' {if (strcmp(last_def_method,"main") == 0)
                             insert_error(error_q,to_string("El metodo \"main\" no debe contener parametros.","",""));
                         cant_params = 0;
-						            pushOffset(offsets_param, getGlobalParamOffset());////////////////////////////
-						            resetGlobalParamOffset();////////////////////////////
+						            pushOffset(offsets_param, get_global_param_offset());////////////////////////////
+						            reset_global_param_offset();////////////////////////////
                         }
                     parameters {
-                                setAmountOfParameters(searchIdInSymbolsTable(error_q,symbols_table,last_def_method),cant_params);
-								                setGlobalParamOffset(popOffset(offsets_param));/////////////////////////////////////
+                                set_amount_of_parameters(searchIdInSymbolsTable(error_q,symbols_table,last_def_method),cant_params);
+								                set_global_param_offset(popOffset(offsets_param));/////////////////////////////////////
                                }
                     ')'
               ;
 
 parameters    :		type ID {
-                           Attribute *aux = createParameter(searchIdInSymbolsTable(error_q,symbols_table,last_def_method),cant_params,$2,var_type);
+                           Attribute *aux = create_parameter(searchIdInSymbolsTable(error_q,symbols_table,last_def_method),cant_params,$2,var_type);
                            if (aux != NULL) {pushElement(error_q,symbols_table,aux); cant_params++;}
                            else insert_error(error_q,to_string("El identificador \"",$2,"\" no puede contener parametros/esa cantidad de parametros."));
                           }
 
               |		type ID {
-                           Attribute *aux = createParameter(searchIdInSymbolsTable(error_q,symbols_table,last_def_method),cant_params,$2,var_type);
+                           Attribute *aux = create_parameter(searchIdInSymbolsTable(error_q,symbols_table,last_def_method),cant_params,$2,var_type);
                            if (aux != NULL) {pushElement(error_q,symbols_table,aux); cant_params++;}
                            else insert_error(error_q,to_string("El identificador \"",$2,"\" no puede contener parametros/esa cantidad de parametros."));
                           }
@@ -626,7 +626,7 @@ iteration     :    WHILE {
                         add_CodeLabel(l_code3d, newCode(LABEL), pop(labels_while)); // label_end of while
                     }
               |    FOR ID {
-                        if (getAttributeType(getVariableAttribute(error_q,symbols_table,$2)) != Int)
+                        if (get_attribute_type(getVariableAttribute(error_q,symbols_table,$2)) != Int)
                             insert_error(error_q,to_string("El identificador \"", $2, "\" no pertenece a una variable de tipo \"int\""));
                         /* It musn't have the same treatment that while? */
                     } '=' expression ',' expression {
@@ -683,7 +683,7 @@ method_call   :	   ID '(' ')' {
                             }
                             else
                             {
-                                $$ = createVariable((char*) getVariableName(),Int);
+                                $$ = create_variable((char*) getVariableName(),Int);
                                 id_not_found = False;
                             }
                     }
@@ -692,9 +692,9 @@ method_call   :	   ID '(' ')' {
                         amount_extern_params = 0;
                         Attribute* res;
                         if (method_type != RetVoid)
-                            res = createVariable("",method_type);
+                            res = create_variable("",method_type);
                         else
-                            res = createVariable((char*) getVariableName(),Int);
+                            res = create_variable((char*) getVariableName(),Int);
                         char token[2] = "\"";
                         add_CodeExternInvk(l_code3d, newCode(EXTERN_INVK), strtok($3, token), $5);
                         $$ = res;
@@ -703,9 +703,9 @@ method_call   :	   ID '(' ')' {
                         amount_extern_params = 0;
                         Attribute* res;
                         if (method_type != RetVoid)
-                            res = createVariable("",method_type);
+                            res = create_variable("",method_type);
                         else
-                            res = createVariable((char*) getVariableName(),Int);
+                            res = create_variable((char*) getVariableName(),Int);
                         char token[2] = "\"";
                         add_CodeExternInvk(l_code3d, newCode(EXTERN_INVK), strtok($3, token), $5);
                         $$ = res;
@@ -802,7 +802,7 @@ primary       :    INTEGER			{$$ = returnValue(l_code3d, Int, $1);}
               |    '(' expression ')' {$$ = $2;}
               |    method_call      { if (methodReturnType(error_q,symbols_table,last_called_method) == RetVoid)
                                       {	insert_error(error_q,to_string("El metodo \"",last_called_method,"\" no puede ser usado en una expresion ya que retorna void."));
-                                          $$ = createVariable("",Int); /* creamos variables int por defecto para que podamos seguir parseando el codigo */
+                                          $$ = create_variable("",Int); /* creamos variables int por defecto para que podamos seguir parseando el codigo */
                                       }
                                       else $$ = $1;
                                       last_called_method=popString(methods_id_stack); }
