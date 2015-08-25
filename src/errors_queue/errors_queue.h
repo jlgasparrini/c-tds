@@ -29,6 +29,6 @@ void insert_error(ErrorsQueue*, char*);
 /* Delete all the elements of the queue. */
 void delete_all_errors(ErrorsQueue*);
 /* Print in display the elements of the list. */
-void printErrorList(ErrorsQueue*);
+void print_error_list(ErrorsQueue*);
 
 #endif

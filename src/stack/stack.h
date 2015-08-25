@@ -14,13 +14,13 @@ typedef struct {
 } Stack;
 
 /**Constructor de la Pila de Labels*/
-Stack* newStack();
+Stack* new_stack();
 
 /**Metodo que apila un Label a la Pila*/
 void push(Stack *stack, char *label);
 
 /**Metodo para verificar si la Lista es Vacia*/
-bool isEmpty(Stack *stack);
+bool is_empty(Stack *stack);
 
 /**Metodo que desapila un Label a la Pila*/
 char* pop(Stack *stack);

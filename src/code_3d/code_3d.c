@@ -16,7 +16,7 @@
 #define CODE_BOOL     4
 
 /* Code 3d constructor. */
-Code3D* new_ode(int comm)
+Code3D* new_code(int comm)
 {
   Code3D *code = (Code3D*) malloc(sizeof(Code3D));
   code->param1 = (Param*) malloc(sizeof(Param));

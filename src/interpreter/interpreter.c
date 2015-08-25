@@ -76,15 +76,15 @@ static int run_operation(int position)
 
     case LABEL: break;
 
-    case GOTO_LABEL: return searchByLabel(code_list->codes, get_label(code, 1));
+    case GOTO_LABEL: return search_by_label(code_list->codes, get_label(code, 1));
 
     case GOTO_LABEL_COND: if (get_bool_val(get_attribute(code, 1)) == False)
-                            return searchByLabel(code_list->codes,get_label(code, 2));
+                            return search_by_label(code_list->codes,get_label(code, 2));
                           break;
 
     /* Save on the stack the place where treatment must continue after the method call */
-    case GOTO_METHOD: push_string(methods_call_stack, int_to_string(position + 1)); 
-                      return searchByLabel(code_list->codes, get_label(code, 1));
+    case GOTO_METHOD: push_string(methods_call_stack, int_to_string(position + 1));
+                      return search_by_label(code_list->codes, get_label(code, 1));
 
     /*INT OPERATIONS TREATEMENT */
     case ASSIGNATION_INT:   set_int_val(get_attribute(code, 2), get_int_val(get_attribute(code, 1))); break;
@@ -142,7 +142,7 @@ static int run_operation(int position)
  */
 static int search_by_method_label(char* label)
 {
-  char *auxLabel = get_Label(label_list, label);
+  char *auxLabel = get_label_ml(label_list, label);
   if (strcmp(auxLabel, "NULL") == 0)
     printf("ERROR: LABEL no encontrado!    %s  encontrado. \n", auxLabel);
   else

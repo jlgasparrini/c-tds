@@ -36,7 +36,7 @@ typedef struct {
 
 
 /* 3d code constructor. */
-Code3D* new_ode(int comm);
+Code3D* new_code(int comm);
 
 /* Functions for management 3d code */
 int get_command(Code3D *code);

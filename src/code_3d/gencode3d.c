@@ -12,31 +12,31 @@
 LCode3D* init_list_c3D()
 {
     LCode3D *lcode = (LCode3D*) malloc(sizeof(LCode3D));
-    lcode->codes = newListC3D();
+    lcode->codes = new_list_c3d();
     return lcode;
 }
 
 /**Metodo que agrega un Codigo 3D a la lista*/
 void add_code(LCode3D *lcode3d, Code3D *code)
 {
-	add_listC3D(lcode3d->codes, code, size_listC3D(lcode3d->codes));
+	add_list_c3d(lcode3d->codes, code, size_list_c3d(lcode3d->codes));
 }
 
 /**Metodo que retorna un Codigo 3D dependiendo de una posicion*/
 Code3D* get_code(LCode3D *lcode3d, int index)
 {
-    return get_listC3D(lcode3d->codes, index);
+    return get_list_c3d(lcode3d->codes, index);
 }
 
 /**Metodo de retorna el tamaño de la Lista*/
 int code_size(LCode3D *lcode3d)
 {
-    return size_listC3D(lcode3d->codes);
+    return size_list_c3d(lcode3d->codes);
 }
 
 void set_code_int(LCode3D *lcode3d,int index,int param, int numb)
 {
-    set_listC3D_int(lcode3d->codes,index, param, numb);
+    set_list_c3d_int(lcode3d->codes,index, param, numb);
 }
 
 /**Metodo que a base de un Codigo 3D y un label, setea el codigo y lo agrega a la Lista*/
@@ -59,11 +59,11 @@ void add_assignation(LCode3D *lcode3d, Attribute *attri1, Attribute *attriRes)
     Code3D *code;
     switch (get_attribute_type(attri1))
     {
-        case Int:   code = new_ode(ASSIGNATION_INT); break;
-        case Float: code = new_ode(ASSIGNATION_FLOAT); break;
-        case Bool:  code = new_ode(ASSIGNATION_BOOL); break;
+        case Int:   code = new_code(ASSIGNATION_INT); break;
+        case Float: code = new_code(ASSIGNATION_FLOAT); break;
+        case Bool:  code = new_code(ASSIGNATION_BOOL); break;
         default: break;
-    }    
+    }
 	set_c2D(code, attri1, attriRes);
 	add_code(lcode3d, code);
 }
@@ -100,7 +100,7 @@ void add_param_externinvk(LCode3D *lcode3d, Code3D *code, Attribute *attr, int p
 /**Metodo que borra un Codigo 3D de la lista dependiendo una posicion*/
 void delete_code(LCode3D *lcode3d, int index)
 {
-	delete_listC3D(lcode3d->codes, index);
+	delete_list_c3d(lcode3d->codes, index);
 }
 
 /**Prints on the screen the 3d code that contains the list lcode3d */

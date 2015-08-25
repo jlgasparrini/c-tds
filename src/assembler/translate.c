@@ -178,7 +178,7 @@ void print_operation(FILE *file, Code3D *code)
 /* Puts in the file the translation of the LABEL action */
 void write_label(FILE *file, ListMLabel *labelList, Code3D *code)
 {
-  if (strcmp(get_Label(labelList, get_label(code, 1)), "NULL") == 0)
+  if (strcmp(get_label_ml(labelList, get_label(code, 1)), "NULL") == 0)
     write_code_in_file(file, concat(get_label(code,1), ":\n"));
   else
   {

@@ -185,9 +185,9 @@ void correct_param_base_case(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, LCode
                     param->decl.variable = aux->decl.method.parameters[paramSize]; // obtencion del parametro formal.
                     switch (get_attribute_type(attr))
                     {
-                        case Int:   add_method_call(lcode3d, new_ode(PARAM_ASSIGN_INT), attr, param); break;
-                        case Float: add_method_call(lcode3d, new_ode(PARAM_ASSIGN_FLOAT), attr, param); break;
-                        case Bool:  add_method_call(lcode3d, new_ode(PARAM_ASSIGN_BOOL), attr, param); break;
+                        case Int:   add_method_call(lcode3d, new_code(PARAM_ASSIGN_INT), attr, param); break;
+                        case Float: add_method_call(lcode3d, new_code(PARAM_ASSIGN_FLOAT), attr, param); break;
+                        case Bool:  add_method_call(lcode3d, new_code(PARAM_ASSIGN_BOOL), attr, param); break;
                         default: break;
                     }
                 }
@@ -233,9 +233,9 @@ void correct_param_inductive_case(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, 
                     param->decl.variable = aux->decl.method.parameters[paramSize]; // obtencion del parametro formal.
                     switch (get_attribute_type(attr))
                     {
-                        case Int:   add_method_call(lcode3d, new_ode(PARAM_ASSIGN_INT), attr, param); break;
-                        case Float: add_method_call(lcode3d, new_ode(PARAM_ASSIGN_FLOAT), attr, param); break;
-                        case Bool:  add_method_call(lcode3d, new_ode(PARAM_ASSIGN_BOOL), attr, param); break;
+                        case Int:   add_method_call(lcode3d, new_code(PARAM_ASSIGN_INT), attr, param); break;
+                        case Float: add_method_call(lcode3d, new_code(PARAM_ASSIGN_FLOAT), attr, param); break;
+                        case Bool:  add_method_call(lcode3d, new_code(PARAM_ASSIGN_BOOL), attr, param); break;
                         default: break;
                     }
                 }
@@ -248,9 +248,9 @@ void extern_param_assign(LCode3D *lcode3d, Attribute *param, unsigned char param
 {
     switch (get_attribute_type(param))
     {
-        case Int:   add_param_externinvk(lcode3d, new_ode(EXTERN_PARAM_ASSIGN_INT), param, paramNumber); break;
-        case Float: add_param_externinvk(lcode3d, new_ode(EXTERN_PARAM_ASSIGN_FLOAT), param, paramNumber); break;
-        case Bool:  add_param_externinvk(lcode3d, new_ode(EXTERN_PARAM_ASSIGN_BOOL), param, paramNumber); break;
+        case Int:   add_param_externinvk(lcode3d, new_code(EXTERN_PARAM_ASSIGN_INT), param, paramNumber); break;
+        case Float: add_param_externinvk(lcode3d, new_code(EXTERN_PARAM_ASSIGN_FLOAT), param, paramNumber); break;
+        case Bool:  add_param_externinvk(lcode3d, new_code(EXTERN_PARAM_ASSIGN_BOOL), param, paramNumber); break;
         default: break;
     }
 }
@@ -305,16 +305,16 @@ unsigned char control_assignation(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *
                 if (strcmp(op, "+=") == 0)
                 {
                     if (get_attribute_type(attr1) == Int)
-                        add = new_ode(ADD_INT);
+                        add = new_code(ADD_INT);
                     if (get_attribute_type(attr1) == Float)
-                        add = new_ode(ADD_FLOAT);
+                        add = new_code(ADD_FLOAT);
                 }
                 if (strcmp(op, "-=") == 0)
                 {
                     if (get_attribute_type(attr1) == Int)
-                        add = new_ode(MINUS_INT);
+                        add = new_code(MINUS_INT);
                     if (get_attribute_type(attr1) == Float)
-                        add = new_ode(MINUS_FLOAT);
+                        add = new_code(MINUS_FLOAT);
                 }
                 Attribute *res = create_variable(get_variable_name(), get_attribute_type(attr1));
                 set_c3D(add, attr1, attr2, res);
@@ -392,7 +392,7 @@ Attribute* check_array_pos(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, LCode3D
                     increase_var_offset();
                     (*(*variable).decl.variable).offset = get_offset_array(aux) + (get_int_val(attr)*4);
                    // (*(*variable).decl.variable).offset = aux->decl.array.arrayValues[get_int_val(attr)].offset;
-                    Code3D *codeArrayValue = new_ode(LOAD_ARRAY);
+                    Code3D *codeArrayValue = new_code(LOAD_ARRAY);
                     set_attribute(codeArrayValue, 1, attr);
                     set_attribute(codeArrayValue, 2, aux);
                     set_attribute(codeArrayValue, 3, variable);
@@ -429,7 +429,7 @@ Attribute* return_or(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attrib
     if (get_attribute_type(oper1) == get_attribute_type(oper2) && (get_attribute_type(oper2) == Bool))
     {
         Attribute *aux = create_variable(get_variable_name(), Bool);
-        Code3D *codeOr = new_ode(OR);
+        Code3D *codeOr = new_code(OR);
         set_c3D(codeOr, oper1, oper2, aux);
         add_code(lcode3d, codeOr);
         return aux;
@@ -449,7 +449,7 @@ Attribute* return_and(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attri
     if (get_attribute_type(oper1) == get_attribute_type(oper2) && (get_attribute_type(oper2) == Bool))
     {
         Attribute *aux = create_variable(get_variable_name(), Bool);
-        Code3D *codeAnd = new_ode(AND);
+        Code3D *codeAnd = new_code(AND);
         set_c3D(codeAnd, oper1, oper2, aux);
         add_code(lcode3d, codeAnd);
         return aux;
@@ -474,9 +474,9 @@ Attribute* return_distinct(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, 
         Code3D *codeDist;
         switch (get_attribute_type(oper1))
         {
-            case Int:   codeDist = new_ode(DIST_INT); break;
-            case Float: codeDist = new_ode(DIST_FLOAT); break;
-            case Bool:  codeDist = new_ode(DIST_BOOL); break;
+            case Int:   codeDist = new_code(DIST_INT); break;
+            case Float: codeDist = new_code(DIST_FLOAT); break;
+            case Bool:  codeDist = new_code(DIST_BOOL); break;
             default: break;
         }
         set_c3D(codeDist, oper1, oper2, aux);
@@ -500,9 +500,9 @@ Attribute* return_equal(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Att
         Code3D *codeEqual;
         switch (get_attribute_type(oper1))
         {
-            case Int:   codeEqual = new_ode(EQ_INT); break;
-            case Float: codeEqual = new_ode(EQ_FLOAT); break;
-            case Bool:  codeEqual = new_ode(EQ_BOOL); break;
+            case Int:   codeEqual = new_code(EQ_INT); break;
+            case Float: codeEqual = new_code(EQ_FLOAT); break;
+            case Bool:  codeEqual = new_code(EQ_BOOL); break;
             default: break;
         }
         set_c3D(codeEqual, oper1, oper2, aux);
@@ -528,9 +528,9 @@ Attribute* return_minor_comparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribute 
         Attribute *aux = create_variable(get_variable_name(), Bool);
         Code3D *codeMinor;
         if (get_attribute_type(oper1) == Float)
-            codeMinor = new_ode(LOWER_FLOAT);
+            codeMinor = new_code(LOWER_FLOAT);
         else
-            codeMinor = new_ode(LOWER_INT);
+            codeMinor = new_code(LOWER_INT);
         set_c3D(codeMinor, oper1, oper2, aux);
         add_code(lcode3d, codeMinor);
         return aux;
@@ -551,9 +551,9 @@ Attribute* return_major_comparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribute 
         Attribute *aux = create_variable(get_variable_name(), Bool);
         Code3D *codeGreat;
         if (get_attribute_type(oper1) == Float)
-            codeGreat = new_ode(GREATER_FLOAT);
+            codeGreat = new_code(GREATER_FLOAT);
         else
-            codeGreat = new_ode(GREATER_INT);
+            codeGreat = new_code(GREATER_INT);
         set_c3D(codeGreat, oper1, oper2, aux);
         add_code(lcode3d, codeGreat);
         return aux;
@@ -574,9 +574,9 @@ Attribute* return_g_equal_comparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribut
         Attribute *aux = create_variable(get_variable_name(), Bool);
         Code3D *codeGEqual;
         if (get_attribute_type(oper1) == Float)
-            codeGEqual = new_ode(GEQ_FLOAT);
+            codeGEqual = new_code(GEQ_FLOAT);
         else
-            codeGEqual = new_ode(GEQ_INT);
+            codeGEqual = new_code(GEQ_INT);
         set_c3D(codeGEqual, oper1, oper2, aux);
         add_code(lcode3d, codeGEqual);
         return aux;
@@ -597,9 +597,9 @@ Attribute* return_l_equal_comparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribut
         Attribute *aux = create_variable(get_variable_name(), Bool);
         Code3D *codeLEqual;
         if (get_attribute_type(oper1) == Float)
-            codeLEqual = new_ode(LEQ_FLOAT);
+            codeLEqual = new_code(LEQ_FLOAT);
         else
-            codeLEqual = new_ode(LEQ_INT);
+            codeLEqual = new_code(LEQ_INT);
         set_c3D(codeLEqual, oper1, oper2, aux);
         add_code(lcode3d, codeLEqual);
         return aux;
@@ -623,9 +623,9 @@ Attribute* return_add(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attri
         Code3D *codeAdd;
         Attribute *aux = create_variable(get_variable_name(), get_attribute_type(oper1));
         if (get_attribute_type(oper1) == Float)
-            codeAdd = new_ode(ADD_FLOAT);
+            codeAdd = new_code(ADD_FLOAT);
         else
-            codeAdd = new_ode(ADD_INT);
+            codeAdd = new_code(ADD_INT);
         set_c3D(codeAdd, oper1, oper2, aux);
         add_code(lcode3d, codeAdd);
         return aux;
@@ -646,9 +646,9 @@ Attribute* return_sub(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attri
         Code3D *codeSub;
         Attribute *aux = create_variable(get_variable_name(), get_attribute_type(oper1));
         if (get_attribute_type(oper1) == Float)
-            codeSub = new_ode(MINUS_FLOAT);
+            codeSub = new_code(MINUS_FLOAT);
         else
-            codeSub = new_ode(MINUS_INT);
+            codeSub = new_code(MINUS_INT);
         set_c3D(codeSub, oper1, oper2, aux);
         add_code(lcode3d, codeSub);
         return aux;
@@ -668,7 +668,7 @@ Attribute* return_mod(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attri
     {
         Attribute *aux = create_variable(get_variable_name(), get_attribute_type(oper1));
         Code3D *codeMod;
-        codeMod = new_ode(MOD_INT);
+        codeMod = new_code(MOD_INT);
         set_c3D(codeMod, oper1, oper2, aux);
         add_code(lcode3d, codeMod);
         return aux;
@@ -689,9 +689,9 @@ Attribute* return_div(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attri
         Code3D *codeDiv;
         Attribute *aux = create_variable(get_variable_name(), get_attribute_type(oper1));
         if (get_attribute_type(oper1) == Float)
-            codeDiv = new_ode(DIV_FLOAT);
+            codeDiv = new_code(DIV_FLOAT);
         else
-            codeDiv = new_ode(DIV_INT);
+            codeDiv = new_code(DIV_INT);
         set_c3D(codeDiv, oper1, oper2, aux);
         add_code(lcode3d, codeDiv);
         return aux;
@@ -712,9 +712,9 @@ Attribute* return_mult(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attr
         Code3D *codeMult;
         Attribute *aux = create_variable(get_variable_name(), get_attribute_type(oper1));
         if (get_attribute_type(oper1) == Float)
-            codeMult = new_ode(MULT_FLOAT);
+            codeMult = new_code(MULT_FLOAT);
         else
-            codeMult = new_ode(MULT_INT);
+            codeMult = new_code(MULT_INT);
         set_c3D(codeMult, oper1, oper2, aux);
         add_code(lcode3d, codeMult);
         return aux;
@@ -733,7 +733,7 @@ Attribute* return_not(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1)
     if (get_attribute_type(oper1) == Bool)
     {
         Attribute *aux = create_variable(get_variable_name(), Bool);
-        Code3D *codeNot = new_ode(NOT);
+        Code3D *codeNot = new_code(NOT);
         set_c2D(codeNot, oper1, aux);
         add_code(lcode3d, codeNot);
         return aux;
@@ -754,9 +754,9 @@ Attribute* return_neg(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1)
         Code3D *codeNeg;
         Attribute *aux = create_variable(get_variable_name(), get_attribute_type(oper1));
         if (get_attribute_type(oper1) == Float)
-            codeNeg = new_ode(NEG_FLOAT);
+            codeNeg = new_code(NEG_FLOAT);
         else
-            codeNeg = new_ode(NEG_INT);
+            codeNeg = new_code(NEG_INT);
         set_c2D(codeNeg, oper1, aux);
         add_code(lcode3d, codeNeg);
         return aux;
@@ -779,7 +779,7 @@ Attribute* return_value(LCode3D *lcode3d, PrimitiveType type, char *oper1)
     Attribute *aux = create_variable(get_variable_name(), type);
     set_variable_value(aux, type, oper1);
 
-    Code3D *codeValue = new_ode(LOAD_CONST);
+    Code3D *codeValue = new_code(LOAD_CONST);
     switch (type)
     {
         case Int:   set_int(codeValue, 1, atoi(oper1)); break;

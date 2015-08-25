@@ -84,7 +84,7 @@ void delete_all_errors(ErrorsQueue *eq)
 }
 
 /* Print in display the elements of the queue. */
-void printErrorList(ErrorsQueue *eq)
+void print_error_list(ErrorsQueue *eq)
 {
   if (eq->size == 0)
     printf("No semantics errors to compile.\n");

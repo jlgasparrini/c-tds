@@ -14,18 +14,18 @@ typedef struct {
 } StackOffset;
 
 /**Constructor de la Pila de Offsets*/
-StackOffset* newStackOffset();
+StackOffset* new_stack_offset();
 
 /**Metodo que apila un Offset a la Pila*/
-void pushOffset(StackOffset *stack, int offset);
+void push_offset(StackOffset *stack, int offset);
 
 /**Metodo para verificar si la Lista es Vacia*/
-bool isEmptyOffset(StackOffset *stack);
+bool is_empty_offset(StackOffset *stack);
 
 /**Metodo que desapila un Offset en la Pila*/
-int popOffset(StackOffset *stack);
+int pop_offset(StackOffset *stack);
 
 /**Metodo que retorna el tope de la Pila sin desapilarlo*/
-int peekOffset(StackOffset *stack);
+int peek_offset(StackOffset *stack);
 
 #endif

@@ -165,14 +165,14 @@
       l_code3d = init_list_c3D();
       params_stack = initialize_string_stack();
       methods_id_stack = initialize_string_stack();
-      labels_CYC = newStack();
-      labels_while = newStack();
-      return_stack = newStack();
-      labels_for = newStack();
-      max_method_offset = newStack();
-      offsets_var = newStackOffset();
-      offsets_param = newStackOffset();
-      list_meth_label = initL();
+      labels_CYC = new_stack();
+      labels_while = new_stack();
+      return_stack = new_stack();
+      labels_for = new_stack();
+      max_method_offset = new_stack();
+      offsets_var = new_stack_offset();
+      offsets_param = new_stack_offset();
+      list_meth_label = init_list_m();
       l_code3d = init_list_c3D();
   }
 
@@ -267,7 +267,7 @@
   void parser_finalized()
   {
     if (error_q->size > 0)
-      printErrorList(error_q);
+      print_error_list(error_q);
     else
     {
       if(strcmp(action_input,"parse") == 0)
@@ -337,7 +337,7 @@
 
   int yyerror (char *str)
   {
-    printErrorList(error_q);
+    print_error_list(error_q);
     delete_all_errors(error_q);
     if (strcmp(str, "syntax error") == 0)
       printf("%s\n",to_string("Gramatical error.","",""));
@@ -412,58 +412,58 @@ type:  INT_WORD		 {var_type = Int; method_type = RetInt;}
     ;
 
 method_decl:  type ID {
-                        pushOffset(offsets_var, get_global_var_offset());/////////////////////////////////
+                        push_offset(offsets_var, get_global_var_offset());/////////////////////////////////
                         reset_global_var_offset();////////////////////////////
                         setUpMethodCreation($2, method_type);
-                        add_code_label(l_code3d, new_ode(LABEL), $2); // Mark to Label of Init of Method
+                        add_code_label(l_code3d, new_code(LABEL), $2); // Mark to Label of Init of Method
                         push(max_method_offset, int_to_string(code_size(l_code3d)));
-                        insert_MethodL(list_meth_label, $2, $2);
+                        insert_method_list(list_meth_label, $2, $2);
                       } param block {
                         int pos = atoi(pop(max_method_offset));
                         set_code_int(l_code3d, pos, 2, get_global_var_offset());
-                        set_global_var_offset(popOffset(offsets_var));//////////////////////////////////////////
+                        set_global_var_offset(pop_offset(offsets_var));//////////////////////////////////////////
                         if(returns==0) insert_error(error_q,to_string("El metodo \"",$2,"\" debe tener al menos un return."));
                         pop_level(symbols_table);
                       }
            |		method_decl type ID {
-                        pushOffset(offsets_var, get_global_var_offset());
+                        push_offset(offsets_var, get_global_var_offset());
                         reset_global_var_offset();
                         setUpMethodCreation($3, method_type);
-                        add_code_label(l_code3d, new_ode(LABEL), $3); // Mark to Label of Init of Method
+                        add_code_label(l_code3d, new_code(LABEL), $3); // Mark to Label of Init of Method
                         push(max_method_offset, int_to_string(code_size(l_code3d)));
-                        insert_MethodL(list_meth_label, $3, $3);
+                        insert_method_list(list_meth_label, $3, $3);
                     } param block {
                         int pos = atoi(pop(max_method_offset));
                         set_code_int(l_code3d, pos, 2, get_global_var_offset());
-                        set_global_var_offset(popOffset(offsets_var));
+                        set_global_var_offset(pop_offset(offsets_var));
                         if(returns==0) insert_error(error_q,to_string("El metodo \"",$3,"\" debe tener al menos un return."));
                         pop_level(symbols_table);
                     }
            |     VOID ID {
-                      pushOffset(offsets_var, get_global_var_offset());
+                      push_offset(offsets_var, get_global_var_offset());
                       reset_global_var_offset();
                       setUpMethodCreation($2, RetVoid);
-                      add_code_label(l_code3d, new_ode(LABEL), $2); // Mark to Label of Init of Method
+                      add_code_label(l_code3d, new_code(LABEL), $2); // Mark to Label of Init of Method
                       push(max_method_offset, int_to_string(code_size(l_code3d)));
-                      insert_MethodL(list_meth_label, $2, $2);
+                      insert_method_list(list_meth_label, $2, $2);
                   } param block {
                       int pos = atoi(pop(max_method_offset));
                       set_code_int(l_code3d, pos, 2, get_global_var_offset());
-                      set_global_var_offset(popOffset(offsets_var));
+                      set_global_var_offset(pop_offset(offsets_var));
                       if(returns==0) insert_error(error_q,to_string("El metodo \"",$2,"\" debe tener al menos un return."));
                       pop_level(symbols_table);
                   }
            |  method_decl VOID ID {
-                pushOffset(offsets_var, get_global_var_offset());
+                push_offset(offsets_var, get_global_var_offset());
                 reset_global_var_offset();
                 setUpMethodCreation($3, RetVoid);
-                add_code_label(l_code3d, new_ode(LABEL), $3); // Mark to Label of Init of Method
+                add_code_label(l_code3d, new_code(LABEL), $3); // Mark to Label of Init of Method
                 push(max_method_offset, int_to_string(code_size(l_code3d)));
-                insert_MethodL(list_meth_label, $3, $3);
+                insert_method_list(list_meth_label, $3, $3);
               } param block {
                 int pos = atoi(pop(max_method_offset));
                 set_code_int(l_code3d, pos, 2, get_global_var_offset());
-                set_global_var_offset(popOffset(offsets_var));
+                set_global_var_offset(pop_offset(offsets_var));
                 if(returns==0) insert_error(error_q,to_string("El metodo \"",$3,"\" debe tener al menos un return."));
                 pop_level(symbols_table);
               }
@@ -473,12 +473,12 @@ param		      :    '(' {cant_params = 0; set_amount_of_parameters(search_id_in_sy
               |    '(' {if (strcmp(last_def_method,"main") == 0)
                             insert_error(error_q,to_string("El metodo \"main\" no debe contener parametros.","",""));
                         cant_params = 0;
-						            pushOffset(offsets_param, get_global_param_offset());////////////////////////////
+						            push_offset(offsets_param, get_global_param_offset());////////////////////////////
 						            reset_global_param_offset();////////////////////////////
                         }
                     parameters {
                                 set_amount_of_parameters(search_id_in_symbols_table(error_q,symbols_table,last_def_method),cant_params);
-								                set_global_param_offset(popOffset(offsets_param));/////////////////////////////////////
+								                set_global_param_offset(pop_offset(offsets_param));/////////////////////////////////////
                                }
                     ')'
               ;
@@ -518,28 +518,28 @@ statement     :    conditional
               |    iteration
               |    action ';'
               |    {push_level(symbols_table);} block {pop_level(symbols_table);}
-              |    PRINTT expression ';' {add_print(l_code3d, new_ode(PRINT), $2);}
+              |    PRINTT expression ';' {add_print(l_code3d, new_code(PRINT), $2);}
               ;
 
 action        :
               |    BREAK {
-                            if (isEmpty(labels_while) && isEmpty(labels_for))
+                            if (is_empty(labels_while) && is_empty(labels_for))
                                 insert_error(error_q,to_string("Error. Solo se puede usar la sentencia \"break\" dentro de un ciclo.","",""));
                             else{
                                 char* aux = pop(labels_while);
                                 char* aux2 = pop(labels_while);
-                                add_code_label(l_code3d, new_ode(GOTO_LABEL), peek(labels_while)); //Go to char of End of While
+                                add_code_label(l_code3d, new_code(GOTO_LABEL), peek(labels_while)); //Go to char of End of While
                                 push(labels_while, aux2);
                                 push(labels_while, aux);
                                 }
                     }
               |    CONTINUE {
-                            if (isEmpty(labels_while) && isEmpty(labels_for))
+                            if (is_empty(labels_while) && is_empty(labels_for))
                                 insert_error(error_q,to_string("Error. Solo se puede usar la sentencia \"continue\" dentro de un ciclo.","",""));
                             else
                             {
                                 char *posLabel = pop(labels_while); //Label of End of While
-                                add_code_label(l_code3d, new_ode(GOTO_LABEL), peek(labels_while)); //Go to char of Init of While
+                                add_code_label(l_code3d, new_code(GOTO_LABEL), peek(labels_while)); //Go to char of Init of While
                                 push(labels_while, posLabel);
                             }
                     }
@@ -547,7 +547,7 @@ action        :
                             returns++;
                             if ((id_not_found == False) && (check_return(error_q,symbols_table,last_def_method) == 0))
                             {
-                                Code3D *ret = new_ode(RETURN);
+                                Code3D *ret = new_code(RETURN);
                                 set_code_label(ret, "   -   ");  /* Label "    -    " is added because there are no arguments */
                                 add_code(l_code3d, ret);
                             }
@@ -556,7 +556,7 @@ action        :
                                     returns++;
                                     if (id_not_found == False && check_return_expression(error_q,symbols_table,last_def_method,$2) == 0)
                                     {
-                                        Code3D *ret = new_ode(RETURN_EXPR);
+                                        Code3D *ret = new_code(RETURN_EXPR);
                                         set_c2D(ret, $2, search_id_in_symbols_table(error_q,symbols_table,last_def_method));
                                         add_code(l_code3d, ret);
                                     }
@@ -580,34 +580,34 @@ assig_op      :    '=' {$$ = "=";}
 /* -------------------- CONDITIONALS AND CICLES ------------------------------ */
 
 conditional   :     IF '(' {
-                        add_code_label(l_code3d, new_ode(LABEL), newLabelName("if"));
+                        add_code_label(l_code3d, new_code(LABEL), newLabelName("if"));
                     } expression {
                         control_type(error_q,$4,Bool,"if",1);
                         char *elseLabel = newLabelName("else");
-                        add_code_label_cond(l_code3d, new_ode(GOTO_LABEL_COND), $4, elseLabel);
+                        add_code_label_cond(l_code3d, new_code(GOTO_LABEL_COND), $4, elseLabel);
                         push(labels_CYC, newLabelName("end_if"));
                         push(labels_CYC, elseLabel);
                     } ')' block optional
               ;
 
 optional	  :		{
-                        add_code_label(l_code3d, new_ode(LABEL), pop(labels_CYC)); // Mark to char of End
+                        add_code_label(l_code3d, new_code(LABEL), pop(labels_CYC)); // Mark to char of End
                         push(return_stack, pop(labels_CYC));
                     }
               |	   	ELSE {
                         char* elseLabel = pop(labels_CYC);
-                        add_code_label(l_code3d, new_ode(GOTO_LABEL), peek(labels_CYC)); //Go to char of Else
-                        add_code_label(l_code3d, new_ode(LABEL), elseLabel); // Mark to char of Else
+                        add_code_label(l_code3d, new_code(GOTO_LABEL), peek(labels_CYC)); //Go to char of Else
+                        add_code_label(l_code3d, new_code(LABEL), elseLabel); // Mark to char of Else
                     } block {
                         char* aux = pop(labels_CYC);
-                        add_code_label(l_code3d, new_ode(LABEL), aux); // Mark to char of End
+                        add_code_label(l_code3d, new_code(LABEL), aux); // Mark to char of End
                         push(return_stack, aux);
                     }
               ;
 
 iteration     :    WHILE {
                         char *whileLabel = newLabelName("while");
-                        add_code_label(l_code3d, new_ode(LABEL), whileLabel); // label of While
+                        add_code_label(l_code3d, new_code(LABEL), whileLabel); // label of While
                         push(labels_while, whileLabel);
                         push(labels_while, int_to_string(code_size(l_code3d)));
                     }
@@ -619,11 +619,11 @@ iteration     :    WHILE {
                         push(labels_while, whileLabel);
                         push(labels_while, pos);
                         control_type(error_q,$3,Bool,"while",1);
-                        add_code_label_cond(l_code3d, new_ode(GOTO_LABEL_COND), $3, endWhile); // Go to label of Expression
+                        add_code_label_cond(l_code3d, new_code(GOTO_LABEL_COND), $3, endWhile); // Go to label of Expression
                     } block {
                         add_code(l_code3d, get_code(l_code3d, atoi(pop(labels_while))+1));
-                        add_code_label(l_code3d, new_ode(GOTO_LABEL), pop(labels_while)); // Go to label of while
-                        add_code_label(l_code3d, new_ode(LABEL), pop(labels_while)); // label_end of while
+                        add_code_label(l_code3d, new_code(GOTO_LABEL), pop(labels_while)); // Go to label of while
+                        add_code_label(l_code3d, new_code(LABEL), pop(labels_while)); // label_end of while
                     }
               |    FOR ID {
                         if (get_attribute_type(get_variable_attribute(error_q,symbols_table,$2)) != Int)
@@ -638,13 +638,13 @@ iteration     :    WHILE {
                             push(labels_for, int_to_string(code_size(l_code3d)));
                             add_assignation(l_code3d, $5, get_variable_attribute(error_q, symbols_table, $2));
                             Attribute *res = return_minor_comparison(error_q, l_code3d, get_variable_attribute(error_q, symbols_table, $2), $7);
-                            add_code_label(l_code3d, new_ode(LABEL), forLabel);
-                            add_code_label_cond(l_code3d, new_ode(GOTO_LABEL_COND), res, endLabel); // Go to label of Expression
+                            add_code_label(l_code3d, new_code(LABEL), forLabel);
+                            add_code_label_cond(l_code3d, new_code(GOTO_LABEL_COND), res, endLabel); // Go to label of Expression
                     } block {
                             control_assignation(error_q,l_code3d,get_variable_attribute(error_q,symbols_table,$2),"+=",return_value(l_code3d,Int,"1"));
                             add_code(l_code3d, get_code(l_code3d, atoi(pop(labels_for))+1));
-                            add_code_label(l_code3d, new_ode(GOTO_LABEL), pop(labels_for)); // Go to label of For
-                            add_code_label(l_code3d, new_ode(LABEL), pop(labels_for)); // label_end of For
+                            add_code_label(l_code3d, new_code(GOTO_LABEL), pop(labels_for)); // Go to label of For
+                            add_code_label(l_code3d, new_code(LABEL), pop(labels_for)); // label_end of For
                     }
               ;
 
@@ -659,7 +659,7 @@ location      :    ID {$$ = get_variable_attribute(error_q, symbols_table, $1);}
 method_call   :	   ID '(' ')' {
                         cant_params=0;
                         last_called_method=$1;
-                        add_code_label(l_code3d, new_ode(GOTO_METHOD), get_Label(list_meth_label, $1)); //Go to char of Init of Method
+                        add_code_label(l_code3d, new_code(GOTO_METHOD), get_label_ml(list_meth_label, $1)); //Go to char of Init of Method
                         $$ = check_get_method_ret_attribute(error_q,symbols_table,l_code3d,$1,0);
                     }
 
@@ -677,7 +677,7 @@ method_call   :	   ID '(' ')' {
                             {
                                 set_code_int(l_code3d, flag_first_param, 3, cant_params);
                                 flag_first_param = 0;
-                                add_code_label(l_code3d, new_ode(GOTO_METHOD), get_Label(list_meth_label, $1)); //Go to char of Init of Method
+                                add_code_label(l_code3d, new_code(GOTO_METHOD), get_label_ml(list_meth_label, $1)); //Go to char of Init of Method
                                 $$ = check_get_method_ret_attribute(error_q,symbols_table,l_code3d,$1,cant_params);
                                 cant_params=atoi(pop_string(params_stack));
                             }
@@ -696,7 +696,7 @@ method_call   :	   ID '(' ')' {
                         else
                             res = create_variable((char*) get_variable_name(),Int);
                         char token[2] = "\"";
-                        add_code_externinvk(l_code3d, new_ode(EXTERN_INVK), strtok($3, token), $5);
+                        add_code_externinvk(l_code3d, new_code(EXTERN_INVK), strtok($3, token), $5);
                         $$ = res;
                     }
 				|    EXTERNINVK '(' STRING ',' typevoid ',' { amount_extern_params = 0; } externinvk_arg ')' {
@@ -707,7 +707,7 @@ method_call   :	   ID '(' ')' {
                         else
                             res = create_variable((char*) get_variable_name(),Int);
                         char token[2] = "\"";
-                        add_code_externinvk(l_code3d, new_ode(EXTERN_INVK), strtok($3, token), $5);
+                        add_code_externinvk(l_code3d, new_code(EXTERN_INVK), strtok($3, token), $5);
                         $$ = res;
                     }
 				;
