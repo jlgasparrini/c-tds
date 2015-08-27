@@ -390,8 +390,8 @@ Attribute* check_array_pos(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, LCode3D
                 {
                     Attribute *variable = create_variable(get_variable_name(), get_attribute_type(aux));
                     increase_var_offset();
-                    (*(*variable).decl.variable).offset = get_offset_array(aux) + (get_int_val(attr)*4);
-                   // (*(*variable).decl.variable).offset = aux->decl.array.arrayValues[get_int_val(attr)].offset;
+                    variable->decl.variable->offset = get_offset_array(aux) + (get_int_val(attr)*4);
+                   // variable->decl.variable->offset = aux->decl.array.arrayValues[get_int_val(attr)].offset;
                     Code3D *codeArrayValue = new_code(LOAD_ARRAY);
                     set_attribute(codeArrayValue, 1, attr);
                     set_attribute(codeArrayValue, 2, aux);

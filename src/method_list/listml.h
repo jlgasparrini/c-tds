@@ -31,7 +31,7 @@ int size_list_ml(ListML *list);
 
 /*escritura de informacion*/
 
-void add_list_ml(ListML *list, MethodL *elem, int index);
+void add_list_ml(ListML *list, MethodL *elem);
 void delete_list_ml(ListML *list, int index);
 
 #endif

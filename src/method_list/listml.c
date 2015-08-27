@@ -31,26 +31,30 @@ MethodL* get_list_ml(ListML *list, char *id_method)
 	return new_method_l("NULL", "NULL");
 }
 
+/* Return true iff list is empty*/
+bool is_empty_ml(ListML *list)
+{
+    return list->size == 0;
+}
+
+
 int size_list_ml(ListML *list) {
     return list->size;
 }
 
-void add_list_ml(ListML *list, MethodL *elem, int index) 
+void add_list_ml(ListML *list, MethodL *elem) 
 {
-    if ((index >= 0) && (index <= size_list_ml(list)))
+    if (is_empty_ml(list))
+        list->init = new_node_ml_info_next(elem, list->init);        
+	else 
 	{
-        if (index == 0)
-            list->init = new_node_ml_info_next(elem, list->init);        
-		else 
-		{
-            NodeML *runner = list->init;
-            int i;
-            for (i = 0; i < index - 1; i++)
-                runner = get_next_node_ml(runner);
-            set_next_node_ml(runner, new_node_ml_info_next(elem, get_next_node_ml(runner)));
-        }
-        list->size++;
+        NodeML *runner = list->init;
+        int i;
+        for (i = 0; i < size_list_ml(list) - 1; i++)
+            runner = get_next_node_ml(runner);
+        set_next_node_ml(runner, new_node_ml_info_next(elem, get_next_node_ml(runner)));
     }
+    list->size++;
 }
 
 void delete_list_ml(ListML *list, int index) {

@@ -13,11 +13,6 @@ ListMLabel* init_list_m()
     return list;
 }
 
-void add_method_list(ListMLabel *listmlabel, MethodL *methodl) 
-{
-    add_list_ml(listmlabel->labels, methodl, size_list_ml(listmlabel->labels));
-}
-
 int size_method_list(ListMLabel *listmlabel) 
 {
     return size_list_ml(listmlabel->labels);
@@ -26,7 +21,7 @@ int size_method_list(ListMLabel *listmlabel)
 void insert_method_list(ListMLabel *listmlabel, char *id_method, char *label_method)
 {
 	MethodL *new_methodl = new_method_l(id_method, label_method);
-	add_list_ml(listmlabel->labels, new_methodl, size_list_ml(listmlabel->labels));
+	add_list_ml(listmlabel->labels, new_methodl);
 }
 
 char* get_label_ml(ListMLabel *listmlabel, char *id_method) 

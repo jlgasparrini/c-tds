@@ -19,7 +19,7 @@ LCode3D* init_list_c3D()
 /**Metodo que agrega un Codigo 3D a la lista*/
 void add_code(LCode3D *lcode3d, Code3D *code)
 {
-	add_list_c3d(lcode3d->codes, code, size_list_c3d(lcode3d->codes));
+	add_list_c3d(lcode3d->codes, code);
 }
 
 /**Metodo que retorna un Codigo 3D dependiendo de una posicion*/

@@ -29,15 +29,21 @@ Code3D* get_list_c3d(ListC3D *list, int index) {
 	return NULL; /* This case was added to ensure that this method always return something */
 }
 
+/* Return true iff list is empty*/
+bool is_empty_c3d(ListC3D *list)
+{
+    return list->size == 0;
+}
+
 /**Metodo que retorna el tamaño de la lista*/
 int size_list_c3d(ListC3D *list) {
     return list->size;
 }
 
-void set_list_c3d_int(ListC3D *list,int index,int param, int numb)
+void set_list_c3d_int(ListC3D *list, int index, int param, int numb)
 {
-    NodeC3D *runner = list->init;
     if ((index >= 0) && (index < size_list_c3d(list))) {
+        NodeC3D *runner = list->init;
         int i;
         for (i = 0; i < index - 1; i++)
             runner = get_next_node_c3d(runner);
@@ -46,20 +52,18 @@ void set_list_c3d_int(ListC3D *list,int index,int param, int numb)
 }
 
 /**Metodo para que agrega un Codigo 3D en una posicion en la lista*/
-void add_list_c3d(ListC3D *list, Code3D *elem, int index) {
-    if ((index >= 0) && (index <= size_list_c3d(list))) {
-        if (index == 0) {
-            NodeC3D *node = new_node_c3d_info_next(elem, list->init);
-            list->init = node;
-        } else {
-            NodeC3D *runner = list->init;
-            int i;
-            for (i = 0; i < index - 1; i++)
-                runner = get_next_node_c3d(runner);
-            set_next_node_c3d(runner, new_node_c3d_info_next(elem, get_next_node_c3d(runner)));
-        }
-        list->size++;
+void add_list_c3d(ListC3D *list, Code3D *elem) {
+    if (is_empty_c3d(list)) {
+        NodeC3D *node = new_node_c3d_info(elem);
+        list->init = node;
+    } else {
+        NodeC3D *runner = list->init;
+        int i;
+        for (i = 0; i < size_list_c3d(list) - 1; i++)
+            runner = get_next_node_c3d(runner);
+        set_next_node_c3d(runner, new_node_c3d_info_next(elem, get_next_node_c3d(runner)));
     }
+    list->size++;
 }
 
 /**Metodo que borre un Codigo 3D en una posicion especifica*/
@@ -90,7 +94,7 @@ int search_by_label(ListC3D *list, char* label)
     int i;
     for (i = 0; i < size_list_c3d(list); i++)
     {
-        if (strcmp((char*) get_operation_by_id(get_command(runner->info)),"LABEL") == 0 && strcmp(get_label((*runner).info, 1), label) == 0)
+        if (strcmp((char*) get_operation_by_id(get_command(runner->info)),"LABEL") == 0 && strcmp(get_label(runner->info, 1), label) == 0)
             return i;
         runner = get_next_node_c3d(runner);
     }
