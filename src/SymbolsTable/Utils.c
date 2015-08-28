@@ -29,7 +29,7 @@ Attribute* get_variable_attribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, 
     if(attr != NULL)
     {
         if(get_structure_type(attr) != Variable)
-            insert_error(eq, to_string("El identificador \"", id, "\" no corresponde a una variable."));
+            insert_error(eq, add_line_column(to_string("El identificador \"", id, "\" no corresponde a una variable.")));
         else
             return attr;
     }
@@ -43,11 +43,11 @@ Attribute* get_method_return_attribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTa
     if(attr != NULL)
     {
         if(get_structure_type(attr) != Method)
-            insert_error(eq,to_string("El identificador \"", id,"\" no corresponde a un metodo."));
+            insert_error(eq,add_line_column(to_string("El identificador \"", id,"\" no corresponde a un metodo.")));
         else
         {
             if (get_attribute_type(attr) == RetVoid)
-                insert_error(eq,to_string("El metodo \"", id,"\" retorna void, no puede setearse ningun atributo de retorno."));
+                insert_error(eq,add_line_column(to_string("El metodo \"", id,"\" retorna void, no puede setearse ningun atributo de retorno.")));
             else
             {
                 Attribute *aux = create_variable(get_variable_name(), get_attribute_type(attr));
@@ -72,11 +72,11 @@ void set_method_return_attribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, c
     if(attr != NULL)
     {
         if(get_structure_type(attr) != Method)
-            insert_error(eq,to_string("El identificador \"", id,"\" no corresponde a un metodo."));
+            insert_error(eq,add_line_column(to_string("El identificador \"", id,"\" no corresponde a un metodo.")));
         else
         {
             if (get_attribute_type(attr) == RetVoid)
-                insert_error(eq,to_string("El metodo \"", id,"\" retorna void, no puede setearse ningun atributo de retorno."));
+                insert_error(eq,add_line_column(to_string("El metodo \"", id,"\" retorna void, no puede setearse ningun atributo de retorno.")));
             else
             {
                 switch (value->type)
@@ -97,11 +97,11 @@ Attribute* check_get_method_ret_attribute(ErrorsQueue *eq, SymbolsTable *aSymbol
     if (attr != NULL)
     {
         if (get_structure_type(attr) != Method)
-            insert_error(eq,to_string("El identificador \"", id,"\" no corresponde a un metodo."));
+            insert_error(eq,add_line_column(to_string("El identificador \"", id,"\" no corresponde a un metodo.")));
         else
         {
             if (attr->decl.method.paramSize != paramSize)
-                insert_error(eq,to_string("El metodo \"", id,"\" no contiene la cantidad correspondiente de parametros."));
+                insert_error(eq,add_line_column(to_string("El metodo \"", id,"\" no contiene la cantidad correspondiente de parametros.")));
             else
             {
                 Attribute *aux = create_variable(get_variable_name(), get_attribute_type(attr));
@@ -130,7 +130,7 @@ ReturnType method_return_type(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char
     if(attr != NULL)
     {
         if(get_structure_type(attr) != Method)
-            insert_error(eq, to_string("El identificador \"", id, "\" no corresponde a un metodo."));
+            insert_error(eq, add_line_column(to_string("El identificador \"", id, "\" no corresponde a un metodo.")));
         else
             return get_attribute_type(attr);
     }
@@ -174,7 +174,7 @@ void correct_param_base_case(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, LCode
     if(aux != NULL)
     {
         if(get_structure_type(aux) != Method)
-            insert_error(eq, to_string("El identificador \"", lastCalledMethod, "\" no corresponde a un metodo."));
+            insert_error(eq, add_line_column(to_string("El identificador \"", lastCalledMethod, "\" no corresponde a un metodo.")));
         else
         {
             if (paramSize+1 == aux->decl.method.paramSize)
@@ -193,22 +193,27 @@ void correct_param_base_case(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, LCode
                 }
                 else
                 {
-                    char* number = (char*) malloc (digit_amount(paramSize+1)*sizeof(char));
-                    sprintf(number,"%d",paramSize+1);
-                    char* f = (char*) malloc ((strlen("\". El ")+strlen(number)+strlen("° parametro no es del tipo \"")+strlen(get_type(aux->decl.method.parameters[paramSize]->type)+strlen("\".")))*sizeof(char));
-                    strcat(f,"\". El ");
-                    strcat(f, number);
-                    strcat(f,"° parametro no es del tipo \"");
-                    strcat(f, get_type(aux->decl.method.parameters[paramSize]->type));
-                    strcat(f, "\".");
-                    insert_error(eq,to_string("Error en llamada al metodo \"", lastCalledMethod, f));
+                    insert_error(eq,add_line_column(to_string("Error en llamada al método \"", lastCalledMethod, 
+                        to_string("\". Se esperaba el ", int_to_string(paramSize+1), to_string("° argumento de tipo \"", 
+                            get_type(aux->decl.method.parameters[paramSize]->type), to_string("\" pero se encontró de tipo \"", 
+                                get_type(get_attribute_type(attr)), "\"."))))));
+                    Attribute *param = (Attribute*) malloc (sizeof(Attribute));
+                    param->decl.variable = aux->decl.method.parameters[paramSize]; // obtencion del parametro formal.
+                    param->decl.variable->type = aux->decl.method.parameters[paramSize]->type;
+                    switch (get_attribute_type(param))
+                    {
+                        case Int:   add_method_call(lcode3d, new_code(PARAM_ASSIGN_INT), create_variable("",Int), param); break;
+                        case Float: add_method_call(lcode3d, new_code(PARAM_ASSIGN_FLOAT), create_variable("",Float), param); break;
+                        case Bool:  add_method_call(lcode3d, new_code(PARAM_ASSIGN_BOOL), create_variable("",Bool), param); break;
+                        default: break;
+                    }
                 }
             }
             else
                 if (paramSize < aux->decl.method.paramSize)
-                    insert_error(eq,to_string("Error en llamada al metodo \"", lastCalledMethod, "\". Se tiene menor cantidad de parametros que en su declaracion."));
+                    insert_error(eq,add_line_column(to_string("Error en llamada al metodo \"", lastCalledMethod, "\". Se tiene menor cantidad de parametros que en su declaracion.")));
                 else
-                    insert_error(eq,to_string("Error en llamada al metodo \"", lastCalledMethod, "\". Se tiene mayor cantidad de parametros que en su declaracion."));
+                    insert_error(eq,add_line_column(to_string("Error en llamada al metodo \"", lastCalledMethod, "\". Se tiene mayor cantidad de parametros que en su declaracion.")));
         }
     }
 }
@@ -222,7 +227,7 @@ void correct_param_inductive_case(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, 
     if(aux != NULL)
     {
         if(get_structure_type(aux) != Method)
-            insert_error(eq, to_string("El identificador \"", lastCalledMethod, "\" no corresponde a un metodo."));
+            insert_error(eq, add_line_column(to_string("El identificador \"", lastCalledMethod, "\" no corresponde a un metodo.")));
         else
         {
             if (paramSize < aux->decl.method.paramSize)
@@ -231,11 +236,28 @@ void correct_param_inductive_case(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, 
                 {
                     Attribute *param = (Attribute*) malloc (sizeof(Attribute));
                     param->decl.variable = aux->decl.method.parameters[paramSize]; // obtencion del parametro formal.
+                    param->decl.variable->type = aux->decl.method.parameters[paramSize]->type;
                     switch (get_attribute_type(attr))
                     {
                         case Int:   add_method_call(lcode3d, new_code(PARAM_ASSIGN_INT), attr, param); break;
                         case Float: add_method_call(lcode3d, new_code(PARAM_ASSIGN_FLOAT), attr, param); break;
                         case Bool:  add_method_call(lcode3d, new_code(PARAM_ASSIGN_BOOL), attr, param); break;
+                        default: break;
+                    }
+                }
+                else {
+                    insert_error(eq,add_line_column(to_string("Error en llamada al método \"", lastCalledMethod, 
+                        to_string("\". Se esperaba el ", int_to_string(paramSize+1), to_string("° argumento de tipo \"", 
+                            get_type(aux->decl.method.parameters[paramSize]->type), to_string("\" pero se encontró de tipo \"", 
+                                get_type(get_attribute_type(attr)), "\"."))))));
+                    Attribute *param = (Attribute*) malloc (sizeof(Attribute));
+                    param->decl.variable = aux->decl.method.parameters[paramSize]; // obtencion del parametro formal.
+                    param->decl.variable->type = aux->decl.method.parameters[paramSize]->type;
+                    switch (get_attribute_type(param))
+                    {
+                        case Int:   add_method_call(lcode3d, new_code(PARAM_ASSIGN_INT), create_variable("",Int), param); break;
+                        case Float: add_method_call(lcode3d, new_code(PARAM_ASSIGN_FLOAT), create_variable("",Float), param); break;
+                        case Bool:  add_method_call(lcode3d, new_code(PARAM_ASSIGN_BOOL), create_variable("",Bool), param); break;
                         default: break;
                     }
                 }
@@ -267,7 +289,7 @@ unsigned char control_type(ErrorsQueue *eq, Attribute *attr, PrimitiveType type,
             strcat(f,"La expresion de la sentencia \"");
             strcat(f, operation);
             strcat(f,"\" no es del tipo \"");
-            insert_error(eq, to_string(f, get_type(type), "\"."));
+            insert_error(eq, add_line_column(to_string(f, get_type(type), "\".")));
         }
         else
         {
@@ -280,7 +302,7 @@ unsigned char control_type(ErrorsQueue *eq, Attribute *attr, PrimitiveType type,
             strcat(f,"° expresion de la sentencia \"");
             strcat(f, operation);
             strcat(f,"\" no es del tipo \"");
-            insert_error(eq, to_string(f, get_type(type), "\"."));
+            insert_error(eq, add_line_column(to_string(f, get_type(type), "\".")));
         }
         return 1;
     }
@@ -294,7 +316,7 @@ unsigned char control_assignation(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *
     if (get_structure_type(attr1) != Method)
     {
         if (get_attribute_type(attr1) != get_attribute_type(attr2))
-            insert_error(eq, to_string("El lado derecho de la asignacion debe ser de tipo \"", get_type(get_attribute_type(attr1)), "\"."));
+            insert_error(eq, add_line_column(to_string("El lado derecho de la asignacion debe ser de tipo \"", get_type(get_attribute_type(attr1)), "\".")));
         else
         {
             Code3D *add;
@@ -325,7 +347,7 @@ unsigned char control_assignation(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *
         }
     }
     else
-        insert_error(eq, to_string("El identificador izquierdo de la asignacion ", "", " no debe ser un metodo."));
+        insert_error(eq, add_line_column(to_string("El identificador izquierdo de la asignacion ", "", " no debe ser un metodo.")));
     return 1;
 }
 
@@ -339,7 +361,7 @@ unsigned char check_return(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* l
         strcat(msg, "\" debe retornar una expresion de tipo \"");
         strcat(msg, get_type(rt));
         strcat(msg, "\".");
-        insert_error(eq, to_string("El metodo \"", lastUsedMethod, msg));
+        insert_error(eq, add_line_column(to_string("El metodo \"", lastUsedMethod, msg))); 
         return 1;
     }
     return 0;
@@ -352,7 +374,7 @@ unsigned char check_return_expression(ErrorsQueue *eq, SymbolsTable *aSymbolsTab
     ReturnType rt = method_return_type(eq, aSymbolsTable, lastUsedMethod);
     if (rt == RetVoid)
     {
-        insert_error(eq,to_string("El metodo \"",lastUsedMethod,"\" no puede retornar una expresion ya que retorna void."));
+        insert_error(eq, add_line_column(to_string("El metodo \"",lastUsedMethod,"\" no puede retornar una expresion ya que retorna void.")));
         return 1;
     }
     else
@@ -364,7 +386,7 @@ unsigned char check_return_expression(ErrorsQueue *eq, SymbolsTable *aSymbolsTab
             strcat(msg, "\", no de tipo \"");
             strcat(msg, get_type(get_attribute_type(attr)));
             strcat(msg, "\".");
-            insert_error(eq, to_string("El metodo \"", lastUsedMethod, msg));
+            insert_error(eq, add_line_column(to_string("El metodo \"", lastUsedMethod, msg)));
             return 1;
         }
         else
@@ -381,7 +403,7 @@ Attribute* check_array_pos(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, LCode3D
     if (aux != NULL)
     {
         if(get_structure_type(aux) != Array)
-            insert_error(eq, to_string("El identificador \"", id, "\" no corresponde a un arreglo."));
+            insert_error(eq, add_line_column(to_string("El identificador \"", id, "\" no corresponde a un arreglo.")));
         else
         {
             if (get_attribute_type(attr) == Int)
@@ -400,10 +422,10 @@ Attribute* check_array_pos(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, LCode3D
                     return variable;
                 }
                 else
-                    insert_error(eq, to_string("La expresion para acceder al arreglo \"", id, "\" se encuentra fuera de rango."));
+                    insert_error(eq, add_line_column(to_string("La expresion para acceder al arreglo \"", id, "\" se encuentra fuera de rango.")));
             }
             else
-                insert_error(eq, to_string("La expresion para acceder a la posicion del arreglo \"", id, "\" debe ser de tipo \"int\"."));
+                insert_error(eq, add_line_column(to_string("La expresion para acceder a la posicion del arreglo \"", id, "\" debe ser de tipo \"int\".")));
         }
     }
     return create_variable(get_variable_name(),Int);
@@ -436,7 +458,7 @@ Attribute* return_or(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attrib
     }
     else
     {
-        insert_error(eq, to_string("La expresion logica \"", "OR", "\" no tiene ambos operandos de tipo booleano."));
+        insert_error(eq, add_line_column(to_string("La expresion logica \"", "OR", "\" no tiene ambos operandos de tipo booleano.")));
         return create_variable(get_variable_name(), Bool);
     }
 }
@@ -456,7 +478,7 @@ Attribute* return_and(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attri
     }
     else
     {
-        insert_error(eq, to_string("La expresion logica \"", "AND", "\" no tiene ambos operandos de tipo booleano."));
+        insert_error(eq, add_line_column(to_string("La expresion logica \"", "AND", "\" no tiene ambos operandos de tipo booleano.")));
         return create_variable(get_variable_name(), Bool);
     }
 }
@@ -485,7 +507,7 @@ Attribute* return_distinct(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, 
     }
     else
     {
-        insert_error(eq, to_string("El operador \"", "!=", "\" no tiene ambos operandos del mismo tipo."));
+        insert_error(eq, add_line_column(to_string("El operador \"", "!=", "\" no tiene ambos operandos del mismo tipo.")));
         return create_variable(get_variable_name(), Bool);
     }
 }
@@ -511,7 +533,7 @@ Attribute* return_equal(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Att
     }
     else
     {
-        insert_error(eq, to_string("El operador \"", "==", "\" no tiene ambos operandos del mismo tipo."));
+        insert_error(eq, add_line_column(to_string("El operador \"", "==", "\" no tiene ambos operandos del mismo tipo.")));
         return create_variable(get_variable_name(), Bool);
     }
 }
@@ -537,7 +559,7 @@ Attribute* return_minor_comparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribute 
     }
     else
     {
-        insert_error(eq, to_string("El operador \"", "<", "\" no tiene ambos operandos de tipo correcto o del mismo tipo."));
+        insert_error(eq, add_line_column(to_string("El operador \"", "<", "\" no tiene ambos operandos de tipo correcto o del mismo tipo.")));
         return create_variable(get_variable_name(), Bool);
     }
 }
@@ -560,7 +582,7 @@ Attribute* return_major_comparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribute 
     }
     else
     {
-        insert_error(eq, to_string("El operador \"", ">", "\" no tiene ambos operandos de tipo correcto o del mismo tipo."));
+        insert_error(eq, add_line_column(to_string("El operador \"", ">", "\" no tiene ambos operandos de tipo correcto o del mismo tipo.")));
         return create_variable(get_variable_name(), Bool);
     }
 }
@@ -583,7 +605,7 @@ Attribute* return_g_equal_comparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribut
     }
     else
     {
-        insert_error(eq, to_string("El operador \"", ">=", "\" no tiene ambos operandos de tipo correcto o del mismo tipo."));
+        insert_error(eq, add_line_column(to_string("El operador \"", ">=", "\" no tiene ambos operandos de tipo correcto o del mismo tipo.")));
         return create_variable(get_variable_name(), Bool);
     }
 }
@@ -606,7 +628,7 @@ Attribute* return_l_equal_comparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribut
     }
     else
     {
-        insert_error(eq, to_string("El operador \"", "<=", "\" no tiene ambos operandos de tipo correcto o del mismo tipo."));
+        insert_error(eq, add_line_column(to_string("El operador \"", "<=", "\" no tiene ambos operandos de tipo correcto o del mismo tipo.")));
         return create_variable(get_variable_name(), Bool);
     }
 }
@@ -632,7 +654,7 @@ Attribute* return_add(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attri
     }
     else
     {
-        insert_error(eq, to_string("El operador \"", "+", "\" no tiene ambos operandos de tipo correcto o del mismo tipo."));
+        insert_error(eq, add_line_column(to_string("El operador \"", "+", "\" no tiene ambos operandos de tipo correcto o del mismo tipo.")));
         return create_variable(get_variable_name(), Int);
     }
 }
@@ -655,7 +677,7 @@ Attribute* return_sub(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attri
     }
     else
     {
-        insert_error(eq, to_string("El operador \"", "-", "\" no tiene ambos operandos de tipo correcto o del mismo tipo."));
+        insert_error(eq, add_line_column(to_string("El operador \"", "-", "\" no tiene ambos operandos de tipo correcto o del mismo tipo.")));
         return create_variable(get_variable_name(), Int);
     }
 }
@@ -675,7 +697,7 @@ Attribute* return_mod(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attri
     }
     else
     {
-        insert_error(eq, to_string("El operador \"", "%", "\" solo soporta tipo INT y/o no tiene ambos operandos del mismo tipo."));
+        insert_error(eq, add_line_column(to_string("El operador \"", "%", "\" solo soporta tipo INT y/o no tiene ambos operandos del mismo tipo.")));
         return create_variable(get_variable_name(), Int);
     }
 }
@@ -698,7 +720,7 @@ Attribute* return_div(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attri
     }
     else
     {
-        insert_error(eq, to_string("El operador \"", "/", "\" no tiene ambos operandos de tipo correcto o del mismo tipo."));
+        insert_error(eq, add_line_column(to_string("El operador \"", "/", "\" no tiene ambos operandos de tipo correcto o del mismo tipo.")));
         return create_variable(get_variable_name(), Int);
     }
 }
@@ -721,7 +743,7 @@ Attribute* return_mult(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attr
     }
     else
     {
-        insert_error(eq, to_string("El operador \"", "*", "\" no tiene ambos operandos de tipo correcto o del mismo tipo."));
+        insert_error(eq, add_line_column(to_string("El operador \"", "*", "\" no tiene ambos operandos de tipo correcto o del mismo tipo.")));
         return create_variable(get_variable_name(), Int);
     }
 }
@@ -740,7 +762,7 @@ Attribute* return_not(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1)
     }
     else
     {
-        insert_error(eq, to_string("El operador \"", "!", "\" no tiene el operando de tipo booleano."));
+        insert_error(eq, add_line_column(to_string("El operador \"", "!", "\" no tiene el operando de tipo booleano.")));
         return create_variable(get_variable_name(), Bool);
     }
 }
@@ -763,7 +785,7 @@ Attribute* return_neg(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1)
     }
     else
     {
-        insert_error(eq, to_string("El operador \"", "-", "\" no tiene el operando de tipo Int o Float."));
+        insert_error(eq, add_line_column(to_string("El operador \"", "-", "\" no tiene el operando de tipo Int o Float.")));
         return create_variable(get_variable_name(), Int);
     }
 }

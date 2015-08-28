@@ -24,6 +24,8 @@ typedef struct
 ErrorsQueue* initialize_queue();
 /* Returns the string formed by putting together all the parameters */
 char* to_string(char*, char*, char*);
+/* Inserts in the line and the column where the error is */
+char* add_line_column(char*);
 /* Insert an element in the end of the queue "q". */
 void insert_error(ErrorsQueue*, char*);
 /* Delete all the elements of the queue. */

@@ -225,7 +225,7 @@
     char* res = malloc(sizeof(char)* (pos_punto - pos_barra - 1));
     for(i = pos_barra + 1; i < pos_punto; i++)
       res[i - pos_barra -1] = file[i];
-    return strdup(res);
+    return res;
   }
 
 
@@ -340,7 +340,7 @@
     print_error_list(error_q);
     delete_all_errors(error_q);
     if (strcmp(str, "syntax error") == 0)
-      printf("%s\n",to_string("Gramatical error.","",""));
+      printf("%s\n",add_line_column(to_string("Gramatical error.","","")));
     else
       printf("%s\n","Unknow error.");
     return 0;
@@ -397,7 +397,7 @@ fields:  field
 
 field:  ID { push_element(error_q, symbols_table, create_variable($1, var_type)); }
      |  ID '[' INTEGER { if (atoi($3) <= 0)
-                       {   insert_error(error_q,to_string("Error en definicion del arreglo \"",$1,"\". El tamaño del arreglo debe ser un entero mayor que 0."));
+                       {   insert_error(error_q,add_line_column(to_string("Error en definicion del arreglo \"",$1,"\". El tamaño del arreglo debe ser un entero mayor que 0.")));
                            push_element(error_q, symbols_table, create_array($1, var_type, 10)); /* Array size of 10 in case of error */
                        }
                          else
@@ -422,7 +422,7 @@ method_decl:  type ID {
                         int pos = atoi(pop(max_method_offset));
                         set_code_int(l_code3d, pos, 2, get_global_var_offset());
                         set_global_var_offset(pop_offset(offsets_var));//////////////////////////////////////////
-                        if(returns==0) insert_error(error_q,to_string("El metodo \"",$2,"\" debe tener al menos un return."));
+                        if(returns==0) insert_error(error_q,add_line_column(to_string("El metodo \"",$2,"\" debe tener al menos un return.")));
                         pop_level(symbols_table);
                       }
            |		method_decl type ID {
@@ -436,7 +436,7 @@ method_decl:  type ID {
                         int pos = atoi(pop(max_method_offset));
                         set_code_int(l_code3d, pos, 2, get_global_var_offset());
                         set_global_var_offset(pop_offset(offsets_var));
-                        if(returns==0) insert_error(error_q,to_string("El metodo \"",$3,"\" debe tener al menos un return."));
+                        if(returns==0) insert_error(error_q,add_line_column(to_string("El metodo \"",$3,"\" debe tener al menos un return.")));
                         pop_level(symbols_table);
                     }
            |     VOID ID {
@@ -450,7 +450,7 @@ method_decl:  type ID {
                       int pos = atoi(pop(max_method_offset));
                       set_code_int(l_code3d, pos, 2, get_global_var_offset());
                       set_global_var_offset(pop_offset(offsets_var));
-                      if(returns==0) insert_error(error_q,to_string("El metodo \"",$2,"\" debe tener al menos un return."));
+                      if(returns==0) insert_error(error_q,add_line_column(to_string("El metodo \"",$2,"\" debe tener al menos un return.")));
                       pop_level(symbols_table);
                   }
            |  method_decl VOID ID {
@@ -464,14 +464,14 @@ method_decl:  type ID {
                 int pos = atoi(pop(max_method_offset));
                 set_code_int(l_code3d, pos, 2, get_global_var_offset());
                 set_global_var_offset(pop_offset(offsets_var));
-                if(returns==0) insert_error(error_q,to_string("El metodo \"",$3,"\" debe tener al menos un return."));
+                if(returns==0) insert_error(error_q,add_line_column(to_string("El metodo \"",$3,"\" debe tener al menos un return.")));
                 pop_level(symbols_table);
               }
            ;
 
 param		      :    '(' {cant_params = 0; set_amount_of_parameters(search_id_in_symbols_table(error_q,symbols_table,last_def_method),0);} ')'
               |    '(' {if (strcmp(last_def_method,"main") == 0)
-                            insert_error(error_q,to_string("El metodo \"main\" no debe contener parametros.","",""));
+                            insert_error(error_q,add_line_column(to_string("El metodo \"main\" no debe contener parametros.","","")));
                         cant_params = 0;
 						            push_offset(offsets_param, get_global_param_offset());////////////////////////////
 						            reset_global_param_offset();////////////////////////////
@@ -486,13 +486,13 @@ param		      :    '(' {cant_params = 0; set_amount_of_parameters(search_id_in_sy
 parameters    :		type ID {
                            Attribute *aux = create_parameter(search_id_in_symbols_table(error_q,symbols_table,last_def_method),cant_params,$2,var_type);
                            if (aux != NULL) {push_element(error_q,symbols_table,aux); cant_params++;}
-                           else insert_error(error_q,to_string("El identificador \"",$2,"\" no puede contener parametros/esa cantidad de parametros."));
+                           else insert_error(error_q,add_line_column(to_string("El identificador \"",$2,"\" no puede contener parametros/esa cantidad de parametros.")));
                           }
 
               |		type ID {
                            Attribute *aux = create_parameter(search_id_in_symbols_table(error_q,symbols_table,last_def_method),cant_params,$2,var_type);
                            if (aux != NULL) {push_element(error_q,symbols_table,aux); cant_params++;}
-                           else insert_error(error_q,to_string("El identificador \"",$2,"\" no puede contener parametros/esa cantidad de parametros."));
+                           else insert_error(error_q,add_line_column(to_string("El identificador \"",$2,"\" no puede contener parametros/esa cantidad de parametros.")));
                           }
                             ',' parameters
               ;
@@ -524,7 +524,7 @@ statement     :    conditional
 action        :
               |    BREAK {
                             if (is_empty(labels_while) && is_empty(labels_for))
-                                insert_error(error_q,to_string("Error. Solo se puede usar la sentencia \"break\" dentro de un ciclo.","",""));
+                                insert_error(error_q,add_line_column(to_string("Error. Solo se puede usar la sentencia \"break\" dentro de un ciclo.","","")));
                             else{
                                 char* aux = pop(labels_while);
                                 char* aux2 = pop(labels_while);
@@ -535,7 +535,7 @@ action        :
                     }
               |    CONTINUE {
                             if (is_empty(labels_while) && is_empty(labels_for))
-                                insert_error(error_q,to_string("Error. Solo se puede usar la sentencia \"continue\" dentro de un ciclo.","",""));
+                                insert_error(error_q,add_line_column(to_string("Error. Solo se puede usar la sentencia \"continue\" dentro de un ciclo.","","")));
                             else
                             {
                                 char *posLabel = pop(labels_while); //Label of End of While
@@ -627,7 +627,7 @@ iteration     :    WHILE {
                     }
               |    FOR ID {
                         if (get_attribute_type(get_variable_attribute(error_q,symbols_table,$2)) != Int)
-                            insert_error(error_q,to_string("El identificador \"", $2, "\" no pertenece a una variable de tipo \"int\""));
+                            insert_error(error_q,add_line_column(to_string("El identificador \"", $2, "\" no pertenece a una variable de tipo \"int\"")));
                         /* It musn't have the same treatment that while? */
                     } '=' expression ',' expression {
                             control_type(error_q,$5,Int,"for",2); control_type(error_q,$7,Int,"for",3);
@@ -663,17 +663,17 @@ method_call   :	   ID '(' ')' {
                         $$ = check_get_method_ret_attribute(error_q,symbols_table,l_code3d,$1,0);
                     }
 
-				|    ID '(' {if (search_id_in_symbols_table(error_q,symbols_table,$1) == NULL)
-                                id_not_found = True;
-                            else
-                            {
-                                push_string(params_stack,int_to_string(cant_params));
-                                cant_params=0;
-                                push_string(methods_id_stack,last_called_method);
-                                last_called_method = $1;
-                            }
+				|    ID '(' { if (search_id_in_symbols_table(error_q,symbols_table,$1) == NULL)
+                          id_not_found = True;
+                      else
+                      {
+                          push_string(params_stack,int_to_string(cant_params));
+                          cant_params = 0;
+                          push_string(methods_id_stack,last_called_method);
+                          last_called_method = $1;
+                      }
                     } expression_aux ')' {
-                            if (id_not_found != True)
+                            if (id_not_found == False)
                             {
                                 set_code_int(l_code3d, flag_first_param, 3, cant_params);
                                 flag_first_param = 0;
@@ -700,20 +700,24 @@ method_call   :	   ID '(' ')' {
                         $$ = res;
                     }
 				|    EXTERNINVK '(' STRING ',' typevoid ',' { amount_extern_params = 0; } externinvk_arg ')' {
-                        amount_extern_params = 0;
                         Attribute* res;
-                        if (method_type != RetVoid)
-                            res = create_variable("",method_type);
-                        else
-                            res = create_variable((char*) get_variable_name(),Int);
                         char token[2] = "\"";
-                        add_code_externinvk(l_code3d, new_code(EXTERN_INVK), strtok($3, token), $5);
+                        if (method_type != RetVoid)
+                        {
+                            res = create_variable("", method_type);
+                            add_code_externinvk(l_code3d, new_code(EXTERN_INVK), strtok($3, token), $5);
+                        }
+                        else 
+                        {
+                            res = create_variable((char*) get_variable_name(), Int);
+                            add_code_externinvk(l_code3d, new_code(EXTERN_INVK), strtok($3, token), "int");
+                        }
                         $$ = res;
                     }
 				;
 
 expression_aux:    expression {
-                        if (id_not_found != True)
+                        if (id_not_found == False)
                         {
                             correct_param_base_case(error_q,symbols_table,l_code3d,$1,last_called_method,cant_params);
                             if (flag_first_param == 0)
@@ -722,11 +726,11 @@ expression_aux:    expression {
                         }
                     }
               |    expression {
-                        if (id_not_found != True)
+                        if (id_not_found == False)
                         {
                             correct_param_inductive_case(error_q,symbols_table,l_code3d,$1,last_called_method,cant_params);
-                                if (flag_first_param == 0)
-                                    flag_first_param = code_size(l_code3d);
+                            if (flag_first_param == 0)
+                                flag_first_param = code_size(l_code3d);
                             cant_params++;
                         }
                    } ',' expression_aux
@@ -734,17 +738,13 @@ expression_aux:    expression {
 
 typevoid      :    type {switch (method_type)
                         {
-                            case RetInt: $$=strdup("int");
-                                            break;
-                            case RetFloat: $$=strdup("float");
-                                            break;
-                            case RetBool: $$=strdup("bool");
-                                            break;
-                            case RetVoid: $$=strdup("void");
-                                            break;
+                            case RetInt:   $$ = "int"; break;
+                            case RetFloat: $$ = "float"; break;
+                            case RetBool:  $$ = "bool"; break;
+                            case RetVoid:  $$ = "void"; break;
                         }
                    }
-              |    VOID {method_type = RetVoid; $$=strdup("void");}
+              |    VOID {method_type = RetVoid; $$ = "void";}
               ;
 
 externinvk_arg:    arg                    {amount_extern_params++; extern_param_assign(l_code3d, $1, amount_extern_params);}
@@ -752,8 +752,8 @@ externinvk_arg:    arg                    {amount_extern_params++; extern_param_
               ;
 
 arg           :    expression {$$ = $1;}
-              |    STRING     {$$ = $1;}
-              ;
+              |    STRING     {$$ = create_variable("", Int);} // {$$ = $1;} 
+              ;               // I commented this because extern_param_assign expects an Attribute and STRING doesn't provide one
 
 expression    :    conjunction					{$$ = $1;}
               |    expression ORR conjunction	{$$ = return_or(error_q, l_code3d, $1, $3);}
@@ -801,7 +801,7 @@ primary       :    INTEGER			{$$ = return_value(l_code3d, Int, $1);}
               |    ID '[' expression ']'  {$$ = check_array_pos(error_q,symbols_table,l_code3d,$1,$3);}
               |    '(' expression ')' {$$ = $2;}
               |    method_call      { if (method_return_type(error_q,symbols_table,last_called_method) == RetVoid)
-                                      {	insert_error(error_q,to_string("El metodo \"",last_called_method,"\" no puede ser usado en una expresion ya que retorna void."));
+                                      {	insert_error(error_q,add_line_column(to_string("El metodo \"",last_called_method,"\" no puede ser usado en una expresion ya que retorna void.")));
                                           $$ = create_variable("",Int); /* creamos variables int por defecto para que podamos seguir parseando el codigo */
                                       }
                                       else $$ = $1;

@@ -29,15 +29,15 @@ void push_element(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attribute *at)
         if (at!=NULL)
         {
             if (search_id_in_level(aSymbolsTable, get_id(at)) != NULL)
-                insert_error(eq, to_string("El identificador \"", get_id(at), "\" ya se encuentra en uso."));
+                insert_error(eq, add_line_column(to_string("El identificador \"", get_id(at), "\" ya se encuentra en uso.")));
             else
                 insert(aSymbolsTable->top->list, at);
         }
 			else
-                insert_error(eq, to_string("El atributo es NULL.","",""));
+                insert_error(eq, add_line_column(to_string("El atributo es NULL.","","")));
 	}
 	else
-		printf("%s\n",to_string("SymbolsTable: push_element Warning: la tabla no tiene ningun nivel.","",""));
+		printf("%s\n",add_line_column(to_string("SymbolsTable: push_element Warning: la tabla no tiene ningun nivel.","","")));
 }
 
 /* Insert a new level in the SymbolsTable. */
@@ -52,7 +52,7 @@ void push_level(SymbolsTable *aSymbolsTable)
 		    aSymbolsTable->currentLevel++;
     }
     else
-        printf("%s\n",to_string("SymbolsTable: push_level Warning: Error al reservar espacio en memoria.","",""));
+        printf("%s\n",add_line_column(to_string("SymbolsTable: push_level Warning: Error al reservar espacio en memoria.","","")));
 }
 
 /* Remove the entire current level of the SymbolsTable. */
@@ -67,7 +67,7 @@ void pop_level(SymbolsTable *aSymbolsTable)
 		aSymbolsTable->currentLevel--;
     }
     else
-		printf("%s\n",to_string("SymbolsTable: pop_level Warning: Pila sin mas niveles que descartar.","",""));
+		printf("%s\n",add_line_column(to_string("SymbolsTable: pop_level Warning: Pila sin mas niveles que descartar.","","")));
 }
 
 /* Searches for the id in all levels of the SymbolsTable.
@@ -85,7 +85,7 @@ Attribute* search_id_in_symbols_table(ErrorsQueue *eq, SymbolsTable *aSymbolsTab
 			return auxAttr;
 		auxTop = auxTop->next;
 	}
-	insert_error(eq, to_string("El identificador \"", id, "\" no esta definido."));
+	insert_error(eq, add_line_column(to_string("El identificador \"", id, "\" no esta definido.")));
     return NULL;
 }
 

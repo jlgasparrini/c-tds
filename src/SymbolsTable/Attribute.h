@@ -15,7 +15,6 @@ typedef union               /* The value that a variable may take can be:       
 
 typedef struct              /* A variable has:											    */ 
 {			
-	char *id;				/* The "id" of the variable 								    */
 	PrimitiveType type;		/* A "type" (int, float, boolean) (the word, name of the type)  */
 	VarValue value;			/* A "value" (int, float, true, false) (variable's value') 	    */
     int offset;				/* A "offset" of the variable									*/
@@ -23,7 +22,6 @@ typedef struct              /* A variable has:											    */
 
 typedef struct              /* An array has                                                 */
 {
-    char *id;               /* The "id" of the array     									*/
     PrimitiveType type;     /* A "type" (int, float, boolean) (the word, name of the type) 	*/
     unsigned int length;    /* The length of the array                                      */
 	StVariable *arrayValues;/* The values of every array position							*/
@@ -31,7 +29,6 @@ typedef struct              /* An array has                                     
 
 typedef struct              /* A method has: 				       							*/
 {			
-	char *id;				/* The "id" of the method										*/
 	ReturnType type; 		/* A "return type" (int, float, boolean, void) 				    */
 	unsigned int paramSize; /* An int value indicating the number of parameters			    */
 	StVariable **parameters; /* An array with the parameters, in case of having them		*/
@@ -49,6 +46,7 @@ typedef union               /* A declaration is: 											*/
 
 typedef struct              /* An attribute has:                							*/
 {		
+	char *id;				/* Attribute's id 								    			*/
     StructureType type;		/* type = 0, the attribute is a variable, type = 1, is a method, type = 2, is an array	*/
     Declaration decl;		/* Attribute's value 											*/
 } Attribute;

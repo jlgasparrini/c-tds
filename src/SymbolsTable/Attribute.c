@@ -33,7 +33,7 @@ Attribute* create_variable(char *id, PrimitiveType type)
 	attr->type = Variable;
 	attr->decl.variable = (StVariable*) malloc (sizeof(StVariable));
 	*attr->decl.variable = create_st_variable(type);
-	attr->decl.variable->id = strdup(id);
+	attr->id = strdup(id);
 	attr->decl.variable->offset = get_global_var_offset();
   	decrease_var_offset();
 	return attr;
@@ -44,7 +44,7 @@ Attribute* create_array(char *id, PrimitiveType type, unsigned int length)
 {
 	Attribute *attr = (Attribute*) malloc (sizeof(Attribute)); 
 	attr->type = Array;
-	attr->decl.array.id = strdup(id);
+	attr->id = strdup(id);
 	attr->decl.array.type = type; 
 	attr->decl.array.length = length;
 	attr->decl.array.arrayValues = (StVariable*) malloc (length*sizeof(StVariable)); /* creates the necessary memory for the array */
@@ -63,7 +63,7 @@ Attribute* create_method(char *id, ReturnType type)
 {
 	Attribute *attr = (Attribute*) malloc (sizeof(Attribute)); 
 	attr->type = Method;
-	attr->decl.method.id = strdup(id);
+	attr->id = strdup(id);
 	attr->decl.method.type = type; 
 	attr->decl.method.paramSize = 0;
 	attr->decl.method.parameters = NULL;
@@ -80,6 +80,7 @@ Attribute* create_parameter(Attribute *attr, unsigned int pos, char *id, Primiti
 		if (auxParameters != NULL)
 		{
 			attr->decl.method.parameters = auxParameters;
+			attr->decl.method.paramSize++;
 			Attribute *aux = create_variable(id, type);
 			aux->decl.variable->offset = globalParamOffset-4;;
 			globalParamOffset += 4;
@@ -118,9 +119,9 @@ void set_variable_value(Attribute *attr, PrimitiveType type, char *value)
 char* get_id(Attribute *attr)
 {
   switch (attr->type) {
-    case Variable: return attr->decl.variable->id;
-    case Method: return attr->decl.method.id;
-	case Array:	return attr->decl.array.id;
+    case Variable: return attr->id;
+    case Method: return attr->id;
+	case Array:	return attr->id;
 	default: return NULL;
   }
 }
