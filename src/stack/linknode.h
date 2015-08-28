@@ -17,17 +17,17 @@ typedef struct NodeStack {
 
 /*constructores*/
 
-NodeStack* newLinkNode_empty();
-NodeStack* newLinkNode_info(char *info);
-NodeStack* newLinkNode_info_next(char *info, NodeStack *next);
+NodeStack* new_link_node();
+NodeStack* new_link_node_info(char *info);
+NodeStack* new_link_node_info_next(char *info, NodeStack *next);
 
 /*lectura de informacion*/
 
-char* getInfo_linkNode(NodeStack *node);
-NodeStack* getNext_linkNode(NodeStack *node);
+char* get_info_link_node(NodeStack *node);
+NodeStack* get_next_link_node(NodeStack *node);
 
 /*escritura de informacion*/
-void setInfo_linkNode(NodeStack *node, char *info);
-void setNext_linkNode(NodeStack *node, NodeStack *next);
+void set_info_link_node(NodeStack *node, char *info);
+void set_next_link_node(NodeStack *node, NodeStack *next);
 
 #endif

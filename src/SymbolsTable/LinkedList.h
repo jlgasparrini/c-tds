@@ -34,10 +34,10 @@ void insert(LinkedList *l, Attribute *attribute);
 Attribute* search(LinkedList *l, char *id);
 
 /* Return Attribute* of the last defined method in the list. */
-Attribute* getLastDefinedMethod(LinkedList *l);
+Attribute* get_last_defined_method(LinkedList *l);
 
 /* Delete all the elements of the list. */
-void deleteAll(LinkedList *l);
+void delete_all(LinkedList *l);
 
 /* Print in display the elements of the list. */
 void print_list(LinkedList *l);

@@ -19,19 +19,19 @@ typedef struct {
 
 /**Constructor de un Codigo*/
 
-MethodL* newMethodL(char *id_method, char *label_method);
+MethodL* new_method_l(char *id_method, char *label_method);
 
 /**Funciones de Acceso a un Codigo*/
 
-char* getIdMethod(MethodL *methodl);
-char* getLabelMethod(MethodL *methodl);
+char* get_id_method(MethodL *methodl);
+char* get_label_method(MethodL *methodl);
 
 /**Funciones de Escritura de un Codigo*/
 
-void setIdMethod(MethodL *methodl, char *id_method);
-void setLabelMethod(MethodL *methodl, char *label_method);
+void set_id_method(MethodL *methodl, char *id_method);
+void set_label_method(MethodL *methodl, char *label_method);
 
 
-void toStringMethodL(MethodL *methodl);
+void to_string_method_l(MethodL *methodl);
 
 #endif

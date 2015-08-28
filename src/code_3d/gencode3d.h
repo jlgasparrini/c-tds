@@ -13,32 +13,32 @@ typedef struct {
 } LCode3D;
 
 /**Constructor de una Lista*/
-LCode3D* initLCode3D();
+LCode3D* init_list_c3D();
 
 /**Funcion de Escritura de la Lista*/
-void add_code(LCode3D *lcode3d, Code3D *code); 
+void add_code(LCode3D *lcode3d, Code3D *code);
 
 /**Funciones de Acceso a la Lista*/
 Code3D* get_code(LCode3D *lcode3d, int index);
-int codeSize(LCode3D *lcode3d);
+int code_size(LCode3D *lcode3d);
 
 /**/
 void set_code_int(LCode3D *lcode3d,int index,int param, int numb);
 
 /** Funciones de Escritura de la Lista de un Codigo Concreto*/
-void add_CodeLabel(LCode3D *lcode3d, Code3D *code, char *label);
-void add_CodeLabelCond(LCode3D *lcode3d, Code3D *code, Attribute *attri1, char *labelJumpTo);
+void add_code_label(LCode3D *lcode3d, Code3D *code, char *label);
+void add_code_label_cond(LCode3D *lcode3d, Code3D *code, Attribute *attri1, char *labelJumpTo);
 
-void add_Assignation(LCode3D *lcode3d, Attribute *attri1,  Attribute *attriRes);
-void add_Print(LCode3D *lcode3d, Code3D *code, Attribute *attr);
-void add_MethodCall(LCode3D *lcode3d, Code3D *code,  Attribute *attri1, Attribute *attriRes);
+void add_assignation(LCode3D *lcode3d, Attribute *attri1,  Attribute *attriRes);
+void add_print(LCode3D *lcode3d, Code3D *code, Attribute *attr);
+void add_method_call(LCode3D *lcode3d, Code3D *code,  Attribute *attri1, Attribute *attriRes);
 
-void add_CodeExternInvk(LCode3D *lcode3d, Code3D *code,char *label,  char* type);
-void addParamExternInvk(LCode3D *lcode3d, Code3D *code, Attribute *attr, int paramNumber);
+void add_code_externinvk(LCode3D *lcode3d, Code3D *code,char *label,  char* type);
+void add_param_externinvk(LCode3D *lcode3d, Code3D *code, Attribute *attr, int paramNumber);
 
 /**Funcion de Borrado de un Codigo de la Lista*/
 void delete_code(LCode3D *lcode3d, int index);
 
 /**Funcion de Muestreo de la Lista*/
-void show3DCode(LCode3D *lcode3d);
+void show_c3D(LCode3D *lcode3d);
 #endif

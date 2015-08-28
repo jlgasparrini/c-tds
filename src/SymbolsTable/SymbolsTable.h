@@ -28,24 +28,21 @@ typedef struct
 } SymbolsTable;
 
 /* Initializes the SymbolsTable */
-SymbolsTable* initializeSymbolsTable();
+SymbolsTable* initialize_symbols_table();
 
 /* Insert a element in the current level of the SymbolsTable. */
-void pushElement(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attribute *at);
+void push_element(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attribute *at);
 
 /* Insert a new level in the SymbolsTable. */
-void pushLevel(SymbolsTable *aSymbolsTable);
+void push_level(SymbolsTable *aSymbolsTable);
 
 /* Remove the entire current level of the SymbolsTable. */
-void popLevel(SymbolsTable *aSymbolsTable);
+void pop_level(SymbolsTable *aSymbolsTable);
 
 /* Searches for the element in all levels of the SymbolsTable. */
-Attribute* searchIdInSymbolsTable(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char *id);
-
-/* Searches for the id in the current level of the SymbolsTable. */
-Attribute* searchIdInLevel(SymbolsTable *aSymbolsTable, char *id);
+Attribute* search_id_in_symbols_table(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char *id);
 
 /* Print the elements the SymbolsTable. */
-void SymbolsTable_print(SymbolsTable *aSymbolsTable);
+void symbols_table_print(SymbolsTable *aSymbolsTable);
 
 #endif

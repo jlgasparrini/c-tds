@@ -5,37 +5,36 @@
 #include <stdlib.h>
 
 /**Constructor de la Pila de Offsets*/
-StackOffset* newStackOffset()
+StackOffset* new_stack_offset()
 {
-    StackOffset *new = (StackOffset*) malloc(sizeof(StackOffset));
-    new->top = NULL;
-    return new;
+    StackOffset *stack = (StackOffset*) malloc(sizeof(StackOffset));
+    stack->top = NULL;
+    return stack;
 }
 
 /**Metodo que apila un Offset a la Pila*/
-void pushOffset(StackOffset *stack, int offset)
+void push_offset(StackOffset *stack, int offset)
 {
-    NodeStackOffset *new = newLinkNodeOffset_info_next(offset, stack->top);
-    stack->top = new;
+    NodeStackOffset *st = new_link_node_offset_info_next(offset, stack->top);
+    stack->top = st;
 }
 
 /**Metodo para verificar si la Lista es Vacia*/
-bool isEmptyOffset(StackOffset *stack)
+bool is_empty_offset(StackOffset *stack)
 {
     return stack->top == NULL;
 }
 
 /**Metodo que desapila un Offset en la Pila*/
-int popOffset(StackOffset *stack)
+int pop_offset(StackOffset *stack)
 {
-    int ret = getInfo_linkNodeOffset(stack->top);
-    stack->top = getNext_linkNodeOffset(stack->top);
+    int ret = get_info_link_node_offset(stack->top);
+    stack->top = get_next_link_node_offset(stack->top);
     return ret;
 }
 
 /**Metodo que retorna el tope de la Pila sin desapilarlo*/
-int peekOffset(StackOffset *stack)
+int peek_offset(StackOffset *stack)
 {
-    int ret = getInfo_linkNodeOffset(stack->top);
-    return ret;
+    return get_info_link_node_offset(stack->top);
 }

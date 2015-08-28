@@ -22,16 +22,16 @@ typedef struct {
 
 /*constructores*/
 
-ListML* newListML();
+ListML* new_list_ml();
 
 /*lectura de informacion*/
 
-MethodL* get_listML(ListML *list, char *id_method);
-int size_listML(ListML *list);
+MethodL* get_list_ml(ListML *list, char *id_method);
+int size_list_ml(ListML *list);
 
 /*escritura de informacion*/
 
-void add_listML(ListML *list, MethodL *elem, int index);
-void delete_listML(ListML *list, int index);
+void add_list_ml(ListML *list, MethodL *elem);
+void delete_list_ml(ListML *list, int index);
 
 #endif

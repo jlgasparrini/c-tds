@@ -4,60 +4,55 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "linknode.h"
 
-char* newchar(char *label) 
-{
-    char *new = (char*) malloc(sizeof(char));
-    new = label;
-    return new;
-}
-
 /**Constructor de un Nodo de la Pila vacio*/
-NodeStack* newLinkNode_empty() 
+NodeStack* new_link_node() 
 {
-    NodeStack *new = (NodeStack*) malloc(sizeof(NodeStack));
-    new->info = NULL;
-    new->next = NULL;
-    return new;
+    NodeStack *node = (NodeStack*) malloc(sizeof(NodeStack));
+    node->info = NULL;
+    node->next = NULL;
+    return node;
 }
 
 /**Constructor de un Nodo de la Pila con el campo info*/
-NodeStack* newLinkNode_info(char *info)
+NodeStack* new_link_node_info(char *info)
 {
-    NodeStack *new = newLinkNode_empty();
-    new->info = newchar(info);
-    return new;
+    NodeStack *node = new_link_node();
+    node->info = strdup(info);
+    return node;
 }
 
 /**Constructor de un Nodo de la Pila con los campos info y next*/
-NodeStack* newLinkNode_info_next(char *info, NodeStack *next) 
+NodeStack* new_link_node_info_next(char *info, NodeStack *next) 
 {
-    NodeStack *new = newLinkNode_info(info);
-    new->next = next;
-    return new;
+    NodeStack *node = new_link_node();
+    node->info = strdup(info);
+    node->next = next;
+    return node;
 }
 
 /**Metodo que retorna el campo info de un nodo dado*/
-char* getInfo_linkNode(NodeStack *node) 
+char* get_info_link_node(NodeStack *node) 
 {
     return node->info;
 }
 
 /**Metodo que retorna el campo next de un nodo dado*/
-NodeStack* getNext_linkNode(NodeStack *node) 
+NodeStack* get_next_link_node(NodeStack *node) 
 {
     return node->next;
 }
 
 /**Metodo que setea el campo info de un nodo dado*/
-void setInfo_linkNode(NodeStack *node, char *info) 
+void set_info_link_node(NodeStack *node, char *info) 
 {
-    node->info = newchar(info);
+    node->info = strdup(info);
 }
 
 /**Metodo que setea el campo next de un nodo dado*/
-void setNext_linkNode(NodeStack *node, NodeStack *next) 
+void set_next_link_node(NodeStack *node, NodeStack *next) 
 {
     node->next = next;
 }

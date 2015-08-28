@@ -6,35 +6,25 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-ListMLabel* initL() 
+ListMLabel* init_list_m() 
 {
-    ListMLabel *new = (ListMLabel*) malloc(sizeof(ListMLabel));
-    (*new).labels = newListML();
-    return new;
+    ListMLabel *list = (ListMLabel*) malloc(sizeof(ListMLabel));
+    list->labels = new_list_ml();
+    return list;
 }
 
-void add_MethodL(ListMLabel *listmlabel, MethodL *methodl) 
+int size_method_list(ListMLabel *listmlabel) 
 {
-    add_listML((*listmlabel).labels, methodl, size_listML((*listmlabel).labels));
+    return size_list_ml(listmlabel->labels);
 }
 
-MethodL* get_MethodL(ListMLabel *listmlabel, char *id_method) 
+void insert_method_list(ListMLabel *listmlabel, char *id_method, char *label_method)
 {
-    return get_listML((*listmlabel).labels, id_method);
+	MethodL *new_methodl = new_method_l(id_method, label_method);
+	add_list_ml(listmlabel->labels, new_methodl);
 }
 
-int cantMethodL(ListMLabel *listmlabel) 
+char* get_label_ml(ListMLabel *listmlabel, char *id_method) 
 {
-    return size_listML((*listmlabel).labels);
-}
-
-void insert_MethodL(ListMLabel *listmlabel, char *id_method, char *label_method)
-{
-	MethodL *new_methodl = newMethodL(id_method, label_method);
-	add_listML((*listmlabel).labels, new_methodl, size_listML((*listmlabel).labels));
-}
-
-char* get_Label(ListMLabel *listmlabel, char *id_method) 
-{
-	return ((get_MethodL(listmlabel, id_method))->label);
+	return get_list_ml(listmlabel->labels, id_method)->label;
 }

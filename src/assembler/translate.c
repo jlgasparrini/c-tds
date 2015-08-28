@@ -15,12 +15,12 @@ bool any_goto_method = false;
 char* value(Code3D* code, int i)
 {
   char *result = (char*) malloc(sizeof(char));/* CHECK OUT THIS CASE BECAUSE sizeof(char) ONLY STORES MEMORY FOR ONLY ONE CHARACTER! */
-  if (isInt(code, i))/* IF THE NUMBER HAS MORE THAN ONE DIGIT (CHARACTER) IT WILL BROKE! */
-    sprintf(result, "%d", getInt(code, i));
-  if (isFloat(code, i))
-    sprintf(result, "%f", getFloat(code, i));
-  if (isBool(code, i))
-    sprintf(result, "%d", getBool(code, i));
+  if (is_int(code, i))/* IF THE NUMBER HAS MORE THAN ONE DIGIT (CHARACTER) IT WILL BROKE! */
+    sprintf(result, "%d", get_int(code, i));
+  if (is_float(code, i))
+    sprintf(result, "%f", get_float(code, i));
+  if (is_bool(code, i))
+    sprintf(result, "%d", get_bool(code, i));
   return concat("$", result);
 }
 
@@ -53,7 +53,7 @@ char* translate(char* operation, char* code1, char* code2)
 char* offset(Code3D* code, int param)
 {
   char *result = (char*) malloc(sizeof(char));/* CHECK OUT THIS CASE BECAUSE sizeof(char) ONLY STORES MEMORY FOR ONLY ONE CHARACTER! */
-  result =intToString(getOffsetVal(getAttribute(code, param)));
+  result =int_to_string(get_offset_val(get_attribute(code, param)));
   return concat(result, "(%rbp)");
 }
 
@@ -61,7 +61,7 @@ char* offset(Code3D* code, int param)
 char* offset_num(int offset)
 {
   char *result = (char*) malloc(sizeof(char));/* CHECK OUT THIS CASE BECAUSE sizeof(char) ONLY STORES MEMORY FOR ONLY ONE CHARACTER! */
-  result =intToString(offset);
+  result =int_to_string(offset);
   if (offset == 0)
     return "(%rsp)";
   else
@@ -69,21 +69,21 @@ char* offset_num(int offset)
 }
 
 /* Return offset of an array */
-static char* offsetArray(Code3D* code, int param, char* reg)
+static char* offset_array(Code3D* code, int param, char* reg)
 {
-  int offset = getOffsetArray(getAttribute(code, param));
-  return concat(concat(concat(intToString(offset), "(%rbp,"), reg), ",4)");
+  int offset = get_offset_array(get_attribute(code, param));
+  return concat(concat(concat(int_to_string(offset), "(%rbp,"), reg), ",4)");
 }
 
 /* BASIC OPERATIONS */
 /**"LOAD_CONST %s %s\n" */
 void load_const_translate(FILE* file, Code3D* code)
 {
-  if (!isFloat(code, 1))
+  if (!is_float(code, 1))
     write_code_in_file(file, translate("movl", value(code, 1), offset(code, 2)));
   else
   {
-    fValue.real = getFloat(code, 1);
+    fValue.real = get_float(code, 1);
     fprintf(file, "\tmov $0x");
     fprintf(file, "%x",fValue.entero);
     fprintf(file, ", %rax\n");
@@ -94,14 +94,14 @@ void load_const_translate(FILE* file, Code3D* code)
 /* Puts in the file the translation of the GOTO_LABEL action */
 inline void translate_goto_label(FILE* file, Code3D* code)
 {
-  write_code_in_file(file, translate("jmp", getLabel(code,1), ""));
+  write_code_in_file(file, translate("jmp", get_label(code,1), ""));
 }
 
 /* Puts in the file the translation of the GOTO_LABEL_CONDITION action */
 void translate_goto_label_condition(FILE* file, Code3D* code)
 {
   write_code_in_file(file, translate("cmp", "$0", offset(code, 1)));
-  write_code_in_file(file, translate("jz", getLabel(code,2), ""));
+  write_code_in_file(file, translate("jz", get_label(code,2), ""));
 }
 
 /* Puts in the file the translation of the RETURN action */
@@ -148,20 +148,20 @@ void translate_not(FILE* file, Code3D* code)
 /* Puts in the file the translation of the PRINT action */
 void print_operation(FILE *file, Code3D *code)
 {
-  if (getAttributeType(getAttribute(code, 1)) == Int)
+  if (get_attribute_type(get_attribute(code, 1)) == Int)
   {
     write_code_in_file(file, translate("movq", offset(code, 1), "%rsi"));
     write_code_in_file(file, translate("movq", concat("$", ".INT"), "%rdi"));
   }
-  if (getAttributeType(getAttribute(code, 1)) == Float)
+  if (get_attribute_type(get_attribute(code, 1)) == Float)
   {
     write_code_in_file(file, translate("movss", offset(code, 1), "%xmm0"));
     write_code_in_file(file, translate("cvtps2pd", "%xmm0", "%xmm0"));
     write_code_in_file(file, translate("movq", concat("$", ".FLOAT"), "%rdi"));
   }
-  if (getAttributeType(getAttribute(code, 1)) == Bool)
+  if (get_attribute_type(get_attribute(code, 1)) == Bool)
   {
-    char* count = intToString(print_count);
+    char* count = int_to_string(print_count);
     write_code_in_file(file, translate("cmp", "$0", offset(code, 1)));
     write_code_in_file(file, translate("jz", concat("label_bool_condition_of_print", count), ""));
     write_code_in_file(file, translate("movq", concat("$", ".BOOL_TRUE"), "%rdi"));
@@ -178,17 +178,15 @@ void print_operation(FILE *file, Code3D *code)
 /* Puts in the file the translation of the LABEL action */
 void write_label(FILE *file, ListMLabel *labelList, Code3D *code)
 {
-  if (strcmp(get_Label(labelList, getLabel(code, 1)), "NULL") == 0)
-  {
-    write_code_in_file(file, concat(getLabel(code,1), ":\n"));
-  }
+  if (strcmp(get_label_ml(labelList, get_label(code, 1)), "NULL") == 0)
+    write_code_in_file(file, concat(get_label(code,1), ":\n"));
   else
   {
-    write_code_in_file(file, concat(getLabel(code,1), ":\n"));
+    write_code_in_file(file, concat(get_label(code,1), ":\n"));
     write_code_in_file(file, translate("pushq", "%rbp", ""));
     write_code_in_file(file, translate("movq", "%rsp", "%rbp"));
     char *result = (char*) malloc(sizeof(char));
-    sprintf(result, "%d", getInt(code, 2) - 4);
+    sprintf(result, "%d", get_int(code, 2) - 4);
     write_code_in_file(file, translate("addq", concat("$", result),  "%rsp"));
   }
 }
@@ -202,14 +200,14 @@ void translate_load_array(FILE *file, Code3D *code)
    */
   write_code_in_file(file, translate("movq", offset(code,1), "%rax"));
 
-  if (getAttributeType(getAttribute(code, 2)) == Float)
+  if (get_attribute_type(get_attribute(code, 2)) == Float)
   {
-    write_code_in_file(file, translate("movss", offsetArray(code,2,"%rax"), "%xmm0"));
+    write_code_in_file(file, translate("movss", offset_array(code,2,"%rax"), "%xmm0"));
     write_code_in_file(file, translate("movss", "%xmm0", offset(code,3)));
   }
   else
   {
-    write_code_in_file(file, translate("movq", offsetArray(code,2,"%rax"), "%rdx"));
+    write_code_in_file(file, translate("movq", offset_array(code,2,"%rax"), "%rdx"));
     write_code_in_file(file, translate("movq", "%rdx", offset(code,3)));
   }
 }
@@ -218,7 +216,7 @@ void translate_load_array(FILE *file, Code3D *code)
 /* "GOTO_METHOD %s\n" */
 void goto_method (FILE* file, Code3D* code)
 {
-  write_code_in_file(file, translate("call", getLabel(code,1), ""));
+  write_code_in_file(file, translate("call", get_label(code,1), ""));
   /*   DEBO   PREGUNTAR   SI   EL TIPO DE RETORNO DEL METODO ESif DISSTINTO DE VOID!    */
     any_goto_method = true;
 }
@@ -238,10 +236,10 @@ void translate_assignation_int(FILE* file, Code3D* code)
 /* Puts in the file the translation of the PARAM_ASSIGN_INT action */
 void translate_param_assign_int(FILE *file, Code3D *code)
 {
-  if (getInt(code, 3) != NULL)
-    write_code_in_file(file, translate("subq", concat("$", intToString(getInt(code, 3)*4)), "%rsp"));
+  if (get_int(code, 3) != NULL)
+    write_code_in_file(file, translate("subq", concat("$", int_to_string(get_int(code, 3)*4)), "%rsp"));
   write_code_in_file(file, translate("movq", offset(code, 1), "%rax"));
-  write_code_in_file(file, translate("movq", "%rax", concat(intToString(auxParam*4), "(%rsp)")));
+  write_code_in_file(file, translate("movq", "%rax", concat(int_to_string(auxParam*4), "(%rsp)")));
   auxParam++;
 }
 
@@ -376,10 +374,10 @@ void assignation_float_translate(FILE* file, Code3D* code)
 /* Puts in the file the translation of the PARAM_ASSIGN_FLOAT action */
 void translate_param_assign_float(FILE *file, Code3D *code)
 {
-  if (getInt(code, 3) != NULL)
-    write_code_in_file(file, translate("subq", concat("$", intToString(getInt(code, 3)*4)), "%rsp"));
+  if (get_int(code, 3) != NULL)
+    write_code_in_file(file, translate("subq", concat("$", int_to_string(get_int(code, 3)*4)), "%rsp"));
   write_code_in_file(file, translate("movss", offset(code, 1), "%xmm0"));
-  write_code_in_file(file, translate("movq", "%rax", concat(intToString(auxParam*4), "(%rsp)")));
+  write_code_in_file(file, translate("movq", "%rax", concat(int_to_string(auxParam*4), "(%rsp)")));
 }
 
 /**"NEG_FLOAT %s %s\n" */
@@ -494,27 +492,21 @@ void translate_minus_float(FILE* file, Code3D* code)
 void translate_externinvk(FILE* file, Code3D* code)
 {
   write_code_in_file(file, "\tmovl	$0, %eax\n");
-  write_code_in_file(file, translate("call", getLabel(code, 1), ""));
+  write_code_in_file(file, translate("call", get_label(code, 1), ""));
 }
 
 void translate_int_extern_param(FILE *file, Code3D *code)
 {
-  switch (getInt(code, 2))
+  switch (get_int(code, 2))
   {
-    case 1: write_code_in_file(file, translate("movl", offset(code, 1), "%edi"));
-            break;
-    case 2: write_code_in_file(file, translate("movl", offset(code, 1), "%esi"));
-            break;
-    case 3: write_code_in_file(file, translate("movl", offset(code, 1), "%edx"));
-            break;
-    case 4: write_code_in_file(file, translate("movl", offset(code, 1), "%ecx"));
-            break;
-    case 5: write_code_in_file(file, translate("movl", offset(code, 1), "%r8d"));
-            break;
-    case 6: write_code_in_file(file, translate("movl", offset(code, 1), "%r9d"));
-            break;
+    case 1: write_code_in_file(file, translate("movl", offset(code, 1), "%edi")); break;
+    case 2: write_code_in_file(file, translate("movl", offset(code, 1), "%esi")); break;
+    case 3: write_code_in_file(file, translate("movl", offset(code, 1), "%edx")); break;
+    case 4: write_code_in_file(file, translate("movl", offset(code, 1), "%ecx")); break;
+    case 5: write_code_in_file(file, translate("movl", offset(code, 1), "%r8d")); break;
+    case 6: write_code_in_file(file, translate("movl", offset(code, 1), "%r9d")); break;
   }
-  if (getInt(code, 2) > 6)
+  if (get_int(code, 2) > 6)
   {
     write_code_in_file(file, translate("movl", offset(code, 1), "%eax"));
     write_code_in_file(file, translate("movl", "%eax", offset_num(extern_offset)));
@@ -526,26 +518,18 @@ void translate_int_extern_param(FILE *file, Code3D *code)
 
 void translate_float_extern_param(FILE *file, Code3D *code)
 {
-  switch (getInt(code, 2))
+  switch (get_int(code, 2))
   {
-    case 1: write_code_in_file(file, translate("movsd", offset(code, 1), "%xmm0"));
-            break;
-    case 2: write_code_in_file(file, translate("movsd", offset(code, 1), "%xmm1"));
-            break;
-    case 3: write_code_in_file(file, translate("movsd", offset(code, 1), "%xmm2"));
-            break;
-    case 4: write_code_in_file(file, translate("movsd", offset(code, 1), "%xmm3"));
-            break;
-    case 5: write_code_in_file(file, translate("movsd", offset(code, 1), "%xmm4"));
-            break;
-    case 6: write_code_in_file(file, translate("movsd", offset(code, 1), "%xmm5"));
-            break;
-    case 7: write_code_in_file(file, translate("movsd", offset(code, 1), "%xmm6"));
-            break;
-    case 8: write_code_in_file(file, translate("movsd", offset(code, 1), "%xmm7"));
-            break;
+    case 1: write_code_in_file(file, translate("movsd", offset(code, 1), "%xmm0")); break;
+    case 2: write_code_in_file(file, translate("movsd", offset(code, 1), "%xmm1")); break;
+    case 3: write_code_in_file(file, translate("movsd", offset(code, 1), "%xmm2")); break;
+    case 4: write_code_in_file(file, translate("movsd", offset(code, 1), "%xmm3")); break;
+    case 5: write_code_in_file(file, translate("movsd", offset(code, 1), "%xmm4")); break;
+    case 6: write_code_in_file(file, translate("movsd", offset(code, 1), "%xmm5")); break;
+    case 7: write_code_in_file(file, translate("movsd", offset(code, 1), "%xmm6")); break;
+    case 8: write_code_in_file(file, translate("movsd", offset(code, 1), "%xmm7")); break;
   }
-  if (getInt(code, 2) > 6)
+  if (get_int(code, 2) > 6)
   {
     write_code_in_file(file, translate("movq", offset(code, 1), "%rax"));
     write_code_in_file(file, translate("movq", "%rax", offset_num(extern_offset)));
@@ -557,20 +541,14 @@ void translate_float_extern_param(FILE *file, Code3D *code)
 
 void translate_bool_extern_param(FILE *file, Code3D *code)
 {
-  switch (getInt(code, 2))
+  switch (get_int(code, 2))
   {
-    case 1: write_code_in_file(file, translate("movl", offset(code, 1), "%edi"));
-            break;
-    case 2: write_code_in_file(file, translate("movl", offset(code, 1), "%esi"));
-            break;
-    case 3: write_code_in_file(file, translate("movl", offset(code, 1), "%edx"));
-            break;
-    case 4: write_code_in_file(file, translate("movl", offset(code, 1), "%ecx"));
-            break;
-    case 5: write_code_in_file(file, translate("movl", offset(code, 1), "%r8d"));
-            break;
-    case 6: write_code_in_file(file, translate("movl", offset(code, 1), "%r9d"));
-            break;
+    case 1: write_code_in_file(file, translate("movl", offset(code, 1), "%edi")); break;
+    case 2: write_code_in_file(file, translate("movl", offset(code, 1), "%esi")); break;
+    case 3: write_code_in_file(file, translate("movl", offset(code, 1), "%edx")); break;
+    case 4: write_code_in_file(file, translate("movl", offset(code, 1), "%ecx")); break;
+    case 5: write_code_in_file(file, translate("movl", offset(code, 1), "%r8d")); break;
+    case 6: write_code_in_file(file, translate("movl", offset(code, 1), "%r9d")); break;
   }
 }
 

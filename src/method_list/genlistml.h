@@ -12,12 +12,10 @@ typedef struct {
     ListML *labels;
 } ListMLabel;
 
-ListMLabel* initL();
+ListMLabel* init_list_m();
 
-void add_MethodL(ListMLabel *listmlabel, MethodL *methodl); 
-MethodL* get_MethodL(ListMLabel *listmlabel, char *id_method);
-int cantMethodL(ListMLabel *listmlabel);
-void insert_MethodL(ListMLabel *listmlabel, char *id_method, char *label_method);
-char* get_Label(ListMLabel *listmlabel, char *id_method);
+int size_method_list(ListMLabel *listmlabel);
+void insert_method_list(ListMLabel *listmlabel, char *id_method, char *label_method);
+char* get_label_ml(ListMLabel *listmlabel, char *id_method);
 
 #endif

@@ -19,17 +19,17 @@ typedef struct NML {
 
 /*constructores*/
 
-NodeML* newNodeML_empty();
-NodeML* newNodeML_info(MethodL *info);
-NodeML* newNodeML_info_next(MethodL *info, NodeML *next);
+NodeML* new_node_ml();
+NodeML* new_node_ml_info(MethodL *info);
+NodeML* new_node_ml_info_next(MethodL *info, NodeML *next);
 
 /*lectura de informacion*/
 
-MethodL* getInfo_NodeML(NodeML *node);
-NodeML* getNext_NodeML(NodeML *node);
+MethodL* get_info_node_ml(NodeML *node);
+NodeML* get_next_node_ml(NodeML *node);
 
 /*escritura de informacion*/
-void setInfo_NodeML(NodeML *node, MethodL *info);
-void setNext_NodeML(NodeML *node, NodeML *next);
+void set_info_node_ml(NodeML *node, MethodL *info);
+void set_next_node_ml(NodeML *node, NodeML *next);
 
 #endif

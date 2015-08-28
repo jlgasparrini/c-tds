@@ -11,6 +11,8 @@
 extern int line_numb;
 extern int column_numb;
 
+#define error_msg " Error in line: "
+
 /* Returns an initialized queue. */
 ErrorsQueue* initialize_queue()
 {
@@ -24,22 +26,27 @@ ErrorsQueue* initialize_queue()
 /* Returns the string formed by putting together all the parameters */
 char* to_string(char *init, char *id, char *message)
 {
-  char* error_msg = " Error in line: ";
-  int length_msg = strlen(init) + strlen(id) + strlen(message) + strlen(error_msg);
-  length_msg += digitAmount(line_numb) + strlen(".") + digitAmount(column_numb);
+  int length_msg = strlen(init) + strlen(id) + strlen(message);
+  length_msg += digit_amount(line_numb) + strlen(".") + digit_amount(column_numb)  + strlen(error_msg);
   char* msg = (char*) malloc(length_msg * sizeof(char));
   strcat(msg, init);
   strcat(msg, id);
   strcat(msg, message);
-  strcat(msg, error_msg);
-  char *numero = (char*) malloc(digitAmount(line_numb) * sizeof(char));
-  sprintf(numero, "%d", line_numb);
-  strcat(msg, numero);
-  strcat(msg, ".");
-  numero = (char*) malloc(digitAmount(column_numb) * sizeof(char));
-  sprintf(numero, "%d", column_numb);
-  strcat(msg, numero);
   return msg;
+}
+
+/* Inserts in the line and the column where the error is */
+char* add_line_column(char *message)
+{
+  strcat(message, error_msg);
+  char *number = (char*) malloc(digit_amount(line_numb) * sizeof(char));
+  sprintf(number, "%d", line_numb);
+  strcat(message, number);
+  strcat(message, ".");
+  number = (char*) malloc(digit_amount(column_numb) * sizeof(char));
+  sprintf(number, "%d", column_numb);
+  strcat(message, number);
+  return message;
 }
 
 /* Insert an element in the end of the queue "q". */
@@ -84,7 +91,7 @@ void delete_all_errors(ErrorsQueue *eq)
 }
 
 /* Print in display the elements of the queue. */
-void printErrorList(ErrorsQueue *eq)
+void print_error_list(ErrorsQueue *eq)
 {
   if (eq->size == 0)
     printf("No semantics errors to compile.\n");
