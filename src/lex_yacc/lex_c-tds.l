@@ -6,7 +6,7 @@
   #define ERROR_MSG "Lexical error line %d.%d. Invalid symbol: \"%s\"\n"
   unsigned int line_numb = 1;
   unsigned int column_numb = 1;
-  
+
   static inline void inc_column_numb() {
     column_numb += strlen(yytext);
   }
@@ -15,6 +15,9 @@
     yylval.string_value = strdup(yytext);
   }
 %}
+
+%option nounput
+%option noinput
 
 %x comment
 
@@ -37,9 +40,9 @@ identifier          {letter}({letter}|{digit}|_)*
 <comment>"*/"	      { column_numb += 2; BEGIN(INITIAL); }
 <comment>(.|\n)     { if (strcmp(yytext,"\n") == 0)
                         { line_numb++; column_numb = 1; }
-                      else 
+                      else
                         column_numb++; }
-"//"(.)*            // found a comment 
+"//"(.)*            // found a comment
 "+"                 { column_numb++; return('+'); }
 "-"                 { column_numb++; return('-'); }
 "*"                 { column_numb++; return('*'); }

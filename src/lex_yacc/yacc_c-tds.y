@@ -707,7 +707,7 @@ method_call   :	   ID '(' ')' {
                             res = create_variable("", method_type);
                             add_code_externinvk(l_code3d, new_code(EXTERN_INVK), strtok($3, token), $5);
                         }
-                        else 
+                        else
                         {
                             res = create_variable((char*) get_variable_name(), Int);
                             add_code_externinvk(l_code3d, new_code(EXTERN_INVK), strtok($3, token), "int");
@@ -752,7 +752,7 @@ externinvk_arg:    arg                    {amount_extern_params++; extern_param_
               ;
 
 arg           :    expression {$$ = $1;}
-              |    STRING     {$$ = create_variable("", Int);} // {$$ = $1;} 
+              |    STRING     {$$ = create_variable("", Int);} // {$$ = $1;}
               ;               // I commented this because extern_param_assign expects an Attribute and STRING doesn't provide one
 
 expression    :    conjunction					{$$ = $1;}

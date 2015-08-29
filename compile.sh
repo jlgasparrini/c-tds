@@ -25,7 +25,7 @@ echo
 echo "Compiling source code..."
 cd ../../bin/
 if gcc -Wall -Wno-enum-compare -o c-tds $lex_yacc $symbols_table $errors_queue $code_3d $stack $method_list $interpreter $assembler $libs; then
-# if gcc -w -o c-tds $lex_yacc $symbols_table $errors_queue $code_3d $stack $method_list $interpreter $assembler $libs; then
+  echo
   echo "Compilation finished...   c-tds compiler generated in bin/c-tds succesfully."
   # Clean all unnecessary files.
   rm $lex_yacc

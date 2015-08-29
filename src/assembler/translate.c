@@ -86,7 +86,7 @@ void load_const_translate(FILE* file, Code3D* code)
     fValue.real = get_float(code, 1);
     fprintf(file, "\tmov $0x");
     fprintf(file, "%x",fValue.entero);
-    fprintf(file, ", %rax\n");
+    fprintf(file, ", %%rax\n");
     write_code_in_file(file, translate("movl", "%eax", offset(code, 2)));
   }
 }
@@ -236,7 +236,7 @@ void translate_assignation_int(FILE* file, Code3D* code)
 /* Puts in the file the translation of the PARAM_ASSIGN_INT action */
 void translate_param_assign_int(FILE *file, Code3D *code)
 {
-  if (get_int(code, 3) != NULL)
+  if (get_int(code, 3))
     write_code_in_file(file, translate("subq", concat("$", int_to_string(get_int(code, 3)*4)), "%rsp"));
   write_code_in_file(file, translate("movq", offset(code, 1), "%rax"));
   write_code_in_file(file, translate("movq", "%rax", concat(int_to_string(auxParam*4), "(%rsp)")));
@@ -374,7 +374,7 @@ void assignation_float_translate(FILE* file, Code3D* code)
 /* Puts in the file the translation of the PARAM_ASSIGN_FLOAT action */
 void translate_param_assign_float(FILE *file, Code3D *code)
 {
-  if (get_int(code, 3) != NULL)
+  if (get_int(code, 3))
     write_code_in_file(file, translate("subq", concat("$", int_to_string(get_int(code, 3)*4)), "%rsp"));
   write_code_in_file(file, translate("movss", offset(code, 1), "%xmm0"));
   write_code_in_file(file, translate("movq", "%rax", concat(int_to_string(auxParam*4), "(%rsp)")));
