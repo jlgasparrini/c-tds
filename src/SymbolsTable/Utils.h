@@ -37,6 +37,9 @@ unsigned int digit_amount(int value);
 /* Returns the string representation of the int "value" */
 char* int_to_string(int value);
 
+/* Returns the string representation of the float "value" */
+char* float_to_string(float value);
+
 /* Checks if the type parameter in "paramSize" position of the method's parameters is equal to the type of "var"
    and the amount of params are equal. */
 void correct_param_base_case(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, LCode3D *lcode3d, Attribute *attr, char* lastCalledMethod, unsigned char paramSize);
