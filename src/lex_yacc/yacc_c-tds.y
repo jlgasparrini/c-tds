@@ -1,4 +1,9 @@
 %{
+
+/* Necessary functions definitions for avoiding warnings */
+int yylex(void);
+int yyparse(void);
+
   /*
    *  MISSING DOCUMENTATION!
    */
@@ -420,7 +425,7 @@ method_decl:  type ID {
                         insert_method_list(list_meth_label, $2, $2);
                       } param block {
                         int pos = atoi(pop(max_method_offset));
-                        set_code_int(l_code3d, pos, 2, get_global_var_offset());
+                        set_code_int(l_code3d, pos - 1, 2, get_global_var_offset());
                         set_global_var_offset(pop_offset(offsets_var));//////////////////////////////////////////
                         if(returns==0) insert_error(error_q,add_line_column(to_string("El metodo \"",$2,"\" debe tener al menos un return.")));
                         pop_level(symbols_table);
@@ -434,7 +439,7 @@ method_decl:  type ID {
                         insert_method_list(list_meth_label, $3, $3);
                     } param block {
                         int pos = atoi(pop(max_method_offset));
-                        set_code_int(l_code3d, pos, 2, get_global_var_offset());
+                        set_code_int(l_code3d, pos - 1, 2, get_global_var_offset());
                         set_global_var_offset(pop_offset(offsets_var));
                         if(returns==0) insert_error(error_q,add_line_column(to_string("El metodo \"",$3,"\" debe tener al menos un return.")));
                         pop_level(symbols_table);
@@ -448,7 +453,7 @@ method_decl:  type ID {
                       insert_method_list(list_meth_label, $2, $2);
                   } param block {
                       int pos = atoi(pop(max_method_offset));
-                      set_code_int(l_code3d, pos, 2, get_global_var_offset());
+                      set_code_int(l_code3d, pos - 1, 2, get_global_var_offset());
                       set_global_var_offset(pop_offset(offsets_var));
                       if(returns==0) insert_error(error_q,add_line_column(to_string("El metodo \"",$2,"\" debe tener al menos un return.")));
                       pop_level(symbols_table);
@@ -462,7 +467,7 @@ method_decl:  type ID {
                 insert_method_list(list_meth_label, $3, $3);
               } param block {
                 int pos = atoi(pop(max_method_offset));
-                set_code_int(l_code3d, pos, 2, get_global_var_offset());
+                set_code_int(l_code3d, pos - 1, 2, get_global_var_offset());
                 set_global_var_offset(pop_offset(offsets_var));
                 if(returns==0) insert_error(error_q,add_line_column(to_string("El metodo \"",$3,"\" debe tener al menos un return.")));
                 pop_level(symbols_table);
@@ -675,7 +680,7 @@ method_call   :	   ID '(' ')' {
                     } expression_aux ')' {
                             if (id_not_found == False)
                             {
-                                set_code_int(l_code3d, flag_first_param, 3, cant_params);
+                                set_code_int(l_code3d, flag_first_param - 1, 3, cant_params);
                                 flag_first_param = 0;
                                 add_code_label(l_code3d, new_code(GOTO_METHOD), get_label_ml(list_meth_label, $1)); //Go to char of Init of Method
                                 $$ = check_get_method_ret_attribute(error_q,symbols_table,l_code3d,$1,cant_params);

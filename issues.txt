@@ -1,5 +1,3 @@
--- Fix all warnings...
-
 -- doc/Manual.odt is missing!
 
 -- doc/Informe.odt needs upgrade
@@ -22,9 +20,8 @@
 
 -- Code refactorizations:
      Two spaces for indent code.
-     Not follow the camelCase syntax. Simply use snake_case.
      Don't use * for pointer navigation, use -> it's more simple.
-     On headers files not write name of var params.
+     On headers files do not write names of var params.
      UPPERCASE for constants.
      PascalCase syntax only for types name.
      Use representative names for variables and types. DON'T USE "aux" variables.

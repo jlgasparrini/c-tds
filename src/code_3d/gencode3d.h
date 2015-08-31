@@ -1,15 +1,20 @@
 /************************************************************************
-*Define la estructura  y funciones asociadas para un generador de       *
-*codigo de 3 direcciones                                              *
-*************************************************************************/
+ *Define la estructura  y funciones asociadas para un generador de       *
+ *codigo de 3 direcciones                                              *
+ *************************************************************************/
 
 #ifndef GENCODE3D_H
 #define GENCODE3D_H
 
-#include "listc3d.h"
+#include "nodec3d.h"
 
 typedef struct {
-    ListC3D *codes;
+  NodeC3D    *init;
+  int        size;
+} ListC3D;
+
+typedef struct {
+  ListC3D *codes;
 } LCode3D;
 
 /**Constructor de una Lista*/
@@ -41,4 +46,7 @@ void delete_code(LCode3D *lcode3d, int index);
 
 /**Funcion de Muestreo de la Lista*/
 void show_c3D(LCode3D *lcode3d);
+
+/** Search one label in the list and return the position of this*/
+int search_by_label(ListC3D *list, char* label);
 #endif
