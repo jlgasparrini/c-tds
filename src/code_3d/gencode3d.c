@@ -4,39 +4,75 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "gencode3d.h"
 #include "operations_code.h"
 #include "../SymbolsTable/Utils.h"
+
 
 /**Constructor de la Lista de Codigos 3D*/
 LCode3D* init_list_c3D()
 {
     LCode3D *lcode = (LCode3D*) malloc(sizeof(LCode3D));
-    lcode->codes = new_list_c3d();
+
+    ListC3D *list = (ListC3D*) malloc(sizeof(ListC3D));
+    list->init = NULL;
+    list->size = 0;
+
+    lcode->codes = list;
     return lcode;
 }
 
-/**Metodo que agrega un Codigo 3D a la lista*/
-void add_code(LCode3D *lcode3d, Code3D *code)
+/* Return true iff list is empty*/
+bool is_empty_c3d(ListC3D *list)
 {
-	add_list_c3d(lcode3d->codes, code);
+    return list->size == 0;
+}
+
+/**Metodo que agrega un Codigo 3D a la lista*/
+void add_code(LCode3D *lcode3d, Code3D *elem)
+{
+  if (is_empty_c3d(lcode3d->codes)) {
+      NodeC3D *node = new_node_c3d_info(elem);
+      lcode3d->codes->init = node;
+  } else {
+      NodeC3D *runner = lcode3d->codes->init;
+      int i;
+      for (i = 0; i < code_size(lcode3d) - 1; i++)
+          runner = get_next_node_c3d(runner);
+      set_next_node_c3d(runner, new_node_c3d_info_next(elem, get_next_node_c3d(runner)));
+  }
+  lcode3d->codes->size++;
 }
 
 /**Metodo que retorna un Codigo 3D dependiendo de una posicion*/
 Code3D* get_code(LCode3D *lcode3d, int index)
 {
-    return get_list_c3d(lcode3d->codes, index);
+  NodeC3D *runner = lcode3d->codes->init;
+  if ((index >= 0) && (index < code_size(lcode3d))) {
+    int i;
+    for (i = 0; i < index; i++)
+      runner = get_next_node_c3d(runner);
+    return get_info_node_c3d(runner);
+  }
+  return NULL; /* This case was added to ensure that this method always return something */
 }
 
 /**Metodo de retorna el tamaño de la Lista*/
 int code_size(LCode3D *lcode3d)
 {
-    return size_list_c3d(lcode3d->codes);
+    return lcode3d->codes->size;
 }
 
 void set_code_int(LCode3D *lcode3d,int index,int param, int numb)
 {
-    set_list_c3d_int(lcode3d->codes,index, param, numb);
+    if ((index >= 0) && (index < code_size(lcode3d))) {
+        NodeC3D *runner = lcode3d->codes->init;
+        int i;
+        for (i = 0; i < index - 1; i++)
+            runner = get_next_node_c3d(runner);
+        set_int(runner->info, param, numb);
+    }
 }
 
 /**Metodo que a base de un Codigo 3D y un label, setea el codigo y lo agrega a la Lista*/
@@ -100,7 +136,23 @@ void add_param_externinvk(LCode3D *lcode3d, Code3D *code, Attribute *attr, int p
 /**Metodo que borra un Codigo 3D de la lista dependiendo una posicion*/
 void delete_code(LCode3D *lcode3d, int index)
 {
-	delete_list_c3d(lcode3d->codes, index);
+  if ((index >= 0) && (index < code_size(lcode3d)))
+  {
+    NodeC3D *runner = lcode3d->codes->init;
+    NodeC3D *del = lcode3d->codes->init;
+    if (index == 0)
+      lcode3d->codes->init = get_next_node_c3d(runner);
+    else
+    {
+      int i;
+      for (i = 0; i < index - 1; i++)
+        runner = get_next_node_c3d(runner);
+      del = get_next_node_c3d(runner);
+      set_next_node_c3d(runner, get_next_node_c3d(del));
+    }
+    free(del);
+    lcode3d->codes->size--;
+  }
 }
 
 /**Prints on the screen the 3d code that contains the list lcode3d */
@@ -114,4 +166,18 @@ void show_c3D(LCode3D *lcode3d)
     int i;
     for (i = 0; i < cantCodes; i++)
 		to_string_c3D(get_code(lcode3d, i));
+}
+
+/**Metodo que retorna la posicion de un label especifico, buscandolo en la lista*/
+int search_by_label(ListC3D *list, char* label)
+{
+    NodeC3D *runner = list->init;
+    int i;
+    for (i = 0; i < list->size; i++)
+    {
+        if (strcmp((char*) get_operation_by_id(get_command(runner->info)),"LABEL") == 0 && strcmp(get_label(runner->info, 1), label) == 0)
+            return i;
+        runner = get_next_node_c3d(runner);
+    }
+    return -1;
 }
