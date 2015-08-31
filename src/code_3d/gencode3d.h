@@ -1,7 +1,7 @@
 /************************************************************************
-*Define la estructura  y funciones asociadas para un generador de       *
-*codigo de 3 direcciones                                              *
-*************************************************************************/
+ *Define la estructura  y funciones asociadas para un generador de       *
+ *codigo de 3 direcciones                                              *
+ *************************************************************************/
 
 #ifndef GENCODE3D_H
 #define GENCODE3D_H
@@ -9,12 +9,12 @@
 #include "nodec3d.h"
 
 typedef struct {
-    NodeC3D    *init;
-    int        size;
+  NodeC3D    *init;
+  int        size;
 } ListC3D;
 
 typedef struct {
-    ListC3D *codes;
+  ListC3D *codes;
 } LCode3D;
 
 /**Constructor de una Lista*/
