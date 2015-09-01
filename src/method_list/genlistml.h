@@ -12,18 +12,14 @@
 typedef struct {
 	NodeML    *init;
 	int        size;
-} ListML;
-
-typedef struct {
-	ListML *labels;
 } ListMLabel;
 
 
 ListMLabel* init_list_m();
 
-int size_method_list(ListMLabel *listmlabel);
-void insert_method_list(ListMLabel *listmlabel, char *id_method, char *label_method);
-char* get_label_ml(ListMLabel *listmlabel, char *id_method);
+int size_method_list(ListMLabel *list);
+void insert_method_list(ListMLabel *list, char *id_method, char *label_method);
+char* get_label_ml(ListMLabel *list, char *id_method);
 
-void delete_list_ml(ListML *list, int index);
+void delete_list_ml(ListMLabel *list, int index);
 #endif
