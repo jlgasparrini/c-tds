@@ -12,7 +12,7 @@ int extern_offset = 0;
 bool any_goto_method = false;
 
 /* Return value of a constant. */
-char* value(Code3D* code, int i)
+char* value(Code3D *code, int i)
 {
   char *result = (char*) malloc(sizeof(char));/* CHECK OUT THIS CASE BECAUSE sizeof(char) ONLY STORES MEMORY FOR ONLY ONE CHARACTER! */
   if (is_int(code, i))/* IF THE NUMBER HAS MORE THAN ONE DIGIT (CHARACTER) IT WILL BROKE! */
@@ -25,7 +25,7 @@ char* value(Code3D* code, int i)
 }
 
 /* Returns the respective operation in assembly code */
-char* translate(char* operation, char* code1, char* code2)
+char* translate(char *operation, char *code1, char *code2)
 {
   char* new_line = "\n";
   char* blank = " ";
@@ -50,7 +50,7 @@ char* translate(char* operation, char* code1, char* code2)
 }
 
 /**Metodo para la obtencion del offset de una variable*/
-char* offset(Code3D* code, int param)
+char* offset(Code3D *code, int param)
 {
   char *result = (char*) malloc(sizeof(char));/* CHECK OUT THIS CASE BECAUSE sizeof(char) ONLY STORES MEMORY FOR ONLY ONE CHARACTER! */
   result =int_to_string(get_offset_val(get_attribute(code, param)));
@@ -69,7 +69,7 @@ char* offset_num(int offset)
 }
 
 /* Return offset of an array */
-static char* offset_array(Code3D* code, int param, char* reg)
+static char* offset_array(Code3D *code, int param, char *reg)
 {
   int offset = get_offset_array(get_attribute(code, param));
   return concat(concat(concat(int_to_string(offset), "(%rbp,"), reg), ",4)");
@@ -77,7 +77,7 @@ static char* offset_array(Code3D* code, int param, char* reg)
 
 /* BASIC OPERATIONS */
 /**"LOAD_CONST %s %s\n" */
-void load_const_translate(FILE* file, Code3D* code)
+void load_const_translate(FILE *file, Code3D *code)
 {
   if (!is_float(code, 1))
     write_code_in_file(file, translate("movl", value(code, 1), offset(code, 2)));
@@ -92,20 +92,20 @@ void load_const_translate(FILE* file, Code3D* code)
 }
 
 /* Puts in the file the translation of the GOTO_LABEL action */
-inline void translate_goto_label(FILE* file, Code3D* code)
+inline void translate_goto_label(FILE *file, Code3D *code)
 {
   write_code_in_file(file, translate("jmp", get_label(code,1), ""));
 }
 
 /* Puts in the file the translation of the GOTO_LABEL_CONDITION action */
-void translate_goto_label_condition(FILE* file, Code3D* code)
+void translate_goto_label_condition(FILE *file, Code3D *code)
 {
   write_code_in_file(file, translate("cmp", "$0", offset(code, 1)));
   write_code_in_file(file, translate("jz", get_label(code,2), ""));
 }
 
 /* Puts in the file the translation of the RETURN action */
-void translate_return(FILE* file, Code3D* code)
+void translate_return(FILE *file, Code3D *code)
 {
   write_code_in_file(file, translate("movl", "$0", "%eax"));
   write_code_in_file(file, translate("leave","",""));
@@ -113,7 +113,7 @@ void translate_return(FILE* file, Code3D* code)
 }
 
 /* Puts in the file the translation of the RETURN_EXPR action */
-void translate_return_expression(FILE* file, Code3D* code)
+void translate_return_expression(FILE *file, Code3D *code)
 {
   write_code_in_file(file, translate("movl", offset(code,1), "%eax"));
   write_code_in_file(file, translate("leave","",""));
@@ -121,7 +121,7 @@ void translate_return_expression(FILE* file, Code3D* code)
 }
 
 /* Puts in the file the translation of the MINUS_INT action */
-void translate_or(FILE* file, Code3D* code)
+void translate_or(FILE *file, Code3D *code)
 {
   write_code_in_file(file, translate("movl", offset(code,1), "%eax"));
   write_code_in_file(file, translate("or", offset(code,2), "%eax"));
@@ -129,7 +129,7 @@ void translate_or(FILE* file, Code3D* code)
 }
 
 /* Puts in the file the translation of the MINUS_INT action */
-void translate_and(FILE* file, Code3D* code)
+void translate_and(FILE *file, Code3D *code)
 {
   write_code_in_file(file, translate("movl", offset(code,1), "%eax"));
   write_code_in_file(file, translate("and", offset(code,2), "%eax"));
@@ -137,7 +137,7 @@ void translate_and(FILE* file, Code3D* code)
 }
 
 /* Puts in the file the translation of the MINUS_INT action */
-void translate_not(FILE* file, Code3D* code)
+void translate_not(FILE *file, Code3D *code)
 {
   write_code_in_file(file, translate("cmpl", "$1", offset(code,1)));
   write_code_in_file(file, translate("setne", "%al", ""));
@@ -214,7 +214,7 @@ void translate_load_array(FILE *file, Code3D *code)
 
 /* Puts in the file the translation of the GOTO_METHOD action */
 /* "GOTO_METHOD %s\n" */
-void goto_method (FILE* file, Code3D* code)
+void goto_method (FILE *file, Code3D *code)
 {
   write_code_in_file(file, translate("call", get_label(code,1), ""));
   /*   DEBO   PREGUNTAR   SI   EL TIPO DE RETORNO DEL METODO ESif DISSTINTO DE VOID!    */
@@ -223,7 +223,7 @@ void goto_method (FILE* file, Code3D* code)
 
 /* INT OPERATIONS TREATEMENT */
 /* Puts in the file the translation of the ASSIGNATION_INT action */
-void translate_assignation_int(FILE* file, Code3D* code)
+void translate_assignation_int(FILE *file, Code3D *code)
 {
   if (!any_goto_method)
   {
@@ -245,7 +245,7 @@ void translate_param_assign_int(FILE *file, Code3D *code)
 
 /*-----------------------------------------------------------------------*/
 /**"NEG_INT %s %s\n" */
-void neg_int_translate(FILE* file, Code3D* code)
+void neg_int_translate(FILE *file, Code3D *code)
 {
   write_code_in_file(file, translate("movl", offset(code, 1), "%eax"));
   write_code_in_file(file, translate("negl", "%eax", ""));
@@ -254,7 +254,7 @@ void neg_int_translate(FILE* file, Code3D* code)
 
 /*-----------------------------------------------------------------------*/
 /**"ADD_INT %s %s %s\n" */
-void add_int_translate(FILE* file, Code3D* code)
+void add_int_translate(FILE *file, Code3D *code)
 {
   write_code_in_file(file, translate("movq", offset(code, 1), "%rax"));
   write_code_in_file(file, translate("add", offset(code, 2) ,"%rax"));
@@ -263,7 +263,7 @@ void add_int_translate(FILE* file, Code3D* code)
 
 /*-----------------------------------------------------------------------*/
 /**"MULT_INT %s %s %s\n" */
-void mult_int_translate(FILE* file, Code3D* code)
+void mult_int_translate(FILE *file, Code3D *code)
 {
   write_code_in_file(file, translate("movq", offset(code, 1), "%rax"));
   write_code_in_file(file, translate("imulq", offset(code, 2) ,"%rax"));
@@ -271,7 +271,7 @@ void mult_int_translate(FILE* file, Code3D* code)
 }
 
 /**"GREATER_INT %s %s %s\n" */
-void greater_int_translate(FILE* file, Code3D* code)
+void greater_int_translate(FILE *file, Code3D *code)
 {
   write_code_in_file(file, translate("movl", offset(code, 1), "%eax"));
   write_code_in_file(file, translate("cmp", offset(code, 2), "%eax"));
@@ -282,7 +282,7 @@ void greater_int_translate(FILE* file, Code3D* code)
 
 /*-----------------------------------------------------------------------*/
 /**"GREATER_ EQ_INT %s %s %s\n" */
-void greater_eq_int_translate(FILE* file, Code3D* code)
+void greater_eq_int_translate(FILE *file, Code3D *code)
 {
   write_code_in_file(file, translate("movl", offset(code, 1), "%eax"));
   write_code_in_file(file, translate("cmp", offset(code, 2), "%eax"));
@@ -292,7 +292,7 @@ void greater_eq_int_translate(FILE* file, Code3D* code)
 }
 
 /* Puts in the file the translation of the MINUS_INT action */
-void translate_minus_int(FILE* file, Code3D* code)
+void translate_minus_int(FILE *file, Code3D *code)
 {
   write_code_in_file(file, translate("movq", offset(code,2), "%rax"));
   write_code_in_file(file, translate("movq", offset(code,1), "%r10"));
@@ -301,7 +301,7 @@ void translate_minus_int(FILE* file, Code3D* code)
 }
 
 /* Puts in the file the translation of the MOD_INT action */
-void translate_mod_int(FILE* file, Code3D* code)
+void translate_mod_int(FILE *file, Code3D *code)
 {
   /* it divides"rdx:rax" by "divisor". Stores quotient in rax and remainder in rdx */
   write_code_in_file(file, translate("movq", "$0", "%rdx"));
@@ -312,7 +312,7 @@ void translate_mod_int(FILE* file, Code3D* code)
 }
 
 /* Puts in the file the translation of the DIV_INT action */
-void translate_div_int(FILE* file, Code3D* code)
+void translate_div_int(FILE *file, Code3D *code)
 {
   /* it divides"rdx:rax" by "divisor". Stores quotient in rax and remainder in rdx */
   write_code_in_file(file, translate("movq", "$0", "%rdx"));
@@ -322,7 +322,7 @@ void translate_div_int(FILE* file, Code3D* code)
 }
 
 /* Puts in the file the translation of the LESSER_INT action */
-void translate_lesser_int(FILE* file, Code3D* code)
+void translate_lesser_int(FILE *file, Code3D *code)
 {
   write_code_in_file(file, translate("movl", offset(code, 1), "%eax"));
   write_code_in_file(file, translate("cmp", offset(code, 2), "%eax"));
@@ -332,7 +332,7 @@ void translate_lesser_int(FILE* file, Code3D* code)
 }
 
 /* Puts in the file the translation of the LESSER_EQ_INT action */
-void translate_lesser_or_equal_int(FILE* file, Code3D* code)
+void translate_lesser_or_equal_int(FILE *file, Code3D *code)
 {
   write_code_in_file(file, translate("movl", offset(code, 1), "%eax"));
   write_code_in_file(file, translate("cmp", offset(code, 2), "%eax"));
@@ -342,7 +342,7 @@ void translate_lesser_or_equal_int(FILE* file, Code3D* code)
 }
 
 /* Puts in the file the translation of the EQ_INT action */
-void translate_equal_int(FILE* file, Code3D* code)
+void translate_equal_int(FILE *file, Code3D *code)
 {
   write_code_in_file(file, translate("movl", offset(code, 1), "%eax"));
   write_code_in_file(file, translate("cmp", offset(code, 2) ,"%eax"));
@@ -352,7 +352,7 @@ void translate_equal_int(FILE* file, Code3D* code)
 }
 
 /* Puts in the file the translation of the DIST_INT action */
-void translate_distinct_int(FILE* file, Code3D* code)
+void translate_distinct_int(FILE *file, Code3D *code)
 {
   write_code_in_file(file, translate("movl", offset(code, 1), "%eax"));
   write_code_in_file(file, translate("cmp", offset(code, 2) ,"%eax"));
@@ -365,7 +365,7 @@ void translate_distinct_int(FILE* file, Code3D* code)
 
 /*-----------------------------------------------------------------------*/
 /**"ASSIGNATION_FLOAT %s %s\n" */
-void assignation_float_translate(FILE* file, Code3D* code)
+void assignation_float_translate(FILE *file, Code3D *code)
 {
   write_code_in_file(file, translate("movss", offset(code, 1), "%xmm0"));
   write_code_in_file(file, translate("movss", "%xmm0", offset(code, 2)));
@@ -381,7 +381,7 @@ void translate_param_assign_float(FILE *file, Code3D *code)
 }
 
 /**"NEG_FLOAT %s %s\n" */
-void neg_float_translate(FILE* file, Code3D* code)
+void neg_float_translate(FILE *file, Code3D *code)
 {
   write_code_in_file(file, translate("movss", offset(code, 1), "%xmm1"));
   write_code_in_file(file, translate("movss", ".NEG_FLOAT(%rip)", "%xmm0"));
@@ -391,7 +391,7 @@ void neg_float_translate(FILE* file, Code3D* code)
 
 /*-----------------------------------------------------------------------*/
 /**"EQ_FLOAT %s %s %s\n" */
-void eq_float_translate(FILE* file, Code3D* code)
+void eq_float_translate(FILE *file, Code3D *code)
 {
   write_code_in_file(file, translate("movss", offset(code, 1), "%xmm0"));
   write_code_in_file(file, translate("ucomiss", offset(code, 2) ,"%xmm0"));
@@ -404,7 +404,7 @@ void eq_float_translate(FILE* file, Code3D* code)
 }
 
 /**"DIST_FLOAT %s %s %s\n" */
-void dist_float_translate(FILE* file, Code3D* code)
+void dist_float_translate(FILE *file, Code3D *code)
 {
   write_code_in_file(file, translate("movss", offset(code, 1), "%xmm0"));
   write_code_in_file(file, translate("ucomiss", offset(code, 2) ,"%xmm0"));
@@ -418,7 +418,7 @@ void dist_float_translate(FILE* file, Code3D* code)
 
 /*-----------------------------------------------------------------------*/
 /**"GREATER_FLOAT %s %s %s\n" */
-void greater_float_translate(FILE* file, Code3D* code)
+void greater_float_translate(FILE *file, Code3D *code)
 {
   write_code_in_file(file, translate("movss", offset(code, 1), "%xmm0"));
   write_code_in_file(file, translate("ucomiss", offset(code, 2) ,"%xmm0"));
@@ -428,7 +428,7 @@ void greater_float_translate(FILE* file, Code3D* code)
 
 /*-----------------------------------------------------------------------*/
 /**"GREATER_ EQ_FLOAT %s %s %s\n" */
-void greater_eq_float_translate(FILE* file, Code3D* code)
+void greater_eq_float_translate(FILE *file, Code3D *code)
 {
   write_code_in_file(file, translate("movss", offset(code, 1), "%xmm0"));
   write_code_in_file(file, translate("ucomiss", offset(code, 2) ,"%xmm0"));
@@ -437,7 +437,7 @@ void greater_eq_float_translate(FILE* file, Code3D* code)
 }
 
 /* Puts in the file the translation of the LESSER_EQ_FLOAT action */
-void translate_lesser_or_equal_float(FILE *file, Code3D* code)
+void translate_lesser_or_equal_float(FILE *file, Code3D *code)
 {
   write_code_in_file(file, translate("movss", offset(code, 1), "%xmm0"));
   write_code_in_file(file, translate("ucomiss", offset(code, 2) ,"%xmm0"));
@@ -446,7 +446,7 @@ void translate_lesser_or_equal_float(FILE *file, Code3D* code)
 }
 
 /* Puts in the file the translation of the LESSER_FLOAT action */
-void translate_lesser_float(FILE *file, Code3D* code)
+void translate_lesser_float(FILE *file, Code3D *code)
 {
   write_code_in_file(file, translate("movss", offset(code, 1), "%xmm0"));
   write_code_in_file(file, translate("ucomiss", offset(code, 2) ,"%xmm0"));
@@ -455,7 +455,7 @@ void translate_lesser_float(FILE *file, Code3D* code)
 }
 
 /* Puts in the file the translation of the DIV_FLOAT action */
-void translate_div_float(FILE* file, Code3D* code)
+void translate_div_float(FILE *file, Code3D *code)
 {
   write_code_in_file(file, translate("movss", offset(code, 1) ,"%xmm0"));
   write_code_in_file(file, translate("divss", offset(code, 2), "%xmm0"));
@@ -463,7 +463,7 @@ void translate_div_float(FILE* file, Code3D* code)
 }
 
 /* Puts in the file the translation of the MULT_FLOAT action */
-void translate_mult_float(FILE* file, Code3D* code)
+void translate_mult_float(FILE *file, Code3D *code)
 {
   write_code_in_file(file, translate("movss", offset(code, 1) ,"%xmm0"));
   write_code_in_file(file, translate("mulss", offset(code, 2), "%xmm0"));
@@ -471,7 +471,7 @@ void translate_mult_float(FILE* file, Code3D* code)
 }
 
 /* Puts in the file the translation of the ADD_FLOAT action */
-void translate_add_float(FILE* file, Code3D* code)
+void translate_add_float(FILE *file, Code3D *code)
 {
   write_code_in_file(file, translate("movss", offset(code, 1) ,"%xmm0"));
   write_code_in_file(file, translate("addss", offset(code, 2), "%xmm0"));
@@ -479,7 +479,7 @@ void translate_add_float(FILE* file, Code3D* code)
 }
 
 /* Puts in the file the translation of the MINUS_FLOAT action */
-void translate_minus_float(FILE* file, Code3D* code)
+void translate_minus_float(FILE *file, Code3D *code)
 {
   write_code_in_file(file, translate("movss", offset(code, 1) ,"%xmm0"));
   write_code_in_file(file, translate("subss", offset(code, 2), "%xmm0"));
@@ -489,7 +489,7 @@ void translate_minus_float(FILE* file, Code3D* code)
 /* EXTERN INVOCATIONS OPERATIONS */
 
 /* Puts in the file the translation of the EXTERNINVK action */
-void translate_externinvk(FILE* file, Code3D* code)
+void translate_externinvk(FILE *file, Code3D *code)
 {
   write_code_in_file(file, "\tmovl	$0, %eax\n");
   write_code_in_file(file, translate("call", get_label(code, 1), ""));
@@ -552,7 +552,7 @@ void translate_bool_extern_param(FILE *file, Code3D *code)
   }
 }
 
-inline void write_neg_float(FILE* file)
+inline void write_neg_float(FILE *file)
 {
   write_code_in_file(file, "\t.NEG_FLOAT:\n");
   write_code_in_file(file, "\t\t.long 2147483648\n");

@@ -2,7 +2,7 @@
 *Implementacion Codigo de 3 Direcciones                               *
 ***********************************************************************/
 
-#include "method_l.h"
+#include "methodl.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>

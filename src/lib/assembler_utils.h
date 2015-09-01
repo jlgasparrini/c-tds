@@ -8,9 +8,9 @@
 #include <stdio.h>
 
 /* Return concatenation of s1 with s2. */
-char* concat(char*, char*);
+char* concat(char *str1, char *str2);
 
 /* Write the string in a file. */
-void write_code_in_file(FILE*, char*);
+void write_code_in_file(FILE *file, char *code);
 
 #endif

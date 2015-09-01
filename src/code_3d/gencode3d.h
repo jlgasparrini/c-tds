@@ -24,18 +24,18 @@ Code3D* get_code(ListC3D *list, int index);
 int code_size(ListC3D *list);
 
 /**/
-void set_code_int(ListC3D *list,int index,int param, int numb);
+void set_code_int(ListC3D *list, int index, int param, int numb);
 
 /** Funciones de Escritura de la Lista de un Codigo Concreto*/
 void add_code_label(ListC3D *list, Code3D *code, char *label);
-void add_code_label_cond(ListC3D *list, Code3D *code, Attribute *attri1, char *labelJumpTo);
+void add_code_label_cond(ListC3D *list, Code3D *code, Attribute *attri1, char *label_jump_to);
 
-void add_assignation(ListC3D *list, Attribute *attri1,  Attribute *attriRes);
+void add_assignation(ListC3D *list, Attribute *attri1,  Attribute *attri_result);
 void add_print(ListC3D *list, Code3D *code, Attribute *attr);
-void add_method_call(ListC3D *list, Code3D *code,  Attribute *attri1, Attribute *attriRes);
+void add_method_call(ListC3D *list, Code3D *code,  Attribute *attri1, Attribute *attri_result);
 
 void add_code_externinvk(ListC3D *list, Code3D *code,char *label,  char* type);
-void add_param_externinvk(ListC3D *list, Code3D *code, Attribute *attr, int paramNumber);
+void add_param_externinvk(ListC3D *list, Code3D *code, Attribute *attr, int param_number);
 
 /**Funcion de Borrado de un Codigo de la Lista*/
 void delete_code(ListC3D *list, int index);
@@ -44,5 +44,5 @@ void delete_code(ListC3D *list, int index);
 void show_c3D(ListC3D *list);
 
 /** Search one label in the list and return the position of this*/
-int search_by_label(ListC3D *list, char* label);
+int search_by_label(ListC3D *list, char *label);
 #endif

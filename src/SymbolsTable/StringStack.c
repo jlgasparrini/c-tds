@@ -16,60 +16,60 @@ StringStack* initialize_string_stack()
 	return stack;
 }
 
-/* Insert an element in the stack "s". */
-void push_string(StringStack *s, char *value)
+/* Insert an element in the stack "stack". */
+void push_string(StringStack *stack, char *value)
 {
 	SNode *new_node = (SNode*) malloc (sizeof(SNode));
 	if (new_node)
 	{
 		new_node->val = strdup(value);
-		new_node->next = s->first;
-		s->first = new_node;
-		s->size++;
+		new_node->next = stack->first;
+		stack->first = new_node;
+		stack->size++;
 	}
 	else 
 		printf("StringStack.h: insert ERROR: Can't reserve space in memory.");
 }
 
-/* Return the value of the last pushed string in the stack "s". */
-char* pop_string(StringStack *s)
+/* Return the value of the last pushed string in the stack "stack". */
+char* pop_string(StringStack *stack)
 {
-	if (s->size > 0)
+	if (stack->size > 0)
 	{
-		SNode *runner = s->first;
+		SNode *runner = stack->first;
 		char* auxVal = strdup(runner->val);
-		s->first = runner->next;
+		stack->first = runner->next;
 		free(runner);
-		s->size--;
+		stack->size--;
 		return auxVal;
 	}
 	return "";
 }
 
-/* Return the top string of the stack "s". */
-char* top_string(StringStack *s)
+/* Return the top string of the stack "stack". */
+char* top_string(StringStack *stack)
 {
-	if (s->size > 0)
-		return s->first->val;
+	if (stack->size > 0)
+		return stack->first->val;
 	return "";
 }
 
 /* Prints the stack in the correct order */
-void print_correct_order(StringStack *s)
+void print_correct_order(StringStack *stack)
 {
-	while (s->size > 0)
-		printf("%s",pop_string(s));	
+	while (stack->size > 0)
+		printf("%stack",pop_string(stack));	
 }
 
 /* Prints the stack in the inverse order */
-void print_inverse_order(StringStack *s)
+void print_inverse_order(StringStack *stack)
 {
 	StringStack *aux = initialize_string_stack();
-	while (s->size > 0)
-		push_string(aux,pop_string(s));
+	while (stack->size > 0)
+		push_string(aux,pop_string(stack));
 	while (aux->size > 0)
 	{
-		printf("%s",top_string(aux));	
-		push_string(s,pop_string(aux));
+		printf("%stack",top_string(aux));	
+		push_string(stack,pop_string(aux));
 	}
 }

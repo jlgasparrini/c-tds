@@ -121,7 +121,7 @@ void set_array_bool_val(Attribute *attr, unsigned int pos, Boolean value);
 int get_global_var_offset();
 
 /* Set the global offset of the class */
-void set_global_var_offset(int newOffset);
+void set_global_var_offset(int new_offset);
 
 /* Set the global offset of the class in a -16 */
 void reset_global_var_offset();
@@ -130,7 +130,7 @@ void reset_global_var_offset();
 int get_global_param_offset();
 
 /* Set the global parameters offset of the class */
-void set_global_param_offset(int newOffset);
+void set_global_param_offset(int new_offset);
 
 /* Set the global parameters offset of the class in a 8 */
 void reset_global_param_offset();

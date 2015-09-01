@@ -64,9 +64,9 @@ void set_null(Code3D *code, int param);
 /** Funciones de Escritura de un Codigo Concreto*/
 
 void set_code_label(Code3D *code, char *label);
-void set_code_label_cond(Code3D *code, Attribute *attri1, char *labelJumpTo);
-void set_c3D(Code3D *code, Attribute *attri1, Attribute *attri2, Attribute *attriRes);
-void set_c2D(Code3D *code, Attribute *attri1, Attribute *attriRes);
+void set_code_label_cond(Code3D *code, Attribute *attri1, char *label_jump_to);
+void set_c3D(Code3D *code, Attribute *attri1, Attribute *attri2, Attribute *attri_result);
+void set_c2D(Code3D *code, Attribute *attri1, Attribute *attri_result);
 void set_c1D(Code3D *code, Attribute *attri1);
 
 void to_string_c3D(Code3D *code);

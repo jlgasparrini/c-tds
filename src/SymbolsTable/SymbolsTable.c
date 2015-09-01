@@ -22,16 +22,16 @@ SymbolsTable* initialize_symbols_table()
 }
 
 /* Insert a element in the current level of the SymbolsTable. */
-void push_element(ErrorsQueue *eq, SymbolsTable *symbols_table, Attribute *at)
+void push_element(ErrorsQueue *eq, SymbolsTable *symbols_table, Attribute *attribute)
 {
 	if (symbols_table->current_level > 0)
 	{
-    if (at!=NULL)
+    if (attribute!=NULL)
     {
-      if (search_id_in_level(symbols_table, get_id(at)) != NULL)
-        insert_error(eq, add_line_column(to_string("El identificador \"", get_id(at), "\" ya se encuentra en uso.")));
+      if (search_id_in_level(symbols_table, get_id(attribute)) != NULL)
+        insert_error(eq, add_line_column(to_string("El identificador \"", get_id(attribute), "\" ya se encuentra en uso.")));
       else
-        insert(symbols_table->top->list, at);
+        insert(symbols_table->top->list, attribute);
     }
     else
       insert_error(eq, add_line_column(to_string("El atributo es NULL.","","")));

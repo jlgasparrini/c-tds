@@ -14,19 +14,19 @@
 char* get_variable_name();
 
 /* Returns an attribute of ID "id" and Variable structure. Otherwise returns NULL */
-Attribute* get_variable_attribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id);
+Attribute* get_variable_attribute(ErrorsQueue *eq, SymbolsTable *symbols_table, char* id);
 
 /* Returns the ReturnType of the method with id "id" */
-ReturnType method_return_type(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id);
+ReturnType method_return_type(ErrorsQueue *eq, SymbolsTable *symbols_table, char* id);
 
 /* Returns the return attribute of the method with id "id" */
-Attribute* get_method_return_attribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id);
+Attribute* get_method_return_attribute(ErrorsQueue *eq, SymbolsTable *symbols_table, char* id);
 
 /* Sets the return attribute of the method with id "id" */
-void set_method_return_attribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* id, StVariable *value);
+void set_method_return_attribute(ErrorsQueue *eq, SymbolsTable *symbols_table, char* id, StVariable *value);
 
-/* Returns the respective variable attribute that the method return. "paramSize" is for checking if the amount of parameters is right */
-Attribute* check_get_method_ret_attribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, ListC3D *list, char *id, unsigned char paramSize);
+/* Returns the respective variable attribute that the method return. "param_size" is for checking if the amount of parameters is right */
+Attribute* check_get_method_ret_attribute(ErrorsQueue *eq, SymbolsTable *symbols_table, ListC3D *list, char *id, unsigned char param_size);
 
 /* Returns the type of the attribute, although it is a variable, array or method */
 ReturnType get_attribute_type(Attribute *attr);
@@ -40,38 +40,38 @@ char* int_to_string(int value);
 /* Returns the string representation of the float "value" */
 char* float_to_string(float value);
 
-/* Checks if the type parameter in "paramSize" position of the method's parameters is equal to the type of "var"
+/* Checks if the type parameter in "param_size" position of the method's parameters is equal to the type of "var"
    and the amount of params are equal. */
-void correct_param_base_case(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, ListC3D *list, Attribute *attr, char* lastCalledMethod, unsigned char paramSize);
+void correct_param_base_case(ErrorsQueue *eq, SymbolsTable *symbols_table, ListC3D *list, Attribute *attr, char* last_called_method, unsigned char param_size);
 
-/* Checks if if the type parameter in "paramSize" position of the method's parameters is equal to the type of "var"
-   and paramSize <= than the amount of parameters of the method. */
-void correct_param_inductive_case(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, ListC3D *list, Attribute *attr, char* lastCalledMethod, unsigned char paramSize);
+/* Checks if if the type parameter in "param_size" position of the method's parameters is equal to the type of "var"
+   and param_size <= than the amount of parameters of the method. */
+void correct_param_inductive_case(ErrorsQueue *eq, SymbolsTable *symbols_table, ListC3D *list, Attribute *attr, char* last_called_method, unsigned char param_size);
 
 /**/
-void extern_param_assign(ListC3D *list, Attribute *param, unsigned char paramNumber);
+void extern_param_assign(ListC3D *list, Attribute *param, unsigned char param_number);
 
 /* Insert an error message if the attribute "attr" isn't a variable of type "type" */
 /* Return 1 if ocurred one error, or 0 if all type is ok*/
-unsigned char control_type(ErrorsQueue *eq, Attribute *attr, PrimitiveType type, char *operation, int numberOfExpression);
+unsigned char control_type(ErrorsQueue *eq, Attribute *attr, PrimitiveType type, char *operation, int number_of_expression);
 
 /* Insert an error message and return 1 if attributes "attr1" and "attr2" aren't of the same type and both variables or arrays
    Returns 0 otherwise */
 unsigned char control_assignation(ErrorsQueue *eq, ListC3D *list, Attribute *attr1, char* op, Attribute *attr2);
 
-/* Insert an error message if the "lastUsedMethod" haven't got "void" return type */
-unsigned char check_return(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* lastUsedMethod);
+/* Insert an error message if the "last_used_method" haven't got "void" return type */
+unsigned char check_return(ErrorsQueue *eq, SymbolsTable *symbols_table, char* last_used_method);
 
-/* Insert an error message if the "lastUsedMethod" doesn't return "void" or if it has a different return type that the definition */
+/* Insert an error message if the "last_used_method" doesn't return "void" or if it has a different return type that the definition */
 /* Return 0 if ocurred one error, or 1 if all type is ok*/
-unsigned char check_return_expression(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char* lastUsedMethod, Attribute *attr);
+unsigned char check_return_expression(ErrorsQueue *eq, SymbolsTable *symbols_table, char* last_used_method, Attribute *attr);
 
 /* Returns the array at the position specified by attr.decl.variable.value.intValue if attr has "int" type
 	Otherwise insert an error message because the attribute haven't got "int" type and create a default variable of "int" type */
-Attribute* check_array_pos(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, ListC3D *list, char* id, Attribute* attr);
+Attribute* check_array_pos(ErrorsQueue *eq, SymbolsTable *symbols_table, ListC3D *list, char* id, Attribute* attr);
 
 /* Checks if the program have a "main" method and it haven't got parameters */
-void check_main(ErrorsQueue *eq, SymbolsTable *aSymbolsTable);
+void check_main(ErrorsQueue *eq, SymbolsTable *symbols_table);
 
 
 /* -------------------------------Methods used to form expressions------------------------------ */

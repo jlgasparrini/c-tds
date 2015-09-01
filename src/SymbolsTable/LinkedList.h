@@ -27,19 +27,19 @@ typedef struct
 /* Returns an initialized linked list. */ 
 LinkedList* initialize();
 
-/* Insert an element in the linked list "l". */
-void insert(LinkedList *l, Attribute *attribute);
+/* Insert an element in the linked list "list". */
+void insert(LinkedList *list, Attribute *attribute);
 
-/* Search the element "data" in the list "l" */
-Attribute* search(LinkedList *l, char *id);
+/* Search the element "data" in the list "list" */
+Attribute* search(LinkedList *list, char *id);
 
 /* Return Attribute* of the last defined method in the list. */
-Attribute* get_last_defined_method(LinkedList *l);
+Attribute* get_last_defined_method(LinkedList *list);
 
 /* Delete all the elements of the list. */
-void delete_all(LinkedList *l);
+void delete_all(LinkedList *list);
 
 /* Print in display the elements of the list. */
-void print_list(LinkedList *l);
+void print_list(LinkedList *list);
 
 #endif
