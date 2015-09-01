@@ -21,10 +21,10 @@ typedef struct SNode
 /* Define type SymbolsTable. */
 typedef struct
 {
-    /* Reference to the top of the SymbolsTable. */
-    SymbolsTableNode *top;
-    /* Current currentLevel of the SymbolsTable. */
-    int currentLevel;
+  /* Reference to the top of the SymbolsTable. */
+  SymbolsTableNode *top;
+  /* Current currentLevel of the SymbolsTable. */
+  int currentLevel;
 } SymbolsTable;
 
 /* Initializes the SymbolsTable */

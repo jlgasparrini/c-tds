@@ -1,8 +1,8 @@
 %{
 
-/* Necessary functions definitions for avoiding warnings */
-int yylex(void);
-int yyparse(void);
+  /* Necessary functions definitions for avoiding warnings */
+  int yylex(void);
+  int yyparse(void);
 
   /*
    *  MISSING DOCUMENTATION!

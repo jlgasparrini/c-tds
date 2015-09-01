@@ -1,6 +1,6 @@
 /************************************************************************
 *Define la estructura  y funciones asociadas para un generador de       *
-*codigo de 3 direcciones                                              *
+*codigo de 3 direcciones                                              	*
 *************************************************************************/
 
 #ifndef GENLISTML_H
@@ -10,12 +10,12 @@
 #include <stdbool.h>
 
 typedef struct {
-    NodeML    *init;
-    int        size;
+	NodeML    *init;
+	int        size;
 } ListML;
 
 typedef struct {
-    ListML *labels;
+	ListML *labels;
 } ListMLabel;
 
 

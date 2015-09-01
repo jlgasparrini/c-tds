@@ -1,5 +1,5 @@
 /************************************************************************
- *Implementacion de generador de comandos de 3 direcciones               *
+ *Implementacion de generador de comandos de 3 direcciones              *
  ************************************************************************/
 
 #include <stdlib.h>
@@ -14,11 +14,9 @@
 LCode3D* init_list_c3D()
 {
   LCode3D *lcode = (LCode3D*) malloc(sizeof(LCode3D));
-
   ListC3D *list = (ListC3D*) malloc(sizeof(ListC3D));
   list->init = NULL;
   list->size = 0;
-
   lcode->codes = list;
   return lcode;
 }

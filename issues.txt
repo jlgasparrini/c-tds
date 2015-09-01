@@ -19,11 +19,9 @@
      code_3d/code_3d.c
 
 -- Code refactorizations:
-     Two spaces for indent code.
      Don't use * for pointer navigation, use -> it's more simple.
      On headers files do not write names of var params.
      UPPERCASE for constants.
-     PascalCase syntax only for types name.
      Use representative names for variables and types. DON'T USE "aux" variables.
 
 -- Finally, check the documentation and add new functionalities (Optimization)

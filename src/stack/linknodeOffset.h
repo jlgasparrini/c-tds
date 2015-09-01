@@ -9,8 +9,8 @@
 #define LINKNODEOFFSET_H
 
 typedef struct NodeStackOffset {
-    int *info;
-    struct NodeStackOffset *next;
+	int *info;
+	struct NodeStackOffset *next;
 } NodeStackOffset;
 
 /*funciones publicas para manipular nodos*/

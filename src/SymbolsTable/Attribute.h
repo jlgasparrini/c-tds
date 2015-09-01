@@ -7,48 +7,48 @@ typedef enum {Variable, Method, Array} StructureType;
 typedef enum {RetInt, RetFloat, RetBool, RetVoid} ReturnType;
 
 typedef union               /* The value that a variable may take can be:                   */
-{				
-	int intVal; 			/* An int value 											    */
-    float floatVal;			/* A float value 											    */
-    Boolean boolVal;		/* A bool value: it will has 0 for False and 1 for True         */
+{														/*																															*/
+	int intVal; 							/* An int value 											    											*/
+	float floatVal;						/* A float value 											    											*/
+	Boolean boolVal;					/* A bool value: it will has 0 for False and 1 for True         */
 } VarValue;
 
-typedef struct              /* A variable has:											    */ 
-{			
-	PrimitiveType type;		/* A "type" (int, float, boolean) (the word, name of the type)  */
-	VarValue value;			/* A "value" (int, float, true, false) (variable's value') 	    */
-    int offset;				/* A "offset" of the variable									*/
+typedef struct              /* A variable has:											    										*/ 
+{														/*																															*/
+	PrimitiveType type;				/* A "type" (int, float, boolean) (the word, name of the type)  */
+	VarValue value;						/* A "value" (int, float, true, false) (variable's value') 	    */
+  int offset;								/* A "offset" of the variable																		*/
 } StVariable;
 
 typedef struct              /* An array has                                                 */
-{
-    PrimitiveType type;     /* A "type" (int, float, boolean) (the word, name of the type) 	*/
-    unsigned int length;    /* The length of the array                                      */
-	StVariable *arrayValues;/* The values of every array position							*/
+{														/*																															*/
+  PrimitiveType type;     	/* A "type" (int, float, boolean) (the word, name of the type) 	*/
+  unsigned int length;    	/* The length of the array                                      */
+	StVariable *arrayValues;	/* The values of every array position														*/
 } StArray;
 
-typedef struct              /* A method has: 				       							*/
-{			
-	ReturnType type; 		/* A "return type" (int, float, boolean, void) 				    */
-	unsigned int paramSize; /* An int value indicating the number of parameters			    */
-	StVariable **parameters; /* An array with the parameters, in case of having them		*/
-	VarValue return_value;   /* The return value of the current method						*/
+typedef struct              /* A method has: 				       																	*/
+{														/*																															*/
+	ReturnType type; 					/* A "return type" (int, float, boolean, void) 				    			*/
+	unsigned int paramSize; 	/* An int value indicating the number of parameters			    		*/
+	StVariable **parameters; 	/* An array with the parameters, in case of having them					*/
+	VarValue return_value;   	/* The return value of the current method												*/
 } StMethod;
 
-typedef union               /* A declaration is: 											*/
-{			
-    StVariable *variable;	/* A variable    												*/
-    StMethod method;		/* A method 													*/
-    StArray array;          /* An array                                                     */
+typedef union               /* A declaration is: 																						*/
+{														/*																															*/
+  StVariable *variable;			/* A variable    																								*/
+  StMethod method;					/* A method 																										*/
+  StArray array;          	/* An array                                                     */
 } Declaration;
 
 /*-----------------------   ATTRIBUTE   ----------------------------------------------------*/
 
-typedef struct              /* An attribute has:                							*/
-{		
-	char *id;				/* Attribute's id 								    			*/
-    StructureType type;		/* type = 0, the attribute is a variable, type = 1, is a method, type = 2, is an array	*/
-    Declaration decl;		/* Attribute's value 											*/
+typedef struct              /* An attribute has:                														*/
+{														/*																															*/
+	char *id;									/* Attribute's id 								    													*/
+  StructureType type;				/* type = 0, the attribute is a variable, type = 1, is a method, type = 2, is an array	*/
+  Declaration decl;					/* Attribute's value 																						*/
 } Attribute;
 
 /*------------------------------    METHODS    ---------------------------------------------*/

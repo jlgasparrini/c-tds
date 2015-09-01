@@ -9,10 +9,10 @@
 #include "../code_3d/gencode3d.h"
 #include "../SymbolsTable/Utils.h"
 
-typedef union{
-    int entero;
-    float real;
-}FloatValue;
+typedef union {
+	int entero;
+	float real;
+} FloatValue;
 
 FloatValue fValue;
 

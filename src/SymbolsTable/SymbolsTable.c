@@ -6,19 +6,19 @@
 SymbolsTable* initialize_symbols_table()
 {
 	SymbolsTable *aSymbolsTable = (SymbolsTable*) malloc(sizeof(SymbolsTable));
-    aSymbolsTable->top = NULL;
-	aSymbolsTable->currentLevel = 0;
-	return aSymbolsTable;
+  aSymbolsTable->top = NULL;
+  aSymbolsTable->currentLevel = 0;
+  return aSymbolsTable;
 }
 
 /* Searches for the id in the current level of the SymbolsTable.
  * Return Attribute* iff the id was't found. NULL if the id wasn't found.
  */
-Attribute* search_id_in_level(SymbolsTable *aSymbolsTable, char *id)
-{
-    SymbolsTableNode *auxTop = aSymbolsTable->top;
-    Attribute *auxAttr = search(auxTop->list, id);
-    return auxAttr;
+ Attribute* search_id_in_level(SymbolsTable *aSymbolsTable, char *id)
+ {
+  SymbolsTableNode *auxTop = aSymbolsTable->top;
+  Attribute *auxAttr = search(auxTop->list, id);
+  return auxAttr;
 }
 
 /* Insert a element in the current level of the SymbolsTable. */
@@ -26,18 +26,18 @@ void push_element(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attribute *at)
 {
 	if (aSymbolsTable->currentLevel > 0)
 	{
-        if (at!=NULL)
-        {
-            if (search_id_in_level(aSymbolsTable, get_id(at)) != NULL)
-                insert_error(eq, add_line_column(to_string("El identificador \"", get_id(at), "\" ya se encuentra en uso.")));
-            else
-                insert(aSymbolsTable->top->list, at);
-        }
-			else
-                insert_error(eq, add_line_column(to_string("El atributo es NULL.","","")));
-	}
-	else
-		printf("%s\n",add_line_column(to_string("SymbolsTable: push_element Warning: la tabla no tiene ningun nivel.","","")));
+    if (at!=NULL)
+    {
+      if (search_id_in_level(aSymbolsTable, get_id(at)) != NULL)
+        insert_error(eq, add_line_column(to_string("El identificador \"", get_id(at), "\" ya se encuentra en uso.")));
+      else
+        insert(aSymbolsTable->top->list, at);
+    }
+    else
+      insert_error(eq, add_line_column(to_string("El atributo es NULL.","","")));
+  }
+  else
+    printf("%s\n",add_line_column(to_string("SymbolsTable: push_element Warning: la tabla no tiene ningun nivel.","","")));
 }
 
 /* Insert a new level in the SymbolsTable. */
@@ -45,29 +45,29 @@ void push_level(SymbolsTable *aSymbolsTable)
 {
 	SymbolsTableNode *newLevel = (SymbolsTableNode*) malloc (sizeof(SymbolsTableNode));
 	if (newLevel)
-    {
-        newLevel->list = initialize();
-		    newLevel->next = aSymbolsTable->top;
-		    aSymbolsTable->top = newLevel;
-		    aSymbolsTable->currentLevel++;
-    }
-    else
-        printf("%s\n",add_line_column(to_string("SymbolsTable: push_level Warning: Error al reservar espacio en memoria.","","")));
+  {
+    newLevel->list = initialize();
+    newLevel->next = aSymbolsTable->top;
+    aSymbolsTable->top = newLevel;
+    aSymbolsTable->currentLevel++;
+  }
+  else
+    printf("%s\n",add_line_column(to_string("SymbolsTable: push_level Warning: Error al reservar espacio en memoria.","","")));
 }
 
 /* Remove the entire current level of the SymbolsTable. */
 void pop_level(SymbolsTable *aSymbolsTable)
 {
-    if (aSymbolsTable->currentLevel > 0)
-    {
-		SymbolsTableNode *auxNode = aSymbolsTable->top;
-        aSymbolsTable->top = aSymbolsTable->top->next;
-        delete_all(auxNode->list);
-        free(auxNode);
-		aSymbolsTable->currentLevel--;
-    }
-    else
-		printf("%s\n",add_line_column(to_string("SymbolsTable: pop_level Warning: Pila sin mas niveles que descartar.","","")));
+  if (aSymbolsTable->currentLevel > 0)
+  {
+    SymbolsTableNode *auxNode = aSymbolsTable->top;
+    aSymbolsTable->top = aSymbolsTable->top->next;
+    delete_all(auxNode->list);
+    free(auxNode);
+    aSymbolsTable->currentLevel--;
+  }
+  else
+    printf("%s\n",add_line_column(to_string("SymbolsTable: pop_level Warning: Pila sin mas niveles que descartar.","","")));
 }
 
 /* Searches for the id in all levels of the SymbolsTable.
@@ -77,28 +77,28 @@ Attribute* search_id_in_symbols_table(ErrorsQueue *eq, SymbolsTable *aSymbolsTab
 {
 	int i;
 	SymbolsTableNode *auxTop = aSymbolsTable->top;
-    Attribute *auxAttr;
+	Attribute *auxAttr;
 	for (i = aSymbolsTable->currentLevel; i > 0; i--)
 	{
-        auxAttr = search((auxTop->list), id);
+		auxAttr = search((auxTop->list), id);
 		if (auxAttr != NULL)
-			return auxAttr;
+		 return auxAttr;
 		auxTop = auxTop->next;
 	}
 	insert_error(eq, add_line_column(to_string("El identificador \"", id, "\" no esta definido.")));
-    return NULL;
+	return NULL;
 }
 
 /* Print the elements the SymbolsTable. */
 void symbols_table_print(SymbolsTable *aSymbolsTable)
 {
-    SymbolsTableNode *aux = aSymbolsTable->top;
-    int i;
-    for (i = 0; i < aSymbolsTable->currentLevel; i++)
-    {
-        printf("%d° nivel:\n", aSymbolsTable->currentLevel - i);
-		print_list(aux->list);
-        printf("---------------------------------------------\n");
-        aux = aux->next;
-    }
+  SymbolsTableNode *aux = aSymbolsTable->top;
+  int i;
+  for (i = 0; i < aSymbolsTable->currentLevel; i++)
+  {
+    printf("%d° nivel:\n", aSymbolsTable->currentLevel - i);
+    print_list(aux->list);
+    printf("---------------------------------------------\n");
+    aux = aux->next;
+  }
 }

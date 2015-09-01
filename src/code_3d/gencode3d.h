@@ -1,7 +1,7 @@
 /************************************************************************
- *Define la estructura  y funciones asociadas para un generador de       *
- *codigo de 3 direcciones                                              *
- *************************************************************************/
+ *Define la estructura  y funciones asociadas para un generador de      *
+ *codigo de 3 direcciones                                              	*
+ ************************************************************************/
 
 #ifndef GENCODE3D_H
 #define GENCODE3D_H

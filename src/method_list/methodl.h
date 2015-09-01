@@ -2,8 +2,8 @@
 *Define la estructura de el lebal de un metodo    *
 *                                                 *
 *Una label va a tener :                           *
-* id	   	 :   identificador del metodo 		  *
-* label      :   label del metodo		          *
+* id	   	 :   identificador del metodo 		  		*
+* label      :   label del metodo		          		*
 **************************************************/
 
 #ifndef methodl_H
@@ -12,8 +12,8 @@
 #include <stdbool.h>
 
 typedef struct {
-    char *id;
-    char *label;
+	char *id;
+	char *label;
 } MethodL;
 
 

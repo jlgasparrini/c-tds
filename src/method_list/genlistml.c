@@ -1,5 +1,5 @@
 /************************************************************************
- *Implementacion de generador de comandos de 3 direcciones               *
+ *Implementacion de generador de comandos de 3 direcciones              *
  ************************************************************************/
 
 #include "genlistml.h"

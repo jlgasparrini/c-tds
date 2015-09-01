@@ -15,23 +15,23 @@
 #include <stdbool.h>
 
 typedef union {
-    int         intAttri;
-    float       floatAttri;
-    bool        boolAttri;
-    Attribute   *attri;
-    char        *label;
+	int         intAttri;
+	float       floatAttri;
+	bool        boolAttri;
+	Attribute   *attri;
+	char        *label;
 } Value;
 
 typedef struct {
-    int   type; // -1 : null, 0 : Attribute, 1 : label, 2 : Integer, 3 : Float, 4 : Bool
-    Value val;
+  int   type; // -1 : null, 0 : Attribute, 1 : label, 2 : Integer, 3 : Float, 4 : Bool
+  Value val;
 } Param;
 
 typedef struct {
-    int command;
-    Param *param1;
-    Param *param2;
-    Param *param3;
+	int command;
+	Param *param1;
+	Param *param2;
+	Param *param3;
 } Code3D;
 
 

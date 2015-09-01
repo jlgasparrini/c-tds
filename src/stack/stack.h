@@ -10,7 +10,7 @@
 #include <stdbool.h>
 
 typedef struct {
-    NodeStack *top;
+	NodeStack *top;
 } Stack;
 
 /**Constructor de la Pila de Labels*/

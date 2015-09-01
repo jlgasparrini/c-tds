@@ -16,12 +16,12 @@ StVariable create_st_variable(PrimitiveType type)
 	StVariable var; 
 	var.type = type;
 	switch (type) {
-	    case Int: var.value.intVal = 0;
-	              break;
-	    case Float: var.value.floatVal = 0.0;
-	                break;
-	    case Bool: var.value.boolVal = False;
-	               break;
+	  case Int:    var.value.intVal = 0;
+	        		   break;
+	  case Float:  var.value.floatVal = 0.0;
+	        		   break;
+	  case Bool:   var.value.boolVal = False;
+	        		   break;
   	}
 	return var;
 }
@@ -35,7 +35,7 @@ Attribute* create_variable(char *id, PrimitiveType type)
 	*attr->decl.variable = create_st_variable(type);
 	attr->id = strdup(id);
 	attr->decl.variable->offset = get_global_var_offset();
-  	decrease_var_offset();
+  decrease_var_offset();
 	return attr;
 }
 
@@ -52,8 +52,8 @@ Attribute* create_array(char *id, PrimitiveType type, unsigned int length)
 	for(i = 0; i < length; i++)
 	{	// Initializes all the values of the array
 		attr->decl.array.arrayValues[i] = create_st_variable(type);
-        attr->decl.array.arrayValues[i].offset = get_global_var_offset();
-        decrease_var_offset();
+    attr->decl.array.arrayValues[i].offset = get_global_var_offset();
+    decrease_var_offset();
 	}
 	return attr;
 }
@@ -84,7 +84,7 @@ Attribute* create_parameter(Attribute *attr, unsigned int pos, char *id, Primiti
 			Attribute *aux = create_variable(id, type);
 			aux->decl.variable->offset = globalParamOffset-4;;
 			globalParamOffset += 4;
-      		attr->decl.method.parameters[pos] = (StVariable*) malloc(sizeof(StVariable));
+  		attr->decl.method.parameters[pos] = (StVariable*) malloc(sizeof(StVariable));
 			attr->decl.method.parameters[pos] = aux->decl.variable;
 			return aux;
 		}
@@ -95,7 +95,7 @@ Attribute* create_parameter(Attribute *attr, unsigned int pos, char *id, Primiti
 /* Sets the amount of parameters that will have the method attr */
 void set_amount_of_parameters(Attribute *attr, unsigned int amount)
 {
-    if (attr->type == Method)
+  if (attr->type == Method)
 		attr->decl.method.paramSize = amount;
 }
 
@@ -103,15 +103,15 @@ void set_amount_of_parameters(Attribute *attr, unsigned int amount)
 void set_variable_value(Attribute *attr, PrimitiveType type, char *value)
 {
   switch (type) {
-    case Int:	set_int_val(attr,atoi(value));
-              break;
-    case Float:	set_float_val(attr,atof(value));
-                break;
-    case Bool:	if (strcmp(value, "false") == 0)
-                    set_bool_val(attr,False);
-             		if (strcmp(value, "true") == 0)
-               			set_bool_val(attr,True);
-                break;
+  case Int:	  set_int_val(attr,atoi(value));
+        		  break;
+  case Float:	set_float_val(attr,atof(value));
+        		  break;
+  case Bool:	if (strcmp(value, "false") == 0)
+			          set_bool_val(attr,False);
+		       		if (strcmp(value, "true") == 0)
+	         			set_bool_val(attr,True);
+			        break;
   }
 }
 
@@ -119,10 +119,10 @@ void set_variable_value(Attribute *attr, PrimitiveType type, char *value)
 char* get_id(Attribute *attr)
 {
   switch (attr->type) {
-    case Variable: return attr->id;
-    case Method: return attr->id;
-	case Array:	return attr->id;
-	default: return NULL;
+  case Variable:	return attr->id;
+  case Method:		return attr->id;
+	case Array:			return attr->id;
+	default: 				return NULL;
   }
 }
 
@@ -130,9 +130,9 @@ char* get_id(Attribute *attr)
 int get_int_val(Attribute *attr)
 {
   switch (attr->type) {
-    case Variable: return attr->decl.variable->value.intVal;
-    case Method: return attr->decl.method.return_value.intVal;
-    default: return -1;
+  case Variable: 	return attr->decl.variable->value.intVal;
+  case Method: 		return attr->decl.method.return_value.intVal;
+  default: 				return -1;
   }
 }
 
@@ -252,13 +252,13 @@ void reset_global_var_offset()
 /* Increases in 4 the variable's offset */
 void increase_var_offset()
 {
-    globalVarOffset += 4;
+  globalVarOffset += 4;
 }
 
 /* Decreases in 4 the variable's offset */
 void decrease_var_offset()
 {
-    globalVarOffset -= 4;
+  globalVarOffset -= 4;
 }
 
 /* Returns the global parameters offset of the class */
@@ -285,29 +285,29 @@ void reset_global_param_offset()
  * Return 2 if it's an array */
 StructureType get_structure_type(Attribute *attr)
 {
-    return attr->type;
+  return attr->type;
 }
 
 /* Returns the type of the attribute, although it is a variable, array or method */
 ReturnType get_attribute_type(Attribute *attr)
 {
-    switch (get_structure_type(attr))
-    {
-        case Variable:  return attr->decl.variable->type;
-        case Array:     return attr->decl.array.type;
-        case Method:    return attr->decl.method.type;
-        default:        return RetInt;
-    }
+  switch (get_structure_type(attr))
+  {
+    case Variable:  return attr->decl.variable->type;
+    case Array:   	return attr->decl.array.type;
+    case Method:  	return attr->decl.method.type;
+    default:    		return RetInt;
+  }
 }
 
 /* Returns the string corresponding to "type" */
 char* get_type(PrimitiveType type)
 {
-    switch (type)
-    {
-        case Int:   return "int";
-        case Float: return "float";
-        case Bool:  return "bool";
-        default:    return "wrong type"; // This is returned when it's not a primitive type
-    }
+  switch (type)
+  {
+    case Int:   return "int";
+    case Float: return "float";
+    case Bool:  return "bool";
+    default:  	return "wrong type"; // This is returned when it's not a primitive type
+  }
 }

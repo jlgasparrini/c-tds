@@ -1,25 +1,25 @@
 /*
- * A stack of numbers header.
- */
- 
+* A stack of numbers header.
+*/
+
 #ifndef StringStack_H
 #define StringStack_H
 
 /* Node of the stack of numbers. */
 typedef struct S 
 {
-    char* val;
-    /* Pointer of the next node. */
-    struct S *next;
+	char* val;
+  /* Pointer of the next node. */
+	struct S *next;
 } SNode;
- 
+
 /* Define type StringStack. */
 typedef struct
 {
-    /* Pointer to first nodes of the stack. */
-    SNode *first;
-    /* Size of the stack. */
-    int size;
+  /* Pointer to first nodes of the stack. */
+	SNode *first;
+  /* Size of the stack. */
+	int size;
 } StringStack;
 
 /* Returns an initialized StringStack. */ 
