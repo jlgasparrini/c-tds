@@ -9,6 +9,6 @@
 #include "../code_3d/gencode3d.h"
 
 /* Initializes the assembly generator and writes it */
-void init_assembler(ListMLabel*, LCode3D*, char*);
+void init_assembler(ListMLabel*, ListC3D*, char*);
 
 #endif

@@ -10,7 +10,7 @@
 #include "../SymbolsTable/Utils.h"
 
 ListMLabel *label_list;
-LCode3D *code_list;
+ListC3D *code_list;
 StringStack *methods_call_stack;
 
 /* Show warnings on interpreter for externinvk senteces.*/
@@ -76,15 +76,15 @@ static int run_operation(int position)
 
     case LABEL: break;
 
-    case GOTO_LABEL: return search_by_label(code_list->codes, get_label(code, 1));
+    case GOTO_LABEL: return search_by_label(code_list, get_label(code, 1));
 
     case GOTO_LABEL_COND: if (get_bool_val(get_attribute(code, 1)) == False)
-                            return search_by_label(code_list->codes,get_label(code, 2));
+                            return search_by_label(code_list,get_label(code, 2));
                           break;
 
     /* Save on the stack the place where treatment must continue after the method call */
     case GOTO_METHOD: push_string(methods_call_stack, int_to_string(position + 1));
-                      return search_by_label(code_list->codes, get_label(code, 1));
+                      return search_by_label(code_list, get_label(code, 1));
 
     /*INT OPERATIONS TREATEMENT */
     case ASSIGNATION_INT:   set_int_val(get_attribute(code, 2), get_int_val(get_attribute(code, 1))); break;
@@ -181,7 +181,7 @@ static void run_main(int pos)
  * param code_l: list with the 3 directions code.
  * Initializes the interpreter and runs it.
  */
-void init_interpreter(ListMLabel *label_l, LCode3D *code_l)
+void init_interpreter(ListMLabel *label_l, ListC3D *code_l)
 {
   label_list = label_l;
   code_list = code_l;

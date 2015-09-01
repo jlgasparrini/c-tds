@@ -42,7 +42,7 @@
   }
 
   // Variables used for 3D code
-  LCode3D *l_code3d;
+  ListC3D *l_code3d;
   char *label_ID = "label_%d_";
   int label_count = 0;
 
@@ -167,7 +167,6 @@
       amount_extern_params = 0;
       error_q = initialize_queue();
       symbols_table = initialize_symbols_table();
-      l_code3d = init_list_c3D();
       params_stack = initialize_string_stack();
       methods_id_stack = initialize_string_stack();
       labels_CYC = new_stack();

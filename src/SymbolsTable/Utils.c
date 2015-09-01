@@ -91,7 +91,7 @@ void set_method_return_attribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, c
 }
 
 /* Returns the respective variable attribute that the method return. "paramSize" is for checking if the amount of parameters is right */
-Attribute* check_get_method_ret_attribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, LCode3D *lcode3d, char *id, unsigned char paramSize)
+Attribute* check_get_method_ret_attribute(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, ListC3D *list, char *id, unsigned char paramSize)
 {
   Attribute *attr = search_id_in_symbols_table(eq, aSymbolsTable, id);
   if (attr != NULL)
@@ -106,7 +106,7 @@ Attribute* check_get_method_ret_attribute(ErrorsQueue *eq, SymbolsTable *aSymbol
       {
         Attribute *aux = create_variable(get_variable_name(), get_attribute_type(attr));
         if (get_attribute_type(attr) != RetVoid)
-          add_assignation(lcode3d, attr, aux);
+          add_assignation(list, attr, aux);
         return aux;
       }
     }
@@ -168,7 +168,7 @@ char* float_to_string(float value)
 /* Returns 0 if the type parameter in "paramSize" position of the method's parameters is equal to the type of "var"
    and the amount of params are equal.
    Returns 1 otherwise */
-void correct_param_base_case(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, LCode3D *lcode3d, Attribute *attr, char* lastCalledMethod, unsigned char paramSize)
+void correct_param_base_case(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, ListC3D *list, Attribute *attr, char* lastCalledMethod, unsigned char paramSize)
 {
   Attribute *aux = search_id_in_symbols_table(eq, aSymbolsTable, lastCalledMethod);
   if(aux != NULL)
@@ -185,9 +185,9 @@ void correct_param_base_case(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, LCode
           param->decl.variable = aux->decl.method.parameters[paramSize]; // obtencion del parametro formal.
           switch (get_attribute_type(attr))
           {
-            case Int:   add_method_call(lcode3d, new_code(PARAM_ASSIGN_INT), attr, param); break;
-            case Float: add_method_call(lcode3d, new_code(PARAM_ASSIGN_FLOAT), attr, param); break;
-            case Bool:  add_method_call(lcode3d, new_code(PARAM_ASSIGN_BOOL), attr, param); break;
+            case Int:   add_method_call(list, new_code(PARAM_ASSIGN_INT), attr, param); break;
+            case Float: add_method_call(list, new_code(PARAM_ASSIGN_FLOAT), attr, param); break;
+            case Bool:  add_method_call(list, new_code(PARAM_ASSIGN_BOOL), attr, param); break;
             default: break;
           }
         }
@@ -202,9 +202,9 @@ void correct_param_base_case(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, LCode
           param->decl.variable->type = aux->decl.method.parameters[paramSize]->type;
           switch (get_attribute_type(param))
           {
-            case Int:   add_method_call(lcode3d, new_code(PARAM_ASSIGN_INT), create_variable("",Int), param); break;
-            case Float: add_method_call(lcode3d, new_code(PARAM_ASSIGN_FLOAT), create_variable("",Float), param); break;
-            case Bool:  add_method_call(lcode3d, new_code(PARAM_ASSIGN_BOOL), create_variable("",Bool), param); break;
+            case Int:   add_method_call(list, new_code(PARAM_ASSIGN_INT), create_variable("",Int), param); break;
+            case Float: add_method_call(list, new_code(PARAM_ASSIGN_FLOAT), create_variable("",Float), param); break;
+            case Bool:  add_method_call(list, new_code(PARAM_ASSIGN_BOOL), create_variable("",Bool), param); break;
             default: break;
           }
         }
@@ -221,7 +221,7 @@ void correct_param_base_case(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, LCode
 /* Returns 0 if the type parameter in "paramSize" position of the method's parameters is equal to the type of "var"
    and paramSize <= than the amount of parameters of the method.
    Returns 1 otherwise */
-void correct_param_inductive_case(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, LCode3D *lcode3d, Attribute *attr, char* lastCalledMethod, unsigned char paramSize)
+void correct_param_inductive_case(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, ListC3D *list, Attribute *attr, char* lastCalledMethod, unsigned char paramSize)
 {
   Attribute *aux = search_id_in_symbols_table(eq, aSymbolsTable, lastCalledMethod);
   if(aux != NULL)
@@ -239,9 +239,9 @@ void correct_param_inductive_case(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, 
           param->decl.variable->type = aux->decl.method.parameters[paramSize]->type;
           switch (get_attribute_type(attr))
           {
-            case Int:   add_method_call(lcode3d, new_code(PARAM_ASSIGN_INT), attr, param); break;
-            case Float: add_method_call(lcode3d, new_code(PARAM_ASSIGN_FLOAT), attr, param); break;
-            case Bool:  add_method_call(lcode3d, new_code(PARAM_ASSIGN_BOOL), attr, param); break;
+            case Int:   add_method_call(list, new_code(PARAM_ASSIGN_INT), attr, param); break;
+            case Float: add_method_call(list, new_code(PARAM_ASSIGN_FLOAT), attr, param); break;
+            case Bool:  add_method_call(list, new_code(PARAM_ASSIGN_BOOL), attr, param); break;
             default: break;
           }
         }
@@ -256,9 +256,9 @@ void correct_param_inductive_case(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, 
           param->decl.variable->type = aux->decl.method.parameters[paramSize]->type;
           switch (get_attribute_type(param))
           {
-            case Int:   add_method_call(lcode3d, new_code(PARAM_ASSIGN_INT), create_variable("",Int), param); break;
-            case Float: add_method_call(lcode3d, new_code(PARAM_ASSIGN_FLOAT), create_variable("",Float), param); break;
-            case Bool:  add_method_call(lcode3d, new_code(PARAM_ASSIGN_BOOL), create_variable("",Bool), param); break;
+            case Int:   add_method_call(list, new_code(PARAM_ASSIGN_INT), create_variable("",Int), param); break;
+            case Float: add_method_call(list, new_code(PARAM_ASSIGN_FLOAT), create_variable("",Float), param); break;
+            case Bool:  add_method_call(list, new_code(PARAM_ASSIGN_BOOL), create_variable("",Bool), param); break;
             default: 		break;
           }
         }
@@ -267,13 +267,13 @@ void correct_param_inductive_case(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, 
   }
 }
 
-void extern_param_assign(LCode3D *lcode3d, Attribute *param, unsigned char paramNumber)
+void extern_param_assign(ListC3D *list, Attribute *param, unsigned char paramNumber)
 {
   switch (get_attribute_type(param))
   {
-    case Int:   add_param_externinvk(lcode3d, new_code(EXTERN_PARAM_ASSIGN_INT), param, paramNumber); break;
-    case Float: add_param_externinvk(lcode3d, new_code(EXTERN_PARAM_ASSIGN_FLOAT), param, paramNumber); break;
-    case Bool:  add_param_externinvk(lcode3d, new_code(EXTERN_PARAM_ASSIGN_BOOL), param, paramNumber); break;
+    case Int:   add_param_externinvk(list, new_code(EXTERN_PARAM_ASSIGN_INT), param, paramNumber); break;
+    case Float: add_param_externinvk(list, new_code(EXTERN_PARAM_ASSIGN_FLOAT), param, paramNumber); break;
+    case Bool:  add_param_externinvk(list, new_code(EXTERN_PARAM_ASSIGN_BOOL), param, paramNumber); break;
     default: 		break;
   }
 }
@@ -312,7 +312,7 @@ unsigned char control_type(ErrorsQueue *eq, Attribute *attr, PrimitiveType type,
 
 /* Insert an error message and return 1 if attributes "attr1" and "attr2" aren't of the same type and both variables or arrays
    Returns 0 otherwise */
-unsigned char control_assignation(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *attr1, char* op, Attribute *attr2)
+unsigned char control_assignation(ErrorsQueue *eq, ListC3D *list, Attribute *attr1, char* op, Attribute *attr2)
 {
   if (get_structure_type(attr1) != Method)
   {
@@ -322,7 +322,7 @@ unsigned char control_assignation(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *
     {
       Code3D *add;
       if (strcmp(op, "=") == 0)
-				add_assignation(lcode3d, attr2, attr1);
+				add_assignation(list, attr2, attr1);
       else
       {
         if (strcmp(op, "+=") == 0)
@@ -341,8 +341,8 @@ unsigned char control_assignation(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *
         }
         Attribute *res = create_variable(get_variable_name(), get_attribute_type(attr1));
         set_c3D(add, attr1, attr2, res);
-        add_code(lcode3d, add);
-				add_assignation(lcode3d, res, attr1);
+        add_code(list, add);
+				add_assignation(list, res, attr1);
       }
       return 0;
     }
@@ -398,7 +398,7 @@ unsigned char check_return_expression(ErrorsQueue *eq, SymbolsTable *aSymbolsTab
 
 /* Returns the array at the position specified by attr.decl.variable.value.intValue if attr has "int" type
    Otherwise insert an error message because the attribute haven't got "int" type and create a default variable of "int" type */
-Attribute* check_array_pos(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, LCode3D *lcode3d, char* id, Attribute* attr)
+Attribute* check_array_pos(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, ListC3D *list, char* id, Attribute* attr)
 {
   Attribute *aux = search_id_in_symbols_table(eq,aSymbolsTable,id);
   if (aux != NULL)
@@ -419,7 +419,7 @@ Attribute* check_array_pos(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, LCode3D
           set_attribute(codeArrayValue, 1, attr);
           set_attribute(codeArrayValue, 2, aux);
           set_attribute(codeArrayValue, 3, variable);
-          add_code(lcode3d, codeArrayValue);
+          add_code(list, codeArrayValue);
           return variable;
         }
         else
@@ -447,14 +447,14 @@ void check_main(ErrorsQueue *eq, SymbolsTable *aSymbolsTable)
 
 /* Return an attribute with the or operation applied to oper1 and oper2. */
 /* Insert a new code3D OR in a list of Codes */
-Attribute* return_or(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *oper2)
+Attribute* return_or(ErrorsQueue *eq, ListC3D *list, Attribute *oper1, Attribute *oper2)
 {
   if (get_attribute_type(oper1) == get_attribute_type(oper2) && (get_attribute_type(oper2) == Bool))
   {
     Attribute *aux = create_variable(get_variable_name(), Bool);
     Code3D *codeOr = new_code(OR);
     set_c3D(codeOr, oper1, oper2, aux);
-    add_code(lcode3d, codeOr);
+    add_code(list, codeOr);
     return aux;
   }
   else
@@ -467,14 +467,14 @@ Attribute* return_or(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attrib
 
 /* Return an attribute with the and operation applied to oper1 and oper2. */
 /* Insert a new code3D And in a list of Codes */
-Attribute* return_and(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *oper2)
+Attribute* return_and(ErrorsQueue *eq, ListC3D *list, Attribute *oper1, Attribute *oper2)
 {
   if (get_attribute_type(oper1) == get_attribute_type(oper2) && (get_attribute_type(oper2) == Bool))
   {
     Attribute *aux = create_variable(get_variable_name(), Bool);
     Code3D *codeAnd = new_code(AND);
     set_c3D(codeAnd, oper1, oper2, aux);
-    add_code(lcode3d, codeAnd);
+    add_code(list, codeAnd);
     return aux;
   }
   else
@@ -489,7 +489,7 @@ Attribute* return_and(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attri
 
 /* Return an attribute with the distinct operation applied to oper1 and oper2. */
 /* Insert a new code3D Distinct in a list of Codes */
-Attribute* return_distinct(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *oper2)
+Attribute* return_distinct(ErrorsQueue *eq, ListC3D *list, Attribute *oper1, Attribute *oper2)
 {
   if (get_attribute_type(oper1) == get_attribute_type(oper2))
   {
@@ -503,7 +503,7 @@ Attribute* return_distinct(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, 
       default: 		break;
     }
     set_c3D(codeDist, oper1, oper2, aux);
-    add_code(lcode3d, codeDist);
+    add_code(list, codeDist);
     return aux;
   }
   else
@@ -515,7 +515,7 @@ Attribute* return_distinct(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, 
 
 /* Return an attribute with the equal operation applied to oper1 and oper2. */
 /* Insert a new code3D Equal in a list of Codes */
-Attribute* return_equal(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *oper2)
+Attribute* return_equal(ErrorsQueue *eq, ListC3D *list, Attribute *oper1, Attribute *oper2)
 {
   if (get_attribute_type(oper1) == get_attribute_type(oper2))
   {
@@ -529,7 +529,7 @@ Attribute* return_equal(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Att
       default: 		break;
     }
     set_c3D(codeEqual, oper1, oper2, aux);
-    add_code(lcode3d, codeEqual);
+    add_code(list, codeEqual);
     return aux;
   }
   else
@@ -544,7 +544,7 @@ Attribute* return_equal(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Att
 
 /* Return an attribute with the minor comparison operation applied to oper1 and oper2. */
 /* Insert a new code3D MinorComparison in a list of Codes */
-Attribute* return_minor_comparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *oper2)
+Attribute* return_minor_comparison(ErrorsQueue *eq, ListC3D *list, Attribute *oper1, Attribute *oper2)
 {
   if ((get_attribute_type(oper1) == get_attribute_type(oper2)) && (get_attribute_type(oper2) != Bool))
   {
@@ -555,7 +555,7 @@ Attribute* return_minor_comparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribute 
     else
       codeMinor = new_code(LOWER_INT);
     set_c3D(codeMinor, oper1, oper2, aux);
-    add_code(lcode3d, codeMinor);
+    add_code(list, codeMinor);
     return aux;
   }
   else
@@ -567,7 +567,7 @@ Attribute* return_minor_comparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribute 
 
 /* Return an attribute with the major comparison operation applied to oper1 and oper2. */
 /* Insert a new code3D MajorComparison in a list of Codes */
-Attribute* return_major_comparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *oper2)
+Attribute* return_major_comparison(ErrorsQueue *eq, ListC3D *list, Attribute *oper1, Attribute *oper2)
 {
   if ((get_attribute_type(oper1) == get_attribute_type(oper2)) && (get_attribute_type(oper2) != Bool))
   {
@@ -578,7 +578,7 @@ Attribute* return_major_comparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribute 
     else
       codeGreat = new_code(GREATER_INT);
     set_c3D(codeGreat, oper1, oper2, aux);
-    add_code(lcode3d, codeGreat);
+    add_code(list, codeGreat);
     return aux;
   }
   else
@@ -590,7 +590,7 @@ Attribute* return_major_comparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribute 
 
 /* Return an attribute with the greater or equal comparison operation applied to oper1 and oper2. */
 /* Insert a new code3D GEqualComparison in a list of Codes */
-Attribute* return_g_equal_comparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *oper2)
+Attribute* return_g_equal_comparison(ErrorsQueue *eq, ListC3D *list, Attribute *oper1, Attribute *oper2)
 {
   if ((get_attribute_type(oper1) == get_attribute_type(oper2)) && (get_attribute_type(oper2) != Bool))
   {
@@ -601,7 +601,7 @@ Attribute* return_g_equal_comparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribut
     else
       codeGEqual = new_code(GEQ_INT);
     set_c3D(codeGEqual, oper1, oper2, aux);
-    add_code(lcode3d, codeGEqual);
+    add_code(list, codeGEqual);
     return aux;
   }
   else
@@ -613,7 +613,7 @@ Attribute* return_g_equal_comparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribut
 
 /* Return an attribute with the less or equal comparison operation applied to oper1 and oper2. */
 /* Insert a new code3D LEqualComparison in a list of Codes */
-Attribute* return_l_equal_comparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *oper2)
+Attribute* return_l_equal_comparison(ErrorsQueue *eq, ListC3D *list, Attribute *oper1, Attribute *oper2)
 {
   if ((get_attribute_type(oper1) == get_attribute_type(oper2)) && (get_attribute_type(oper2) != Bool))
   {
@@ -624,7 +624,7 @@ Attribute* return_l_equal_comparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribut
     else
       codeLEqual = new_code(LEQ_INT);
     set_c3D(codeLEqual, oper1, oper2, aux);
-    add_code(lcode3d, codeLEqual);
+    add_code(list, codeLEqual);
     return aux;
   }
   else
@@ -639,7 +639,7 @@ Attribute* return_l_equal_comparison(ErrorsQueue *eq, LCode3D *lcode3d, Attribut
 
 /* Return an attribute with the add operation. */
 /* Insert a new code3D Add in a list of Codes */
-Attribute* return_add(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *oper2)
+Attribute* return_add(ErrorsQueue *eq, ListC3D *list, Attribute *oper1, Attribute *oper2)
 {
   if ((get_attribute_type(oper1) == get_attribute_type(oper2)) && (get_attribute_type(oper2) != Bool))
   {
@@ -650,7 +650,7 @@ Attribute* return_add(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attri
     else
       codeAdd = new_code(ADD_INT);
     set_c3D(codeAdd, oper1, oper2, aux);
-    add_code(lcode3d, codeAdd);
+    add_code(list, codeAdd);
     return aux;
   }
   else
@@ -662,7 +662,7 @@ Attribute* return_add(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attri
 
 /* Return an attribute with the sub operation. */
 /* Insert a new code3D Sub in a list of Codes */
-Attribute* return_sub(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *oper2)
+Attribute* return_sub(ErrorsQueue *eq, ListC3D *list, Attribute *oper1, Attribute *oper2)
 {
   if (get_attribute_type(oper1) == get_attribute_type(oper2) && (get_attribute_type(oper2) != Bool))
   {
@@ -673,7 +673,7 @@ Attribute* return_sub(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attri
     else
       codeSub = new_code(MINUS_INT);
     set_c3D(codeSub, oper1, oper2, aux);
-    add_code(lcode3d, codeSub);
+    add_code(list, codeSub);
     return aux;
   }
   else
@@ -685,7 +685,7 @@ Attribute* return_sub(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attri
 
 /* Return an attribute with the mod operation. */
 /* Insert a new code3D Mod in a list of Codes */
-Attribute* return_mod(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *oper2)
+Attribute* return_mod(ErrorsQueue *eq, ListC3D *list, Attribute *oper1, Attribute *oper2)
 {
   if (get_attribute_type(oper1) == get_attribute_type(oper2) && (get_attribute_type(oper2) == Int))
   {
@@ -693,7 +693,7 @@ Attribute* return_mod(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attri
     Code3D *codeMod;
     codeMod = new_code(MOD_INT);
     set_c3D(codeMod, oper1, oper2, aux);
-    add_code(lcode3d, codeMod);
+    add_code(list, codeMod);
     return aux;
   }
   else
@@ -705,7 +705,7 @@ Attribute* return_mod(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attri
 
 /* Return an attribute with the div operation. */
 /* Insert a new code3D Div in a list of Codes */
-Attribute* return_div(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *oper2)
+Attribute* return_div(ErrorsQueue *eq, ListC3D *list, Attribute *oper1, Attribute *oper2)
 {
   if (get_attribute_type(oper1) == get_attribute_type(oper2) && (get_attribute_type(oper2) != Bool))
   {
@@ -716,7 +716,7 @@ Attribute* return_div(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attri
     else
       codeDiv = new_code(DIV_INT);
     set_c3D(codeDiv, oper1, oper2, aux);
-    add_code(lcode3d, codeDiv);
+    add_code(list, codeDiv);
     return aux;
   }
   else
@@ -728,7 +728,7 @@ Attribute* return_div(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attri
 
 /* Return an attribute with the mult operation. */
 /* Insert a new code3D Mult in a list of Codes */
-Attribute* return_mult(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attribute *oper2)
+Attribute* return_mult(ErrorsQueue *eq, ListC3D *list, Attribute *oper1, Attribute *oper2)
 {
   if (get_attribute_type(oper1) == get_attribute_type(oper2) && (get_attribute_type(oper2) != Bool))
   {
@@ -739,7 +739,7 @@ Attribute* return_mult(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attr
     else
       codeMult = new_code(MULT_INT);
     set_c3D(codeMult, oper1, oper2, aux);
-    add_code(lcode3d, codeMult);
+    add_code(list, codeMult);
     return aux;
   }
   else
@@ -751,14 +751,14 @@ Attribute* return_mult(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1, Attr
 
 /* Return an attribute with the not operation applied to oper1. */
 /* Insert a new code3D Not in a list of Codes */
-Attribute* return_not(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1)
+Attribute* return_not(ErrorsQueue *eq, ListC3D *list, Attribute *oper1)
 {
   if (get_attribute_type(oper1) == Bool)
   {
     Attribute *aux = create_variable(get_variable_name(), Bool);
     Code3D *codeNot = new_code(NOT);
     set_c2D(codeNot, oper1, aux);
-    add_code(lcode3d, codeNot);
+    add_code(list, codeNot);
     return aux;
   }
   else
@@ -770,7 +770,7 @@ Attribute* return_not(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1)
 
 /* Return an attribute with the neg operation applied to oper1. */
 /* Insert a new code3D Neg in a list of Codes */
-Attribute* return_neg(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1)
+Attribute* return_neg(ErrorsQueue *eq, ListC3D *list, Attribute *oper1)
 {
   if (get_attribute_type(oper1) == Int || get_attribute_type(oper1) == Float)
   {
@@ -781,7 +781,7 @@ Attribute* return_neg(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1)
     else
       codeNeg = new_code(NEG_INT);
     set_c2D(codeNeg, oper1, aux);
-    add_code(lcode3d, codeNeg);
+    add_code(list, codeNeg);
     return aux;
   }
   else
@@ -797,7 +797,7 @@ Attribute* return_neg(ErrorsQueue *eq, LCode3D *lcode3d, Attribute *oper1)
 
 /* Return an attribute with the type equal to param type and value equal to  param oper1. */
 /* Insert a new code3D Int or Float or Bool in a list of Codes */
-Attribute* return_value(LCode3D *lcode3d, PrimitiveType type, char *oper1)
+Attribute* return_value(ListC3D *list, PrimitiveType type, char *oper1)
 {
   Attribute *aux = create_variable(get_variable_name(), type);
   set_variable_value(aux, type, oper1);
@@ -815,7 +815,7 @@ Attribute* return_value(LCode3D *lcode3d, PrimitiveType type, char *oper1)
   }
   set_attribute(codeValue, 2, aux);
   set_null(codeValue, 3);
-  add_code(lcode3d, codeValue);
+  add_code(list, codeValue);
   return aux;
 }
 
