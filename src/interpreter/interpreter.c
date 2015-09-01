@@ -32,11 +32,11 @@ static int run_operation(int position)
     /* GENERAL OPERATIONS TREATEMENT */
     case LOAD_CONST:
       if (get_attribute_type(get_attribute(code, 2)) == Int)
-        set_int_val(get_attribute(code, 2), code->param1->val.intAttri);
+        set_int_val(get_attribute(code, 2), code->param1->val.int_attri);
       if (get_attribute_type(get_attribute(code, 2)) == Float)
-        set_float_val(get_attribute(code, 2), code->param1->val.floatAttri);
+        set_float_val(get_attribute(code, 2), code->param1->val.float_attri);
       if (get_attribute_type(get_attribute(code, 2)) == Bool)
-        set_bool_val(get_attribute(code, 2), code->param1->val.boolAttri);
+        set_bool_val(get_attribute(code, 2), code->param1->val.bool_attri);
       break;
 
     case LOAD_ARRAY:
@@ -44,7 +44,7 @@ static int run_operation(int position)
          parameter 2 is the array from which the number will be getted from.
          parameter 3 is the resulting attribute.
          */
-      get_attribute(code, 3)->decl.variable = &get_attribute(code, 2)->decl.array.arrayValues[get_int_val(get_attribute(code, 1))];
+      get_attribute(code, 3)->decl.variable = &get_attribute(code, 2)->decl.array.array_values[get_int_val(get_attribute(code, 1))];
       break;
 
     case PRINT:
@@ -142,25 +142,25 @@ static int run_operation(int position)
  */
 static int search_by_method_label(char* label)
 {
-  char *auxLabel = get_label_ml(label_list, label);
-  if (strcmp(auxLabel, "NULL") == 0)
-    printf("ERROR: LABEL no encontrado!    %s  encontrado. \n", auxLabel);
+  char *aux_label = get_label_ml(label_list, label);
+  if (strcmp(aux_label, "NULL") == 0)
+    printf("ERROR: LABEL no encontrado!    %s  encontrado. \n", aux_label);
   else
   {
-    bool labelFound = false;
+    bool label_found = false;
     int i = 0;
-    Code3D *aux;
-    while (!labelFound && i < code_size(code_list))
+    Code3D *aux_code;
+    while (!label_found && i < code_size(code_list))
     {
-      aux = get_code(code_list,i);
-      if (is_label(aux,1))
+      aux_code = get_code(code_list,i);
+      if (is_label(aux_code,1))
       {
-        if (strcmp(auxLabel, get_label(aux, 1)) == 0)
-          labelFound = true;
+        if (strcmp(aux_label, get_label(aux_code, 1)) == 0)
+          label_found = true;
       }
       i++;
     }
-    if (labelFound)
+    if (label_found)
       return i-1;
   }
   return -1;

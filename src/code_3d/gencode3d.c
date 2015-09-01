@@ -86,7 +86,7 @@ void add_code_label_cond(ListC3D *list, Code3D *code, Attribute *attri1, char *l
 }
 
 /**Metodo que a base de un Codigo 3D y dos Atributos, setea el codigo y lo agrega a la Lista*/
-void add_assignation(ListC3D *list, Attribute *attri1, Attribute *attriRes)
+void add_assignation(ListC3D *list, Attribute *attri1, Attribute *attri_res)
 {
   Code3D *code;
   switch (get_attribute_type(attri1))
@@ -96,7 +96,7 @@ void add_assignation(ListC3D *list, Attribute *attri1, Attribute *attriRes)
     case Bool:  code = new_code(ASSIGNATION_BOOL); break;
     default: break;
   }
-  set_c2D(code, attri1, attriRes);
+  set_c2D(code, attri1, attri_res);
   add_code(list, code);
 }
 
@@ -108,9 +108,9 @@ void add_print(ListC3D *list, Code3D *code, Attribute *attr)
 }
 
 /**Metodo que a base de un Codigo 3D y dos Atributos, setea el codigo y lo agrega a la Lista*/
-void add_method_call(ListC3D *list, Code3D *code,  Attribute *attri1,  Attribute *attriRes)
+void add_method_call(ListC3D *list, Code3D *code,  Attribute *attri1,  Attribute *attri_res)
 {	/**Uses a copy of attr1 because the parameter passing must be by value */
-  set_c2D(code, attri1, attriRes);
+  set_c2D(code, attri1, attri_res);
   add_code(list, code);
 }
 
@@ -121,10 +121,10 @@ void add_code_externinvk(ListC3D *list, Code3D *code,char *label,  char* type)
   add_code(list, code);
 }
 
-void add_param_externinvk(ListC3D *list, Code3D *code, Attribute *attr, int paramNumber)
+void add_param_externinvk(ListC3D *list, Code3D *code, Attribute *attr, int param_number)
 {
   set_attribute(code, 1, attr);
-  set_int(code, 2, paramNumber);
+  set_int(code, 2, param_number);
   set_null(code, 3);
   add_code(list, code);
 }

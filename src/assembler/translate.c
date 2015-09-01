@@ -5,8 +5,8 @@
 #include "translate.h"
 #include "../lib/assembler_utils.h"
 
-int nameLabelCount = 0;
-int auxParam = 1;
+int name_label_count = 0;
+int aux_param = 1;
 int print_count = 0;
 int extern_offset = 0;
 bool any_goto_method = false;
@@ -27,11 +27,11 @@ char* value(Code3D* code, int i)
 /* Returns the respective operation in assembly code */
 char* translate(char* operation, char* code1, char* code2)
 {
-  char* backSlashN = "\n";
+  char* new_line = "\n";
   char* blank = " ";
   char* tab = "\t";
   char* comma = ",";
-  char* result = (char*) malloc(strlen(tab)+strlen(operation)+2*strlen(blank)+strlen(code1)+strlen(comma)+strlen(code2)+strlen(backSlashN));
+  char* result = (char*) malloc(strlen(tab)+strlen(operation)+2*strlen(blank)+strlen(code1)+strlen(comma)+strlen(code2)+strlen(new_line));
   strcpy(result, tab);
   strcat(result, operation);
   if (strlen(code1)>0)
@@ -45,7 +45,7 @@ char* translate(char* operation, char* code1, char* code2)
     strcat(result, blank);
     strcat(result, code2);
   }
-  strcat(result, backSlashN);
+  strcat(result, new_line);
   return result;
 }
 
@@ -83,9 +83,9 @@ void load_const_translate(FILE* file, Code3D* code)
     write_code_in_file(file, translate("movl", value(code, 1), offset(code, 2)));
   else
   {
-    fValue.real = get_float(code, 1);
+    f_value.real = get_float(code, 1);
     fprintf(file, "\tmov $0x");
-    fprintf(file, "%x",fValue.entero);
+    fprintf(file, "%x",f_value.integer);
     fprintf(file, ", %%rax\n");
     write_code_in_file(file, translate("movl", "%eax", offset(code, 2)));
   }
@@ -176,9 +176,9 @@ void print_operation(FILE *file, Code3D *code)
 }
 
 /* Puts in the file the translation of the LABEL action */
-void write_label(FILE *file, ListMLabel *labelList, Code3D *code)
+void write_label(FILE *file, ListMLabel *list_m_label, Code3D *code)
 {
-  if (strcmp(get_label_ml(labelList, get_label(code, 1)), "NULL") == 0)
+  if (strcmp(get_label_ml(list_m_label, get_label(code, 1)), "NULL") == 0)
     write_code_in_file(file, concat(get_label(code,1), ":\n"));
   else
   {
@@ -239,8 +239,8 @@ void translate_param_assign_int(FILE *file, Code3D *code)
   if (is_int(code, 3))
     write_code_in_file(file, translate("subq", concat("$", int_to_string(get_int(code, 3)*4)), "%rsp"));
   write_code_in_file(file, translate("movq", offset(code, 1), "%rax"));
-  write_code_in_file(file, translate("movq", "%rax", concat(int_to_string(auxParam*4), "(%rsp)")));
-  auxParam++;
+  write_code_in_file(file, translate("movq", "%rax", concat(int_to_string(aux_param*4), "(%rsp)")));
+  aux_param++;
 }
 
 /*-----------------------------------------------------------------------*/
@@ -377,7 +377,7 @@ void translate_param_assign_float(FILE *file, Code3D *code)
   if (is_float(code, 3))
     write_code_in_file(file, translate("subq", concat("$", float_to_string(get_float(code, 3)*4)), "%rsp"));
   write_code_in_file(file, translate("movss", offset(code, 1), "%xmm0"));
-  write_code_in_file(file, translate("movq", "%rax", concat(int_to_string(auxParam*4), "(%rsp)")));
+  write_code_in_file(file, translate("movq", "%rax", concat(int_to_string(aux_param*4), "(%rsp)")));
 }
 
 /**"NEG_FLOAT %s %s\n" */

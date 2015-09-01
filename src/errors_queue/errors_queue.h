@@ -15,8 +15,8 @@ typedef struct E
 /* Define type ErrorsQueue. */
 typedef struct
 {
-  ErrorNode *firstIN; /* Pointer to first nodes of my queue. */
-  ErrorNode *lastIN; /* Pointer to last nodes of my queue. */
+  ErrorNode *first; /* Pointer to first nodes of my queue. */
+  ErrorNode *last; /* Pointer to last nodes of my queue. */
   int size; /* Size of the queue. */
 } ErrorsQueue;
 

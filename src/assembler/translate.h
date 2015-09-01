@@ -10,11 +10,11 @@
 #include "../SymbolsTable/Utils.h"
 
 typedef union {
-	int entero;
+	int integer;
 	float real;
 } FloatValue;
 
-FloatValue fValue;
+FloatValue f_value;
 
 /* Returns the respective operation in assembly code */
 char* translate(char*, char*, char*);

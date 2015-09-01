@@ -23,8 +23,8 @@ typedef struct
 {
   /* Reference to the top of the SymbolsTable. */
   SymbolsTableNode *top;
-  /* Current currentLevel of the SymbolsTable. */
-  int currentLevel;
+  /* Current current_level of the SymbolsTable. */
+  int current_level;
 } SymbolsTable;
 
 /* Initializes the SymbolsTable */

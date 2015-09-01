@@ -7,8 +7,8 @@
 #include <string.h>
 #include "Attribute.h"
 
-static int globalVarOffset = -8;
-static int globalParamOffset = 24;
+static int global_var_offset = -8;
+static int global_param_offset = 24;
 
 /* Creates a StVariable with the respective type and initialized */
 StVariable create_st_variable(PrimitiveType type)
@@ -16,11 +16,11 @@ StVariable create_st_variable(PrimitiveType type)
 	StVariable var; 
 	var.type = type;
 	switch (type) {
-	  case Int:    var.value.intVal = 0;
+	  case Int:    var.value.int_val = 0;
 	        		   break;
-	  case Float:  var.value.floatVal = 0.0;
+	  case Float:  var.value.float_val = 0.0;
 	        		   break;
-	  case Bool:   var.value.boolVal = False;
+	  case Bool:   var.value.bool_val = False;
 	        		   break;
   	}
 	return var;
@@ -47,12 +47,12 @@ Attribute* create_array(char *id, PrimitiveType type, unsigned int length)
 	attr->id = strdup(id);
 	attr->decl.array.type = type; 
 	attr->decl.array.length = length;
-	attr->decl.array.arrayValues = (StVariable*) malloc (length*sizeof(StVariable)); /* creates the necessary memory for the array */
+	attr->decl.array.array_values = (StVariable*) malloc (length*sizeof(StVariable)); /* creates the necessary memory for the array */
 	int i;
 	for(i = 0; i < length; i++)
 	{	// Initializes all the values of the array
-		attr->decl.array.arrayValues[i] = create_st_variable(type);
-    attr->decl.array.arrayValues[i].offset = get_global_var_offset();
+		attr->decl.array.array_values[i] = create_st_variable(type);
+    attr->decl.array.array_values[i].offset = get_global_var_offset();
     decrease_var_offset();
 	}
 	return attr;
@@ -65,7 +65,7 @@ Attribute* create_method(char *id, ReturnType type)
 	attr->type = Method;
 	attr->id = strdup(id);
 	attr->decl.method.type = type; 
-	attr->decl.method.paramSize = 0;
+	attr->decl.method.param_size = 0;
 	attr->decl.method.parameters = NULL;
 	return attr;
 }
@@ -76,14 +76,14 @@ Attribute* create_parameter(Attribute *attr, unsigned int pos, char *id, Primiti
 {
 	if (attr != NULL && attr->type == Method)
 	{
-		StVariable **auxParameters = (StVariable**) realloc (attr->decl.method.parameters, (pos+1)*sizeof(StVariable*));
-		if (auxParameters != NULL)
+		StVariable **aux_parameters = (StVariable**) realloc (attr->decl.method.parameters, (pos+1)*sizeof(StVariable*));
+		if (aux_parameters != NULL)
 		{
-			attr->decl.method.parameters = auxParameters;
-			attr->decl.method.paramSize++;
+			attr->decl.method.parameters = aux_parameters;
+			attr->decl.method.param_size++;
 			Attribute *aux = create_variable(id, type);
-			aux->decl.variable->offset = globalParamOffset-4;;
-			globalParamOffset += 4;
+			aux->decl.variable->offset = global_param_offset-4;;
+			global_param_offset += 4;
   		attr->decl.method.parameters[pos] = (StVariable*) malloc(sizeof(StVariable));
 			attr->decl.method.parameters[pos] = aux->decl.variable;
 			return aux;
@@ -96,7 +96,7 @@ Attribute* create_parameter(Attribute *attr, unsigned int pos, char *id, Primiti
 void set_amount_of_parameters(Attribute *attr, unsigned int amount)
 {
   if (attr->type == Method)
-		attr->decl.method.paramSize = amount;
+		attr->decl.method.param_size = amount;
 }
 
 /* Sets the value of the variable that contains "attr" with the respective "value" */
@@ -126,52 +126,52 @@ char* get_id(Attribute *attr)
   }
 }
 
-/* Returns the intVal of the attribute */
+/* Returns the int_val of the attribute */
 int get_int_val(Attribute *attr)
 {
   switch (attr->type) {
-  case Variable: 	return attr->decl.variable->value.intVal;
-  case Method: 		return attr->decl.method.return_value.intVal;
+  case Variable: 	return attr->decl.variable->value.int_val;
+  case Method: 		return attr->decl.method.return_value.int_val;
   default: 				return -1;
   }
 }
 
-/* Returns the floatVal of the attribute */
+/* Returns the float_val of the attribute */
 float get_float_val(Attribute *attr)
 {
 	if (attr->type == Variable)
-		return attr->decl.variable->value.floatVal;
+		return attr->decl.variable->value.float_val;
 	if (attr->type == Method)
-		return attr->decl.method.return_value.floatVal;
+		return attr->decl.method.return_value.float_val;
 	return -1;
 }
 
-/* Returns the boolVal of the attribute */
+/* Returns the bool_val of the attribute */
 Boolean get_bool_val(Attribute *attr)
 {
 	if (attr->type == Variable)
-		return attr->decl.variable->value.boolVal;
+		return attr->decl.variable->value.bool_val;
 	if (attr->type == Method)
-		return attr->decl.method.return_value.boolVal;
+		return attr->decl.method.return_value.bool_val;
 	return False;
 }
 
-/* Returns the intVal of the array attribute in the "pos" position */
+/* Returns the int_val of the array attribute in the "pos" position */
 int get_array_int_val(Attribute *attr, unsigned int pos)
 {
-	return attr->decl.array.arrayValues[pos].value.intVal;
+	return attr->decl.array.array_values[pos].value.int_val;
 }
 
-/* Returns the floatVal of the array attribute in the "pos" position */
+/* Returns the float_val of the array attribute in the "pos" position */
 float get_array_float_val(Attribute *attr, unsigned int pos)
 {
-	return attr->decl.array.arrayValues[pos].value.floatVal;
+	return attr->decl.array.array_values[pos].value.float_val;
 }
 
-/* Returns the boolVal of the array attribute in the "pos" position */
+/* Returns the bool_val of the array attribute in the "pos" position */
 Boolean get_array_bool_val(Attribute *attr, unsigned int pos)
 {
-	return attr->decl.array.arrayValues[pos].value.boolVal;
+	return attr->decl.array.array_values[pos].value.bool_val;
 }
 
 /* Returns the offset of the variable */
@@ -183,100 +183,100 @@ int get_offset_val(Attribute *attr)
 /* Returns the offset of the array -the last position's offset- */
 int get_offset_array(Attribute *attr)
 {
-	return attr->decl.array.arrayValues[ attr->decl.array.length - 1 ].offset;
+	return attr->decl.array.array_values[ attr->decl.array.length - 1 ].offset;
 }
 
-/* Sets the intVal of the attribute */
+/* Sets the int_val of the attribute */
 void set_int_val(Attribute *attr, int value)
 {
 	if (attr->type == Variable)
-		attr->decl.variable->value.intVal = value;
+		attr->decl.variable->value.int_val = value;
 	if (attr->type == Method)
-		attr->decl.method.return_value.intVal = value;
+		attr->decl.method.return_value.int_val = value;
 }
 
-/* Sets the floatVal of the attribute */
+/* Sets the float_val of the attribute */
 void set_float_val(Attribute *attr, float value)
 {
 	if (attr->type == Variable)
-		attr->decl.variable->value.floatVal = value;
+		attr->decl.variable->value.float_val = value;
 	if (attr->type == Method)
-		attr->decl.method.return_value.floatVal = value;
+		attr->decl.method.return_value.float_val = value;
 }
 
-/* Sets the boolVal of the attribute */
+/* Sets the bool_val of the attribute */
 void set_bool_val(Attribute *attr, Boolean value)
 {
 	if (attr->type == Variable)
-		attr->decl.variable->value.boolVal = value;
+		attr->decl.variable->value.bool_val = value;
 	if (attr->type == Method)
-		attr->decl.method.return_value.boolVal = value;
+		attr->decl.method.return_value.bool_val = value;
 }
 
-/* Sets the intVal of the array attribute in the "pos" position */
+/* Sets the int_val of the array attribute in the "pos" position */
 void set_array_int_val(Attribute *attr, unsigned int pos, int value)
 {
-	attr->decl.array.arrayValues[pos].value.intVal = value;
+	attr->decl.array.array_values[pos].value.int_val = value;
 }
 
-/* Sets the floatVal of the array attribute in the "pos" position */
+/* Sets the float_val of the array attribute in the "pos" position */
 void set_array_float_val(Attribute *attr, unsigned int pos, float value)
 {
-	attr->decl.array.arrayValues[pos].value.floatVal = value;
+	attr->decl.array.array_values[pos].value.float_val = value;
 }
 
-/* Sets the boolVal of the array attribute in the "pos" position */
+/* Sets the bool_val of the array attribute in the "pos" position */
 void set_array_bool_val(Attribute *attr, unsigned int pos, Boolean value)
 {
-	attr->decl.array.arrayValues[pos].value.boolVal = value;
+	attr->decl.array.array_values[pos].value.bool_val = value;
 }
 
 /* Returns the global variable offset of the class */
 int get_global_var_offset()
 {
-	return globalVarOffset;
+	return global_var_offset;
 }
 
 /* Set the global variable offset of the class */
-void set_global_var_offset(int newOffset)
+void set_global_var_offset(int new_offset)
 {
-	globalVarOffset = newOffset;
+	global_var_offset = new_offset;
 }
 
 /* Set the global variable offset of the class in a -16 */
 void reset_global_var_offset()
 {
-	globalVarOffset = -4;
+	global_var_offset = -4;
 }
 
 /* Increases in 4 the variable's offset */
 void increase_var_offset()
 {
-  globalVarOffset += 4;
+  global_var_offset += 4;
 }
 
 /* Decreases in 4 the variable's offset */
 void decrease_var_offset()
 {
-  globalVarOffset -= 4;
+  global_var_offset -= 4;
 }
 
 /* Returns the global parameters offset of the class */
 int get_global_param_offset()
 {
-	return globalVarOffset;
+	return global_var_offset;
 }
 
 /* Set the global parameters offset of the class */
-void set_global_param_offset(int newOffset)
+void set_global_param_offset(int new_offset)
 {
-	globalVarOffset = newOffset;
+	global_var_offset = new_offset;
 }
 
 /* Set the global parameters offset of the class in a 8 */
 void reset_global_param_offset()
 {
-	globalVarOffset = 16;
+	global_var_offset = 16;
 }
 
 /* Returns the structure type of the attribute.

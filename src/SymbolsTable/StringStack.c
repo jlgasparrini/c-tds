@@ -19,12 +19,12 @@ StringStack* initialize_string_stack()
 /* Insert an element in the stack "s". */
 void push_string(StringStack *s, char *value)
 {
-	SNode *newNode = (SNode*) malloc (sizeof(SNode));
-	if (newNode)
+	SNode *new_node = (SNode*) malloc (sizeof(SNode));
+	if (new_node)
 	{
-		newNode->val = strdup(value);
-		newNode->next = s->first;
-		s->first = newNode;
+		new_node->val = strdup(value);
+		new_node->next = s->first;
+		s->first = new_node;
 		s->size++;
 	}
 	else 
@@ -36,10 +36,10 @@ char* pop_string(StringStack *s)
 {
 	if (s->size > 0)
 	{
-		SNode *auxNode = s->first;
-		char* auxVal = strdup(auxNode->val);
-		s->first = auxNode->next;
-		free(auxNode);
+		SNode *runner = s->first;
+		char* auxVal = strdup(runner->val);
+		s->first = runner->next;
+		free(runner);
 		s->size--;
 		return auxVal;
 	}

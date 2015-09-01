@@ -15,9 +15,9 @@
 #include <stdbool.h>
 
 typedef union {
-	int         intAttri;
-	float       floatAttri;
-	bool        boolAttri;
+	int         int_attri;
+	float       float_attri;
+	bool        bool_attri;
 	Attribute   *attri;
 	char        *label;
 } Value;
@@ -54,9 +54,9 @@ bool get_bool(Code3D *code, int param);
 
 /**Funciones de Escritura de un Codigo*/
 
-void set_bool(Code3D *code, int param, bool boolAttri);
-void set_float(Code3D *code, int param, float floatAttri);
-void set_int(Code3D *code, int param, int intAttri);
+void set_bool(Code3D *code, int param, bool bool_attri);
+void set_float(Code3D *code, int param, float float_attri);
+void set_int(Code3D *code, int param, int int_attri);
 void set_label(Code3D *code, int param, char *label);
 void set_attribute(Code3D *code, int param, Attribute *attri);
 void set_null(Code3D *code, int param);
