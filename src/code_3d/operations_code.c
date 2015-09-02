@@ -8,7 +8,8 @@
 /* Return the string corresponding to respective command. */
 char* get_operation_by_id(int id)
 {
-  switch (id) {
+  switch (id)
+  {
     case LOAD_CONST : return "LOAD_CONST";
     case LOAD_ARRAY : return "LOAD_ARRAY";
     case PRINT : return "PRINT";

@@ -17,8 +17,8 @@ extern int column_numb;
 ErrorsQueue* initialize_queue()
 {
   ErrorsQueue* new_queue = (ErrorsQueue*) malloc(sizeof(ErrorsQueue));
-  new_queue->firstIN = NULL;
-  new_queue->lastIN = NULL;
+  new_queue->first = NULL;
+  new_queue->last = NULL;
   new_queue->size = 0;
   return new_queue;
 }
@@ -59,13 +59,13 @@ void insert_error(ErrorsQueue *eq, char* message)
     new_error_node->next = NULL;
     if (eq->size == 0)
     {
-      eq->firstIN = new_error_node;
-      eq->lastIN = new_error_node;
+      eq->first = new_error_node;
+      eq->last = new_error_node;
     }
     else
     {
-      eq->lastIN->next = new_error_node;
-      eq->lastIN = new_error_node;
+      eq->last->next = new_error_node;
+      eq->last = new_error_node;
     }
     eq->size++;
   }
@@ -80,13 +80,13 @@ void delete_all_errors(ErrorsQueue *eq)
   int i = 0;
   while (i < eq->size)
   {
-    new_error_node = eq->firstIN;
-    eq->firstIN = new_error_node->next;
+    new_error_node = eq->first;
+    eq->first = new_error_node->next;
     free(new_error_node);
     i++;
   }
-  eq->firstIN = NULL;
-  eq->lastIN = NULL;
+  eq->first = NULL;
+  eq->last = NULL;
   eq->size = 0;
 }
 
@@ -97,7 +97,7 @@ void print_error_list(ErrorsQueue *eq)
     printf("No semantics errors to compile.\n");
   else
   {
-    ErrorNode *current_error_node = eq->firstIN;
+    ErrorNode *current_error_node = eq->first;
     int i = 0;
     if (eq->size == 1)
       printf("-- %d semantic error to compile:\n",eq->size);

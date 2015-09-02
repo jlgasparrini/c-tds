@@ -11,8 +11,8 @@
 #include "code_3d.h"
 
 typedef struct NC3D {
-    Code3D *info;
-    struct NC3D *next;
+	Code3D *info;
+	struct NC3D *next;
 } NodeC3D;
 
 /*funciones publicas para manipular Nodes*/

@@ -16,7 +16,7 @@ char* concat(char *str1, char *str2)
 }
 
 /* Write the string "code" in a "file". */
-inline void write_code_in_file(FILE* file, char* code)
+inline void write_code_in_file(FILE *file, char *code)
 {
   fprintf(file,"%s", code);
 }

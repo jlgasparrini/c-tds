@@ -11,8 +11,8 @@
 #include "methodl.h"
 
 typedef struct NML {
-    MethodL *info;
-    struct NML *next;
+	MethodL *info;
+	struct NML *next;
 } NodeML;
 
 /*funciones publicas para manipular Nodes*/

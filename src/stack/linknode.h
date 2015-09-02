@@ -9,8 +9,8 @@
 #define LINKNODE_H
 
 typedef struct NodeStack {
-    char *info;
-    struct NodeStack *next;
+	char *info;
+	struct NodeStack *next;
 } NodeStack;
 
 /*funciones publicas para manipular nodos*/

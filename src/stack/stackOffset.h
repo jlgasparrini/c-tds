@@ -10,7 +10,7 @@
 #include <stdbool.h>
 
 typedef struct {
-    NodeStackOffset *top;
+	NodeStackOffset *top;
 } StackOffset;
 
 /**Constructor de la Pila de Offsets*/

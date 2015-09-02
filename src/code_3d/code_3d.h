@@ -15,23 +15,23 @@
 #include <stdbool.h>
 
 typedef union {
-    int         intAttri;
-    float       floatAttri;
-    bool        boolAttri;
-    Attribute   *attri;
-    char        *label;
+	int         int_attri;
+	float       float_attri;
+	bool        bool_attri;
+	Attribute   *attri;
+	char        *label;
 } Value;
 
 typedef struct {
-    int   type; // -1 : null, 0 : Attribute, 1 : label, 2 : Integer, 3 : Float, 4 : Bool
-    Value val;
+  int   type; // -1 : null, 0 : Attribute, 1 : label, 2 : Integer, 3 : Float, 4 : Bool
+  Value val;
 } Param;
 
 typedef struct {
-    int command;
-    Param *param1;
-    Param *param2;
-    Param *param3;
+	int command;
+	Param *param1;
+	Param *param2;
+	Param *param3;
 } Code3D;
 
 
@@ -54,9 +54,9 @@ bool get_bool(Code3D *code, int param);
 
 /**Funciones de Escritura de un Codigo*/
 
-void set_bool(Code3D *code, int param, bool boolAttri);
-void set_float(Code3D *code, int param, float floatAttri);
-void set_int(Code3D *code, int param, int intAttri);
+void set_bool(Code3D *code, int param, bool bool_attri);
+void set_float(Code3D *code, int param, float float_attri);
+void set_int(Code3D *code, int param, int int_attri);
 void set_label(Code3D *code, int param, char *label);
 void set_attribute(Code3D *code, int param, Attribute *attri);
 void set_null(Code3D *code, int param);
@@ -64,9 +64,9 @@ void set_null(Code3D *code, int param);
 /** Funciones de Escritura de un Codigo Concreto*/
 
 void set_code_label(Code3D *code, char *label);
-void set_code_label_cond(Code3D *code, Attribute *attri1, char *labelJumpTo);
-void set_c3D(Code3D *code, Attribute *attri1, Attribute *attri2, Attribute *attriRes);
-void set_c2D(Code3D *code, Attribute *attri1, Attribute *attriRes);
+void set_code_label_cond(Code3D *code, Attribute *attri1, char *label_jump_to);
+void set_c3D(Code3D *code, Attribute *attri1, Attribute *attri2, Attribute *attri_result);
+void set_c2D(Code3D *code, Attribute *attri1, Attribute *attri_result);
 void set_c1D(Code3D *code, Attribute *attri1);
 
 void to_string_c3D(Code3D *code);

@@ -21,28 +21,28 @@ typedef struct SNode
 /* Define type SymbolsTable. */
 typedef struct
 {
-    /* Reference to the top of the SymbolsTable. */
-    SymbolsTableNode *top;
-    /* Current currentLevel of the SymbolsTable. */
-    int currentLevel;
+  /* Reference to the top of the SymbolsTable. */
+  SymbolsTableNode *top;
+  /* Current current_level of the SymbolsTable. */
+  int current_level;
 } SymbolsTable;
 
 /* Initializes the SymbolsTable */
 SymbolsTable* initialize_symbols_table();
 
 /* Insert a element in the current level of the SymbolsTable. */
-void push_element(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, Attribute *at);
+void push_element(ErrorsQueue *eq, SymbolsTable *symbols_table, Attribute *attribute);
 
 /* Insert a new level in the SymbolsTable. */
-void push_level(SymbolsTable *aSymbolsTable);
+void push_level(SymbolsTable *symbols_table);
 
 /* Remove the entire current level of the SymbolsTable. */
-void pop_level(SymbolsTable *aSymbolsTable);
+void pop_level(SymbolsTable *symbols_table);
 
 /* Searches for the element in all levels of the SymbolsTable. */
-Attribute* search_id_in_symbols_table(ErrorsQueue *eq, SymbolsTable *aSymbolsTable, char *id);
+Attribute* search_id_in_symbols_table(ErrorsQueue *eq, SymbolsTable *symbols_table, char *id);
 
 /* Print the elements the SymbolsTable. */
-void symbols_table_print(SymbolsTable *aSymbolsTable);
+void symbols_table_print(SymbolsTable *symbols_table);
 
 #endif

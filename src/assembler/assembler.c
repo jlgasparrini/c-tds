@@ -12,7 +12,7 @@
 
 FILE *file;
 ListMLabel *label_list;
-LCode3D *code_list;
+ListC3D *code_list;
 
 // Given the position, I run that operation from the code_list
 // also this function return the next position of operation to execute!
@@ -83,7 +83,7 @@ static void generate_operation(int position)
 }
 
 /* Initializes the assembly engine and run */
-void init_assembler(ListMLabel *ext_label_list, LCode3D *ext_code_list, char* name_of_file)
+void init_assembler(ListMLabel *ext_label_list, ListC3D *ext_code_list, char* name_of_file)
 {
   //Initialize file.
   char* file_name = (char*) concat(name_of_file, ".s");

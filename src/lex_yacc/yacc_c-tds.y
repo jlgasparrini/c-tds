@@ -1,8 +1,8 @@
 %{
 
-/* Necessary functions definitions for avoiding warnings */
-int yylex(void);
-int yyparse(void);
+  /* Necessary functions definitions for avoiding warnings */
+  int yylex(void);
+  int yyparse(void);
 
   /*
    *  MISSING DOCUMENTATION!
@@ -34,7 +34,7 @@ int yyparse(void);
   char *last_def_method, *last_called_method = "";/* Name of the last defined method (last_def_method) and the last called method (last_called_method) */
   Boolean id_not_found;
 
-  static inline void setUpMethodCreation(char *name, ReturnType type) {
+  static inline void set_up_method_creation(char *name, ReturnType type) {
     last_def_method = name;
     push_element(error_q, symbols_table, create_method(name, type));
     push_level(symbols_table);
@@ -42,7 +42,7 @@ int yyparse(void);
   }
 
   // Variables used for 3D code
-  LCode3D *l_code3d;
+  ListC3D *l_code3d;
   char *label_ID = "label_%d_";
   int label_count = 0;
 
@@ -70,7 +70,7 @@ int yyparse(void);
   bool executable = false;
 
   // abre el archivo a tratar (entrada)
-  int openInput(char* name)
+  int open_input(char* name)
   {
     yyin = fopen(name,"r");
     if(yyin == NULL)
@@ -83,7 +83,7 @@ int yyparse(void);
     return EXIT_SUCCESS;
   }
 
-  int validateArgs(char* argv[],int argc)
+  int validate_args(char* argv[],int argc)
   {
     // Debe ingresar argumentos
     if(argc == 1)
@@ -162,12 +162,11 @@ int yyparse(void);
     return 1;
   }
 
-  void initializeStructures()
+  void initialize_structures()
   {
       amount_extern_params = 0;
       error_q = initialize_queue();
       symbols_table = initialize_symbols_table();
-      l_code3d = init_list_c3D();
       params_stack = initialize_string_stack();
       methods_id_stack = initialize_string_stack();
       labels_CYC = new_stack();
@@ -211,7 +210,7 @@ int yyparse(void);
   }
 
   // Get only filename without extension or path.
-  char* getName(char* file)
+  char* get_name(char* file)
   {
     int length = strlen(file);
     int i;
@@ -238,15 +237,15 @@ int yyparse(void);
   {
     arguments_c = argc;
     arguments_v = argv;
-    initializeStructures();
-    if(validateArgs(argv, argc) == 0)
+    initialize_structures();
+    if(validate_args(argv, argc) == 0)
       return EXIT_FAILURE;
     else if(strcmp(argv[1], "-target") == 0)
     {
       // Get file name.
-      file_name = getName(argv[3]);
+      file_name = get_name(argv[3]);
       // Open input file.
-      if(openInput(argv[3]) == EXIT_FAILURE)
+      if(open_input(argv[3]) == EXIT_FAILURE)
         return EXIT_FAILURE;
       // Parse the input and load target.
       action_input = argv[2];
@@ -256,9 +255,9 @@ int yyparse(void);
     {
       flag_target = 0;
       // Obtengo el nombre del archivo.
-      file_name = getName(argv[1]);
+      file_name = get_name(argv[1]);
       // Abro archivo de entrada.
-      if(openInput(argv[1]) == EXIT_FAILURE)
+      if(open_input(argv[1]) == EXIT_FAILURE)
         return EXIT_FAILURE;
       // Parse the input and by default load set target with "compile".
       action_input = "compile";
@@ -329,7 +328,7 @@ int yyparse(void);
   }
 
   /*Create new Label*/
-  char* newLabelName(char* msg)
+  char* new_label_name(char* msg)
   {
     char *labelName = malloc(sizeof(char)*(digit_amount(label_count)+strlen("%d_label_")+strlen(msg)));
     sprintf(labelName, label_ID, label_count);
@@ -419,7 +418,7 @@ type:  INT_WORD		 {var_type = Int; method_type = RetInt;}
 method_decl:  type ID {
                         push_offset(offsets_var, get_global_var_offset());/////////////////////////////////
                         reset_global_var_offset();////////////////////////////
-                        setUpMethodCreation($2, method_type);
+                        set_up_method_creation($2, method_type);
                         add_code_label(l_code3d, new_code(LABEL), $2); // Mark to Label of Init of Method
                         push(max_method_offset, int_to_string(code_size(l_code3d)));
                         insert_method_list(list_meth_label, $2, $2);
@@ -433,7 +432,7 @@ method_decl:  type ID {
            |		method_decl type ID {
                         push_offset(offsets_var, get_global_var_offset());
                         reset_global_var_offset();
-                        setUpMethodCreation($3, method_type);
+                        set_up_method_creation($3, method_type);
                         add_code_label(l_code3d, new_code(LABEL), $3); // Mark to Label of Init of Method
                         push(max_method_offset, int_to_string(code_size(l_code3d)));
                         insert_method_list(list_meth_label, $3, $3);
@@ -447,7 +446,7 @@ method_decl:  type ID {
            |     VOID ID {
                       push_offset(offsets_var, get_global_var_offset());
                       reset_global_var_offset();
-                      setUpMethodCreation($2, RetVoid);
+                      set_up_method_creation($2, RetVoid);
                       add_code_label(l_code3d, new_code(LABEL), $2); // Mark to Label of Init of Method
                       push(max_method_offset, int_to_string(code_size(l_code3d)));
                       insert_method_list(list_meth_label, $2, $2);
@@ -461,7 +460,7 @@ method_decl:  type ID {
            |  method_decl VOID ID {
                 push_offset(offsets_var, get_global_var_offset());
                 reset_global_var_offset();
-                setUpMethodCreation($3, RetVoid);
+                set_up_method_creation($3, RetVoid);
                 add_code_label(l_code3d, new_code(LABEL), $3); // Mark to Label of Init of Method
                 push(max_method_offset, int_to_string(code_size(l_code3d)));
                 insert_method_list(list_meth_label, $3, $3);
@@ -585,13 +584,13 @@ assig_op      :    '=' {$$ = "=";}
 /* -------------------- CONDITIONALS AND CICLES ------------------------------ */
 
 conditional   :     IF '(' {
-                        add_code_label(l_code3d, new_code(LABEL), newLabelName("if"));
+                        add_code_label(l_code3d, new_code(LABEL), new_label_name("if"));
                     } expression {
                         control_type(error_q,$4,Bool,"if",1);
-                        char *elseLabel = newLabelName("else");
-                        add_code_label_cond(l_code3d, new_code(GOTO_LABEL_COND), $4, elseLabel);
-                        push(labels_CYC, newLabelName("end_if"));
-                        push(labels_CYC, elseLabel);
+                        char *else_label = new_label_name("else");
+                        add_code_label_cond(l_code3d, new_code(GOTO_LABEL_COND), $4, else_label);
+                        push(labels_CYC, new_label_name("end_if"));
+                        push(labels_CYC, else_label);
                     } ')' block optional
               ;
 
@@ -600,9 +599,9 @@ optional	  :		{
                         push(return_stack, pop(labels_CYC));
                     }
               |	   	ELSE {
-                        char* elseLabel = pop(labels_CYC);
+                        char* else_label = pop(labels_CYC);
                         add_code_label(l_code3d, new_code(GOTO_LABEL), peek(labels_CYC)); //Go to char of Else
-                        add_code_label(l_code3d, new_code(LABEL), elseLabel); // Mark to char of Else
+                        add_code_label(l_code3d, new_code(LABEL), else_label); // Mark to char of Else
                     } block {
                         char* aux = pop(labels_CYC);
                         add_code_label(l_code3d, new_code(LABEL), aux); // Mark to char of End
@@ -611,17 +610,17 @@ optional	  :		{
               ;
 
 iteration     :    WHILE {
-                        char *whileLabel = newLabelName("while");
-                        add_code_label(l_code3d, new_code(LABEL), whileLabel); // label of While
-                        push(labels_while, whileLabel);
+                        char *while_label = new_label_name("while");
+                        add_code_label(l_code3d, new_code(LABEL), while_label); // label of While
+                        push(labels_while, while_label);
                         push(labels_while, int_to_string(code_size(l_code3d)));
                     }
                    expression {
-                        char *endWhile = newLabelName("end_while");
+                        char *endWhile = new_label_name("end_while");
                         char *pos = pop(labels_while);
-                        char *whileLabel = pop(labels_while);
+                        char *while_label = pop(labels_while);
                         push(labels_while, endWhile);
-                        push(labels_while, whileLabel);
+                        push(labels_while, while_label);
                         push(labels_while, pos);
                         control_type(error_q,$3,Bool,"while",1);
                         add_code_label_cond(l_code3d, new_code(GOTO_LABEL_COND), $3, endWhile); // Go to label of Expression
@@ -636,15 +635,15 @@ iteration     :    WHILE {
                         /* It musn't have the same treatment that while? */
                     } '=' expression ',' expression {
                             control_type(error_q,$5,Int,"for",2); control_type(error_q,$7,Int,"for",3);
-                            char *forLabel = newLabelName("for");
-                            char *endLabel = newLabelName("end_for");
-                            push(labels_for, endLabel);
-                            push(labels_for, forLabel);
+                            char *for_label = new_label_name("for");
+                            char *end_label = new_label_name("end_for");
+                            push(labels_for, end_label);
+                            push(labels_for, for_label);
                             push(labels_for, int_to_string(code_size(l_code3d)));
                             add_assignation(l_code3d, $5, get_variable_attribute(error_q, symbols_table, $2));
                             Attribute *res = return_minor_comparison(error_q, l_code3d, get_variable_attribute(error_q, symbols_table, $2), $7);
-                            add_code_label(l_code3d, new_code(LABEL), forLabel);
-                            add_code_label_cond(l_code3d, new_code(GOTO_LABEL_COND), res, endLabel); // Go to label of Expression
+                            add_code_label(l_code3d, new_code(LABEL), for_label);
+                            add_code_label_cond(l_code3d, new_code(GOTO_LABEL_COND), res, end_label); // Go to label of Expression
                     } block {
                             control_assignation(error_q,l_code3d,get_variable_attribute(error_q,symbols_table,$2),"+=",return_value(l_code3d,Int,"1"));
                             add_code(l_code3d, get_code(l_code3d, atoi(pop(labels_for))+1));
